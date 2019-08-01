@@ -1,0 +1,29 @@
+dependencies: \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTModuleMethod.mm \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTModuleMethod.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTBridgeMethod.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTBridgeModule.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTDefines.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTNullability.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTAssert.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTBridge+Private.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTBridge.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTBridgeDelegate.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTJavaScriptLoader.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTFrameUpdate.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTInvalidating.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTConvert.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Views/RCTAnimationType.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Views/RCTBorderStyle.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTLog.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTUtils.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Views/RCTPointerEvents.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Views/RCTTextDecorationLineType.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/yoga/Yoga.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/yoga/YGEnums.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/yoga/YGMacros.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/yoga/YGValue.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTCxxConvert.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTManagedPointer.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Base/RCTParserUtils.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native/React/Profiler/RCTProfile.h

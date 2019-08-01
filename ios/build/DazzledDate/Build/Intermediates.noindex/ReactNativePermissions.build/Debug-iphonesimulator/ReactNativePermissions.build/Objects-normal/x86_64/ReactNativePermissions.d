@@ -1,0 +1,35 @@
+dependencies: \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/ReactNativePermissions.m \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/ReactNativePermissions.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTBridgeModule.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTDefines.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTBridge.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTBridgeDelegate.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTJavaScriptLoader.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTFrameUpdate.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTInvalidating.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTConvert.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTAnimationType.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTBorderStyle.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTLog.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTAssert.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTUtils.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTPointerEvents.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTTextDecorationLineType.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/yoga/Yoga.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/yoga/YGEnums.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/yoga/YGMacros.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/yoga/YGValue.h \
+  /Volumes/MAC_WORK/July/DazzledDate/ios/build/DazzledDate/Build/Products/Debug-iphonesimulator/include/React/RCTEventDispatcher.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/Permissions/RNPLocation.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/RCTConvert+RNPStatus.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/Permissions/RNPBluetooth.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/Permissions/RNPNotification.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/Permissions/RNPAudioVideo.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/Permissions/RNPEvent.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/Permissions/RNPPhoto.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/Permissions/RNPContacts.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/Permissions/RNPBackgroundRefresh.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/Permissions/RNPSpeechRecognition.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/Permissions/RNPMediaLibrary.h \
+  /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-permissions/ios/Permissions/RNPMotion.h
