@@ -36,34 +36,34 @@ static navigationOptions = {
 };
 componentDidMount() {
     this.props.navigation.addListener('didFocus', (playload)=>{
-      });
+    });
 
-   var otherid = this.props.navigation.state.params.id
-   var othername = this.props.navigation.state.params.name
-   this.setState({id:otherid, name:othername})
-   this.getVideos(otherid)
-   }
-   getVideos(otherid)
-   {
-        fetch("http://138.197.203.178:8080/api/video/othervideo/" + otherid, {
-           method: 'GET',
-           headers: {        
-             'Content-Type':'application/json',
-             'Authorization':Global.token
-           }
-        }).then((response) => response.json())
-             .then((responseJson) => {
-               //  alert(JSON.stringify(responseJson))
-                 if(!responseJson.error)
-                 {
-                   this.getTumbnails(responseJson.data)
-                 }
-             })
-             .catch((error) => {
-               alert(JSON.stringify(error))
-               return
-       });
-   }
+   var otherid = this.props.navigation.state.params.id;
+
+   var othername = this.props.navigation.state.params.name;
+
+   this.setState({id:otherid, name:othername});
+   this.getVideos(otherid);
+}
+getVideos(otherid) {
+  fetch("http://138.197.203.178:8080/api/video/othervideo/" + otherid, {
+      method: 'GET',
+      headers: {        
+        'Content-Type':'application/json',
+        'Authorization':Global.token
+      }
+  }).then((response) => response.json())
+        .then((responseJson) => {
+            if(!responseJson.error)
+            {
+              this.getTumbnails(responseJson.data)
+            }
+        })
+        .catch((error) => {
+          alert(JSON.stringify(error))
+          return
+  });
+}
    getTumbnails=async (data) =>
    {
      var list_items = [];
@@ -88,10 +88,6 @@ componentDidMount() {
        });
      }
      this.setState({datas:list_items})
-   }
-   componentWillMount()
-   {
-    
    }
    showUserVideo(url, otherId)
    {
@@ -127,16 +123,12 @@ componentDidMount() {
   }
 
   render() {
-    
-    var {navigate} = this.props.navigation; 
-
     return (
        <View style={styles.contentContainer}>
           <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content'/>          
-          <View style={{height:40, marginTop:Platform.select({'ios':40, 'android':10}), flexDirection:'row'}}>
+          <View style={{height:40, marginTop:Platform.select({'ios':'10%', 'android':'10%'}), flexDirection:'row'}}>
             <TouchableOpacity style={{width:40, height:40, marginLeft:10, justifyContent:'center', alignItems:'center'}}
-             onPress={()=>this.onBack()}
-            >
+             onPress={()=>this.onBack()} >
               <Icon type="Ionicons" name="ios-arrow-back" style={{color:'#B64F54'}}/>
             </TouchableOpacity>
             <View style={{width:DEVICE_WIDTH-100, alignItems:'center', justifyContent:'center'}}>
@@ -146,26 +138,26 @@ componentDidMount() {
           <ScrollView style={{marginTop:15}} removeClippedSubviews={true}>
                 {(this.state.datas.length != 0) && (
                  <FlatList
-                            numColumns={2}
-                            style={{ flex: 0 }}
-                            removeClippedSubviews={true}
-                            data={this.state.datas}
-                            initialNumToRender={this.state.datas.length}
-                            renderItem={({ item: rowData }) => {                              
-                                  return (
-                                     <TouchableOpacity style={{width:DEVICE_WIDTH/2 - 10, marginTop:10, marginLeft:5, marginRight:5,}}  onPress={()=>this.showUserVideo(rowData.videoUrl, rowData.otherId)}>
-                                         <ImageBackground source={{uri:rowData.imageUrl}} resizeMethod="resize" style={{width:DEVICE_WIDTH/2 - 20, height:(DEVICE_WIDTH/2 - 20)*1.5, marginTop:3,marginLeft:5, backgroundColor:'#5A5A5A'}}>
-                                           {/* <TouchableOpacity style={{marginTop:(DEVICE_WIDTH/2-20)*1.5 - 50, marginLeft:DEVICE_WIDTH/2 - 70}} 
-                                            onPress={()=>this.onDeleteVideo()}
-                                           >
-                                              <Image source={b_delete} style={{width:40, height:40}}/>
-                                           </TouchableOpacity> */}
-                                         </ImageBackground>    
-                                     </TouchableOpacity>      
-                                    );
-                               
-                              }}
-                            keyExtractor={(item, index) => index}
+                    numColumns={2}
+                    style={{ flex: 0 }}
+                    removeClippedSubviews={true}
+                    data={this.state.datas}
+                    initialNumToRender={this.state.datas.length}
+                    renderItem={({ item: rowData }) => {                              
+                          return (
+                              <TouchableOpacity style={{width:DEVICE_WIDTH/2 - 10, marginTop:10, marginLeft:5, marginRight:5,}}  onPress={()=>this.showUserVideo(rowData.videoUrl, rowData.otherId)}>
+                                  <ImageBackground source={{uri:rowData.imageUrl}} resizeMethod="resize" style={{width:DEVICE_WIDTH/2 - 20, height:(DEVICE_WIDTH/2 - 20)*1.5, marginTop:3,marginLeft:5, backgroundColor:'#5A5A5A'}}>
+                                    {/* <TouchableOpacity style={{marginTop:(DEVICE_WIDTH/2-20)*1.5 - 50, marginLeft:DEVICE_WIDTH/2 - 70}} 
+                                    onPress={()=>this.onDeleteVideo()}
+                                    >
+                                      <Image source={b_delete} style={{width:40, height:40}}/>
+                                    </TouchableOpacity> */}
+                                  </ImageBackground>    
+                              </TouchableOpacity>
+                            );
+                        
+                      }}
+                    keyExtractor={(item, index) => index}
                  />)}
                  {/* {(this.state.datas.length == 0) && (
                    <View style={{alignItems:'center', justifyContent:'center'}}>

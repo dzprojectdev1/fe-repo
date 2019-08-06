@@ -6,35 +6,6 @@
 	<integer>9</integer>
 	<key>logs</key>
 	<dict>
-		<key>32E98451-F58E-4A0A-9DC9-92F31A20CE20</key>
-		<dict>
-			<key>className</key>
-			<string>IDECommandLineBuildLog</string>
-			<key>documentTypeString</key>
-			<string>&lt;nil&gt;</string>
-			<key>domainType</key>
-			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
-			<key>fileName</key>
-			<string>32E98451-F58E-4A0A-9DC9-92F31A20CE20.xcactivitylog</string>
-			<key>highLevelStatus</key>
-			<string>W</string>
-			<key>schemeIdentifier-containerName</key>
-			<string>DazzledDate project</string>
-			<key>schemeIdentifier-schemeName</key>
-			<string>DazzledDate</string>
-			<key>schemeIdentifier-sharedScheme</key>
-			<integer>1</integer>
-			<key>signature</key>
-			<string>Building project DazzledDate with scheme DazzledDate and configuration Debug</string>
-			<key>timeStartedRecording</key>
-			<real>586234393.26587701</real>
-			<key>timeStoppedRecording</key>
-			<real>586234395.89490294</real>
-			<key>title</key>
-			<string>Building project DazzledDate with scheme DazzledDate and configuration Debug</string>
-			<key>uniqueIdentifier</key>
-			<string>32E98451-F58E-4A0A-9DC9-92F31A20CE20</string>
-		</dict>
 		<key>86A2A479-AA8C-4174-AB03-911F5F179454</key>
 		<dict>
 			<key>className</key>

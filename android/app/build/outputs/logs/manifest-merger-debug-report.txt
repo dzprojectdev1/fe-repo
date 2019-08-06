@@ -1,383 +1,383 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:1:1-34:12
-INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:1:1-34:12
-INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:1:1-34:12
-INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:1:1-34:12
-MERGED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:1:1-34:12
-MERGED from [:react-native-video] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-video/android-exoplayer/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
-MERGED from [:react-native-wheel-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-wheel-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
-MERGED from [:react-native-fs] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-fs/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-13:12
-MERGED from [:react-native-camera] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:2:1-18:12
-MERGED from [:@react-native-community_async-storage] /Volumes/MAC_WORK/July/DazzledDate/node_modules/@react-native-community/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
-MERGED from [:react-native-image-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-23:12
-MERGED from [com.facebook.react:react-native:0.59.9] /Users/pys/.gradle/caches/transforms-2/files-2.1/c269e818548521fc18cece7a63b3e50d/AndroidManifest.xml:2:1-13:12
-MERGED from [com.android.support:appcompat-v7:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/81b8a8a0a6cf5be9c1bc04171b71950e/AndroidManifest.xml:17:1-22:12
-MERGED from [com.google.android.exoplayer:exoplayer:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/cda407b4b64101751413e46b5cc9f1a9/AndroidManifest.xml:17:1-24:12
-MERGED from [com.google.android.gms:play-services-vision:17.0.2] /Users/pys/.gradle/caches/transforms-2/files-2.1/1c11eff2825046fac6f69a58b416d42a/AndroidManifest.xml:2:1-9:12
-MERGED from [com.google.android.gms:play-services-vision-common:17.0.2] /Users/pys/.gradle/caches/transforms-2/files-2.1/13750a4bc727bd8b9ce3065596189767/AndroidManifest.xml:2:1-9:12
-MERGED from [com.google.android.gms:play-services-clearcut:16.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/f7e7b6a6066c6b0cf1efea91a4d1dc37/AndroidManifest.xml:17:1-24:12
-MERGED from [com.google.android.gms:play-services-flags:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/f7cf6b9f10ad68d90d7585e91d8ae2ca/AndroidManifest.xml:17:1-22:12
-MERGED from [com.google.android.gms:play-services-phenotype:16.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/b51fb26984e2c220710ec766dc9c7cc3/AndroidManifest.xml:17:1-24:12
-MERGED from [com.google.android.gms:play-services-base:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/08284c10818b4fa73e49c7a4435fc7cf/AndroidManifest.xml:17:1-29:12
-MERGED from [com.google.android.gms:play-services-tasks:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/4c4af2fb21b672037d95df143b754104/AndroidManifest.xml:2:1-9:12
-MERGED from [com.google.android.gms:play-services-basement:16.1.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/16de67e100e8865a31880cd7cfe219b7/AndroidManifest.xml:17:1-28:12
-MERGED from [com.android.support:support-v4:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/01903028712335da1905a504de42c2b6/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:support-media-compat:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/58d42e8773dd6cb483e3f910027eb221/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:support-fragment:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/9ad28c0d6efd5ed06f33d55c379231bf/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:animated-vector-drawable:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/6e28f9a0d61c7b01fc080e3c67342b53/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:support-core-ui:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/a1ca4d24a3492fd81b9f680fcc2e51be/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:support-core-utils:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/fa81d33772518057d0a8c6ea1ec5e8bb/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:support-vector-drawable:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/493fc262730f79408b008835758e1976/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:loader:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/864173121a22e3dd5a46040d326f0455/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:viewpager:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/7921fb96d31f12cf1238003d5eaec64d/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:coordinatorlayout:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/2a8c902651c3576c805b5d827e6e0765/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:drawerlayout:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/1ec193f6d781c8a381800eeaeed9fa03/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:slidingpanelayout:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/296f5da08fd57824addbb615aca387cb/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:customview:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/231903ddbf373b0026d3e6f257eeb0b4/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:swiperefreshlayout:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/ccea8934dc1fbba82c6e930230baa718/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:asynclayoutinflater:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/7927f4d664c69989ce52926f84b72658/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:support-compat:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/50af9636d198977b167ba7ea6e1e40f0/AndroidManifest.xml:17:1-24:12
-MERGED from [com.google.android.exoplayer:extension-okhttp:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/c4a3e5dd68cfe8a231873d07a8dccf9c/AndroidManifest.xml:17:1-24:12
-MERGED from [com.android.support:exifinterface:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/d3e9698bde098cb5416e3f238b3c136e/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:versionedparcelable:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/3ab86b3ba10103d1a01d145edddf7611/AndroidManifest.xml:17:1-25:12
-MERGED from [com.android.support:cursoradapter:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/c44752a9de432bea87ad291e6275e97b/AndroidManifest.xml:17:1-22:12
-MERGED from [com.google.android.exoplayer:exoplayer-dash:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/a1429e08536ed94acb3c431bf3fb5229/AndroidManifest.xml:17:1-24:12
-MERGED from [com.google.android.exoplayer:exoplayer-hls:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/1df8ee64606101430cefd074e52d9671/AndroidManifest.xml:17:1-24:12
-MERGED from [com.google.android.exoplayer:exoplayer-smoothstreaming:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/4afb66d5c14316dd61ce79647f2966b9/AndroidManifest.xml:17:1-24:12
-MERGED from [com.google.android.exoplayer:exoplayer-ui:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/2b817912cef01e2d5a4f159abfa5b638/AndroidManifest.xml:17:1-24:12
-MERGED from [com.google.android.exoplayer:exoplayer-core:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/c87b6522c348642b2298ba42e79d9dd7/AndroidManifest.xml:17:1-26:12
-MERGED from [android.arch.lifecycle:runtime:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/bf9438eff912096e8b6133c9e42d22fd/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:documentfile:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/9fca53a336714b838ef95e37df0be770/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:localbroadcastmanager:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/f8da1bdd83b9030afc4596dd0e4b78b6/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:print:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/1ebf9cf04ba11eef9c84403621ef8cef/AndroidManifest.xml:17:1-22:12
-MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/0756e87d3f1b6f338c3fdb48aaee5d88/AndroidManifest.xml:17:1-22:12
-MERGED from [android.arch.lifecycle:livedata:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/0a615ed2133cddc2088da49ed640a782/AndroidManifest.xml:17:1-22:12
-MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/59588f6f4ce2a2f1ebdbd1853935d9dd/AndroidManifest.xml:17:1-22:12
-MERGED from [android.arch.core:runtime:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/b9cc6b8dcdcf353095af670d3101922d/AndroidManifest.xml:17:1-22:12
-MERGED from [com.android.support:interpolator:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/f83eef630b4c056776a5da29a9f04cfd/AndroidManifest.xml:17:1-22:12
-MERGED from [com.facebook.fresco:imagepipeline-okhttp3:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/ead2bd99ae3526ae5e6bf941bd8eda87/AndroidManifest.xml:2:1-9:12
-MERGED from [cn.aigestudio.wheelpicker:WheelPicker:1.0.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/282c5de2134499ebd7fac4c09962d10f/AndroidManifest.xml:2:1-12:12
-MERGED from [com.facebook.fresco:fresco:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/9e3c800b3aa203778aebbecd9726814d/AndroidManifest.xml:2:1-9:12
-MERGED from [com.facebook.fresco:drawee:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/98664934abb43dca11e2ddd1de279e8f/AndroidManifest.xml:2:1-9:12
-MERGED from [com.facebook.fresco:imagepipeline:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/73f49376f9542df00312c942df85560f/AndroidManifest.xml:2:1-9:12
-MERGED from [com.facebook.fresco:imagepipeline-base:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/ca4db625e76b1efb166c522f9cc445bb/AndroidManifest.xml:2:1-9:12
-MERGED from [com.facebook.soloader:soloader:0.6.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/8802aaae6908d4725642f3b2bc7cb7ac/AndroidManifest.xml:2:1-13:12
-MERGED from [com.facebook.fresco:fbcore:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/fc67c35b0fe8372ec132a486f65ee159/AndroidManifest.xml:2:1-9:12
-INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml:2:1-8:12
-INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml:2:1-8:12
-INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml:2:1-8:12
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:1:1-34:12
+INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:1:1-34:12
+INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:1:1-34:12
+INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:1:1-34:12
+MERGED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:1:1-34:12
+MERGED from [:react-native-video] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-video/android-exoplayer/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
+MERGED from [:react-native-wheel-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-wheel-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
+MERGED from [:react-native-fs] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-fs/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-13:12
+MERGED from [:react-native-camera] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:2:1-18:12
+MERGED from [:@react-native-community_async-storage] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/@react-native-community/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:react-native-image-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-23:12
+MERGED from [com.facebook.react:react-native:0.59.9] /Users/vampire/.gradle/caches/transforms-2/files-2.1/6501361321dd5f2e4828a438f685b2e0/AndroidManifest.xml:2:1-13:12
+MERGED from [com.android.support:appcompat-v7:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/efe887780698822ddbaa6b6533b1adb5/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.exoplayer:exoplayer:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/967fc95975cd7df411411763bdcf217f/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.gms:play-services-vision:17.0.2] /Users/vampire/.gradle/caches/transforms-2/files-2.1/f35804180aebe6210ee70cf5d71ae861/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-vision-common:17.0.2] /Users/vampire/.gradle/caches/transforms-2/files-2.1/cad5d7f4eb9807f897878c0578a492a8/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-clearcut:16.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/5e62976994f9a730fc2092457a24fdb7/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.gms:play-services-flags:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/99abe58fc392452e75fec3a08a984202/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.gms:play-services-phenotype:16.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/b7f4974037f51a1edcfed64ed22e14ac/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.gms:play-services-base:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/842c7034938293283db18ef6d42f0537/AndroidManifest.xml:17:1-29:12
+MERGED from [com.google.android.gms:play-services-tasks:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/131a94f9b107efb2ec612183471c3c09/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-basement:16.1.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fd926851144b3fd0df3c46bb407778db/AndroidManifest.xml:17:1-28:12
+MERGED from [com.android.support:support-v4:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/af718ce848bdb7ea1b64e27f60734b8a/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-media-compat:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/400490447dcdbde015198b8ea6050942/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-fragment:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/f93935219eaa718d0b590edd6d225f97/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:animated-vector-drawable:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/7d047f51a74440553b313b7679bf2a58/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-core-ui:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/c9247d55605bc1114602363603b0de27/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-core-utils:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/be69ef50727743817c76d7dca62cb7e9/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-vector-drawable:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/9ca552493c3fd2e2a9adf2bd4cfee49f/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:loader:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/4e6362d6929f3dda23d5ef01c7cc6dbe/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:viewpager:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/6ab6656711d869cf2165342f6922a4c1/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:coordinatorlayout:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/c56b86655353f26b46d7990f1224441f/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:drawerlayout:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/2e5b416e244ca77d6bef841e6e9b140b/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:slidingpanelayout:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/c7a1bee9d587c25dbfdd4967f737afe2/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:customview:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/5a3c82bcda1f0a7078a8876bb4a68df7/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:swiperefreshlayout:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/2290486fcdd030b44d7d146fe21c8276/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:asynclayoutinflater:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/f8a209c7c1ad5f76115d6de578619e1e/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-compat:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fcba449d378b6e4cd9b130a164a4a9ad/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:extension-okhttp:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/8f3c5d7c519546494d5a489f79a60786/AndroidManifest.xml:17:1-24:12
+MERGED from [com.android.support:exifinterface:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/e214b88c14662c8e2da56fd403e9725b/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:versionedparcelable:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/7405775bce7660af418c15689f25698a/AndroidManifest.xml:17:1-25:12
+MERGED from [com.android.support:cursoradapter:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/1411936ee32b1401d0b44b9e724d48ef/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.exoplayer:exoplayer-dash:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/b31b915626bcacbd616d08e6ee4e5080/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:exoplayer-hls:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/8bc550ce4dbbf32c85efde0366037c77/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:exoplayer-smoothstreaming:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/55c87dae10d8cd46443dca3069bb0855/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:exoplayer-ui:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/9b8d1741b58dc02ac44f00bec1c4e606/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:exoplayer-core:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/6d113faa0e169f188940425843d20d38/AndroidManifest.xml:17:1-26:12
+MERGED from [android.arch.lifecycle:runtime:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/1c6834adcb43f62038d06786fefec56f/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:documentfile:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/549705663a88578a81541be522efb568/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:localbroadcastmanager:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/04fc5c5da4d73a992f51cd1cbf5835cb/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:print:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/3a24b56140be01bcc6a049560b190b9d/AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/ae7b14f7027c1bdf8de4b7267b5c9471/AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:livedata:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/ecf1757f67cc13f29b0cf1b27362f2cb/AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/ac7f4255930a1369ea45908ce5bc958e/AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.core:runtime:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/2995b9a24aaf1b78f3214b17094863a6/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:interpolator:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/7444b35878aaa3ea3173299c5a1a91ec/AndroidManifest.xml:17:1-22:12
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/e2e5498da5858d80575d593c12737327/AndroidManifest.xml:2:1-9:12
+MERGED from [cn.aigestudio.wheelpicker:WheelPicker:1.0.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/123d13ff42d204db56b7dcafc687a631/AndroidManifest.xml:2:1-12:12
+MERGED from [com.facebook.fresco:fresco:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/a41b3d390f8207966580ea9874fb9486/AndroidManifest.xml:2:1-9:12
+MERGED from [com.facebook.fresco:drawee:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/e201bb67b81c77a6f47c1a95d591f422/AndroidManifest.xml:2:1-9:12
+MERGED from [com.facebook.fresco:imagepipeline:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/40379e5940ce9b155746f29bcd429af6/AndroidManifest.xml:2:1-9:12
+MERGED from [com.facebook.fresco:imagepipeline-base:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/0e7837bb02389559f78f6d1f2a3c0f43/AndroidManifest.xml:2:1-9:12
+MERGED from [com.facebook.soloader:soloader:0.6.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/27e6f69f64c96e069f8815b7aec8b3ec/AndroidManifest.xml:2:1-13:12
+MERGED from [com.facebook.fresco:fbcore:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/594d4b88bad83ea921dc4b967526f038/AndroidManifest.xml:2:1-9:12
+INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml:2:1-8:12
+INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml:2:1-8:12
+INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml:2:1-8:12
 	package
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:2:3-32
-		INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:2:3-32
-		INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:2:3-32
+		INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:2:3-32
+		INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml
 	android:versionName
-		INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:1:1-34:12
-		INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml
+		INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:1:1-34:12
+		INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml
 	xmlns:tools
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml:3:5-51
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml:3:5-51
 	android:versionCode
-		INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:1:1-34:12
-		INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml
+		INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:1:1-34:12
+		INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml
 	xmlns:android
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:1:11-69
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:1:11-69
 uses-permission#android.permission.INTERNET
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:4:5-67
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:4:5-67
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:4:22-64
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:4:22-64
 uses-permission#android.permission.SYSTEM_ALERT_WINDOW
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:5:5-78
-MERGED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:5:5-78
-MERGED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:5:5-78
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:5:5-78
+MERGED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:5:5-78
+MERGED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:5:5-78
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:5:22-75
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:5:22-75
 uses-permission#android.permission.VIBRATE
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:6:5-66
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:6:5-66
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:6:22-63
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:6:22-63
 uses-permission#android.permission.RECORD_AUDIO
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:7:5-70
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:7:5-70
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:7:22-68
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:7:22-68
 uses-permission#android.permission.RECORD_VIDEO
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:8:5-70
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:8:5-70
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:8:22-68
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:8:22-68
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:9:5-81
-MERGED from [:react-native-fs] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-fs/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-81
-MERGED from [:react-native-fs] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-fs/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-81
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:9:5-81
+MERGED from [:react-native-fs] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-fs/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-81
+MERGED from [:react-native-fs] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-fs/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-81
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:9:22-78
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:9:22-78
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:10:5-80
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:10:5-80
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:10:22-77
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:10:22-77
 uses-feature#android.hardware.camera
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:11:5-83
-MERGED from [:react-native-camera] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:11:5-13:36
-MERGED from [:react-native-camera] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:11:5-13:36
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:11:5-83
+MERGED from [:react-native-camera] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:11:5-13:36
+MERGED from [:react-native-camera] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:11:5-13:36
 	android:required
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:11:58-81
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:11:58-81
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:11:19-57
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:11:19-57
 uses-permission#android.permission.CAMERA
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:12:5-64
-MERGED from [:react-native-camera] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:9:5-65
-MERGED from [:react-native-camera] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:9:5-65
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:12:5-64
+MERGED from [:react-native-camera] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:9:5-65
+MERGED from [:react-native-camera] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:9:5-65
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:12:22-62
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:12:22-62
 application
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:13:5-32:19
-MERGED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:13:5-32:19
-MERGED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:13:5-32:19
-MERGED from [:react-native-image-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-21:19
-MERGED from [:react-native-image-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-21:19
-MERGED from [com.facebook.react:react-native:0.59.9] /Users/pys/.gradle/caches/transforms-2/files-2.1/c269e818548521fc18cece7a63b3e50d/AndroidManifest.xml:11:5-20
-MERGED from [com.facebook.react:react-native:0.59.9] /Users/pys/.gradle/caches/transforms-2/files-2.1/c269e818548521fc18cece7a63b3e50d/AndroidManifest.xml:11:5-20
-MERGED from [com.google.android.gms:play-services-vision:17.0.2] /Users/pys/.gradle/caches/transforms-2/files-2.1/1c11eff2825046fac6f69a58b416d42a/AndroidManifest.xml:7:5-20
-MERGED from [com.google.android.gms:play-services-vision:17.0.2] /Users/pys/.gradle/caches/transforms-2/files-2.1/1c11eff2825046fac6f69a58b416d42a/AndroidManifest.xml:7:5-20
-MERGED from [com.google.android.gms:play-services-vision-common:17.0.2] /Users/pys/.gradle/caches/transforms-2/files-2.1/13750a4bc727bd8b9ce3065596189767/AndroidManifest.xml:7:5-20
-MERGED from [com.google.android.gms:play-services-vision-common:17.0.2] /Users/pys/.gradle/caches/transforms-2/files-2.1/13750a4bc727bd8b9ce3065596189767/AndroidManifest.xml:7:5-20
-MERGED from [com.google.android.gms:play-services-clearcut:16.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/f7e7b6a6066c6b0cf1efea91a4d1dc37/AndroidManifest.xml:22:5-20
-MERGED from [com.google.android.gms:play-services-clearcut:16.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/f7e7b6a6066c6b0cf1efea91a4d1dc37/AndroidManifest.xml:22:5-20
-MERGED from [com.google.android.gms:play-services-phenotype:16.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/b51fb26984e2c220710ec766dc9c7cc3/AndroidManifest.xml:22:5-20
-MERGED from [com.google.android.gms:play-services-phenotype:16.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/b51fb26984e2c220710ec766dc9c7cc3/AndroidManifest.xml:22:5-20
-MERGED from [com.google.android.gms:play-services-base:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/08284c10818b4fa73e49c7a4435fc7cf/AndroidManifest.xml:22:5-27:19
-MERGED from [com.google.android.gms:play-services-base:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/08284c10818b4fa73e49c7a4435fc7cf/AndroidManifest.xml:22:5-27:19
-MERGED from [com.google.android.gms:play-services-tasks:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/4c4af2fb21b672037d95df143b754104/AndroidManifest.xml:7:5-20
-MERGED from [com.google.android.gms:play-services-tasks:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/4c4af2fb21b672037d95df143b754104/AndroidManifest.xml:7:5-20
-MERGED from [com.google.android.gms:play-services-basement:16.1.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/16de67e100e8865a31880cd7cfe219b7/AndroidManifest.xml:22:5-26:19
-MERGED from [com.google.android.gms:play-services-basement:16.1.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/16de67e100e8865a31880cd7cfe219b7/AndroidManifest.xml:22:5-26:19
-MERGED from [com.android.support:support-compat:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/50af9636d198977b167ba7ea6e1e40f0/AndroidManifest.xml:22:5-94
-MERGED from [com.android.support:support-compat:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/50af9636d198977b167ba7ea6e1e40f0/AndroidManifest.xml:22:5-94
-MERGED from [com.android.support:versionedparcelable:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/3ab86b3ba10103d1a01d145edddf7611/AndroidManifest.xml:22:5-23:19
-MERGED from [com.android.support:versionedparcelable:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/3ab86b3ba10103d1a01d145edddf7611/AndroidManifest.xml:22:5-23:19
-MERGED from [com.facebook.soloader:soloader:0.6.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/8802aaae6908d4725642f3b2bc7cb7ac/AndroidManifest.xml:11:5-20
-MERGED from [com.facebook.soloader:soloader:0.6.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/8802aaae6908d4725642f3b2bc7cb7ac/AndroidManifest.xml:11:5-20
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:13:5-32:19
+MERGED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:13:5-32:19
+MERGED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:13:5-32:19
+MERGED from [:react-native-image-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-21:19
+MERGED from [:react-native-image-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-21:19
+MERGED from [com.facebook.react:react-native:0.59.9] /Users/vampire/.gradle/caches/transforms-2/files-2.1/6501361321dd5f2e4828a438f685b2e0/AndroidManifest.xml:11:5-20
+MERGED from [com.facebook.react:react-native:0.59.9] /Users/vampire/.gradle/caches/transforms-2/files-2.1/6501361321dd5f2e4828a438f685b2e0/AndroidManifest.xml:11:5-20
+MERGED from [com.google.android.gms:play-services-vision:17.0.2] /Users/vampire/.gradle/caches/transforms-2/files-2.1/f35804180aebe6210ee70cf5d71ae861/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-vision:17.0.2] /Users/vampire/.gradle/caches/transforms-2/files-2.1/f35804180aebe6210ee70cf5d71ae861/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-vision-common:17.0.2] /Users/vampire/.gradle/caches/transforms-2/files-2.1/cad5d7f4eb9807f897878c0578a492a8/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-vision-common:17.0.2] /Users/vampire/.gradle/caches/transforms-2/files-2.1/cad5d7f4eb9807f897878c0578a492a8/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-clearcut:16.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/5e62976994f9a730fc2092457a24fdb7/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-clearcut:16.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/5e62976994f9a730fc2092457a24fdb7/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-phenotype:16.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/b7f4974037f51a1edcfed64ed22e14ac/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-phenotype:16.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/b7f4974037f51a1edcfed64ed22e14ac/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-base:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/842c7034938293283db18ef6d42f0537/AndroidManifest.xml:22:5-27:19
+MERGED from [com.google.android.gms:play-services-base:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/842c7034938293283db18ef6d42f0537/AndroidManifest.xml:22:5-27:19
+MERGED from [com.google.android.gms:play-services-tasks:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/131a94f9b107efb2ec612183471c3c09/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-tasks:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/131a94f9b107efb2ec612183471c3c09/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-basement:16.1.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fd926851144b3fd0df3c46bb407778db/AndroidManifest.xml:22:5-26:19
+MERGED from [com.google.android.gms:play-services-basement:16.1.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fd926851144b3fd0df3c46bb407778db/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:support-compat:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fcba449d378b6e4cd9b130a164a4a9ad/AndroidManifest.xml:22:5-94
+MERGED from [com.android.support:support-compat:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fcba449d378b6e4cd9b130a164a4a9ad/AndroidManifest.xml:22:5-94
+MERGED from [com.android.support:versionedparcelable:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/7405775bce7660af418c15689f25698a/AndroidManifest.xml:22:5-23:19
+MERGED from [com.android.support:versionedparcelable:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/7405775bce7660af418c15689f25698a/AndroidManifest.xml:22:5-23:19
+MERGED from [com.facebook.soloader:soloader:0.6.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/27e6f69f64c96e069f8815b7aec8b3ec/AndroidManifest.xml:11:5-20
+MERGED from [com.facebook.soloader:soloader:0.6.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/27e6f69f64c96e069f8815b7aec8b3ec/AndroidManifest.xml:11:5-20
 	android:appComponentFactory
-		ADDED from [com.android.support:support-compat:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/50af9636d198977b167ba7ea6e1e40f0/AndroidManifest.xml:22:18-91
+		ADDED from [com.android.support:support-compat:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fcba449d378b6e4cd9b130a164a4a9ad/AndroidManifest.xml:22:18-91
 	android:label
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:15:7-39
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:15:7-39
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:15:7-39
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:15:7-39
 	tools:ignore
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml:7:75-114
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml:7:75-114
 	android:roundIcon
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:17:7-46
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:17:7-46
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:17:7-46
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:17:7-46
 	tools:targetApi
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml:7:54-74
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml:7:54-74
 	android:largeHeap
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:19:7-31
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:19:7-31
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:19:7-31
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:19:7-31
 	android:icon
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:16:7-41
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:16:7-41
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:16:7-41
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:16:7-41
 	android:allowBackup
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:18:7-34
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:18:7-34
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:18:7-34
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:18:7-34
 	android:theme
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:20:7-41
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:20:7-41
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:20:7-41
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:20:7-41
 	android:usesCleartextTraffic
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml:7:18-53
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml:7:18-53
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:14:7-38
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:14:7-38
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:14:7-38
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:14:7-38
 activity#com.pys.dazzleddate.MainActivity
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:21:7-30:18
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:21:7-30:18
 	android:label
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:23:9-41
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:23:9-41
 	android:windowSoftInputMode
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:25:9-51
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:25:9-51
 	android:configChanges
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:24:9-79
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:24:9-79
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:22:9-37
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:22:9-37
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:26:9-29:25
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:26:9-29:25
 action#android.intent.action.MAIN
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:27:13-65
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:27:13-65
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:27:21-62
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:27:21-62
 category#android.intent.category.LAUNCHER
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:28:13-73
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:28:13-73
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:28:23-70
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:28:23-70
 activity#com.facebook.react.devsupport.DevSettingsActivity
-ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:31:7-84
+ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:31:7-84
 	android:name
-		ADDED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml:31:17-81
+		ADDED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml:31:17-81
 uses-sdk
-INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml
-INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml
-MERGED from [:react-native-video] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-video/android-exoplayer/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-video] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-video/android-exoplayer/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-wheel-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-wheel-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-wheel-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-wheel-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-fs] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-fs/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-fs] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-fs/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-camera] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:5:5-7:41
-MERGED from [:react-native-camera] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:5:5-7:41
-MERGED from [:@react-native-community_async-storage] /Volumes/MAC_WORK/July/DazzledDate/node_modules/@react-native-community/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
-MERGED from [:@react-native-community_async-storage] /Volumes/MAC_WORK/July/DazzledDate/node_modules/@react-native-community/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
-MERGED from [:react-native-image-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [:react-native-image-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
-MERGED from [com.facebook.react:react-native:0.59.9] /Users/pys/.gradle/caches/transforms-2/files-2.1/c269e818548521fc18cece7a63b3e50d/AndroidManifest.xml:7:5-9:41
-MERGED from [com.facebook.react:react-native:0.59.9] /Users/pys/.gradle/caches/transforms-2/files-2.1/c269e818548521fc18cece7a63b3e50d/AndroidManifest.xml:7:5-9:41
-MERGED from [com.android.support:appcompat-v7:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/81b8a8a0a6cf5be9c1bc04171b71950e/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:appcompat-v7:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/81b8a8a0a6cf5be9c1bc04171b71950e/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.exoplayer:exoplayer:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/cda407b4b64101751413e46b5cc9f1a9/AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.exoplayer:exoplayer:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/cda407b4b64101751413e46b5cc9f1a9/AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.gms:play-services-vision:17.0.2] /Users/pys/.gradle/caches/transforms-2/files-2.1/1c11eff2825046fac6f69a58b416d42a/AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-vision:17.0.2] /Users/pys/.gradle/caches/transforms-2/files-2.1/1c11eff2825046fac6f69a58b416d42a/AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-vision-common:17.0.2] /Users/pys/.gradle/caches/transforms-2/files-2.1/13750a4bc727bd8b9ce3065596189767/AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-vision-common:17.0.2] /Users/pys/.gradle/caches/transforms-2/files-2.1/13750a4bc727bd8b9ce3065596189767/AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-clearcut:16.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/f7e7b6a6066c6b0cf1efea91a4d1dc37/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-clearcut:16.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/f7e7b6a6066c6b0cf1efea91a4d1dc37/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-flags:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/f7cf6b9f10ad68d90d7585e91d8ae2ca/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-flags:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/f7cf6b9f10ad68d90d7585e91d8ae2ca/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-phenotype:16.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/b51fb26984e2c220710ec766dc9c7cc3/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-phenotype:16.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/b51fb26984e2c220710ec766dc9c7cc3/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-base:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/08284c10818b4fa73e49c7a4435fc7cf/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-base:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/08284c10818b4fa73e49c7a4435fc7cf/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-tasks:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/4c4af2fb21b672037d95df143b754104/AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-tasks:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/4c4af2fb21b672037d95df143b754104/AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-basement:16.1.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/16de67e100e8865a31880cd7cfe219b7/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-basement:16.1.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/16de67e100e8865a31880cd7cfe219b7/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-v4:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/01903028712335da1905a504de42c2b6/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-v4:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/01903028712335da1905a504de42c2b6/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-media-compat:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/58d42e8773dd6cb483e3f910027eb221/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-media-compat:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/58d42e8773dd6cb483e3f910027eb221/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-fragment:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/9ad28c0d6efd5ed06f33d55c379231bf/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-fragment:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/9ad28c0d6efd5ed06f33d55c379231bf/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:animated-vector-drawable:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/6e28f9a0d61c7b01fc080e3c67342b53/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:animated-vector-drawable:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/6e28f9a0d61c7b01fc080e3c67342b53/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-core-ui:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/a1ca4d24a3492fd81b9f680fcc2e51be/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-core-ui:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/a1ca4d24a3492fd81b9f680fcc2e51be/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-core-utils:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/fa81d33772518057d0a8c6ea1ec5e8bb/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-core-utils:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/fa81d33772518057d0a8c6ea1ec5e8bb/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-vector-drawable:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/493fc262730f79408b008835758e1976/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-vector-drawable:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/493fc262730f79408b008835758e1976/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:loader:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/864173121a22e3dd5a46040d326f0455/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:loader:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/864173121a22e3dd5a46040d326f0455/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:viewpager:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/7921fb96d31f12cf1238003d5eaec64d/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:viewpager:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/7921fb96d31f12cf1238003d5eaec64d/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:coordinatorlayout:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/2a8c902651c3576c805b5d827e6e0765/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:coordinatorlayout:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/2a8c902651c3576c805b5d827e6e0765/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:drawerlayout:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/1ec193f6d781c8a381800eeaeed9fa03/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:drawerlayout:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/1ec193f6d781c8a381800eeaeed9fa03/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:slidingpanelayout:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/296f5da08fd57824addbb615aca387cb/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:slidingpanelayout:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/296f5da08fd57824addbb615aca387cb/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:customview:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/231903ddbf373b0026d3e6f257eeb0b4/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:customview:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/231903ddbf373b0026d3e6f257eeb0b4/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:swiperefreshlayout:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/ccea8934dc1fbba82c6e930230baa718/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:swiperefreshlayout:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/ccea8934dc1fbba82c6e930230baa718/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:asynclayoutinflater:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/7927f4d664c69989ce52926f84b72658/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:asynclayoutinflater:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/7927f4d664c69989ce52926f84b72658/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-compat:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/50af9636d198977b167ba7ea6e1e40f0/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-compat:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/50af9636d198977b167ba7ea6e1e40f0/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.exoplayer:extension-okhttp:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/c4a3e5dd68cfe8a231873d07a8dccf9c/AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.exoplayer:extension-okhttp:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/c4a3e5dd68cfe8a231873d07a8dccf9c/AndroidManifest.xml:20:5-22:41
-MERGED from [com.android.support:exifinterface:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/d3e9698bde098cb5416e3f238b3c136e/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:exifinterface:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/d3e9698bde098cb5416e3f238b3c136e/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:versionedparcelable:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/3ab86b3ba10103d1a01d145edddf7611/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:versionedparcelable:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/3ab86b3ba10103d1a01d145edddf7611/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:cursoradapter:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/c44752a9de432bea87ad291e6275e97b/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:cursoradapter:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/c44752a9de432bea87ad291e6275e97b/AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.exoplayer:exoplayer-dash:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/a1429e08536ed94acb3c431bf3fb5229/AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.exoplayer:exoplayer-dash:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/a1429e08536ed94acb3c431bf3fb5229/AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.exoplayer:exoplayer-hls:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/1df8ee64606101430cefd074e52d9671/AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.exoplayer:exoplayer-hls:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/1df8ee64606101430cefd074e52d9671/AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.exoplayer:exoplayer-smoothstreaming:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/4afb66d5c14316dd61ce79647f2966b9/AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.exoplayer:exoplayer-smoothstreaming:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/4afb66d5c14316dd61ce79647f2966b9/AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.exoplayer:exoplayer-ui:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/2b817912cef01e2d5a4f159abfa5b638/AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.exoplayer:exoplayer-ui:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/2b817912cef01e2d5a4f159abfa5b638/AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.exoplayer:exoplayer-core:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/c87b6522c348642b2298ba42e79d9dd7/AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.exoplayer:exoplayer-core:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/c87b6522c348642b2298ba42e79d9dd7/AndroidManifest.xml:20:5-22:41
-MERGED from [android.arch.lifecycle:runtime:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/bf9438eff912096e8b6133c9e42d22fd/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.lifecycle:runtime:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/bf9438eff912096e8b6133c9e42d22fd/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:documentfile:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/9fca53a336714b838ef95e37df0be770/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:documentfile:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/9fca53a336714b838ef95e37df0be770/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:localbroadcastmanager:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/f8da1bdd83b9030afc4596dd0e4b78b6/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:localbroadcastmanager:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/f8da1bdd83b9030afc4596dd0e4b78b6/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:print:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/1ebf9cf04ba11eef9c84403621ef8cef/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:print:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/1ebf9cf04ba11eef9c84403621ef8cef/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/0756e87d3f1b6f338c3fdb48aaee5d88/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/0756e87d3f1b6f338c3fdb48aaee5d88/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.lifecycle:livedata:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/0a615ed2133cddc2088da49ed640a782/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.lifecycle:livedata:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/0a615ed2133cddc2088da49ed640a782/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/59588f6f4ce2a2f1ebdbd1853935d9dd/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/59588f6f4ce2a2f1ebdbd1853935d9dd/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.core:runtime:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/b9cc6b8dcdcf353095af670d3101922d/AndroidManifest.xml:20:5-44
-MERGED from [android.arch.core:runtime:1.1.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/b9cc6b8dcdcf353095af670d3101922d/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:interpolator:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/f83eef630b4c056776a5da29a9f04cfd/AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:interpolator:28.0.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/f83eef630b4c056776a5da29a9f04cfd/AndroidManifest.xml:20:5-44
-MERGED from [com.facebook.fresco:imagepipeline-okhttp3:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/ead2bd99ae3526ae5e6bf941bd8eda87/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:imagepipeline-okhttp3:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/ead2bd99ae3526ae5e6bf941bd8eda87/AndroidManifest.xml:5:5-7:41
-MERGED from [cn.aigestudio.wheelpicker:WheelPicker:1.0.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/282c5de2134499ebd7fac4c09962d10f/AndroidManifest.xml:8:5-10:41
-MERGED from [cn.aigestudio.wheelpicker:WheelPicker:1.0.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/282c5de2134499ebd7fac4c09962d10f/AndroidManifest.xml:8:5-10:41
-MERGED from [com.facebook.fresco:fresco:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/9e3c800b3aa203778aebbecd9726814d/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:fresco:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/9e3c800b3aa203778aebbecd9726814d/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:drawee:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/98664934abb43dca11e2ddd1de279e8f/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:drawee:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/98664934abb43dca11e2ddd1de279e8f/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:imagepipeline:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/73f49376f9542df00312c942df85560f/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:imagepipeline:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/73f49376f9542df00312c942df85560f/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:imagepipeline-base:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/ca4db625e76b1efb166c522f9cc445bb/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:imagepipeline-base:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/ca4db625e76b1efb166c522f9cc445bb/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.soloader:soloader:0.6.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/8802aaae6908d4725642f3b2bc7cb7ac/AndroidManifest.xml:7:5-9:41
-MERGED from [com.facebook.soloader:soloader:0.6.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/8802aaae6908d4725642f3b2bc7cb7ac/AndroidManifest.xml:7:5-9:41
-MERGED from [com.facebook.fresco:fbcore:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/fc67c35b0fe8372ec132a486f65ee159/AndroidManifest.xml:5:5-7:41
-MERGED from [com.facebook.fresco:fbcore:1.10.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/fc67c35b0fe8372ec132a486f65ee159/AndroidManifest.xml:5:5-7:41
-INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml
-INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml
+INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml
+INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml
+MERGED from [:react-native-video] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-video/android-exoplayer/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-video] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-video/android-exoplayer/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-wheel-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-wheel-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-wheel-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-wheel-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-fs] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-fs/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-fs] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-fs/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-camera] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:5:5-7:41
+MERGED from [:react-native-camera] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:5:5-7:41
+MERGED from [:@react-native-community_async-storage] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/@react-native-community/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:@react-native-community_async-storage] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/@react-native-community/async-storage/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:react-native-image-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [:react-native-image-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-9:41
+MERGED from [com.facebook.react:react-native:0.59.9] /Users/vampire/.gradle/caches/transforms-2/files-2.1/6501361321dd5f2e4828a438f685b2e0/AndroidManifest.xml:7:5-9:41
+MERGED from [com.facebook.react:react-native:0.59.9] /Users/vampire/.gradle/caches/transforms-2/files-2.1/6501361321dd5f2e4828a438f685b2e0/AndroidManifest.xml:7:5-9:41
+MERGED from [com.android.support:appcompat-v7:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/efe887780698822ddbaa6b6533b1adb5/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:appcompat-v7:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/efe887780698822ddbaa6b6533b1adb5/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.exoplayer:exoplayer:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/967fc95975cd7df411411763bdcf217f/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/967fc95975cd7df411411763bdcf217f/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.gms:play-services-vision:17.0.2] /Users/vampire/.gradle/caches/transforms-2/files-2.1/f35804180aebe6210ee70cf5d71ae861/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-vision:17.0.2] /Users/vampire/.gradle/caches/transforms-2/files-2.1/f35804180aebe6210ee70cf5d71ae861/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-vision-common:17.0.2] /Users/vampire/.gradle/caches/transforms-2/files-2.1/cad5d7f4eb9807f897878c0578a492a8/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-vision-common:17.0.2] /Users/vampire/.gradle/caches/transforms-2/files-2.1/cad5d7f4eb9807f897878c0578a492a8/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-clearcut:16.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/5e62976994f9a730fc2092457a24fdb7/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-clearcut:16.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/5e62976994f9a730fc2092457a24fdb7/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-flags:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/99abe58fc392452e75fec3a08a984202/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-flags:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/99abe58fc392452e75fec3a08a984202/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-phenotype:16.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/b7f4974037f51a1edcfed64ed22e14ac/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-phenotype:16.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/b7f4974037f51a1edcfed64ed22e14ac/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-base:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/842c7034938293283db18ef6d42f0537/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-base:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/842c7034938293283db18ef6d42f0537/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-tasks:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/131a94f9b107efb2ec612183471c3c09/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-tasks:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/131a94f9b107efb2ec612183471c3c09/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-basement:16.1.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fd926851144b3fd0df3c46bb407778db/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-basement:16.1.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fd926851144b3fd0df3c46bb407778db/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-v4:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/af718ce848bdb7ea1b64e27f60734b8a/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-v4:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/af718ce848bdb7ea1b64e27f60734b8a/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-media-compat:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/400490447dcdbde015198b8ea6050942/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-media-compat:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/400490447dcdbde015198b8ea6050942/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-fragment:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/f93935219eaa718d0b590edd6d225f97/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-fragment:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/f93935219eaa718d0b590edd6d225f97/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/7d047f51a74440553b313b7679bf2a58/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/7d047f51a74440553b313b7679bf2a58/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-ui:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/c9247d55605bc1114602363603b0de27/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-ui:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/c9247d55605bc1114602363603b0de27/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/be69ef50727743817c76d7dca62cb7e9/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/be69ef50727743817c76d7dca62cb7e9/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/9ca552493c3fd2e2a9adf2bd4cfee49f/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/9ca552493c3fd2e2a9adf2bd4cfee49f/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:loader:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/4e6362d6929f3dda23d5ef01c7cc6dbe/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:loader:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/4e6362d6929f3dda23d5ef01c7cc6dbe/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:viewpager:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/6ab6656711d869cf2165342f6922a4c1/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:viewpager:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/6ab6656711d869cf2165342f6922a4c1/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:coordinatorlayout:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/c56b86655353f26b46d7990f1224441f/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:coordinatorlayout:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/c56b86655353f26b46d7990f1224441f/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:drawerlayout:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/2e5b416e244ca77d6bef841e6e9b140b/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:drawerlayout:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/2e5b416e244ca77d6bef841e6e9b140b/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:slidingpanelayout:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/c7a1bee9d587c25dbfdd4967f737afe2/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:slidingpanelayout:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/c7a1bee9d587c25dbfdd4967f737afe2/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:customview:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/5a3c82bcda1f0a7078a8876bb4a68df7/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:customview:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/5a3c82bcda1f0a7078a8876bb4a68df7/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:swiperefreshlayout:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/2290486fcdd030b44d7d146fe21c8276/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:swiperefreshlayout:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/2290486fcdd030b44d7d146fe21c8276/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:asynclayoutinflater:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/f8a209c7c1ad5f76115d6de578619e1e/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:asynclayoutinflater:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/f8a209c7c1ad5f76115d6de578619e1e/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-compat:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fcba449d378b6e4cd9b130a164a4a9ad/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-compat:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fcba449d378b6e4cd9b130a164a4a9ad/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.exoplayer:extension-okhttp:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/8f3c5d7c519546494d5a489f79a60786/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:extension-okhttp:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/8f3c5d7c519546494d5a489f79a60786/AndroidManifest.xml:20:5-22:41
+MERGED from [com.android.support:exifinterface:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/e214b88c14662c8e2da56fd403e9725b/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:exifinterface:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/e214b88c14662c8e2da56fd403e9725b/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:versionedparcelable:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/7405775bce7660af418c15689f25698a/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:versionedparcelable:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/7405775bce7660af418c15689f25698a/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cursoradapter:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/1411936ee32b1401d0b44b9e724d48ef/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cursoradapter:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/1411936ee32b1401d0b44b9e724d48ef/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.exoplayer:exoplayer-dash:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/b31b915626bcacbd616d08e6ee4e5080/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-dash:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/b31b915626bcacbd616d08e6ee4e5080/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-hls:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/8bc550ce4dbbf32c85efde0366037c77/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-hls:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/8bc550ce4dbbf32c85efde0366037c77/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-smoothstreaming:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/55c87dae10d8cd46443dca3069bb0855/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-smoothstreaming:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/55c87dae10d8cd46443dca3069bb0855/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-ui:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/9b8d1741b58dc02ac44f00bec1c4e606/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-ui:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/9b8d1741b58dc02ac44f00bec1c4e606/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-core:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/6d113faa0e169f188940425843d20d38/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:exoplayer-core:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/6d113faa0e169f188940425843d20d38/AndroidManifest.xml:20:5-22:41
+MERGED from [android.arch.lifecycle:runtime:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/1c6834adcb43f62038d06786fefec56f/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:runtime:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/1c6834adcb43f62038d06786fefec56f/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:documentfile:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/549705663a88578a81541be522efb568/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:documentfile:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/549705663a88578a81541be522efb568/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:localbroadcastmanager:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/04fc5c5da4d73a992f51cd1cbf5835cb/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:localbroadcastmanager:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/04fc5c5da4d73a992f51cd1cbf5835cb/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:print:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/3a24b56140be01bcc6a049560b190b9d/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:print:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/3a24b56140be01bcc6a049560b190b9d/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/ae7b14f7027c1bdf8de4b7267b5c9471/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/ae7b14f7027c1bdf8de4b7267b5c9471/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/ecf1757f67cc13f29b0cf1b27362f2cb/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/ecf1757f67cc13f29b0cf1b27362f2cb/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/ac7f4255930a1369ea45908ce5bc958e/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/ac7f4255930a1369ea45908ce5bc958e/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.core:runtime:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/2995b9a24aaf1b78f3214b17094863a6/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.core:runtime:1.1.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/2995b9a24aaf1b78f3214b17094863a6/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:interpolator:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/7444b35878aaa3ea3173299c5a1a91ec/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:interpolator:28.0.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/7444b35878aaa3ea3173299c5a1a91ec/AndroidManifest.xml:20:5-44
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/e2e5498da5858d80575d593c12737327/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/e2e5498da5858d80575d593c12737327/AndroidManifest.xml:5:5-7:41
+MERGED from [cn.aigestudio.wheelpicker:WheelPicker:1.0.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/123d13ff42d204db56b7dcafc687a631/AndroidManifest.xml:8:5-10:41
+MERGED from [cn.aigestudio.wheelpicker:WheelPicker:1.0.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/123d13ff42d204db56b7dcafc687a631/AndroidManifest.xml:8:5-10:41
+MERGED from [com.facebook.fresco:fresco:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/a41b3d390f8207966580ea9874fb9486/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:fresco:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/a41b3d390f8207966580ea9874fb9486/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:drawee:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/e201bb67b81c77a6f47c1a95d591f422/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:drawee:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/e201bb67b81c77a6f47c1a95d591f422/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/40379e5940ce9b155746f29bcd429af6/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/40379e5940ce9b155746f29bcd429af6/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline-base:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/0e7837bb02389559f78f6d1f2a3c0f43/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:imagepipeline-base:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/0e7837bb02389559f78f6d1f2a3c0f43/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.soloader:soloader:0.6.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/27e6f69f64c96e069f8815b7aec8b3ec/AndroidManifest.xml:7:5-9:41
+MERGED from [com.facebook.soloader:soloader:0.6.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/27e6f69f64c96e069f8815b7aec8b3ec/AndroidManifest.xml:7:5-9:41
+MERGED from [com.facebook.fresco:fbcore:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/594d4b88bad83ea921dc4b967526f038/AndroidManifest.xml:5:5-7:41
+MERGED from [com.facebook.fresco:fbcore:1.10.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/594d4b88bad83ea921dc4b967526f038/AndroidManifest.xml:5:5-7:41
+INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml
+INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml
-		INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml
+		INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/main/AndroidManifest.xml
-		INJECTED from /Volumes/MAC_WORK/July/DazzledDate/android/app/src/debug/AndroidManifest.xml
+		INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/src/debug/AndroidManifest.xml
 uses-feature#android.hardware.camera.autofocus
-ADDED from [:react-native-camera] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:14:5-16:36
+ADDED from [:react-native-camera] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:14:5-16:36
 	android:required
-		ADDED from [:react-native-camera] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:16:9-33
+		ADDED from [:react-native-camera] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:16:9-33
 	android:name
-		ADDED from [:react-native-camera] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:15:9-57
+		ADDED from [:react-native-camera] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-camera/android/build/intermediates/library_manifest/generalDebug/AndroidManifest.xml:15:9-57
 provider#com.imagepicker.FileProvider
-ADDED from [:react-native-image-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:9-20:20
+ADDED from [:react-native-image-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:9-20:20
 	android:grantUriPermissions
-		ADDED from [:react-native-image-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:16:13-47
+		ADDED from [:react-native-image-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:16:13-47
 	android:authorities
-		ADDED from [:react-native-image-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:14:13-60
+		ADDED from [:react-native-image-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:14:13-60
 	android:exported
-		ADDED from [:react-native-image-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:15:13-37
+		ADDED from [:react-native-image-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:15:13-37
 	android:name
-		ADDED from [:react-native-image-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:13:13-56
+		ADDED from [:react-native-image-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:13:13-56
 meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from [:react-native-image-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:17:13-19:58
+ADDED from [:react-native-image-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:17:13-19:58
 	android:resource
-		ADDED from [:react-native-image-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:19:17-55
+		ADDED from [:react-native-image-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:19:17-55
 	android:name
-		ADDED from [:react-native-image-picker] /Volumes/MAC_WORK/July/DazzledDate/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:18:17-67
+		ADDED from [:react-native-image-picker] /Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/node_modules/react-native-image-picker/android/build/intermediates/library_manifest/debug/AndroidManifest.xml:18:17-67
 activity#com.google.android.gms.common.api.GoogleApiActivity
-ADDED from [com.google.android.gms:play-services-base:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/08284c10818b4fa73e49c7a4435fc7cf/AndroidManifest.xml:23:9-26:75
+ADDED from [com.google.android.gms:play-services-base:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/842c7034938293283db18ef6d42f0537/AndroidManifest.xml:23:9-26:75
 	android:exported
-		ADDED from [com.google.android.gms:play-services-base:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/08284c10818b4fa73e49c7a4435fc7cf/AndroidManifest.xml:25:13-37
+		ADDED from [com.google.android.gms:play-services-base:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/842c7034938293283db18ef6d42f0537/AndroidManifest.xml:25:13-37
 	android:theme
-		ADDED from [com.google.android.gms:play-services-base:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/08284c10818b4fa73e49c7a4435fc7cf/AndroidManifest.xml:26:13-72
+		ADDED from [com.google.android.gms:play-services-base:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/842c7034938293283db18ef6d42f0537/AndroidManifest.xml:26:13-72
 	android:name
-		ADDED from [com.google.android.gms:play-services-base:16.0.1] /Users/pys/.gradle/caches/transforms-2/files-2.1/08284c10818b4fa73e49c7a4435fc7cf/AndroidManifest.xml:24:13-79
+		ADDED from [com.google.android.gms:play-services-base:16.0.1] /Users/vampire/.gradle/caches/transforms-2/files-2.1/842c7034938293283db18ef6d42f0537/AndroidManifest.xml:24:13-79
 meta-data#com.google.android.gms.version
-ADDED from [com.google.android.gms:play-services-basement:16.1.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/16de67e100e8865a31880cd7cfe219b7/AndroidManifest.xml:23:9-25:69
+ADDED from [com.google.android.gms:play-services-basement:16.1.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fd926851144b3fd0df3c46bb407778db/AndroidManifest.xml:23:9-25:69
 	android:value
-		ADDED from [com.google.android.gms:play-services-basement:16.1.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/16de67e100e8865a31880cd7cfe219b7/AndroidManifest.xml:25:13-66
+		ADDED from [com.google.android.gms:play-services-basement:16.1.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fd926851144b3fd0df3c46bb407778db/AndroidManifest.xml:25:13-66
 	android:name
-		ADDED from [com.google.android.gms:play-services-basement:16.1.0] /Users/pys/.gradle/caches/transforms-2/files-2.1/16de67e100e8865a31880cd7cfe219b7/AndroidManifest.xml:24:13-58
+		ADDED from [com.google.android.gms:play-services-basement:16.1.0] /Users/vampire/.gradle/caches/transforms-2/files-2.1/fd926851144b3fd0df3c46bb407778db/AndroidManifest.xml:24:13-58
 uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from [com.google.android.exoplayer:exoplayer-core:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/c87b6522c348642b2298ba42e79d9dd7/AndroidManifest.xml:24:5-79
+ADDED from [com.google.android.exoplayer:exoplayer-core:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/6d113faa0e169f188940425843d20d38/AndroidManifest.xml:24:5-79
 	android:name
-		ADDED from [com.google.android.exoplayer:exoplayer-core:2.9.3] /Users/pys/.gradle/caches/transforms-2/files-2.1/c87b6522c348642b2298ba42e79d9dd7/AndroidManifest.xml:24:22-76
+		ADDED from [com.google.android.exoplayer:exoplayer-core:2.9.3] /Users/vampire/.gradle/caches/transforms-2/files-2.1/6d113faa0e169f188940425843d20d38/AndroidManifest.xml:24:22-76

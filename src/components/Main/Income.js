@@ -25,7 +25,8 @@ class Income extends Component {
   {
     super(props);
     this.state = {
-        datas:[]
+        datas:[],
+        alertMsg: ''
     };
   }
  
@@ -34,27 +35,20 @@ static navigationOptions = {
 };
 componentDidMount() {
   BackHandler.addEventListener('hardwareBackPress', this.backPressed);
- this.props.navigation.addListener('didFocus', (playload)=>{
-   // this.getHeartUsers()
- });
- this.getHeartUsers()
+  this.props.navigation.addListener('didFocus', (playload)=>{
+    // this.getHeartUsers()
+  });
+  this.getHeartUsers();
 }
 
 componentWillUnmount() {
   BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
 }
 backPressed = () => {
-  Alert.alert(
-    '',
-    'Do you want to exit the app?',
-    [
-      {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-      {text: 'Yes', onPress: () => BackHandler.exitApp()},
-    ],
-    { cancelable: false });
-    return true;
+  this.props.navigation.replace("Browse");
+  return true;
 }
-getHeartUsers()
+getHeartUsers = () =>
 {
    
      fetch("http://138.197.203.178:8080/api/match/getReceivedHearts", {
@@ -67,11 +61,19 @@ getHeartUsers()
           .then((responseJson) => {
               if(!responseJson.error)
               {
-                this.getTumbnails(responseJson.data)
+                this.getTumbnails(responseJson.data);
+              } else if (responseJson.detail) {
+                this.setState({
+                  alertMsg: 'Network Connection Confused.'
+                });
+              } else {
+                this.setState({
+                  alertMsg: 'There are no incoming hearts.'
+                });
               }
           })
           .catch((error) => {
-            alert(JSON.stringify(error))
+            alert(JSON.stringify(error));
             return
     });
 }
@@ -84,7 +86,7 @@ getTumbnails=async (data) =>
     var vurl = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_filtered_id
     await fetch(url, {
         method: 'GET',
-        headers: {        
+        headers: {
           'Content-Type':'application/json',
           'Authorization':Global.token
         }
@@ -100,10 +102,7 @@ getTumbnails=async (data) =>
   }
   this.setState({datas:list_items})
 }
-componentWillMount()
-{
- 
-}
+
 showUserVideo(url, otherId,  name,imgurl, age, distance)
 {
   fetch(url, {
@@ -116,10 +115,10 @@ showUserVideo(url, otherId,  name,imgurl, age, distance)
       .then((responseJson) => {
          // alert(JSON.stringify(responseJson))
          Global.isMatchVideo = false
-         this.props.navigation.navigate("IncomeDetail",{url:responseJson.url, mid:-1, otherId:otherId, imageUrl:imgurl, name:name, age:age, distance:distance})
+         this.props.navigation.navigate("IncomeDetail", {url:responseJson.url, mid:-1, otherId:otherId, imageUrl:imgurl, name:name, age:age, distance:distance})
       })
       .catch((error) => {
-        alert("There is error, please try again!")
+        alert("There is error, please try again!");
         return
    });
 }
@@ -131,61 +130,63 @@ showUserVideo(url, otherId,  name,imgurl, age, distance)
        <View style={styles.contentContainer}>
           <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content'/> 
           <View style={{marginTop:40, alignItems:'center', justifyContent:'center'}}>
-            <Text style={{}}>{"LIKES"}</Text>
+            <Text>{"LIKES"}</Text>
           </View>
           <ScrollView style={{marginTop:15}} removeClippedSubviews={true}>
-                {(this.state.datas.length != 0) && (
-                 <FlatList
-                            numColumns={2}
-                            style={{ flex: 0 }}
-                            data={this.state.datas}
-                            removeClippedSubviews={true}
-                            initialNumToRender={this.state.datas.length}
-                            renderItem={({ item: rowData }) => {                              
-                                  return (
-                                     <TouchableOpacity style={{width:DEVICE_WIDTH/2 - 10, marginTop:10, marginLeft:5, marginRight:5,}} onPress={()=>this.showUserVideo(rowData.videoUrl, rowData.otherId, rowData.name,rowData.imageUrl, rowData.age, rowData.distance)}>
-                                         <Image source={{uri:rowData.imageUrl}} resizeMethod="resize" style={{width:DEVICE_WIDTH/2 - 20, height:(DEVICE_WIDTH/2 - 20), marginTop:3,marginLeft:5, backgroundColor:'#5A5A5A'}}/>
-                                         <View style={{flexDirection:'row', marginTop:10, width:(DEVICE_WIDTH/2-10)*0.6, justifyContent:'space-between'}}>
-                                          <View style={{flexDirection:'row', alignItems:'center', marginLeft:5}}>
-                                            <Image source={b_name} style={{width:10, height:10, tintColor:'#B64F54'}}/>
-                                            <Text style={{fontSize:10, marginLeft:5, fontWeight:'bold', color:'#B64F54'}}>{rowData.name}</Text>
-                                          </View>
-                                          <View style={{flexDirection:'row', alignItems:'center', marginLeft:5}}>
-                                            <Image source={b_age} style={{width:10, height:10, tintColor:'#B64F54'}}/>
-                                            <Text style={{fontSize:10, marginLeft:5,fontWeight:'bold', color:'#B64F54'}}>{"" + rowData.age}</Text>
-                                          </View>
-                                         </View>
-                                     </TouchableOpacity>      
-                                    );
-                               
-                              }}
-                            keyExtractor={(item, index) => index}
+                {(this.state.datas.length === 0 ? 
+                <View style={{alignItems:'center', justifyContent:'center', marginTop:200}}>
+                  <Text style={{fontSize:20,}}>{this.state.alertMsg}</Text>
+                </View> : <FlatList
+                          numColumns={2}
+                          style={{ flex: 0 }}
+                          data={this.state.datas}
+                          removeClippedSubviews={true}
+                          initialNumToRender={this.state.datas.length}
+                          renderItem={({ item: rowData }) => {                              
+                                return (
+                                    <TouchableOpacity style={{width:DEVICE_WIDTH/2 - 10, marginTop:10, marginLeft:5, marginRight:5,}} onPress={()=>this.showUserVideo(rowData.videoUrl, rowData.otherId, rowData.name,rowData.imageUrl, rowData.age, rowData.distance)}>
+                                        <Image source={{uri:rowData.imageUrl}} resizeMethod="resize" style={{width:DEVICE_WIDTH/2 - 20, height:(DEVICE_WIDTH/2 - 20), marginTop:3,marginLeft:5, backgroundColor:'#5A5A5A'}}/>
+                                        <View style={{flexDirection:'row', marginTop:10, width:(DEVICE_WIDTH/2-10)*0.6, justifyContent:'space-between'}}>
+                                        <View style={{flexDirection:'row', alignItems:'center', marginLeft:5}}>
+                                          <Image source={b_name} style={{width:10, height:10, tintColor:'#B64F54'}}/>
+                                          <Text style={{fontSize:10, marginLeft:5, fontWeight:'bold', color:'#B64F54'}}>{rowData.name}</Text>
+                                        </View>
+                                        <View style={{flexDirection:'row', alignItems:'center', marginLeft:5}}>
+                                          <Image source={b_age} style={{width:10, height:10, tintColor:'#B64F54'}}/>
+                                          <Text style={{fontSize:10, marginLeft:5,fontWeight:'bold', color:'#B64F54'}}>{"" + rowData.age}</Text>
+                                        </View>
+                                        </View>
+                                    </TouchableOpacity>      
+                                  );
+                              
+                            }}
+                          keyExtractor={(item, index) => index}
                  />)}
              <View style={{height:50}}/>    
           </ScrollView>
           <Footer style={{backgroundColor:'#222F3F', borderTopColor:'#222F3F', height:Platform.select({'android':50, 'ios':30})}}>
-                    <FooterTab>
-                        <Button style={{backgroundColor:'#222F3F'}}  transparent onPress={()=>this.props.navigation.replace("Browse")}>
-                            <Image source={b_browse} style={{width:25, height:25,}}/>
-                            <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"BROWSE"}</Text>
-                        </Button>
-                        <Button style={{backgroundColor:'#222F3F'}}  transparent onPress = {()=>{}}>
-                            <Image source={b_incoming} style={{width:25, height:25,tintColor:'#B64F54'}}/>
-                            <Text style={{color: '#B64F54', fontSize:6, fontWeight:'bold', marginTop:3}}>{"INCOMING"}</Text>
-                        </Button>
-                        <Button style={{backgroundColor:'#222F3F'}}  transparent onPress={()=>this.props.navigation.replace("Match")}>
-                            <Image source={b_match} style={{width:25, height:25}}/>
-                            <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"MATCH"}</Text>
-                        </Button>
-                        <Button style={{backgroundColor:'#222F3F'}}  transparent transparent onPress={()=>this.props.navigation.navigate("Chat")}>
-                            <Image source={b_chat} style={{width:25, height:25}}/>
-                            <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"CHAT"}</Text>
-                        </Button>
-                        <Button style={{backgroundColor:'#222F3F'}}  transparent onPress={()=>this.props.navigation.replace("MyVideo")}>
-                            <Image source={b_myvideo} style={{width:25, height:25}}/>
-                            <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"MY VIDEO"}</Text>
-                        </Button>                   
-                    </FooterTab>
+            <FooterTab>
+                <Button style={{backgroundColor:'#222F3F', borderRadius: 0}}  transparent onPress={()=>this.props.navigation.replace("Browse")}>
+                    <Image source={b_browse} style={{width:25, height:25,}}/>
+                    <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"BROWSE"}</Text>
+                </Button>
+                <Button style={{backgroundColor:'#222F3F', borderRadius: 0}}  transparent onPress = {()=>{}}>
+                    <Image source={b_incoming} style={{width:25, height:25,tintColor:'#B64F54'}}/>
+                    <Text style={{color: '#B64F54', fontSize:6, fontWeight:'bold', marginTop:3}}>{"INCOMING"}</Text>
+                </Button>
+                <Button style={{backgroundColor:'#222F3F', borderRadius: 0}}  transparent onPress={()=>this.props.navigation.replace("Match")}>
+                    <Image source={b_match} style={{width:25, height:25}}/>
+                    <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"MATCH"}</Text>
+                </Button>
+                <Button style={{backgroundColor:'#222F3F', borderRadius: 0}}  transparent transparent onPress={()=>this.props.navigation.navigate("Chat")}>
+                    <Image source={b_chat} style={{width:25, height:25}}/>
+                    <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"CHAT"}</Text>
+                </Button>
+                <Button style={{backgroundColor:'#222F3F', borderRadius: 0}}  transparent onPress={()=>this.props.navigation.replace("MyVideo")}>
+                    <Image source={b_myvideo} style={{width:25, height:25}}/>
+                    <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"MY VIDEO"}</Text>
+                </Button>                   
+            </FooterTab>
           </Footer>    
        </View>      
     );

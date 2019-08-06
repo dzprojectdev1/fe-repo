@@ -37,7 +37,7 @@ sendCode()
             //alert(JSON.stringify(responseJson))
             if(!responseJson.error)
             {
-             // this.props.navigation.navigate("EmailConfirm");
+             alert("Email has been sent! Please check your spam folder if you dont see in your inbox.")
             }
             else
             {
@@ -48,40 +48,46 @@ sendCode()
            //alert(JSON.stringify(error))
             return
          });
-}
-onConfirm()
-{
-    var details = {
+  }
+  onConfirm()
+  {
+    if (this.state.code !== '') {
+      var details = {
         'confirmCode':this.state.code
-    };
-    
-    var formBody = [];
-    for (var property in details) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-  
-    fetch('http://138.197.203.178:8080/api/user/emailVerify', {
-          method: 'POST',
-          headers: {        
-            'Content-Type':'application/x-www-form-urlencoded'     
-          },
-          body:formBody,
-        }).then((response) => response.json())
-            .then((responseJson) => {
-               // alert(JSON.stringify(responseJson))
-                if(!responseJson.error)
-                {            
-                 this.props.navigation.replace("Record");
-                }
-            })
-            .catch((error) => {
-              alert(JSON.stringify(error))
-              return
+      };
+      
+      var formBody = [];
+      for (var property in details) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+      }
+      formBody = formBody.join("&");
+
+      fetch('http://138.197.203.178:8080/api/user/emailVerify', {
+            method: 'POST',
+            headers: {
+              'Content-Type':'application/x-www-form-urlencoded'
+            },
+            body:formBody,
+          }).then((response) => response.json())
+              .then((responseJson) => {
+                  alert(JSON.stringify(responseJson))
+                  if(!responseJson.error)
+                  {            
+                    this.props.navigation.replace("Record");
+                  } else {
+                    alert(responseJson.message ? responseJson.message : 'Woops! Try again.');
+                  }
+              })
+              .catch((error) => {
+                alert(JSON.stringify(error))
+                return
       });
-}
+    } else {
+      alert("Please provide your confirmation code.");
+    }
+  }
   render() {
     
     var {navigate} = this.props.navigation; 

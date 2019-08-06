@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Volumes/MAC_WORK/July/DazzledDate/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-zh/values-zh.xml",
+            "outputFile": "/Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-zh/values-zh.xml",
             "map": [
                 {
-                    "source": "/Users/pys/.gradle/caches/transforms-2/files-2.1/282c5de2134499ebd7fac4c09962d10f/res/values-zh/values-zh.xml",
+                    "source": "/Users/vampire/.gradle/caches/transforms-2/files-2.1/123d13ff42d204db56b7dcafc687a631/res/values-zh/values-zh.xml",
                     "from": {
                         "startLines": "2,16",
                         "startColumns": "4,4",

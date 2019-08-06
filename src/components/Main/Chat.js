@@ -49,14 +49,7 @@ componentWillUnmount() {
     this.getChatData()
    }
    backPressed = () => {
-    Alert.alert(
-      '',
-      'Do you want to exit the app?',
-      [
-        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: 'Yes', onPress: () => BackHandler.exitApp()},
-      ],
-      { cancelable: false });
+      this.props.navigation.replace("Match");
       return true;
   }
    getChatData()
@@ -145,91 +138,73 @@ componentWillUnmount() {
     return (
        <View style={styles.contentContainer}>
           <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content'/> 
-          <View style={{marginTop:40, flexDirection:'row', height:40}}>
-                  {/* <TouchableOpacity style={{height:40, width:40, marginLeft:10, alignItems:'center',}}
-                   onPress={()=>this.toggle()}
-                  >
-                    <Icon type="MaterialCommunityIcons" name="menu" style={{color:"#000", marginTop:5}}/>                   
-                  </TouchableOpacity> */}
-                  <View style={{width:DEVICE_WIDTH, height:40, alignItems:'center', justifyContent:'center'}}>
-                      <Text style={{}}>{"CHAT"}</Text>
-                  </View>
-                  {/* <TouchableOpacity style={{height:40, width:40, marginLeft:10, alignItems:'center', justifyContent:'center',}}
-                   onPress={()=>this.onPlus()}
-                  >
-                      <Icon type="MaterialCommunityIcons" name="plus" style={{color:'#000'}} />
-                  </TouchableOpacity> */}
+          <View style={{marginTop:40, alignItems:'center', justifyContent:'center'}}>
+            <Text>{"CHAT"}</Text>
           </View>
          <View  style={styles.inputwrapper}>
-                      {/* <Icon type="Ionicons" name="ios-search" style={{color:"#808080", marginTop:5}}/> */}
-                      <TextInput     
-                      style={{marginLeft:10, fontSize:16,width:DEVICE_WIDTH - 40, color:'#000',overflow:'hidden'}}    
-                      value={this.state.searchText}                 
-                      placeholder={"search message"}
-                      onChangeText={text => this.onSearch(text)}
-                      placeholderTextColor="#808080"
-                      underlineColorAndroid="transparent"
-                      />
+            {/* <Icon type="Ionicons" name="ios-search" style={{color:"#808080", marginTop:5}}/> */}
+            <TextInput     
+            style={{marginLeft:10, fontSize:16,width:DEVICE_WIDTH - 40, color:'#000',overflow:'hidden'}}    
+            value={this.state.searchText}                 
+            placeholder={"search message"}
+            onChangeText={text => this.onSearch(text)}
+            placeholderTextColor="#808080"
+            underlineColorAndroid="transparent"
+            />
           </View>
-
           <ScrollView style={{marginTop:15}} removeClippedSubviews={true}>
-                {(this.state.datas.length != 0) && (
-                 <FlatList
-                            numColumns={1}
-                            style={{ flex: 0 }}
-                            removeClippedSubviews={true}
-                            data={this.state.datas}
-                            initialNumToRender={this.state.datas.length}
-                            renderItem={({ item: rowData }) => {                              
-                                  return (
-                                     <TouchableOpacity style={{width:DEVICE_WIDTH - 10,flexDirection:'row', marginTop:10, marginLeft:5, marginRight:5,}}  onPress={()=>this.gotoChat(rowData)}>
-                                         <View style={{width:40, height:40, alignItems:'center', justifyContent:'center'}}>
-                                           <Image source={{uri:rowData.imageUrl}} resizeMode="cover" style={{width:40, height:40, borderRadius:20, backgroundColor:'#5A5A5A'}}/>
-                                         </View>
-                                         <View style={{width:DEVICE_WIDTH - 170, height:40, marginLeft:5, justifyContent:'center', alignItems:'center'}}>
-                                           <View style={{width:DEVICE_WIDTH - 170}}>
-                                             <Text numberOfLines={1} style={{color:'#808080'}}>{rowData.data.name}</Text>
-                                             <Text numberOfLines={1} style={{fontSize:12, color:'#808080'}}>{rowData.data.message_text}</Text>
-                                           </View>
-                                         </View>
-                                         <View style={{width:100, height:40, marginLeft:5, alignItems:'center', justifyContent:'center'}}>
-                                           {/* {(rowData.new>0) && (
-                                             <TouchableOpacity style={{width:20, height:20, backgroundColor:'#f00', borderRadius:10, alignItems:'center', justifyContent:'center'}}> 
-                                                 <Text style={{fontSize:12, color:'#fff'}}>{"" + rowData.new}</Text>                                               
-                                             </TouchableOpacity>
-                                           )} */}
-                                           <Text numberOfLines={1} style={{fontSize:12, color:'#808080'}}>{rowData.data.time_ago}</Text>
-                                         </View>  
-                                     </TouchableOpacity>      
-                                    );
-                              }}
-                            keyExtractor={(item, index) => index}
-                 />)}
-             <View style={{height:50}}/>    
+              {(this.state.datas.length != 0) && (
+                <FlatList
+                numColumns={1}
+                style={{ flex: 0 }}
+                removeClippedSubviews={true}
+                data={this.state.datas}
+                initialNumToRender={this.state.datas.length}
+                renderItem={({ item: rowData }) => {                              
+                  return (
+                      <TouchableOpacity style={{width:DEVICE_WIDTH - 10,flexDirection:'row', marginTop:10, marginLeft:5, marginRight:5,}}  onPress={()=>this.gotoChat(rowData)}>
+                          <View style={{width:40, height:40, alignItems:'center', justifyContent:'center'}}>
+                            <Image source={{uri:rowData.imageUrl}} resizeMode="cover" style={{width:40, height:40, borderRadius:20, backgroundColor:'#5A5A5A'}}/>
+                          </View>
+                          <View style={{width:DEVICE_WIDTH - 170, height:40, marginLeft:5, justifyContent:'center', alignItems:'center'}}>
+                            <View style={{width:DEVICE_WIDTH - 170}}>
+                              <Text numberOfLines={1} style={{color:'#808080'}}>{rowData.data.name}</Text>
+                              <Text numberOfLines={1} style={{fontSize:12, color:'#808080'}}>{rowData.data.message_text}</Text>
+                            </View>
+                          </View>
+                          <View style={{width:100, height:40, marginLeft:5, alignItems:'center', justifyContent:'center'}}>
+                            <Text numberOfLines={1} style={{fontSize:12, color:'#808080'}}>{rowData.data.time_ago}</Text>
+                          </View>  
+                      </TouchableOpacity>
+                    );
+                  }}
+                keyExtractor={(item, index) => index}
+                />)}
+             <View style={{height:50}}/>
           </ScrollView>
-          <Footer style={{backgroundColor:'#222F3F', borderTopColor:'#222F3F', height:Platform.select({'android':50, 'ios':30})}}>
-                    <FooterTab>
-                        <Button style={{backgroundColor:'#222F3F'}}  transparent onPress={()=>this.props.navigation.navigate("Browse")}>
-                            <Image source={b_browse} style={{width:25, height:25,}}/>
-                            <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"BROWSE"}</Text>
-                        </Button>
-                        <Button style={{backgroundColor:'#222F3F'}}  transparent onPress={()=>this.props.navigation.navigate("Income")}>
-                            <Image source={b_incoming} style={{width:25, height:25}}/>
-                            <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"INCOMING"}</Text>
-                        </Button>
-                        <Button style={{backgroundColor:'#222F3F'}}  transparent onPress={()=>this.props.navigation.navigate("Match")}>
-                            <Image source={b_match} style={{width:25, height:25}}/>
-                            <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"MATCH"}</Text>
-                        </Button>
-                        <Button style={{backgroundColor:'#222F3F'}}  transparent >
-                            <Image source={b_chat} style={{width:25, height:25,tintColor:'#B64F54'}}/>
-                            <Text style={{color: '#B64F54', fontSize:6, fontWeight:'bold', marginTop:3}}>{"CHAT"}</Text>
-                        </Button>
-                        <Button style={{backgroundColor:'#222F3F'}}  transparent onPress={()=>this.props.navigation.navigate("MyVideo")}>
-                            <Image source={b_myvideo} style={{width:25, height:25}}/>
-                            <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"MY VIDEO"}</Text>
-                        </Button>                   
-                    </FooterTab>
+          <Footer style={{height:Platform.select({'android':50, 'ios':30})}}>
+            <FooterTab>
+                <Button style={{backgroundColor:'#222F3F', borderRadius: 0}}  transparent onPress={()=>this.props.navigation.navigate("Browse")}>
+                    <Image source={b_browse} style={{width:25, height:25,}}/>
+                    <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"BROWSE"}</Text>
+                </Button>
+                <Button style={{backgroundColor:'#222F3F', borderRadius: 0}}  transparent onPress={()=>this.props.navigation.navigate("Income")}>
+                    <Image source={b_incoming} style={{width:25, height:25}}/>
+                    <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"INCOMING"}</Text>
+                </Button>
+                <Button style={{backgroundColor:'#222F3F', borderRadius: 0}}  transparent onPress={()=>this.props.navigation.navigate("Match")}>
+                    <Image source={b_match} style={{width:25, height:25}}/>
+                    <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"MATCH"}</Text>
+                </Button>
+                <Button style={{backgroundColor:'#222F3F', borderRadius: 0}}  transparent >
+                    <Image source={b_chat} style={{width:25, height:25, tintColor:'#B64F54'}}/>
+                    <Text style={{color: '#B64F54', fontSize:6, fontWeight:'bold', marginTop:3}}>{"CHAT"}</Text>
+                </Button>
+                <Button style={{backgroundColor:'#222F3F', borderRadius: 0}}  transparent onPress={()=>this.props.navigation.navigate("MyVideo")}>
+                    <Image source={b_myvideo} style={{width:25, height:25}}/>
+                    <Text style={{color: '#fff', fontSize:6, fontWeight:'bold', marginTop:3}}>{"MY VIDEO"}</Text>
+                </Button>                   
+            </FooterTab>
           </Footer>    
        </View>      
     );

@@ -4,7 +4,7 @@ import {
     Icon,
     Content
 } from "native-base"
-import {ImageBackground,   Image,  Platform,Dimensions,TextInput,ScrollView, View,StyleSheet,TouchableOpacity, StatusBar, Alert, Linking} from "react-native";
+import {ImageBackground, BackHandler, Image, Platform,Dimensions,TextInput,ScrollView, View,StyleSheet,TouchableOpacity, StatusBar, Alert, Linking} from "react-native";
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import { Dropdown } from 'react-native-material-dropdown';
@@ -40,44 +40,48 @@ static navigationOptions = {
   header : null
 };
 componentDidMount() {
- this.setState({selectedIndex:Global.f_gender - 1,
-                multiSliderValue:[Global.f_fromage, Global.f_toage],
-                sliderOneValue:[Global.f_distance]
-              })
- this.get_ethnicity()
- this.get_country()
- this.get_language()
+  this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+    this.onBack(); // works best when the goBack is async
+    return true;
+  });
+  this.setState({
+    selectedIndex:Global.f_gender - 1,
+    multiSliderValue:[Global.f_fromage, Global.f_toage],
+    sliderOneValue:[Global.f_distance]
+  });
+  this.get_ethnicity();
+  this.get_country();
+  this.get_language();
 }
-componentWillMount()
-{
-  
+componentWillUnmount() {
+  this.backHandler.remove();
 }
 get_ethnicity()
 {
-    fetch('http://138.197.203.178:8080/api/ethnicity/all', {
-        method: 'GET',
-        headers: {        
-          'Content-Type':'application/json',
-          'Authorization':Global.token
-        }
-      }).then((response) => response.json())
-          .then((responseJson) => {
-               //alert(JSON.stringify(responseJson))
-               if(!responseJson.error)
-               {
-                 var data = responseJson.data;
-                 var itmes =  [{value:'All'}];
-                 for(var i=0;i<data.length;i++)
-                 {
-                   itmes.push({value:data[i].ethnicity_name})
-                 }
-                 this.setState({city:Global.f_city, cityData:itmes})
-               }
-          })
-          .catch((error) => {
-            alert(JSON.stringify(error))
-            return
-    });
+  fetch('http://138.197.203.178:8080/api/ethnicity/all', {
+      method: 'GET',
+      headers: {        
+        'Content-Type':'application/json',
+        'Authorization':Global.token
+      }
+    }).then((response) => response.json())
+      .then((responseJson) => {
+            //alert(JSON.stringify(responseJson))
+            if(!responseJson.error)
+            {
+              var data = responseJson.data;
+              var itmes =  [{value:'All'}];
+              for(var i=0;i<data.length;i++)
+              {
+                itmes.push({value:data[i].ethnicity_name});
+              }
+              this.setState({city:Global.f_city, cityData:itmes});
+            }
+      })
+      .catch((error) => {
+        alert(JSON.stringify(error))
+        return
+  });
 }
 get_country()
 {
@@ -236,8 +240,6 @@ onApply()
     this.onBack()
   }
   render() {
-    
-    var {navigate} = this.props.navigation; 
     const buttons = ['MALE', 'FEMALE']
     const { selectedIndex } = this.state
     return (
@@ -256,15 +258,15 @@ onApply()
             </View>          
           </View>  
           <View style={{width:DEVICE_WIDTH,alignItems:'center', justifyContent:'center', marginTop:5}}>
-                     <ButtonGroup
-                        onPress={this.updateIndex}
-                        selectedIndex={selectedIndex}
-                        buttons={buttons}
-                        selectedButtonStyle={{backgroundColor: '#DE5859',}}
-                        containerStyle={{height: 40, width:DEVICE_WIDTH*0.8, borderRadius:20, borderColor:'#DE5859'}}
-                        selectedTextStyle={{color: '#fff',fontSize:14,}}
-                        textStyle={{color: '#DE5859',fontSize:14,}}
-                        />
+              <ButtonGroup
+                onPress={this.updateIndex}
+                selectedIndex={selectedIndex}
+                buttons={buttons}
+                selectedButtonStyle={{backgroundColor: '#DE5859',}}
+                containerStyle={{height: 40, width:DEVICE_WIDTH*0.8, borderRadius:20, borderColor:'#DE5859'}}
+                selectedTextStyle={{color: '#fff',fontSize:14,}}
+                textStyle={{color: '#DE5859',fontSize:14,}}
+                />
             </View>  
             <View style={{width:DEVICE_WIDTH*0.8,marginLeft:DEVICE_WIDTH*0.1, marginTop:10}}>
             <View style={{flexDirection:'row',alignItems:'center', justifyContent:'space-between'}}>

@@ -2,11 +2,11 @@ import {createStackNavigator} from 'react-navigation';
 //FirstScreen
 import FirstScreen from './components/FirstScreen';
 //Auths
- import Login from './components/Auths/Login';
- import Signup from './components/Auths/Signup';
- import Register1 from './components/Auths/Register1';
- import Register2 from './components/Auths/Register2';
- import EmailConfirm from './components/Auths/EmailConfirm';
+import Login from './components/Auths/Login';
+import Signup from './components/Auths/Signup';
+import Register1 from './components/Auths/Register1';
+import Register2 from './components/Auths/Register2';
+import EmailConfirm from './components/Auths/EmailConfirm';
 //Main
 import Record from './components/Main/Record';
 import Browse from './components/Main/Browse';
@@ -25,7 +25,7 @@ import TermsPolicy from './components/Main/TermsPolicy';
 import Report from './components/Main/Report';
 export default Router = createStackNavigator({
 
-    FirstScreen: {  screen: FirstScreen},
+    FirstScreen: { screen: FirstScreen },
     //Main
     Income:{screen:Income},
     IncomeDetail:{screen:IncomeDetail},

@@ -166,14 +166,12 @@ onRegister()
           body:formBody,
         }).then((response) => response.json())
             .then((responseJson) => {
-                 alert(JSON.stringify(responseJson))
                  if(!responseJson.error)
                  {
                   this.onLogin()
                  }
             })
             .catch((error) => {
-              alert(JSON.stringify(error))
               return
            });
 }

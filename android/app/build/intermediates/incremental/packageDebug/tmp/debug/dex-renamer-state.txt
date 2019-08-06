@@ -1,4 +1,4 @@
-#Wed Jul 31 12:39:00 CST 2019
-base.0=/Volumes/MAC_WORK/July/DazzledDate/android/app/build/intermediates/transforms/dexMerger/debug/0
-path.0=classes.dex
+#Mon Aug 05 02:02:23 PDT 2019
+base.0=/Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/build/intermediates/transforms/dexMerger/debug/0
 renamed.0=classes.dex
+path.0=classes.dex

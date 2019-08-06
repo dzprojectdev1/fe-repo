@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import {
-    Text, 
+  Text, 
 } from "native-base"
-import {   Image, ImageBackground,  Platform,Dimensions, View,StyleSheet,TouchableOpacity, StatusBar, Alert,} from "react-native";
+import { Image, ImageBackground,Dimensions, View,StyleSheet,TouchableOpacity, StatusBar} from "react-native";
 import store from 'react-native-simple-store';
-import logo from '../assets/images/logo.png';
-import firstBg from '../assets/images/first_bg.png';
+// import logo from '../assets/images/logo.png';
+import firstBg from '../assets/images/first_bg.jpg';
 import Global from './Global'
 class FirstScreen extends Component {
   constructor(props)
@@ -14,10 +14,9 @@ class FirstScreen extends Component {
     this.state = {
       isLoaded:false,
     };
-  }
- 
+  } 
   static navigationOptions = {
-  header : null
+    header : null
   };
   componentDidMount() {
   }
@@ -37,15 +36,14 @@ class FirstScreen extends Component {
           else
           {
             //login
-             this.props.navigation.navigate("Record");      
+            this.props.navigation.navigate("Record");
           }
         });
       }
     });
   }
 onLogin(email, password)
-{
- 
+{ 
   var details = {
       'useremail':email,
       'userpassword':password
@@ -103,7 +101,7 @@ onLogin(email, password)
        <View style={styles.contentContainer}>
           <ImageBackground source={firstBg} style={{width:'100%', height:'100%', alignItems:'center', justifyContent:'center'}}>
               <StatusBar backgroundColor='#ED6164' barStyle='dark-content'/>
-              <Image source={logo} style={{width:205, height:83, tintColor:'#fff'}}/>
+              {/* <Image source={logo} style={{width:205, height:83, tintColor:'#fff'}}/> */}
               <View style={{position:'absolute', width:DEVICE_WIDTH, height:40, bottom:60, left:0,flexDirection:'row', alignItems:'center', justifyContent:'center'}}>    
               <TouchableOpacity style={{alignItems:'center', justifyContent:'center', width:150, height:40, borderWidth:1, borderRadius:20, borderColor:'#fff'}}
                 onPress={()=>this.gotoLogin()}
