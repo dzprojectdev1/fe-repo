@@ -122,28 +122,31 @@ getFilterVideos()
     },
     body:formBody,
   }).then((response) => response.json())
-      .then((responseJson) => {   
-        //  alert(JSON.stringify(responseJson))     
-          if(!responseJson.error)
-          {
-            if(responseJson.data)
-              {
-                this.setState({isnoUser:false});
-                this.getDetails(responseJson.data);
-              }
-              else
-              {
-                this.setState({paused:true,otherid:-1,isnoUser:true, vid:-1,vUrl:'', username:'', userage:'', userdistance:''})
-              //  alert(responseJson.message)
-              }
-          }
-          else
-          {
-          }
-      })
-      .catch((error) => {
-        return
-     });
+  .then((responseJson) => { 
+      if(!responseJson.error)
+      {
+        if(responseJson.data)
+        {
+          this.setState({isnoUser:false});
+          this.getDetails(responseJson.data);
+        }
+        else
+        {
+          this.setState({
+            paused:true,
+            otherid:-1,
+            isnoUser:true, 
+            vid:-1,
+            vUrl:'', 
+            username:'',
+            userage:'',
+            userdistance:''
+          });
+        }
+      }
+  }).catch((error) => {
+    return
+  });
 }
 getDetails = async (data) =>
 {
@@ -154,16 +157,22 @@ getDetails = async (data) =>
       'Content-Type':'application/json',
       'Authorization':Global.token
     }
-   }).then((response) => response.json())
-      .then((responseJson) => {
-        
-          this.setState({paused:false,otherid:data.id, vid:data.id,vUrl:responseJson.url, username:data.name, userage:this.getAge(data.birth_date), userdistance:parseInt(data.distance)}) 
-      })
-      .catch((error) => {
-        alert("There is error, please try again!")
-        return
-   });
-  
+  }).then((response) => response.json())
+  .then((responseJson) => {    
+    this.setState({
+      paused:false,
+      otherid:data.id, 
+      vid:data.id,
+      vUrl:responseJson.url, 
+      username:data.name, 
+      userage:this.getAge(data.birth_date), 
+      userdistance:parseInt(data.distance)
+    });
+  })
+  .catch((error) => {
+    alert("There is error, please try again!")
+    return
+  });
 }
 getAge(birth)
 {
@@ -176,7 +185,6 @@ onReject()
   var details = {
     'otherId':this.state.vid
   };
-
   var formBody = [];
   for (var property in details) {
     var encodedKey = encodeURIComponent(property);
@@ -185,30 +193,27 @@ onReject()
   }
   formBody = formBody.join("&");
   fetch('http://138.197.203.178:8080/api/match/dislike', {
-        method: 'POST',
-        headers: {        
-          'Content-Type':'application/x-www-form-urlencoded',
-          'Authorization':Global.token  
-        },
-        body:formBody,
-      }).then((response) => response.json())
-          .then((responseJson) => {
-              if(!responseJson.error)
-              {
-                if(Global.isFilter)
-                {
-                  this.getFilterVideos()
-                }
-                else
-                {
-                  this.getVideos()
-                } 
-              }
-          })
-          .catch((error) => {
-            alert(JSON.stringify(error))
-            return
-    });
+    method: 'POST',
+    headers: {        
+      'Content-Type':'application/x-www-form-urlencoded',
+      'Authorization':Global.token  
+    },
+    body:formBody,
+  }).then((response) => response.json())
+  .then((responseJson) => {
+      if(!responseJson.error)
+      {
+        if(Global.isFilter) {
+          this.getFilterVideos()
+        } else {
+          this.getVideos()
+        } 
+      }
+  })
+  .catch((error) => {
+    alert(JSON.stringify(error))
+    return
+  });
 }
 onHeart()
 {
@@ -269,17 +274,19 @@ backPressed = () => {
 }
 gotoFilter()
 {
- this.setState({paused:true})
- this.props.navigation.replace("Filter")
+  this.setState({
+    paused:true
+  });
+  this.props.navigation.replace("Filter")
 }
 gotoIncome()
 {
- this.setState({paused:true})
+  this.setState({paused:true})
   this.props.navigation.replace("Income")
 }
 gotoMatch()
 {
- this.setState({paused:true})
+  this.setState({paused:true})
   this.props.navigation.replace("Match")
 }
 gotoChat()

@@ -16,100 +16,100 @@ import b_profile from '../../assets/images/profile.png';
 
 import Global from '../Global';
 // import Income from "./Income";
+
 class IncomeDetail extends Component {
   constructor(props)
   {
     super(props);
     this.state = {
-     paused:false,
-     vUrl:'',
-     username:'',
-     userage:'',
-     userimage:'',
-     matchId:-1,
-     userdistance:'',
-     otherId:-1,
-     isMatchVideo:false
+      paused:false,
+      vUrl:'',
+      username:'',
+      userage:'',
+      userimage:'',
+      matchId:-1,
+      userdistance:'',
+      otherId:-1,
+      isMatchVideo:false
     };
   }
  
-static navigationOptions = {
-  header : null
-};
+  static navigationOptions = {
+    header : null
+  };
 
-componentWillMount()
-{
-  BackHandler.addEventListener('hardwareBackPress', this.back);
-  if(Global.prePage == "Profile")
+  componentWillMount()
   {
-    this.setState({ 
-      vUrl:Global.prevUrl, 
-      otherId:Global.preOtherId 
-    });
-    this.setState({
-      isMatchVideo:Global.isMatchVideo,
-      username:Global.prename,
-      userage: Global.preage,
-      userimage:Global.preimage,
-      matchId:Global.prematchID,
-      userdistance:Global.preuserdistance
-    });
-  
-    Global.prePage == "";
-  }
-  else
-  {
-    Global.prevUrl = this.props.navigation.state.params.url;
-    Global.preOtherId = this.props.navigation.state.params.otherId;
-    Global.prename = this.props.navigation.state.params.name;
-    Global.preage = this.props.navigation.state.params.age
-    Global.preimage = this.props.navigation.state.params.imageUrl
-    Global.prematchID = this.props.navigation.state.params.mid
-    Global.preuserdistance =parseInt(this.props.navigation.state.params.distance)
-
-    this.setState({
-      vUrl:this.props.navigation.state.params.url, 
-      otherId:this.props.navigation.state.params.otherId
-    });
-    this.setState({
-      isMatchVideo:Global.isMatchVideo,
-      username:this.props.navigation.state.params.name,
-      userage:this.props.navigation.state.params.age,
-      userimage:this.props.navigation.state.params.imageUrl,
-      matchId:this.props.navigation.state.params.mid,
-      userdistance:parseInt(this.props.navigation.state.params.distance)
-    });
-  }  
-}
-componentDidMount() { 
-  this.props.navigation.addListener('didFocus', (playload)=>{
-    this.setState({ paused:false });
-  });
-}
-componentWillUnmount() {
-  BackHandler.removeEventListener('hardwareBackPress', this.back);
-}
-gotoChat()
-{
-  if(this.state.matchId == -1)
-  {
-    return;
-  }
-  this.setState({paused:true})
-  var data = {
-    data:{
-      imageUrl:this.state.userimage,
-      name:this.state.username,
-      other_user_id:this.state.otherId,
-      match_id:this.state.matchId
+    BackHandler.addEventListener('hardwareBackPress', this.back);
+    if(Global.prePage == "Profile")
+    {
+      this.setState({ 
+        vUrl:Global.prevUrl, 
+        otherId:Global.preOtherId 
+      });
+      this.setState({
+        isMatchVideo:Global.isMatchVideo,
+        username:Global.prename,
+        userage: Global.preage,
+        userimage:Global.preimage,
+        matchId:Global.prematchID,
+        userdistance:Global.preuserdistance
+      });    
+      Global.prePage == "";
     }
+    else
+    {
+      Global.prevUrl = this.props.navigation.state.params.url;
+      Global.preOtherId = this.props.navigation.state.params.otherId;
+      Global.prename = this.props.navigation.state.params.name;
+      Global.preage = this.props.navigation.state.params.age;
+      Global.preimage = this.props.navigation.state.params.imageUrl;
+      Global.prematchID = this.props.navigation.state.params.mid;
+      Global.preuserdistance =parseInt(this.props.navigation.state.params.distance);
+      // alert(JSON.stringify(this.props.navigation.state.params.url));
+      this.setState({
+        vUrl:this.props.navigation.state.params.url, 
+        otherId:this.props.navigation.state.params.otherId
+      });
+      this.setState({
+        isMatchVideo:Global.isMatchVideo,
+        username:this.props.navigation.state.params.name,
+        userage:this.props.navigation.state.params.age,
+        userimage:this.props.navigation.state.params.imageUrl,
+        matchId:this.props.navigation.state.params.mid,
+        userdistance:parseInt(this.props.navigation.state.params.distance)
+      });
+    }  
   }
-  this.props.navigation.navigate("ChatDetail",{data:data})
-}
-onReject()
-{
+  componentDidMount() { 
+    this.props.navigation.addListener('didFocus', (playload)=>{
+      this.setState({ paused:false });
+    });
+  }
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.back);
+  }
+  gotoChat()
+  {
+    if(this.state.matchId == -1)
+    {
+      return;
+    }
+    this.setState({paused:true})
+    var data = {
+      data:{
+        imageUrl:this.state.userimage,
+        name:this.state.username,
+        other_user_id:this.state.otherId,
+        match_id:this.state.matchId
+      }
+    }
+    this.props.navigation.navigate("ChatDetail",{data:data})
+  }
+  onReject()
+  {
     var details = {
-        'otherId':this.state.otherId
+      'otherId':this.state.otherId
     };
     var formBody = [];
     for (var property in details) {
@@ -117,31 +117,30 @@ onReject()
       var encodedValue = encodeURIComponent(details[property]);
       formBody.push(encodedKey + "=" + encodedValue);
     }
-    formBody = formBody.join("&");
-  
+    formBody = formBody.join("&");  
     fetch('http://138.197.203.178:8080/api/match/sendHeartReject', {
-          method: 'POST',
-          headers: {
-            'Content-Type':'application/x-www-form-urlencoded',
-            'Authorization':Global.token
-          },
-          body:formBody,
-        }).then((response) => response.json())
-            .then((responseJson) => {
-                if(!responseJson.error)
-                {
-                    this.setState({paused:true})
-                    this.props.navigation.pop()
-                }
-            })
-            .catch((error) => {
-              alert(JSON.stringify(error))
-              return
-           });
-    
-}
-onMatch()
-{
+      method: 'POST',
+      headers: {
+        'Content-Type':'application/x-www-form-urlencoded',
+        'Authorization':Global.token
+      },
+      body:formBody,
+    }).then((response) => response.json())
+    .then((responseJson) => {
+      if(!responseJson.error)
+      {
+        this.setState({
+          paused:true
+        });
+        this.props.navigation.replace("Income");
+      }
+    })
+    .catch((error) => {
+      return
+    });    
+  }
+  onMatch()
+  {
     var details = {
         'otherId':this.state.otherId
     };
@@ -151,8 +150,7 @@ onMatch()
       var encodedValue = encodeURIComponent(details[property]);
       formBody.push(encodedKey + "=" + encodedValue);
     }
-    formBody = formBody.join("&");
-  
+    formBody = formBody.join("&");  
     fetch('http://138.197.203.178:8080/api/match/requestMatch', {
       method: 'POST',
       headers: {        
@@ -161,44 +159,39 @@ onMatch()
       },
       body:formBody,
     }).then((response) => response.json())
-        .then((responseJson) => {
-            if(!responseJson.error)
-            {                  
-              this.setState({
-                isMatchVideo:true, 
-                matchId:responseJson.data.receiveResult.insertId
-              }, function(){
-                // this.getMatchedOtherVideo();
-              });              
-            }
-        })
-        .catch((error) => {
-          alert(JSON.stringify("Error: " + error))
-          return
+    .then((responseJson) => {
+        if(!responseJson.error)
+        {                  
+          this.setState({
+            isMatchVideo:true, 
+            matchId:responseJson.data.receiveResult.insertId
+          }, function(){
+            // this.getMatchedOtherVideo();
+          });              
+        }
+    }).catch((error) => {
+      return
     });
   }
   getMatchedOtherVideo = () => {
     fetch('http://138.197.203.178:8080/api/video/getVideosByMatchId/' + this.state.matchId, {
-        method: 'GET',
-        headers: {
-          'Content-Type':'application/x-www-form-urlencoded',
-          'Authorization':Global.token
-        }
-      }).then((response) => response.json())
-          .then((responseJson) => {
-              if(!responseJson.error)
-              {
-                this.setState({ paused:true });
-              }
-          })
-          .catch((error) => {
-            alert(JSON.stringify("Error: " + error))
-            return
+      method: 'GET',
+      headers: {
+        'Content-Type':'application/x-www-form-urlencoded',
+        'Authorization':Global.token
+      }
+    }).then((response) => response.json())
+    .then((responseJson) => {
+      if(!responseJson.error)
+      {
+        this.setState({ paused:true });
+      }
+    }).catch((error) => {
+      return
     });
   }
   gotoProfile()
-  {
-    
+  {    
     this.setState({paused:true});
     if(this.state.otherId != -1)
     {
@@ -211,7 +204,7 @@ onMatch()
       this.props.navigation.replace("Match");
     } else {
       this.props.navigation.replace("Income");
-    }  
+    }
   }
   gotoReport()
   {
@@ -226,15 +219,16 @@ onMatch()
           <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content'/> 
           <Content>
             <Video source={{uri:this.state.vUrl}}   // Can be a URL or a local file.
-                ref={(ref) => {
+              ref={(ref) => {
                 this.player = ref
-                }}
-                ignoreSilentSwitch={null}  
-                resizeMode = "cover"  
-                repeat ={true}
-                paused={this.state.paused}
-                onError={this.videoError}               // Callback when video cannot be loaded
-                style={{height:DEVICE_HEIGHT, width:DEVICE_WIDTH}}/>
+              }}
+              ignoreSilentSwitch={null}
+              resizeMode = "cover"
+              repeat ={true}
+              paused={this.state.paused}
+              onError={this.videoError}              // Callback when video cannot be loaded
+              style={{height:DEVICE_HEIGHT, width:DEVICE_WIDTH}}
+            />
           </Content>
           <View style={{position:'absolute', left:0, top:50,}}>
             <TouchableOpacity style={{width:60, height:60, marginBottom: 20,alignItems:'center', justifyContent:'center'}}
@@ -270,25 +264,30 @@ onMatch()
           </View>          
            {!this.state.isMatchVideo && (
            <View style={{position:'absolute', left:0, bottom:120}}>
-               <View style={{width:DEVICE_WIDTH*0.5, marginLeft:DEVICE_WIDTH*0.25, flexDirection:'row', justifyContent:'space-between'}}>
-                 <TouchableOpacity style={{width:60, height:60, borderRadius:30, backgroundColor:'#fff', alignItems:'center', justifyContent:'center'}}
-                  onPress={()=>this.onReject()}
-                 >
-                    <Icon type="FontAwesome" name="close" style={{color:'#B64F54'}}/>
-                 </TouchableOpacity>
-                 <TouchableOpacity style={{width:60, height:60, borderRadius:30, backgroundColor:'#B64F54', alignItems:'center', justifyContent:'center'}}
-                  onPress={()=>this.onMatch()}
-                 >
-                    <Icon type="FontAwesome" name="heart" style={{color:'#fff'}}/>
-                 </TouchableOpacity>
-               </View>
+              <View style={{width:DEVICE_WIDTH*0.5, marginLeft:DEVICE_WIDTH*0.25, flexDirection:'row', justifyContent:'space-between'}}>
+                <TouchableOpacity style={{width:60, height:60, borderRadius:30, backgroundColor:'#fff', alignItems:'center', justifyContent:'center'}}
+                onPress={()=>this.onReject()}>
+                  <Icon type="FontAwesome" name="close" style={{color:'#B64F54'}}/>
+                </TouchableOpacity>
+                <TouchableOpacity style={{width:60, height:60, borderRadius:30, backgroundColor:'#B64F54', alignItems:'center', justifyContent:'center'}}
+                onPress={()=>this.onMatch()}>
+                  <Icon type="FontAwesome" name="heart" style={{color:'#fff'}}/>
+                </TouchableOpacity>
+              </View>
            </View>)}
            {this.state.isMatchVideo && (
            <View style={{position:'absolute', left:0, bottom:120}}>
-             <TouchableOpacity style={{width:DEVICE_WIDTH*0.5,height:40, marginLeft:DEVICE_WIDTH*0.25, alignItems:'center', justifyContent:'center', 
-                                       backgroundColor:'#B64F54', borderRadius:DEVICE_WIDTH*0.25}}
-                                       onPress={()=>this.gotoChat()}
-                                       >
+             <TouchableOpacity 
+                style={{
+                  width:DEVICE_WIDTH*0.5,
+                  height:40, 
+                  marginLeft:DEVICE_WIDTH*0.25, 
+                  alignItems:'center', 
+                  justifyContent:'center', 
+                  backgroundColor:'#B64F54', 
+                  borderRadius:DEVICE_WIDTH*0.25
+                }}
+                onPress={()=>this.gotoChat()}>
                   <Text style={{color:'#fff', fontSize:16}}>{"Start Chat!"}</Text>
              </TouchableOpacity>  
            </View>  
@@ -300,15 +299,15 @@ onMatch()
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({    
-   contentContainer:{
+  contentContainer:{
     width:'100%',
     height:'100%',
     backgroundColor:'#fff',
-   }, 
-   instructions: {
+  }, 
+  instructions: {
     textAlign: 'center',
     color: '#3333ff',
     marginBottom: 5,
-},
-  });
+  },
+});
 export default IncomeDetail;

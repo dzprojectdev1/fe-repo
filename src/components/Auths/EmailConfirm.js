@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import {
     Text, Content, 
 } from "native-base"
-import {   Image, ImageBackground, Platform,Dimensions,TextInput, View,StyleSheet,TouchableOpacity, StatusBar, Alert, Linking} from "react-native";
-import store from 'react-native-simple-store';
+import {Image, ImageBackground, Platform, Dimensions, TextInput, View, StyleSheet, TouchableOpacity, StatusBar, Alert} from "react-native";
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import Global from '../Global';
+
 class EmailConfirm extends Component {
   constructor(props)
   {
@@ -18,14 +18,14 @@ class EmailConfirm extends Component {
     };
   }
  
-static navigationOptions = {
-  header : null
-};
-componentDidMount() {
-  this.sendCode()
-}
-sendCode()
-{ 
+  static navigationOptions = {
+    header : null
+  };
+  componentDidMount() {
+    this.sendCode()
+  }
+  sendCode()
+  { 
     fetch('http://138.197.203.178:8080/api/user/sendConfirmEmail', {
         method: 'POST',
         headers: {        
@@ -34,10 +34,16 @@ sendCode()
         }
       }).then((response) => response.json())
           .then((responseJson) => {
-            //alert(JSON.stringify(responseJson))
             if(!responseJson.error)
             {
-             alert("Email has been sent! Please check your spam folder if you dont see in your inbox.")
+             Alert.alert(
+              '',
+              "Email has been sent!  Please check your spam folder if you dont see in your inbox.",
+              [
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+              ],
+              {cancelable: false},
+              );
             }
             else
             {
@@ -45,7 +51,6 @@ sendCode()
             }
           })
           .catch((error) => {
-           //alert(JSON.stringify(error))
             return
          });
   }
@@ -89,8 +94,6 @@ sendCode()
     }
   }
   render() {
-    
-    var {navigate} = this.props.navigation; 
     return (
        <View style={styles.contentContainer}>
           <StatusBar backgroundColor='#fff' barStyle='dark-content'/>
@@ -105,20 +108,18 @@ sendCode()
           <View style={{width:DEVICE_WIDTH*0.6,marginLeft:DEVICE_WIDTH*0.2, marginTop:50}}>
             <View>
                <TextInput                            
-                       style={{backgroundColor:'transparent', width:DEVICE_WIDTH*0.6, height:40, paddingLeft:10, color:'#000', borderWidth:1, borderColor:'#000'}}
-                       selectionColor="#009788"
-                       keyboardType="number-pad"
-                       onChangeText={code => this.setState({ code })}
-                       autoCapitalize="none"
-                       underlineColorAndroid="transparent"
-                  />
+                  style={{backgroundColor:'transparent', width:DEVICE_WIDTH*0.6, height:40, paddingLeft:10, color:'#000', borderWidth:1, borderColor:'#000'}}
+                  selectionColor="#009788"
+                  keyboardType="number-pad"
+                  onChangeText={code => this.setState({ code })}
+                  autoCapitalize="none"
+                  underlineColorAndroid="transparent"
+                />
             </View>          
-          </View>
-        
+          </View>        
           <View style={{width:DEVICE_WIDTH, height:40, alignItems:'center', justifyContent:'center', marginTop:50}}>
             <TouchableOpacity style={{width:DEVICE_WIDTH*0.7, height:40, borderRadius:25,backgroundColor:'#DE5859', alignItems:'center', justifyContent:'center'}}
-             onPress={()=>this.onConfirm()}
-            >
+             onPress={()=>this.onConfirm()}>
                <Text style={{color:'#fff', fontSize:16, fontWeight:'bold'}}>{"CONFIRM"}</Text>
             </TouchableOpacity>
           </View>

@@ -1,22 +1,16 @@
 import React from 'react'
 import {
-  Container,
-  Contenet,
-  Footer,
-  Button,
-  FooterTab,
   Icon,
   Text,
-  Content,    
 } from "native-base";
-import {GiftedChat, Send,InputToolbar, Composer, Bubble, Message, MessageText, GiftedAvatar, utils} from "react-native-gifted-chat";
-import {ImageBackground,   Image,  Platform,Dimensions,TextInput,ScrollView, View,StyleSheet,TouchableOpacity, StatusBar, Alert, Linking} from "react-native";
+import {GiftedChat, Send,InputToolbar, Composer, Bubble, GiftedAvatar, utils} from "react-native-gifted-chat";
+import {Image, Platform,Dimensions, View, StyleSheet, TouchableOpacity} from "react-native";
 import Global from '../Global';
-import b_send from '../../assets/images/send.png';
 import b_location from '../../assets/images/location.png';
 import b_picture from '../../assets/images/picture.png';
 import b_camera from '../../assets/images/camera.png';
 import b_userplus from '../../assets/images/userplus.png';
+
 class ChatDetail extends React.Component {
   state = {
     isExtraSending:false,
@@ -47,54 +41,49 @@ class ChatDetail extends React.Component {
       this.loadMessages()
   }
   loadMessages =async ()=> { 
-        var userdata = this.props.navigation.state.params.data  
-        var match_id = userdata.data.match_id
-        var my_imgurl = 'https://pickaface.net/gallery/avatar/Opi51c74d0125fd4.png'
-        var other_imgurl = userdata.imageUrl
-        var my_id = 0
-        var other_id = userdata.data.other_user_id
-        var match_id = userdata.data.match_id
+      var userdata = this.props.navigation.state.params.data;
+      var match_id = userdata.data.match_id;
+      var other_imgurl = userdata.imageUrl;
+      var my_id = 0;
+      var other_id = userdata.data.other_user_id;
+      var match_id = userdata.data.match_id;
          
-       await fetch("http://138.197.203.178:8080/api/chat/getChatWithMatchId/" + match_id, {
-            method: 'GET',
-            headers: {        
-              'Content-Type':'application/json',
-              'Authorization':Global.token
-            }
-        }).then((response) => response.json())
-              .then((responseJson) => {    
-                //   alert(JSON.stringify(responseJson))                        
-                  if(!responseJson.error)
-                  {
-                    var user_data = responseJson.data.user
-                    var m_data = responseJson.data.content
-                    m_data.sort(function(a, b) {        
-                      return  b.id - a.id;
-                      });
-                    
-                    var message_list =[]
-                    for(var i=0;i<m_data.length;i++)
-                    {
-                      message_list.push({
-                        _id: (m_data[i].message_type == 1)?my_id:other_id,
-                        text: m_data[i].message_text,
-                        createdAt:new Date(m_data[i].created_date),
-                        user: {
-                          _id: (m_data[i].message_type == 1)?my_id:other_id,
-                          name: user_data.name,
-                          avatar:(m_data[i].message_type == 1)?null:other_imgurl,
-                        },
-                      });
-                    }                    
-                     this.setState({messages:message_list})
-                  }
-              })
-              .catch((error) => {
-                alert(JSON.stringify(error))
-                return
-        });
-
-        this.loadMessages() 
+      await fetch("http://138.197.203.178:8080/api/chat/getChatWithMatchId/" + match_id, {
+        method: 'GET',
+        headers: {        
+          'Content-Type':'application/json',
+          'Authorization':Global.token
+        }
+      }).then((response) => response.json())
+      .then((responseJson) => {    
+        //   alert(JSON.stringify(responseJson))                        
+        if(!responseJson.error)
+        {
+          var user_data = responseJson.data.user
+          var m_data = responseJson.data.content
+          m_data.sort(function(a, b) {        
+            return  b.id - a.id;
+          });            
+          var message_list =[]
+          for(var i=0;i<m_data.length;i++)
+          {
+            message_list.push({
+              _id: (m_data[i].message_type == 1)?my_id:other_id,
+              text: m_data[i].message_text,
+              createdAt:new Date(m_data[i].created_date),
+              user: {
+                _id: (m_data[i].message_type == 1)?my_id:other_id,
+                name: user_data.name,
+                avatar:(m_data[i].message_type == 1)?null:other_imgurl,
+              },
+            });
+          }    
+          this.setState({messages:message_list});
+        }
+      }).catch((error) => {
+        return
+    });
+    this.loadMessages();
   }
   componentWillMount() {
  
@@ -111,38 +100,38 @@ class ChatDetail extends React.Component {
     const renderAvatarOnTop = props.renderAvatarOnTop;
     const messageToCompare = renderAvatarOnTop ? props.previousMessage : props.nextMessage;
     if (props.user._id === props.currentMessage.user._id) {
-        return (
-            <View style={{flexDirection:'row'}}>
-                <Bubble
-                    {...props}
-                    onLongPress={() => {}}
-                    textStyle={{
-                      right: {
-                        color: '#000'
-                      }
-                    }}
-                    wrapperStyle={{
-                      left: {
-                        backgroundColor: '#000'
-                      },
-                      right: {
-                        backgroundColor: '#fff',
-                        borderWidth:0.5,
-                        borderColor:'#aaa'
-                      }
-                    }}
-                   containerStyle={{backgroundColor:'#000'}}
-                />
-                {utils.isSameUser(props.currentMessage, messageToCompare) && utils.isSameDay(props.currentMessage, messageToCompare) ?
-                    <GiftedAvatar  avatarStyle={{alignSelf:'flex-end', marginLeft:5}}/> :
-                    <GiftedAvatar
-                        {...props}
-                        user={props.currentMessage.user}
-                        avatarStyle={{alignSelf:'flex-end', marginTop:5, marginLeft:5}}
-                        onPress={() => this.handlePress('avatar')}/>
+      return (
+        <View style={{flexDirection:'row'}}>
+          <Bubble
+              {...props}
+              onLongPress={() => {}}
+              textStyle={{
+                right: {
+                  color: '#000'
                 }
-            </View>
-        );
+              }}
+              wrapperStyle={{
+                left: {
+                  backgroundColor: '#000'
+                },
+                right: {
+                  backgroundColor: '#fff',
+                  borderWidth:0.5,
+                  borderColor:'#aaa'
+                }
+              }}
+              containerStyle={{backgroundColor:'#000'}}
+          />
+          {utils.isSameUser(props.currentMessage, messageToCompare) && utils.isSameDay(props.currentMessage, messageToCompare) ?
+              <GiftedAvatar  avatarStyle={{alignSelf:'flex-end', marginLeft:5}}/> :
+              <GiftedAvatar
+                {...props}
+                user={props.currentMessage.user}
+                avatarStyle={{alignSelf:'flex-end', marginTop:5, marginLeft:5}}
+                onPress={() => this.handlePress('avatar')}/>
+          }
+        </View>
+      );
     }
 
     //default bubble
@@ -212,9 +201,7 @@ sendMessage(message) {
     );
   }
   renderSend = props => {
-    //    return <Send {...props} textStyle={{ backgroundColor:'transparent',paddingLeft:8, paddingRight:8, borderWidth:0.5, borderRadius:5, borderColor:'#fff', color:'#fff'}} label={"send"} />
-   
-     return (
+    return (
         <Send
             {...props}
         >
@@ -245,29 +232,24 @@ gotoProfile()
           <TouchableOpacity style={{marginLeft: 10, width:30, height:120, backgroundColor:'#EC595A', marginTop:-120, borderTopStartRadius:15, borderTopEndRadius:15,
            justifyContent:'center', alignItems:'center'
           }}>
-             <TouchableOpacity>
-               <Image source={b_location} style={{width:25, height:25,marginTop:5}}/>
-             </TouchableOpacity>  
-             <TouchableOpacity>
-               <Image source={b_picture} style={{width:25, height:25,marginTop:5}}/>
-             </TouchableOpacity> 
-             <TouchableOpacity>
-               <Image source={b_camera} style={{width:25, height:25,marginTop:5}}/>
-             </TouchableOpacity> 
-             <TouchableOpacity>
-               <Image source={b_userplus} style={{width:25, height:25,marginTop:5}}/>
-             </TouchableOpacity> 
+            <TouchableOpacity>
+              <Image source={b_location} style={{width:25, height:25,marginTop:5}}/>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image source={b_picture} style={{width:25, height:25,marginTop:5}}/>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image source={b_camera} style={{width:25, height:25,marginTop:5}}/>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image source={b_userplus} style={{width:25, height:25,marginTop:5}}/>
+            </TouchableOpacity>
           </TouchableOpacity>
         )}
-        <View style={{flexDirection:'row', width:DEVICE_WIDTH - 40, alignItems:'center', justifyContent:'center'}}>  
-          {/* <TouchableOpacity style={{width:30, height:30, alignItems:'center',marginLeft: 10, justifyContent:'center', backgroundColor:'#EC595A', borderRadius:15}}
-          onPress={()=>this.onExtraSending()}
-          >
-            <Icon type="MaterialCommunityIcons" name="plus" style={{color:'#fff'}}/>
-          </TouchableOpacity> */}
+        <View style={{flexDirection:'row', width:DEVICE_WIDTH - 40, alignItems:'center', justifyContent:'center'}}>
           <Composer {...props} textInputStyle={{backgroundColor:'#fff',opacity:1.0, marginTop:5,fontSize:16,paddingTop:Platform.select({ios: 10,android:5,})}}/>
         </View>  
-    </View>
+      </View>
     );  
  }
  back()

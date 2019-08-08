@@ -1,15 +1,11 @@
 import React, { Component } from "react";
 import {
-    Container,
-    Contenet,
     Footer,
     Button,
     FooterTab,
-    Icon,
-    Text,
-    Content,    
+    Text
   } from "native-base";
-import {ImageBackground,BackHandler,   Image, ScrollView,  Platform,Dimensions,TextInput, View,StyleSheet,FlatList, TouchableOpacity, StatusBar, Alert, Linking} from "react-native";
+import {BackHandler, Image, ScrollView, Platform,Dimensions, View, StyleSheet, FlatList, TouchableOpacity, StatusBar} from "react-native";
 
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
@@ -36,9 +32,9 @@ static navigationOptions = {
 componentDidMount() {
   BackHandler.addEventListener('hardwareBackPress', this.backPressed);
   this.props.navigation.addListener('didFocus', (playload)=>{
-    // this.getHeartUsers()
+    this.getHeartUsers()
   });
-  this.getHeartUsers();
+  // this.getHeartUsers();
 }
 
 componentWillUnmount() {
@@ -49,33 +45,31 @@ backPressed = () => {
   return true;
 }
 getHeartUsers = () =>
-{
-   
-     fetch("http://138.197.203.178:8080/api/match/getReceivedHearts", {
-        method: 'GET',
-        headers: {        
-          'Content-Type':'application/json',
-          'Authorization':Global.token
-        }
-     }).then((response) => response.json())
-          .then((responseJson) => {
-              if(!responseJson.error)
-              {
-                this.getTumbnails(responseJson.data);
-              } else if (responseJson.detail) {
-                this.setState({
-                  alertMsg: 'Network Connection Confused.'
-                });
-              } else {
-                this.setState({
-                  alertMsg: 'There are no incoming hearts.'
-                });
-              }
-          })
-          .catch((error) => {
-            alert(JSON.stringify(error));
-            return
-    });
+{  
+  fetch("http://138.197.203.178:8080/api/match/getReceivedHearts", {
+    method: 'GET',
+    headers: {        
+      'Content-Type':'application/json',
+      'Authorization':Global.token
+    }
+  }).then((response) => response.json())
+  .then((responseJson) => {
+    if(!responseJson.error)
+    {
+      this.getTumbnails(responseJson.data);
+    } else if (responseJson.detail) {
+      this.setState({
+        alertMsg: 'Network Connection Confused.'
+      });
+    } else {
+      this.setState({
+        alertMsg: 'There are no incoming hearts.'
+      });
+    }
+  })
+  .catch((error) => {
+    return
+  });
 }
 getTumbnails=async (data) =>
 {
@@ -85,19 +79,25 @@ getTumbnails=async (data) =>
     var url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_filtered_id + "-thumbnail"
     var vurl = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_filtered_id
     await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type':'application/json',
-          'Authorization':Global.token
-        }
+      method: 'GET',
+      headers: {
+        'Content-Type':'application/json',
+        'Authorization':Global.token
+      }
      }).then((response) => response.json())
-          .then((responseJson) => {
-             // alert(JSON.stringify(responseJson))
-              list_items.push({index:i, otherId:data[i].other_user_id, imageUrl:responseJson.url, videoUrl:vurl, name:data[i].name, age:data[i].age, distance:data[i].distance})
-          })
-          .catch((error) => {
-            alert(JSON.stringify(error))
-            return
+      .then((responseJson) => {
+        list_items.push({
+          index:i, 
+          otherId:data[i].other_user_id, 
+          imageUrl:responseJson.url, 
+          videoUrl:vurl, 
+          name:data[i].name, 
+          age:data[i].age, 
+          distance:data[i].distance
+        });
+      })
+      .catch((error) => {
+        return
     });
   }
   this.setState({datas:list_items})
@@ -112,20 +112,17 @@ showUserVideo(url, otherId,  name,imgurl, age, distance)
       'Authorization':Global.token
     }
    }).then((response) => response.json())
-      .then((responseJson) => {
-         // alert(JSON.stringify(responseJson))
-         Global.isMatchVideo = false
-         this.props.navigation.navigate("IncomeDetail", {url:responseJson.url, mid:-1, otherId:otherId, imageUrl:imgurl, name:name, age:age, distance:distance})
-      })
-      .catch((error) => {
-        alert("There is error, please try again!");
-        return
+    .then((responseJson) => {
+        // alert(JSON.stringify(responseJson))
+        Global.isMatchVideo = false
+        this.props.navigation.navigate("IncomeDetail", {url:responseJson.url, mid:-1, otherId:otherId, imageUrl:imgurl, name:name, age:age, distance:distance})
+    })
+    .catch((error) => {
+      alert("There is error, please try again!");
+      return
    });
 }
   render() {
-    
-    var {navigate} = this.props.navigation; 
-
     return (
        <View style={styles.contentContainer}>
           <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content'/> 
@@ -193,7 +190,7 @@ showUserVideo(url, otherId,  name,imgurl, age, distance)
   }  
 }
 const DEVICE_WIDTH = Dimensions.get('window').width;
-const DEVICE_HEIGHT = Dimensions.get('window').height;
+// const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({    
    contentContainer:{
     width:'100%',

@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Mon Aug 05 02:02:24 PDT 2019
+#Wed Aug 07 20:57:16 PDT 2019
 33.base=/Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/build/intermediates/transforms/mergeJniLibs/debug/0
 47.base=/Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/build/intermediates/transforms/mergeJniLibs/debug/0
 50.base=/Volumes/MacData/DZApi/DZMobileFront/final_original_fe/fe-repo/android/app/build/intermediates/transforms/mergeJniLibs/debug/0

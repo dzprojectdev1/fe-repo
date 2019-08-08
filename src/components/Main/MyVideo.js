@@ -1,15 +1,24 @@
 import React, { Component } from "react";
 import {
-    Container,
-    Contenet,
     Footer,
     Button,
     FooterTab,
     Icon,
     Text,
-    Content,    
   } from "native-base";
-import {ImageBackground, BackHandler,  Image,  ScrollView, Platform,Dimensions,TextInput, View,StyleSheet,FlatList, TouchableOpacity, StatusBar, Alert, Linking} from "react-native";
+import {ImageBackground, 
+  BackHandler, 
+  Image, 
+  ScrollView, 
+  Platform,
+  Dimensions, 
+  View, 
+  StyleSheet, 
+  FlatList, 
+  TouchableOpacity, 
+  StatusBar, 
+  Alert
+} from "react-native";
 
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
@@ -17,7 +26,6 @@ import b_match from '../../assets/images/match.png';
 import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
 import b_delete from '../../assets/images/delete.png';
-import b_time from '../../assets/images/time.png';
 import Global from '../Global';
 
 class MyVideo extends Component {
@@ -25,77 +33,80 @@ class MyVideo extends Component {
   {
     super(props);
     this.state = {
-        datas:[]
+      datas:[]
     };
   }
  
-static navigationOptions = {
-  header : null
-};
-componentDidMount() {
+  static navigationOptions = {
+    header : null
+  };
+  componentDidMount() {
     this.props.navigation.addListener('didFocus', (playload)=>{
       this.getVideos()
     });
+  }
+  getVideos()
+  {      
+    fetch("http://138.197.203.178:8080/api/video/getMyAllVideo", {
+      method: 'GET',
+      headers: {        
+        'Content-Type':'application/json',
+        'Authorization':Global.token
+      }
+    }).then((response) => response.json())
+    .then((responseJson) => {
+        if(!responseJson.error)
+        {
+          this.getTumbnails(responseJson.data)
+        }
+    })
+    .catch((error) => {
+      return
+    });
    }
-   getVideos()
-   {
-      
-        fetch("http://138.197.203.178:8080/api/video/getMyAllVideo", {
-           method: 'GET',
-           headers: {        
-             'Content-Type':'application/json',
-             'Authorization':Global.token
-           }
-        }).then((response) => response.json())
-             .then((responseJson) => {
-                 if(!responseJson.error)
-                 {
-                   this.getTumbnails(responseJson.data)
-                 }
-             })
-             .catch((error) => {
-               alert(JSON.stringify(error))
-               return
-       });
-   }
-   getTumbnails=async (data) =>
-   {
-     var list_items = [];
-     for(var i=0;i<data.length;i++)
-     {
-       var url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_id + "-thumbnail"
-       var vurl = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_id
-       await fetch(url, {
-           method: 'GET',
-           headers: {        
-             'Content-Type':'application/json',
-             'Authorization':Global.token
-           }
-        }).then((response) => response.json())
-             .then((responseJson) => {
-                // alert(JSON.stringify(responseJson))       
-                 list_items.push({index:i,id:data[i].id, otherId:data[i].user_id, primary:data[i].is_primary, imageUrl:responseJson.url, videoUrl:vurl, name:'NAME', time:'TIME'})
-             })
-             .catch((error) => {
-               alert(JSON.stringify(error))
-               return
-       });
-     }
-     this.setState({datas:list_items})
-   }
+  getTumbnails=async (data) =>
+  {
+    var list_items = [];
+    for(var i=0;i<data.length;i++)
+    {
+      var url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_id + "-thumbnail"
+      var vurl = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_id
+      await fetch(url, {
+          method: 'GET',
+          headers: {        
+            'Content-Type':'application/json',
+            'Authorization':Global.token
+          }
+      }).then((response) => response.json())
+      .then((responseJson) => {     
+        list_items.push({
+          index:i,
+          id:data[i].id, 
+          otherId:data[i].user_id, 
+          primary:data[i].is_primary, 
+          imageUrl:responseJson.url, 
+          videoUrl:vurl, 
+          name:'NAME', 
+          time:'TIME'
+        });
+      }).catch((error) => {
+        return
+      });
+    }
+    this.setState({datas:list_items})
+  }
   componentWillMount() {
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
-  } 
+  }
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
+  } 
+  backPressed = () => {
+    this.props.navigation.replace("Chat");
+    return true;
   }
- 
- backPressed = () => {
-  this.props.navigation.replace("Chat");
-  return true;
-}
-   showUserVideo(url, otherId, id, primary)
-   {
+  showUserVideo(url, otherId, id, primary)
+  {
      fetch(url, {
        method: 'GET',
        headers: {        
@@ -103,16 +114,13 @@ componentDidMount() {
          'Authorization':Global.token
        }
       }).then((response) => response.json())
-         .then((responseJson) => {
-            // alert(JSON.stringify(responseJson))
-            console.log(responseJson.url)
-            this.props.navigation.navigate("MyVideoDetail",{url:responseJson.url, otherId:otherId, id:id,primary})
-         })
-         .catch((error) => {
-           alert("There is error, please try again!")
-           return
+        .then((responseJson) => {
+          this.props.navigation.navigate("MyVideoDetail",{url:responseJson.url, otherId:otherId, id:id,primary})
+        }).catch((error) => {
+        alert("There is error, please try again!");
+        return
       });
-   }
+  }
   addVideo()
   {
     this.props.navigation.navigate("Record")
@@ -123,10 +131,10 @@ componentDidMount() {
       '',
       'Are you sure you want to delete this video?',
       [
-        {text: 'Delete',backgroundColor:'#FCDD80', onPress: () =>this.deleteVideo(otherid)},
-        {text: 'Cancel',backgroundColor:'#FCDD80', onPress: () => () => console.log('Cancel Pressed'),  style:'cancel'},
+        {text: 'Delete', backgroundColor:'#FCDD80', onPress: () =>this.deleteVideo(otherid)},
+        {text: 'Cancel', backgroundColor:'#FCDD80', onPress: () => () => console.log('Cancel Pressed'),  style:'cancel'},
       ],
-      { cancelable: false });  
+      { cancelable: false });
   }
   deleteVideo(otherid)
   {
@@ -136,79 +144,78 @@ componentDidMount() {
         'Content-Type':'application/json',
         'Authorization':Global.token
       }
-   }).then((response) => response.json())
-        .then((responseJson) => {
-            if(!responseJson.error)
-            {
-              this.getVideos()
-            }
-        })
-        .catch((error) => {
-          alert(JSON.stringify(error))
-          return
+    }).then((response) => response.json())
+    .then((responseJson) => {
+        if(!responseJson.error)
+        {
+          this.getVideos()
+        }
+    })
+    .catch((error) => {
+      return
     });
   }
   gotoProfileSetting()
   {
-    this.props.navigation.navigate("ProfileSetting")
+    this.props.navigation.navigate("ProfileSetting");
   }
   render() {
-    var {navigate} = this.props.navigation; 
-
     return (
        <View style={styles.contentContainer}>
           <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content'/> 
           <View style={{marginTop:40, alignItems:'center', justifyContent:'center', flexDirection:'row', justifyContent:'space-between'}}>
             <View style={{width:DEVICE_WIDTH - 80, marginLeft:40, alignItems:'center', justifyContent:'center'}}>
-               <Text style={{}}>{"MY VIDEOS"}</Text>
+               <Text>{"MY VIDEOS"}</Text>
             </View>
             <TouchableOpacity style={{width:30, height:40, alignItems:'center', justifyContent:'center', marginRight:10}}
-             onPress={()=>this.gotoProfileSetting()}
-            >
+             onPress={()=>this.gotoProfileSetting()}>
               <Icon type="MaterialCommunityIcons" name="menu" style={{color:"#000", marginTop:5}}/>
             </TouchableOpacity> 
           </View>
           <ScrollView style={{marginTop:15}} removeClippedSubviews={true}>
-                {(this.state.datas.length != 0) && (
-                 <FlatList
-                            numColumns={2}
-                            style={{ flex: 0 }}
-                            removeClippedSubviews={true}
-                            data={this.state.datas}
-                            initialNumToRender={this.state.datas.length}
-                            renderItem={({ item: rowData }) => {                              
-                                  return (
-                                     <TouchableOpacity style={{width:DEVICE_WIDTH/2 - 10, marginTop:10, marginLeft:5, marginRight:5,}}  
-                                        onPress={()=>this.showUserVideo(rowData.videoUrl, rowData.otherId, rowData.id, rowData.primary)}>
-                                         <ImageBackground source={{uri:rowData.imageUrl}} resizeMethod="resize" style={{width:DEVICE_WIDTH/2 - 20, height:(DEVICE_WIDTH/2 - 20)*1.5, marginTop:3,marginLeft:5, backgroundColor:'#5A5A5A'}}>
-                                           <View style={{width:'100%', height:30, marginTop:(DEVICE_WIDTH/2-20)*1.5 - 50, flexDirection:'row'}}>
-                                              <View style={{width:DEVICE_WIDTH/2 - 60, height:30, alignItems:'center', justifyContent:'center'}}>
-                                                {(rowData.primary == 1) && (
-                                                   <TouchableOpacity style={{width:80, height:30, backgroundColor:'#f00', alignItems:'center', justifyContent:'center'}}
-                                                   >
-                                                    <Text style={{fontSize:14, color:'#fff', fontWeight:'bold'}}>{"Primary"}</Text>
-                                                 </TouchableOpacity>
-                                                )}
-                                              </View>                                              
-                                              <TouchableOpacity
-                                                  onPress={()=>this.onDeleteVideo(rowData.id)}
-                                                  >
-                                                <Image source={b_delete} style={{width:30, height:30}}/>
-                                            </TouchableOpacity>
-                                           </View>                                           
-                                         </ImageBackground>    
-                                     </TouchableOpacity>      
-                                    );
-                               
-                              }}
-                            keyExtractor={(item, index) => index}
-                 />)}
+            {(this.state.datas.length != 0) && (
+              <FlatList
+              numColumns={2}
+              style={{ flex: 0 }}
+              removeClippedSubviews={true}
+              data={this.state.datas}
+              initialNumToRender={this.state.datas.length}
+              renderItem={({ item: rowData }) => {                              
+                return (
+                    <TouchableOpacity style={{width:DEVICE_WIDTH/2 - 10, marginTop:10, marginLeft:5, marginRight:5,}}  
+                      onPress={()=>this.showUserVideo(rowData.videoUrl, rowData.otherId, rowData.id, rowData.primary)}>
+                        <ImageBackground source={{uri:rowData.imageUrl}} resizeMethod="resize" style={{width:DEVICE_WIDTH/2 - 20, height:(DEVICE_WIDTH/2 - 20)*1.5, marginTop:3,marginLeft:5, backgroundColor:'#5A5A5A'}}>
+                          <View style={{width:'100%', height:30, marginTop:(DEVICE_WIDTH/2-20)*1.5 - 50, flexDirection:'row'}}>
+                            <View style={{width:DEVICE_WIDTH/2 - 60, height:30, alignItems:'center', justifyContent:'center'}}>
+                              {(rowData.primary == 1) && (
+                                <View style={{ width:DEVICE_WIDTH, height:40, alignItems:'center', justifyContent:'center', marginTop:40, marginBottom: 40}}>
+                                  <TouchableOpacity style={{width:80, height:30, borderRadius:25, backgroundColor:'#DE5859', alignItems:'center', justifyContent:'center'}}>
+                                    <Text style={{fontSize:14, color:'#fff', fontWeight:'bold'}}>{"Primary"}</Text>
+                                  </TouchableOpacity>
+                                </View>
+                              )}
+                            </View>
+                            <TouchableOpacity
+                              onPress={()=>this.onDeleteVideo(rowData.id)}>
+                              <Image source={b_delete} style={{width:30, height:30}}/>
+                            </TouchableOpacity>
+                          </View>
+                        </ImageBackground>
+                    </TouchableOpacity>
+                  );
+                }}
+              keyExtractor={(item, index) => index}
+              />)}
              <View style={{height:50}}/>    
           </ScrollView>
-          <TouchableOpacity style={{position:'absolute', right:15, bottom:Platform.select({'android':90, 'ios':105}), width:70, height:70, backgroundColor:'#f00', borderRadius:35,
-                                      alignItems:'center', justifyContent:'center',}}
-                                      onPress={()=>this.addVideo()}
-                                      >
+          <TouchableOpacity style={{
+              position:'absolute', right:15, 
+              bottom:Platform.select({'android':90, 'ios':105}), 
+              width:70, height:70, 
+              backgroundColor:'#f00', borderRadius:35,
+              alignItems:'center', justifyContent:'center'
+            }}
+            onPress={()=>this.addVideo()}>
                <Icon type="FontAwesome" name="plus" style={{color:'#fff'}} />
           </TouchableOpacity>
           <Footer style={{height:Platform.select({'android':50, 'ios':30})}}>
@@ -240,7 +247,7 @@ componentDidMount() {
   }  
 }
 const DEVICE_WIDTH = Dimensions.get('window').width;
-const DEVICE_HEIGHT = Dimensions.get('window').height;
+// const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({    
    contentContainer:{
     width:'100%',
