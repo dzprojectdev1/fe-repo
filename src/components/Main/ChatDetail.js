@@ -85,9 +85,6 @@ class ChatDetail extends React.Component {
     });
     this.loadMessages();
   }
-  componentWillMount() {
- 
-  }
   static navigationOptions = {
     header : null
   };
@@ -173,26 +170,21 @@ sendMessage(message) {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-
-  fetch('http://138.197.203.178:8080/api/chat/create', {
-        method: 'POST',
-        headers: {        
-          'Content-Type':'application/x-www-form-urlencoded',
-          'Authorization':Global.token     
-        },
-        body:formBody,
-      }).then((response) => response.json())
-          .then((responseJson) => {
-              //alert(JSON.stringify(responseJson))
-              if(!responseJson.error)
-              {
-              }
-          })
-          .catch((error) => {
-            alert(JSON.stringify(error))
-            return
-         });
-  
+    fetch('http://138.197.203.178:8080/api/chat/create', {
+      method: 'POST',
+      headers: {        
+        'Content-Type':'application/x-www-form-urlencoded',
+        'Authorization':Global.token     
+      },
+      body:formBody,
+    }).then((response) => response.json())
+    .then((responseJson) => {
+        //alert(JSON.stringify(responseJson))
+    })
+    .catch((error) => {
+      alert(JSON.stringify(error))
+      return
+    });
   }
 }
   renderInputToolbar (props) {

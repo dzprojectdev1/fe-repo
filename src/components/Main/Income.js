@@ -26,65 +26,64 @@ class Income extends Component {
     };
   }
  
-static navigationOptions = {
-  header : null
-};
-componentDidMount() {
-  BackHandler.addEventListener('hardwareBackPress', this.backPressed);
-  this.props.navigation.addListener('didFocus', (playload)=>{
-    this.getHeartUsers()
-  });
-  // this.getHeartUsers();
-}
-
-componentWillUnmount() {
-  BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
-}
-backPressed = () => {
-  this.props.navigation.replace("Browse");
-  return true;
-}
-getHeartUsers = () =>
-{  
-  fetch("http://138.197.203.178:8080/api/match/getReceivedHearts", {
-    method: 'GET',
-    headers: {        
-      'Content-Type':'application/json',
-      'Authorization':Global.token
-    }
-  }).then((response) => response.json())
-  .then((responseJson) => {
-    if(!responseJson.error)
-    {
-      this.getTumbnails(responseJson.data);
-    } else if (responseJson.detail) {
-      this.setState({
-        alertMsg: 'Network Connection Confused.'
-      });
-    } else {
-      this.setState({
-        alertMsg: 'There are no incoming hearts.'
-      });
-    }
-  })
-  .catch((error) => {
-    return
-  });
-}
-getTumbnails=async (data) =>
-{
-  var list_items = [];
-  for(var i=0;i<data.length;i++)
-  {
-    var url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_filtered_id + "-thumbnail"
-    var vurl = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_filtered_id
-    await fetch(url, {
+  static navigationOptions = {
+    header : null
+  };
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.backPressed);
+    this.props.navigation.addListener('didFocus', (playload)=>{
+      this.getHeartUsers()
+    });
+    // this.getHeartUsers();
+  }
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
+  }
+  backPressed = () => {
+    this.props.navigation.replace("Browse");
+    return true;
+  }
+  getHeartUsers = () =>
+  {  
+    fetch("http://138.197.203.178:8080/api/match/getReceivedHearts", {
       method: 'GET',
-      headers: {
+      headers: {        
         'Content-Type':'application/json',
         'Authorization':Global.token
       }
-     }).then((response) => response.json())
+    }).then((response) => response.json())
+    .then((responseJson) => {
+      if(!responseJson.error)
+      {
+        this.getTumbnails(responseJson.data);
+      } else if (responseJson.detail) {
+        this.setState({
+          alertMsg: 'Network Connection Confused.'
+        });
+      } else {
+        this.setState({
+          alertMsg: 'There are no incoming hearts.'
+        });
+      }
+    })
+    .catch((error) => {
+      return
+    });
+  }
+  getTumbnails=async (data) =>
+  {
+    var list_items = [];
+    for(var i=0;i<data.length;i++)
+    {
+      var url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_filtered_id + "-thumbnail"
+      var vurl = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_filtered_id
+      await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type':'application/json',
+          'Authorization':Global.token
+        }
+      }).then((response) => response.json())
       .then((responseJson) => {
         list_items.push({
           index:i, 
@@ -98,36 +97,47 @@ getTumbnails=async (data) =>
       })
       .catch((error) => {
         return
-    });
-  }
-  this.setState({datas:list_items})
-}
-
-showUserVideo(url, otherId,  name,imgurl, age, distance)
-{
-  fetch(url, {
-    method: 'GET',
-    headers: {        
-      'Content-Type':'application/json',
-      'Authorization':Global.token
+      });
     }
-   }).then((response) => response.json())
+    this.setState({datas:list_items})
+  }
+
+  showUserVideo(url, otherId,  name,imgurl, age, distance)
+  {
+    fetch(url, {
+      method: 'GET',
+      headers: {        
+        'Content-Type':'application/json',
+        'Authorization':Global.token
+      }
+    }).then((response) => response.json())
     .then((responseJson) => {
-        // alert(JSON.stringify(responseJson))
-        Global.isMatchVideo = false
-        this.props.navigation.navigate("IncomeDetail", {url:responseJson.url, mid:-1, otherId:otherId, imageUrl:imgurl, name:name, age:age, distance:distance})
+      // alert(JSON.stringify(responseJson))
+      Global.isMatchVideo = false
+      this.props.navigation.navigate(
+        "IncomeDetail", 
+        {
+          url:responseJson.url, 
+          mid:-1, 
+          otherId:otherId, 
+          imageUrl:imgurl, 
+          name:name, 
+          age:age, 
+          distance:distance
+        }
+      )
     })
     .catch((error) => {
       alert("There is error, please try again!");
       return
-   });
-}
+    });
+  }
   render() {
     return (
        <View style={styles.contentContainer}>
           <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content'/> 
           <View style={{marginTop:40, alignItems:'center', justifyContent:'center'}}>
-            <Text>{"LIKES"}</Text>
+            <Text>{"Incoming Hearts"}</Text>
           </View>
           <ScrollView style={{marginTop:15}} removeClippedSubviews={true}>
                 {(this.state.datas.length === 0 ? 

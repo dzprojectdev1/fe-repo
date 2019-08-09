@@ -22,7 +22,7 @@ class IncomeDetail extends Component {
   {
     super(props);
     this.state = {
-      paused:false,
+      paused: false,
       vUrl:'',
       username:'',
       userage:'',
@@ -30,7 +30,8 @@ class IncomeDetail extends Component {
       matchId:-1,
       userdistance:'',
       otherId:-1,
-      isMatchVideo:false
+      isMatchVideo:false,
+      privatedPaused: false
     };
   }
  
@@ -41,8 +42,7 @@ class IncomeDetail extends Component {
   componentWillMount()
   {
     BackHandler.addEventListener('hardwareBackPress', this.back);
-    if(Global.prePage == "Profile")
-    {
+    if(Global.prePage == "Profile") {
       this.setState({ 
         vUrl:Global.prevUrl, 
         otherId:Global.preOtherId 
@@ -56,9 +56,7 @@ class IncomeDetail extends Component {
         userdistance:Global.preuserdistance
       });    
       Global.prePage == "";
-    }
-    else
-    {
+    } else {
       Global.prevUrl = this.props.navigation.state.params.url;
       Global.preOtherId = this.props.navigation.state.params.otherId;
       Global.prename = this.props.navigation.state.params.name;
@@ -69,9 +67,7 @@ class IncomeDetail extends Component {
       // alert(JSON.stringify(this.props.navigation.state.params.url));
       this.setState({
         vUrl:this.props.navigation.state.params.url, 
-        otherId:this.props.navigation.state.params.otherId
-      });
-      this.setState({
+        otherId:this.props.navigation.state.params.otherId,
         isMatchVideo:Global.isMatchVideo,
         username:this.props.navigation.state.params.name,
         userage:this.props.navigation.state.params.age,
@@ -141,8 +137,11 @@ class IncomeDetail extends Component {
   }
   onMatch()
   {
+    this.setState({
+      paused: true
+    });
     var details = {
-        'otherId':this.state.otherId
+      'otherId':this.state.otherId
     };
     var formBody = [];
     for (var property in details) {
@@ -160,38 +159,38 @@ class IncomeDetail extends Component {
       body:formBody,
     }).then((response) => response.json())
     .then((responseJson) => {
-        if(!responseJson.error)
-        {                  
-          this.setState({
-            isMatchVideo:true, 
-            matchId:responseJson.data.receiveResult.insertId
-          }, function(){
-            // this.getMatchedOtherVideo();
-          });              
-        }
+      if(!responseJson.error)
+      {
+        this.getMatchedVideo(responseJson.data.cdn_id, responseJson.data.match_id);
+      }
     }).catch((error) => {
       return
     });
   }
-  getMatchedOtherVideo = () => {
-    fetch('http://138.197.203.178:8080/api/video/getVideosByMatchId/' + this.state.matchId, {
+  getMatchedVideo = (cdnId, matchId) => {
+    fetch('http://138.197.203.178:8080/api/storage/videoLink?fileId=' + cdnId, {
       method: 'GET',
-      headers: {
-        'Content-Type':'application/x-www-form-urlencoded',
+      headers: {        
+        'Content-Type':'application/json',
         'Authorization':Global.token
       }
     }).then((response) => response.json())
     .then((responseJson) => {
-      if(!responseJson.error)
-      {
-        this.setState({ paused:true });
-      }
+      if (responseJson.url){
+        this.setState({          
+          vUrl: responseJson.url,            
+          matchId: matchId,
+          isMatchVideo:true,
+          privatedPaused: false
+        });
+      }      
     }).catch((error) => {
+      alert("There is error, please try again!");
       return
     });
   }
   gotoProfile()
-  {    
+  {
     this.setState({paused:true});
     if(this.state.otherId != -1)
     {
@@ -218,17 +217,32 @@ class IncomeDetail extends Component {
        <View style={styles.contentContainer}>
           <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content'/> 
           <Content>
-            <Video source={{uri:this.state.vUrl}}   // Can be a URL or a local file.
-              ref={(ref) => {
-                this.player = ref
-              }}
-              ignoreSilentSwitch={null}
-              resizeMode = "cover"
-              repeat ={true}
-              paused={this.state.paused}
-              onError={this.videoError}              // Callback when video cannot be loaded
-              style={{height:DEVICE_HEIGHT, width:DEVICE_WIDTH}}
-            />
+            {!this.state.isMatchVideo && (
+              <Video source={{uri:this.state.vUrl}}   // Can be a URL or a local file.
+                ref={(ref) => {
+                  this.player = ref
+                }}
+                ignoreSilentSwitch={null}
+                resizeMode = "cover"
+                repeat ={true}
+                paused={this.state.paused}
+                onError={this.videoError}              // Callback when video cannot be loaded
+                style={{height:DEVICE_HEIGHT, width:DEVICE_WIDTH}}
+              />
+            )}
+            {this.state.isMatchVideo && (
+              <Video source={{uri:this.state.vUrl}}   // Can be a URL or a local file.
+                ref={(ref) => {
+                  this.cdnPlayer = ref
+                }}
+                ignoreSilentSwitch={null}
+                resizeMode = "cover"
+                repeat ={true}
+                paused={this.state.privatedPaused}
+                onError={this.videoError}              // Callback when video cannot be loaded
+                style={{height:DEVICE_HEIGHT, width:DEVICE_WIDTH}}
+              />
+            )}     
           </Content>
           <View style={{position:'absolute', left:0, top:50,}}>
             <TouchableOpacity style={{width:60, height:60, marginBottom: 20,alignItems:'center', justifyContent:'center'}}
@@ -238,11 +252,11 @@ class IncomeDetail extends Component {
             <View style={{width:DEVICE_WIDTH*0.8, marginLeft:DEVICE_WIDTH*0.1, flexDirection:'row', justifyContent:'space-between'}}>
               <TouchableOpacity style={{width:60, height:50, borderWidth:1.5, borderRadius:7,borderColor:'#B64F54', alignItems:'center', justifyContent:'center'}}
                 onPress={()=>this.gotoReport()}>
-                    <Image source={b_notification} style={{width:30, height:30}}/>
+                <Image source={b_notification} style={{width:30, height:30}}/>
               </TouchableOpacity>
               <TouchableOpacity style={{width:60, height:50, borderWidth:1.5, borderRadius:7,borderColor:'#B64F54', alignItems:'center', justifyContent:'center'}}
               onPress={()=>this.gotoProfile()}>
-                  <Image source={b_profile} style={{width:30, height:30}}/>
+                <Image source={b_profile} style={{width:30, height:30}}/>
               </TouchableOpacity>
             </View>
             <View style={{width:DEVICE_WIDTH*0.8, marginLeft:DEVICE_WIDTH*0.1,marginTop:20, flexDirection:'row', justifyContent:'space-between'}}>
@@ -262,36 +276,36 @@ class IncomeDetail extends Component {
               </View>                
             </View>
           </View>          
-           {!this.state.isMatchVideo && (
-           <View style={{position:'absolute', left:0, bottom:120}}>
-              <View style={{width:DEVICE_WIDTH*0.5, marginLeft:DEVICE_WIDTH*0.25, flexDirection:'row', justifyContent:'space-between'}}>
-                <TouchableOpacity style={{width:60, height:60, borderRadius:30, backgroundColor:'#fff', alignItems:'center', justifyContent:'center'}}
-                onPress={()=>this.onReject()}>
-                  <Icon type="FontAwesome" name="close" style={{color:'#B64F54'}}/>
-                </TouchableOpacity>
-                <TouchableOpacity style={{width:60, height:60, borderRadius:30, backgroundColor:'#B64F54', alignItems:'center', justifyContent:'center'}}
-                onPress={()=>this.onMatch()}>
-                  <Icon type="FontAwesome" name="heart" style={{color:'#fff'}}/>
-                </TouchableOpacity>
-              </View>
-           </View>)}
-           {this.state.isMatchVideo && (
-           <View style={{position:'absolute', left:0, bottom:120}}>
-             <TouchableOpacity 
-                style={{
-                  width:DEVICE_WIDTH*0.5,
-                  height:40, 
-                  marginLeft:DEVICE_WIDTH*0.25, 
-                  alignItems:'center', 
-                  justifyContent:'center', 
-                  backgroundColor:'#B64F54', 
-                  borderRadius:DEVICE_WIDTH*0.25
-                }}
-                onPress={()=>this.gotoChat()}>
-                  <Text style={{color:'#fff', fontSize:16}}>{"Start Chat!"}</Text>
-             </TouchableOpacity>  
-           </View>  
-           )}     
+          {!this.state.isMatchVideo && (
+          <View style={{position:'absolute', left:0, bottom:120}}>
+            <View style={{width:DEVICE_WIDTH*0.5, marginLeft:DEVICE_WIDTH*0.25, flexDirection:'row', justifyContent:'space-between'}}>
+              <TouchableOpacity style={{width:60, height:60, borderRadius:30, backgroundColor:'#fff', alignItems:'center', justifyContent:'center'}}
+              onPress={()=>this.onReject()}>
+                <Icon type="FontAwesome" name="close" style={{color:'#B64F54'}}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={{width:60, height:60, borderRadius:30, backgroundColor:'#B64F54', alignItems:'center', justifyContent:'center'}}
+              onPress={()=>this.onMatch()}>
+                <Icon type="FontAwesome" name="heart" style={{color:'#fff'}}/>
+              </TouchableOpacity>
+            </View>
+          </View>)}
+          {this.state.isMatchVideo && (
+          <View style={{position:'absolute', left:0, bottom:120}}>
+            <TouchableOpacity 
+              style={{
+                width:DEVICE_WIDTH*0.5,
+                height:40, 
+                marginLeft:DEVICE_WIDTH*0.25, 
+                alignItems:'center', 
+                justifyContent:'center', 
+                backgroundColor:'#B64F54', 
+                borderRadius:DEVICE_WIDTH*0.25
+              }}
+              onPress={()=>this.gotoChat()}>
+                <Text style={{color:'#fff', fontSize:16}}>{"Start Chat!"}</Text>
+            </TouchableOpacity>  
+          </View>  
+          )}
        </View>      
     );
   }  
