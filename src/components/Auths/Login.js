@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import {
-    Text, Content, 
+  Text, Content,
 } from "native-base"
-import {Image, ImageBackground, Platform, Dimensions,TextInput, View,StyleSheet,TouchableOpacity, StatusBar, Alert} from "react-native";
+import { Image, ImageBackground, Platform, Dimensions, TextInput, View, StyleSheet, TouchableOpacity, StatusBar, Alert } from "react-native";
 import store from 'react-native-simple-store';
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
@@ -13,45 +13,39 @@ import uncheckIcon from '../../assets/images/uncheck.png';
 import Global from '../Global';
 
 class Login extends Component {
-  constructor(props)
-  {
+  constructor(props) {
     super(props);
     this.state = {
-      email:'',
-      password:'',
-      remberCheck:false,
+      email: '',
+      password: '',
+      remberCheck: false,
     };
   }
- 
+
   static navigationOptions = {
-    header : null
+    header: null
   };
-  checkRemember()
-  {
-    this.setState({remberCheck:!this.state.remberCheck})
+  checkRemember() {
+    this.setState({ remberCheck: !this.state.remberCheck })
   }
-  onLogin()
-  {
-    if(this.state.email == '')
-    {
+  onLogin() {
+    if (this.state.email == '') {
       Alert.alert("The email is not inputed")
       return;
     }
-    if(this.state.password == '')
-    {
+    if (this.state.password == '') {
       Alert.alert("The password is not inputed")
       return;
     }
-    if(this.state.remberCheck)
-    {
-      store.save("email", this.state.email); 
+    if (this.state.remberCheck) {
+      store.save("email", this.state.email);
       store.save("password", this.state.password);
     }
     var details = {
-      'useremail':this.state.email,
-      'userpassword':this.state.password
+      'useremail': this.state.email,
+      'userpassword': this.state.password
     };
-    
+
     var formBody = [];
     for (var property in details) {
       var encodedKey = encodeURIComponent(property);
@@ -62,133 +56,131 @@ class Login extends Component {
 
     fetch('http://138.197.203.178:8080/api/user/login', {
       method: 'POST',
-      headers: {        
-        'Content-Type':'application/x-www-form-urlencoded'     
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body:formBody,
+      body: formBody,
     }).then((response) => response.json())
-    .then((responseJson) => {
-      if(!responseJson.error)
-      {
-        Global.token = responseJson.data.token;
-        Global.u_id= responseJson.data.id
-        Global.u_name=responseJson.data.name
-        Global.u_age=responseJson.data.age
-        Global.u_gender=responseJson.data.gender
-        Global.u_email=responseJson.data.email
-        Global.u_language=responseJson.data.language
-        Global.u_city=responseJson.data.ethnicity
-        Global.u_country=responseJson.data.country
-        Global.newUser = false;
-        this.props.navigation.replace("Browse");
-      } else {
-        Alert.alert("The email or password is invalid,\n please try again");
-      }
-    }).catch((error) => {
-      return
-    });
+      .then((responseJson) => {
+        if (!responseJson.error) {
+          Global.token = responseJson.data.token;
+          Global.u_id = responseJson.data.id
+          Global.u_name = responseJson.data.name
+          Global.u_age = responseJson.data.age
+          Global.u_gender = responseJson.data.gender
+          Global.u_email = responseJson.data.email
+          Global.u_language = responseJson.data.language
+          Global.u_city = responseJson.data.ethnicity
+          Global.u_country = responseJson.data.country
+          Global.newUser = false;
+          this.props.navigation.replace("Browse");
+        } else {
+          Alert.alert("The email or password is invalid,\n please try again");
+        }
+      }).catch((error) => {
+        return
+      });
   }
-  gotoSignup()
-  {
+  gotoSignup() {
     this.props.navigation.navigate("Signup");
   }
   render() {
     return (
-       <View style={styles.contentContainer}>
-          <StatusBar backgroundColor='#fff' barStyle='dark-content'/>
-          <ImageBackground 
-            source={slogo} 
-            style={{
-              width:DEVICE_WIDTH, 
-              height:150,
-              marginTop:Platform.select({'android':0, 'ios':30}), 
-              alignItems:'center', 
-              justifyContent:'center'
-            }}>
-            <Image source={logo} style={{width:205, height:83, tintColor:'#DE5859'}}/>
-          </ImageBackground>
-          <Content>
-            <View style={{width:DEVICE_WIDTH, alignItems:'center', justifyContent:'center', marginTop:50}}>
-              <Text style={{color:'#000', fontSize:24,fontWeight:'bold'}}>{"Login to Continue"}</Text>
+      <View style={styles.contentContainer}>
+        <StatusBar backgroundColor='#fff' barStyle='dark-content' />
+        <ImageBackground
+          source={slogo}
+          style={{
+            width: DEVICE_WIDTH,
+            height: 150,
+            marginTop: Platform.select({ 'android': 0, 'ios': 30 }),
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+          <Image source={logo} style={{ width: 205, height: 83, tintColor: '#DE5859' }} />
+        </ImageBackground>
+        <Content>
+          <View style={{ width: DEVICE_WIDTH, alignItems: 'center', justifyContent: 'center', marginTop: 50 }}>
+            <Text style={{ color: '#000', fontSize: 24, fontWeight: 'bold' }}>{"Login to Continue"}</Text>
+          </View>
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Image source={emailIcon} style={{ width: 15, height: 15, tintColor: '#808080' }} />
+              <Text style={{ color: '#808080', fontSize: 12, marginLeft: 10 }}>{"EMAIL ID"}</Text>
             </View>
-            <View style={{width:DEVICE_WIDTH*0.8,marginLeft:DEVICE_WIDTH*0.1, marginTop:20}}>
-              <View style={{flexDirection:'row',alignItems:'center'}}>
-                <Image source={emailIcon} style={{width:15, height:15, tintColor:'#808080'}}/>
-                <Text style={{color:'#808080',fontSize:12, marginLeft:10}}>{"EMAIL ID"}</Text>
-              </View>
-              <View>
-                <TextInput                            
-                  style={{
-                    backgroundColor:'transparent', 
-                    width:DEVICE_WIDTH*0.8, 
-                    height:40, 
-                    paddingLeft:10, 
-                    color:'#000'
-                  }}
-                  selectionColor="#009788"
-                  keyboardType="email-address"
-                  textContentType="emailAddress"
-                  onChangeText={email => this.setState({ email })}
-                  autoCapitalize="none"
-                  underlineColorAndroid="transparent"
-                />
-              </View>
-              <View style={{height:1, width:DEVICE_WIDTH*0.8, backgroundColor:'#808080'}}/>
+            <View>
+              <TextInput
+                style={{
+                  backgroundColor: 'transparent',
+                  width: DEVICE_WIDTH * 0.8,
+                  height: 40,
+                  paddingLeft: 10,
+                  color: '#000'
+                }}
+                selectionColor="#009788"
+                keyboardType="email-address"
+                textContentType="emailAddress"
+                onChangeText={email => this.setState({ email })}
+                autoCapitalize="none"
+                underlineColorAndroid="transparent"
+              />
             </View>
-            <View style={{width:DEVICE_WIDTH*0.8,marginLeft:DEVICE_WIDTH*0.1, marginTop:20}}>
-              <View style={{flexDirection:'row',alignItems:'center'}}>
-                <Image source={passswordIcon} style={{width:15, height:15, tintColor:'#808080'}}/>
-                <Text style={{color:'#808080',fontSize:12, marginLeft:10}}>{"PASSWORD"}</Text>
-              </View>
-              <View>
-                <TextInput                            
-                  style={{backgroundColor:'transparent', width:DEVICE_WIDTH*0.8, height:40, paddingLeft:10, color:'#000'}}
-                  secureTextEntry
-                  selectionColor="#009788"
-                  onChangeText={password => this.setState({ password })}
-                  autoCapitalize="none"
-                  underlineColorAndroid="transparent"
-                />
-              </View>
-              <View style={{height:1, width:DEVICE_WIDTH*0.8, backgroundColor:'#808080'}}/>
+            <View style={{ height: 1, width: DEVICE_WIDTH * 0.8, backgroundColor: '#808080' }} />
+          </View>
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Image source={passswordIcon} style={{ width: 15, height: 15, tintColor: '#808080' }} />
+              <Text style={{ color: '#808080', fontSize: 12, marginLeft: 10 }}>{"PASSWORD"}</Text>
             </View>
-            <View style={{width:DEVICE_WIDTH*0.8,marginLeft:DEVICE_WIDTH*0.1, marginTop:20, flexDirection:'row', justifyContent:'space-between'}}>
-              <TouchableOpacity style={{flexDirection:'row', alignItems:'center', justifyContent:'center'}} onPress={()=>this.checkRemember()}>
-                {this.state.remberCheck && <Image source={checkIcon} style={{width:15, height:15}}/>}
-                {!this.state.remberCheck && <Image source={uncheckIcon} style={{width:15, height:15}}/>}
-                <Text style={{color:'#000', marginLeft:10, fontSize:12, fontWeight:'bold'}}>{"Remember me"}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{alignItems:'center', justifyContent:'center'}} onPress={()=>this.gotoForgetPassword()}>
-                  <Text style={{color:'#000', fontSize:12, fontWeight:'bold'}}>{"Forget password"}</Text>  
-              </TouchableOpacity>
+            <View>
+              <TextInput
+                style={{ backgroundColor: 'transparent', width: DEVICE_WIDTH * 0.8, height: 40, paddingLeft: 10, color: '#000' }}
+                secureTextEntry
+                selectionColor="#009788"
+                onChangeText={password => this.setState({ password })}
+                autoCapitalize="none"
+                underlineColorAndroid="transparent"
+              />
             </View>
-            <View style={{width:DEVICE_WIDTH, height:40, alignItems:'center', justifyContent:'center', marginTop:40}}>
-              <TouchableOpacity style={{width:DEVICE_WIDTH*0.8, height:40, borderRadius:25,backgroundColor:'#DE5859', alignItems:'center', justifyContent:'center'}}
-              onPress={()=>this.onLogin()}>
-                <Text style={{color:'#fff', fontSize:16, fontWeight:'bold'}}>{"LOGIN"}</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{width:DEVICE_WIDTH, justifyContent:'center', alignItems:'center', marginTop:30}}>
-              <Text style={{color:'#000', fontSize:14,}}>{"- or -"}</Text>
-            </View>
-            <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop:30}}>
-              <Text style={{color:'#000', fontSize:14,}}>{"Don't have an account yet?"}</Text>
-              <TouchableOpacity onPress={()=>this.gotoSignup()}>
-                <Text style={{color:'#DE5859', fontSize:14, textDecorationLine:'underline', fontWeight:'bold'}}>{"Sign Up"}</Text>   
-              </TouchableOpacity>
-            </View>
-          </Content>
-       </View>      
+            <View style={{ height: 1, width: DEVICE_WIDTH * 0.8, backgroundColor: '#808080' }} />
+          </View>
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} onPress={() => this.checkRemember()}>
+              {this.state.remberCheck && <Image source={checkIcon} style={{ width: 15, height: 15 }} />}
+              {!this.state.remberCheck && <Image source={uncheckIcon} style={{ width: 15, height: 15 }} />}
+              <Text style={{ color: '#000', marginLeft: 10, fontSize: 12, fontWeight: 'bold' }}>{"Remember me"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center' }} onPress={() => this.gotoForgetPassword()}>
+              <Text style={{ color: '#000', fontSize: 12, fontWeight: 'bold' }}>{"Forget password"}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ width: DEVICE_WIDTH, height: 40, alignItems: 'center', justifyContent: 'center', marginTop: 40 }}>
+            <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, height: 40, borderRadius: 25, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center' }}
+              onPress={() => this.onLogin()}>
+              <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>{"LOGIN"}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ width: DEVICE_WIDTH, justifyContent: 'center', alignItems: 'center', marginTop: 30 }}>
+            <Text style={{ color: '#000', fontSize: 14, }}>{"- or -"}</Text>
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 30 }}>
+            <Text style={{ color: '#000', fontSize: 14, }}>{"Don't have an account yet?"}</Text>
+            <TouchableOpacity onPress={() => this.gotoSignup()}>
+              <Text style={{ color: '#DE5859', fontSize: 14, textDecorationLine: 'underline', fontWeight: 'bold' }}>{"Sign Up"}</Text>
+            </TouchableOpacity>
+          </View>
+        </Content>
+      </View>
     );
-  }  
+  }
 }
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
-const styles = StyleSheet.create({    
-   contentContainer:{
-    width:'100%',
-    height:'100%',
-    backgroundColor:'#fff',
-   }, 
-  });
+const styles = StyleSheet.create({
+  contentContainer: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#fff',
+  },
+});
 export default Login;

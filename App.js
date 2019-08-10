@@ -6,15 +6,15 @@ export default class App extends React.Component {
     super(props);
     this.state = { loading: true };
   }
-  
-  async componentWillMount() {    
+
+  async componentWillMount() {
     console.disableYellowBox = true
     this.setState({ loading: false });
   }
-  
-  render() {    
+
+  render() {
     return (
-     <Router/>
+      <Router />
     );
   }
 }

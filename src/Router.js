@@ -1,4 +1,4 @@
-import {createStackNavigator} from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 //FirstScreen
 import FirstScreen from './components/FirstScreen';
 //Auths
@@ -27,32 +27,32 @@ import Report from './components/Main/Report';
 export default Router = createStackNavigator({
     FirstScreen: { screen: FirstScreen },
     //Main
-    Income:{screen:Income},
-    IncomeDetail:{screen:IncomeDetail},
-    Match:{screen:Match},
-    Browse:{screen:Browse},
-    Record:{screen:Record},
-    Filter:{screen:Filter},
-    Chat:{screen:Chat},
-    ChatDetail:{screen:ChatDetail},
-    MyVideo:{screen:MyVideo},
-    MyVideoDetail:{screen:MyVideoDetail},
-    Report:{screen:Report},
-    Profile:{screen:Profile},
-    ProfileDetail:{screen:ProfileDetail},
-    ProfileSetting:{screen:ProfileSetting},
-    TermsPolicy:{screen:TermsPolicy},
+    Income: { screen: Income },
+    IncomeDetail: { screen: IncomeDetail },
+    Match: { screen: Match },
+    Browse: { screen: Browse },
+    Record: { screen: Record },
+    Filter: { screen: Filter },
+    Chat: { screen: Chat },
+    ChatDetail: { screen: ChatDetail },
+    MyVideo: { screen: MyVideo },
+    MyVideoDetail: { screen: MyVideoDetail },
+    Report: { screen: Report },
+    Profile: { screen: Profile },
+    ProfileDetail: { screen: ProfileDetail },
+    ProfileSetting: { screen: ProfileSetting },
+    TermsPolicy: { screen: TermsPolicy },
     //Auths
-    Login: {  screen: Login},
-    Signup: {  screen: Signup},
-    Register1:{screen:Register1},
-    Register2:{screen:Register2},
-    EmailConfirm:{screen:EmailConfirm},
-},{
-    transitionConfig : () => ({
-        transitionSpec: {
-            duration: 0,
-        },
-    })
-  }
+    Login: { screen: Login },
+    Signup: { screen: Signup },
+    Register1: { screen: Register1 },
+    Register2: { screen: Register2 },
+    EmailConfirm: { screen: EmailConfirm },
+}, {
+        transitionConfig: () => ({
+            transitionSpec: {
+                duration: 0,
+            },
+        })
+    }
 );

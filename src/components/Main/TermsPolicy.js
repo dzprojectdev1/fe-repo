@@ -1,35 +1,16 @@
 import React, { Component } from 'react';
 import {
-   
-  Container,
-  Contenet,
-  Footer,
-  Button,
-  FooterTab,
   Icon,
-  Text,
-  Content,
-  
+  Text
 } from "native-base";
 import {
   View,
   StyleSheet,
-  TextInput,
-  KeyboardAvoidingView,
-  TouchableHighlight,
-  ScrollView,
-  Linking,
-  Alert,
   StatusBar,
   WebView,
   Platform,
-  ImageBackground,Dimensions,Image,TouchableOpacity
+  Dimensions, TouchableOpacity
 } from 'react-native';
-
-import Global from '../Global';
-
-
-var HEADER = '#3b5998';
 var BGWASH = 'rgba(255,255,255,0.8)';
 var DISABLED_WASH = 'rgba(255,255,255,0.25)';
 
@@ -37,10 +18,10 @@ var TEXT_INPUT_REF = 'urlInput';
 var WEBVIEW_REF = 'webview';
 
 class TermsPolicy extends Component {
- 
+
   constructor(props) {
     super(props);
-   
+
     this.state = {
       url: 'http://dazzleddate.com/tos',
       status: 'No Page Loaded',
@@ -52,30 +33,28 @@ class TermsPolicy extends Component {
 
     }
   }
- static navigationOptions = {
-    header:null,
- };
- componentDidMount()
- {
+  static navigationOptions = {
+    header: null,
+  };
+  componentDidMount() {
 
- }
- back()
- {
-     this.props.navigation.goBack(null)
- }
+  }
+  back() {
+    this.props.navigation.goBack(null)
+  }
   render() {
     this.inputText = this.state.url;
 
     return (
-      <View style={[styles.container]}> 
-        <StatusBar backgroundColor='#fff' barStyle='dark-content'/> 
-        <View style={{backgroundColor:'#fff', flexDirection:'row', height:60, marginTop:Platform.select({ios: 40, android:10,}),alignItems:'center',}}>
-           <TouchableOpacity  style={{marginTop:10,marginLeft:10, width:40, height:30}} onPress={()=> this.back()}>
-                <Icon type="Ionicons" name="md-arrow-round-back" style={{color:'#EF7193',}}/>
-           </TouchableOpacity>
-           <View style={{width:DEVICE_WIDTH - 50, marginLeft:10, marginTop:5}}>
-             <Text style={{fontWeight:'bold'}}>{"Terms and Conditions/Privacy Policy"}</Text>
-           </View>         
+      <View style={[styles.container]}>
+        <StatusBar backgroundColor='#fff' barStyle='dark-content' />
+        <View style={{ backgroundColor: '#fff', flexDirection: 'row', height: 60, marginTop: Platform.select({ ios: 40, android: 10, }), alignItems: 'center', }}>
+          <TouchableOpacity style={{ marginTop: 10, marginLeft: 10, width: 40, height: 30 }} onPress={() => this.back()}>
+            <Icon type="Ionicons" name="md-arrow-round-back" style={{ color: '#EF7193', }} />
+          </TouchableOpacity>
+          <View style={{ width: DEVICE_WIDTH - 50, marginLeft: 10, marginTop: 5 }}>
+            <Text style={{ fontWeight: 'bold' }}>{"Terms and Conditions/Privacy Policy"}</Text>
+          </View>
         </View>
         <WebView
           ref={WEBVIEW_REF}
@@ -87,7 +66,7 @@ class TermsPolicy extends Component {
           onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
           startInLoadingState={true}
           scalesPageToFit={this.state.scalesPageToFit}
-        />    
+        />
       </View>
     );
   }
@@ -101,25 +80,15 @@ class TermsPolicy extends Component {
     this.refs[WEBVIEW_REF].goForward();
   }
 
-  reload= () => {
+  reload = () => {
     this.refs[WEBVIEW_REF].reload();
   }
 
-  onShouldStartLoadWithRequest =  (event) => {
+  onShouldStartLoadWithRequest = (event) => {
     // Implement any custom loading logic here, don't forget to return!
     return true;
   }
   onNavigationStateChange = (navState) => {
-    // this.setState({
-    //   backButtonEnabled: navState.canGoBack,
-    //   forwardButtonEnabled: navState.canGoForward,
-    //   url: navState.url,
-    //   status: navState.title,
-    //   loading: navState.loading,
-    //   scalesPageToFit: true
-    // });
-    // alert(navState.url)
-    //var url = navState.url
   }
 
   onSubmitEditing = (event) => {
@@ -162,11 +131,11 @@ var styles = StyleSheet.create({
     height: '100%',
     paddingLeft: 10,
     paddingTop: 3,
-    textAlign:'center',
+    textAlign: 'center',
     paddingBottom: 3,
     flex: 1,
     fontSize: 28,
-    fontWeight:'bold',
+    fontWeight: 'bold',
   },
   navButton: {
     width: 20,
@@ -212,30 +181,30 @@ var styles = StyleSheet.create({
     width: 20,
     marginRight: 6,
   },
-  menuItem:{
-    width:'20%',
-    height:55,
-    alignItems:'center',
-    backgroundColor:'rgba(0,0,0,0.1)',
-    borderWidth:0.5,
-    borderColor:'gray',
+  menuItem: {
+    width: '20%',
+    height: 55,
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    borderWidth: 0.5,
+    borderColor: 'gray',
   },
-  lmenuItem:{
-   width:'22%',
-   marginLeft:'-2%',
-   height:55,
-   alignItems:'center',
-   backgroundColor:'rgba(0,0,0,0.1)',
-   borderWidth:0.5,
-   borderColor:'gray',
- }, 
- rmenuItem:{
-   width:'22%',
-   height:55,
-   alignItems:'center',
-   backgroundColor:'rgba(0,0,0,0.1)',
-   borderWidth:0.5,
-   borderColor:'gray',
- },
+  lmenuItem: {
+    width: '22%',
+    marginLeft: '-2%',
+    height: 55,
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    borderWidth: 0.5,
+    borderColor: 'gray',
+  },
+  rmenuItem: {
+    width: '22%',
+    height: 55,
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    borderWidth: 0.5,
+    borderColor: 'gray',
+  },
 });
 export default TermsPolicy;

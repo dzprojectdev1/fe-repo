@@ -23,7 +23,6 @@ class Profile extends Component {
   };
   componentDidMount() {
     var otherid = this.props.navigation.state.params.id;
-
     var othername = this.props.navigation.state.params.name;
 
     this.setState({id:otherid, name:othername});
@@ -32,7 +31,7 @@ class Profile extends Component {
   getVideos(otherid) {
     fetch("http://138.197.203.178:8080/api/video/othervideo/" + otherid, {
       method: 'GET',
-      headers: {        
+      headers: {
         'Content-Type':'application/json',
         'Authorization':Global.token
       }
@@ -55,25 +54,25 @@ class Profile extends Component {
       var url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_filtered_id + "-thumbnail"
       var vurl = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_filtered_id
       await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': Global.token
-          }
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': Global.token
+        }
       }).then((response) => response.json())
       .then((responseJson) => {
-          list_items.push({
-            index:i, 
-            otherId:data[i].other_user_id, 
-            imageUrl:responseJson.url, 
-            videoUrl:vurl, 
-            name:'NAME', 
-            time:'TIME'
-          });
+        list_items.push({
+          index:i,
+          otherId:data[i].other_user_id, 
+          imageUrl:responseJson.url, 
+          videoUrl:vurl, 
+          name:'NAME', 
+          time:'TIME'
+        });
       }).catch((error) => {
         return
       });
-      }
+    }
     this.setState({
       datas:list_items
     });
@@ -91,7 +90,7 @@ class Profile extends Component {
       this.props.navigation.navigate("ProfileDetail",{url:responseJson.url, otherId:otherId})
     })
     .catch((error) => {
-      alert("There is error, please try again!")
+      alert("There is error, please try again!");
       return
     });
   }

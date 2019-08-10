@@ -1,30 +1,27 @@
 import React, { Component } from "react";
 import {
-  Text, 
+  Text,
 } from "native-base"
-import { ImageBackground,Dimensions, View,StyleSheet,TouchableOpacity, StatusBar} from "react-native";
+import { ImageBackground, Dimensions, View, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
 import store from 'react-native-simple-store';
 // import logo from '../assets/images/logo.png';
 import firstBg from '../assets/images/first_bg.jpg';
 import Global from './Global'
 class FirstScreen extends Component {
-  constructor(props)
-  {
+  constructor(props) {
     super(props);
     this.state = {
-      isLoaded:false,
+      isLoaded: false,
     };
-  } 
+  }
   static navigationOptions = {
-    header : null
+    header: null
   };
   componentWillMount() {
     store.get('email').then((email) => {
-      if(email)
-      {
+      if (email) {
         store.get('password').then((password) => {
-          if(password)
-          {
+          if (password) {
             //login
             this.props.navigation.navigate("Record");
           }
@@ -32,13 +29,12 @@ class FirstScreen extends Component {
       }
     });
   }
-  onLogin(email, password)
-  { 
+  onLogin(email, password) {
     var details = {
-        'useremail':email,
-        'userpassword':password
+      'useremail': email,
+      'userpassword': password
     };
-    
+
     var formBody = [];
     for (var property in details) {
       var encodedKey = encodeURIComponent(property);
@@ -48,70 +44,67 @@ class FirstScreen extends Component {
     formBody = formBody.join("&");
 
     fetch('http://138.197.203.178:8080/api/user/login', {
-        method: 'POST',
-        headers: {        
-          'Content-Type':'application/x-www-form-urlencoded'     
-        },
-        body:formBody,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: formBody,
     }).then((response) => response.json())
-    .then((responseJson) => {
-      if(!responseJson.error)
-      {
-        Global.token = responseJson.data.token;
-        Global.u_id= responseJson.data.id
-        Global.u_name=responseJson.data.name
-        Global.u_age=responseJson.data.age
-        Global.u_gender=responseJson.data.gender
-        Global.u_email=responseJson.data.email
-        Global.u_language=responseJson.data.language
-        Global.u_city=responseJson.data.ethnicity
-        Global.u_country=responseJson.data.country
-        Global.newUser = false;
-        this.props.navigation.replace("Browse");
-      }
-    })
-    .catch((error) => {
-      alert(JSON.stringify(error))
-      return
-    });
+      .then((responseJson) => {
+        if (!responseJson.error) {
+          Global.token = responseJson.data.token;
+          Global.u_id = responseJson.data.id
+          Global.u_name = responseJson.data.name
+          Global.u_age = responseJson.data.age
+          Global.u_gender = responseJson.data.gender
+          Global.u_email = responseJson.data.email
+          Global.u_language = responseJson.data.language
+          Global.u_city = responseJson.data.ethnicity
+          Global.u_country = responseJson.data.country
+          Global.newUser = false;
+          this.props.navigation.replace("Browse");
+        }
+      })
+      .catch((error) => {
+        alert(JSON.stringify(error))
+        return
+      });
   }
-  gotoLogin()
-  {
-   this.props.navigation.replace("Login");
+  gotoLogin() {
+    this.props.navigation.replace("Login");
   }
-  gotoSignUp()
-  {
+  gotoSignUp() {
     this.props.navigation.navigate("Signup");
   }
- render() {
+  render() {
     return (
       <View style={styles.contentContainer}>
-        <ImageBackground source={firstBg} style={{width:'100%', height:'100%', alignItems:'center', justifyContent:'center'}}>
-          <StatusBar backgroundColor='#ED6164' barStyle='dark-content'/>
-          <View style={{position:'absolute', width:DEVICE_WIDTH, height:40, bottom:60, left:0,flexDirection:'row', alignItems:'center', justifyContent:'center'}}>    
-            <TouchableOpacity style={{alignItems:'center', justifyContent:'center', width:150, height:40, borderWidth:1, borderRadius:20, borderColor:'#fff'}}
-              onPress={()=>this.gotoLogin()}>
-              <Text style={{color:'#fff', fontWeight:'bold', fontSize:14}}>{"Login"}</Text>
+        <ImageBackground source={firstBg} style={{ width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+          <StatusBar backgroundColor='#ED6164' barStyle='dark-content' />
+          <View style={{ position: 'absolute', width: DEVICE_WIDTH, height: 40, bottom: 60, left: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+            <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: 150, height: 40, borderWidth: 1, borderRadius: 20, borderColor: '#fff' }}
+              onPress={() => this.gotoLogin()}>
+              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 14 }}>{"Login"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{alignItems:'center', justifyContent:'center', width:150, height:40, borderWidth:1,borderRadius:20, borderColor:'#fff', marginLeft:5}}
-              onPress={()=>this.gotoSignUp()}>
-              <Text style={{color:'#fff', fontWeight:'bold', fontSize:14}}>{"REGISTER"}</Text>
+            <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: 150, height: 40, borderWidth: 1, borderRadius: 20, borderColor: '#fff', marginLeft: 5 }}
+              onPress={() => this.gotoSignUp()}>
+              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 14 }}>{"REGISTER"}</Text>
             </TouchableOpacity>
           </View>
         </ImageBackground>
       </View>
-    );  
-  }  
+    );
+  }
 }
 const DEVICE_WIDTH = Dimensions.get('window').width;
-const DEVICE_HEIGHT = Dimensions.get('window').height;
+// const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({
-  contentContainer:{
-    width:'100%',
-    height:'100%',
-    backgroundColor:'#ED6164',
-    alignItems:'center',
-    justifyContent:'center'
-  }, 
+  contentContainer: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#ED6164',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 });
 export default FirstScreen;
