@@ -25,6 +25,7 @@ class Record extends Component {
       saving: false,
       recordTime: 0,
       recordTimeText: '00:00',
+      uploadCredentials: null,
     };
   }
 
@@ -32,7 +33,28 @@ class Record extends Component {
     header: null
   };
   componentDidMount() {
-
+    fetch("http://138.197.203.178:8080/api/storage/uploadCredentials", {
+      method: 'GET',
+      headers: {        
+        'Content-Type': 'application/json',
+        'Authorization': Global.token
+      },
+    })
+    .then(response => {
+      return response.json();
+    })
+    .then(uploadCredentials => {
+      if (uploadCredentials.message === 'Auth Failed') {
+        throw new Error(uploadCredentials.message);
+      } else {
+        this.setState({
+          uploadCredentials,
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(`error`, error);
+    });
   }
   componentWillMount() {
 
@@ -99,43 +121,39 @@ class Record extends Component {
     this.setState({ paused: true })
   }
   onUpload() {
+    console.log(this.state.recordedUri);
+    console.log(this.state.uploadCredentials);
+    const {
+      policy,
+      fileId,
+    } = this.state.uploadCredentials;
     const file = this.state.recordedUri;
-    var uploadInfo = {
-      "policy": {
-        "string": "{\"expiration\":\"2019-07-16T07:00:00.000Z\",\"conditions\":[[\"eq\",\"$key\",\"5d2ba500-a2c1-11e9-958f-fd58ed48b854\"],{\"bucket\":\"fireblast-begonia-maxwell-dev\"},[\"eq\",\"$Content-Type\",\"video/mp4\"],[\"content-length-range\",0,102400000]]}",
-        "base64": "eyJleHBpcmF0aW9uIjoiMjAxOS0wNy0xNlQwNzowMDowMC4wMDBaIiwiY29uZGl0aW9ucyI6W1siZXEiLCIka2V5IiwiNWQyYmE1MDAtYTJjMS0xMWU5LTk1OGYtZmQ1OGVkNDhiODU0Il0seyJidWNrZXQiOiJmaXJlYmxhc3QtYmVnb25pYS1tYXh3ZWxsLWRldiJ9LFsiZXEiLCIkQ29udGVudC1UeXBlIiwidmlkZW8vbXA0Il0sWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMCwxMDI0MDAwMDBdXX0=",
-        "signature": "imIa+l8vIKZLAXlA+tbb1AbnENJ5t17wd813sYRdyBH1lW/g3aqabtNrtIn8atxP928TBFZjXjPjZ4RribvY1YRELfmw4RTFgoeNP7koSt2CIKftZIKaLV1vkmQhIl55dg9rwI6YxWy4dBG+zXSVMSkoQ/T7LdQMWaHoe5Ic98W56t4GQL5sEhnSSQUoW2QJtZ+NGN4U3D3tavvSv+HQzmT+alqZBpkCQCkbE2ar2xu6aWgiib2IAyhgaIMlvrVrr/0OtRNkvlPeFxZXt40J/YV0XyxVWGuhHhxX+ExN+4lL5puZEquX83+q83v+t22ZzThbl/EQOSkXcP5STHjdiA=="
-      },
-      "fileId": "5d2ba500-a2c1-11e9-958f-fd58ed48b854"
-    }
+
     const formData = new FormData();
     formData.append('GoogleAccessId', 'main-service-account@dazzled-date-246123.iam.gserviceaccount.com');
-    formData.append('key', uploadInfo.fileId);
+    formData.append('key', fileId);
     formData.append('bucket', 'fireblast-begonia-maxwell-dev');
     formData.append('Content-Type', 'video/mp4');
-    formData.append('policy', uploadInfo.policy.base64);
-    formData.append('signature', uploadInfo.policy.signature);
-    formData.append('file', file);
+    formData.append('policy', policy.base64);
+    formData.append('signature', policy.signature);
+    // formData.append('file', file);
+    formData.append("file", {
+      name: "video.mp4",
+      type: 'video/mp4',
+      uri: this.state.recordedUri,
+    });
 
     fetch('http://fireblast-begonia-maxwell-dev.storage.googleapis.com', {
       method: 'POST',
-      mode: 'no-cors',
+      // mode: 'no-cors',
       body: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    }).then(res => {
-      console.log("------sssss--------\n\n\n");
-      console.log(res);
-      alert("Video Upload result for Google storage:\n\n" + JSON.stringify(res))
-      if (Global.newUser) {
-        this.props.navigation.navigate("Login")
-      }
-      else {
-        this.props.navigation.pop()
-      }
-      console.log("------eeeeee--------\n");
     })
+      .then(res => {
+        console.log(res);
+      })
       .catch(err => {
         console.log(err);
       });
@@ -186,7 +204,7 @@ class Record extends Component {
         </TouchableOpacity>
         {!this.state.isRecorded && (
           <View style={{ position: 'absolute', top: DEVICE_HEIGHT * 0.2, width: DEVICE_WIDTH, height: DEVICE_WIDTH * 0.7, alignItems: 'center', justifyContent: 'center' }}>
-            <Image source={heart} style={{ width: DEVICE_WIDTH * 0.7, height: DEVICE_WIDTH * 0.7 }} />
+            <Image source={heart} style={{ width: DEVICE_WIDTH * 0.7, height: DEVICE_WIDTH * 0.7, opacity: 0.75 }} />
           </View>)}
         {this.state.recording && (
           <View style={{
