@@ -19,6 +19,7 @@ import {
   StatusBar,
   Alert
 } from "react-native";
+import firebase from 'firebase';
 
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
@@ -40,13 +41,19 @@ class Chat extends Component {
   static navigationOptions = {
     header: null
   };
-
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
-  }
+  
   componentWillMount() {
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
-    this.getChatData()
+    this.getChatData();
+  }
+  componentDidMount() {
+    firebase.database().ref().child(Global.saveData.u_id)
+    .on('child_added', (value) => {
+      this.getChatData();
+    });
+  }
+  componentWillUnmount() {   
+    BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
   }
   backPressed = () => {
     this.props.navigation.replace("Match");
@@ -57,7 +64,7 @@ class Chat extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -71,17 +78,22 @@ class Chat extends Component {
   getTumbnails = async (data) => {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
-      var url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_filtered_id + "-thumbnail"
-      var vurl = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_filtered_id
+      var url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_id + "-thumbnail"
+      var vurl = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_id
       await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': Global.token
+          'Authorization': Global.saveData.token
         }
       }).then((response) => response.json())
         .then((responseJson) => {
-          list_items.push({ index: i, imageUrl: responseJson.url, videoUrl: vurl, data: data[i] })
+          list_items.push({
+            index: i,
+            imageUrl: responseJson.url,
+            videoUrl: vurl,
+            data: data[i]
+          });
         })
         .catch((error) => {
           alert(JSON.stringify(error))
@@ -100,23 +112,20 @@ class Chat extends Component {
     Alert.alert("The UI is not supported yet")
   }
   onSearch(s_text) {
-    var tmpData = this.state.tmpData
-    var list_itmes = []
+    var tmpData = this.state.tmpData;
+    var list_itmes = [];
     for (var i = 0; i < tmpData.length; i++) {
-      var name = tmpData[i].data.name
-      var message_text = tmpData[i].data.message_text
-      if (name.indexOf(s_text) != -1) {
-        list_itmes.push(tmpData[i])
-      }
-      else {
-        if (message_text.indexOf(s_text) != -1) {
-          list_itmes.push(tmpData[i])
-        }
+      var name = tmpData[i].data.name;
+      var message_text = tmpData[i].data.message_text;
+      if (name.toLowerCase().indexOf(s_text.toLowerCase()) !== -1 || message_text.toLowerCase().indexOf(s_text.toLowerCase()) !== -1) {
+        list_itmes.push(tmpData[i]);
       }
     }
-    this.setState({ datas: list_itmes, searchText: s_text })
+    this.setState({ datas: list_itmes, searchText: s_text });
   }
   gotoChat(data) {
+    alert(JSON.stringify(data));
+    Global.saveData.prevpage = "Chat";
     this.props.navigation.navigate("ChatDetail", { data: data })
   }
   render() {

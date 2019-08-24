@@ -914,13 +914,13 @@ public final class R {
         public static final int catalyst_report_button = 0x7f0c003e;
         public static final int catalyst_settings = 0x7f0c003f;
         public static final int catalyst_settings_title = 0x7f0c0040;
-        public static final int header_description = 0x7f0c0077;
-        public static final int image_button_description = 0x7f0c0078;
-        public static final int image_description = 0x7f0c0079;
-        public static final int link_description = 0x7f0c007a;
-        public static final int search_description = 0x7f0c007b;
-        public static final int search_menu_title = 0x7f0c007c;
-        public static final int status_bar_notification_info_overflow = 0x7f0c007d;
+        public static final int header_description = 0x7f0c0078;
+        public static final int image_button_description = 0x7f0c0079;
+        public static final int image_description = 0x7f0c007a;
+        public static final int link_description = 0x7f0c007b;
+        public static final int search_description = 0x7f0c007c;
+        public static final int search_menu_title = 0x7f0c007d;
+        public static final int status_bar_notification_info_overflow = 0x7f0c007e;
     }
     public static final class style {
         private style() {}

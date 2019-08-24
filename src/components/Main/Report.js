@@ -3,7 +3,16 @@ import {
   Text,
   Icon
 } from "native-base"
-import { Dimensions, TextInput, ScrollView, View, StyleSheet, TouchableOpacity, StatusBar, Alert } from "react-native";
+import { 
+  Dimensions, 
+  TextInput, 
+  ScrollView, 
+  View, 
+  StyleSheet, 
+  TouchableOpacity, 
+  StatusBar, 
+  Alert
+} from "react-native";
 
 class Report extends Component {
   constructor(props) {
@@ -21,14 +30,9 @@ class Report extends Component {
   componentDidMount() {
     this.setState({ id: this.props.navigation.state.params.otherId })
   }
-  componentWillMount() {
-
-  }
-
   onBack() {
     this.props.navigation.pop()
   }
-
   onReport() {
     if (this.state.problem_content == "") {
       Alert.alert("Please fill the input field")
@@ -69,10 +73,6 @@ class Report extends Component {
       });
   }
   render() {
-
-    var { navigate } = this.props.navigation;
-    const buttons = ['MALE', 'FEMALE']
-    const { selectedIndex } = this.state
     return (
       <View style={styles.contentContainer}>
         <StatusBar backgroundColor='#fff' barStyle='dark-content' />

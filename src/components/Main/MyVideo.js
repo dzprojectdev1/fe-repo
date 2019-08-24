@@ -50,12 +50,12 @@ class MyVideo extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-          this.getTumbnails(responseJson.data)
+          this.getTumbnails(responseJson.data);
         }
       })
       .catch((error) => {
@@ -71,7 +71,7 @@ class MyVideo extends Component {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': Global.token
+          'Authorization': Global.saveData.token
         }
       }).then((response) => response.json())
         .then((responseJson) => {
@@ -106,7 +106,7 @@ class MyVideo extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -134,7 +134,7 @@ class MyVideo extends Component {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {

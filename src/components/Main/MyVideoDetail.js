@@ -49,7 +49,7 @@ class MyVideoDetail extends Component {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -58,7 +58,6 @@ class MyVideoDetail extends Component {
         }
       })
       .catch((error) => {
-        alert(JSON.stringify(error))
         return
       });
   }

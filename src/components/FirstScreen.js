@@ -2,11 +2,19 @@ import React, { Component } from "react";
 import {
   Text,
 } from "native-base"
-import { ImageBackground, Dimensions, View, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
+import { 
+  ImageBackground, 
+  Dimensions, 
+  View, 
+  StyleSheet, 
+  TouchableOpacity, 
+  StatusBar 
+} from "react-native";
 import store from 'react-native-simple-store';
 // import logo from '../assets/images/logo.png';
 import firstBg from '../assets/images/first_bg.jpg';
-import Global from './Global'
+import Global from './Global';
+
 class FirstScreen extends Component {
   constructor(props) {
     super(props);
@@ -17,7 +25,7 @@ class FirstScreen extends Component {
   static navigationOptions = {
     header: null
   };
-  componentWillMount() {
+  componentWillMount() {    
     store.get('email').then((email) => {
       if (email) {
         store.get('password').then((password) => {
@@ -52,16 +60,16 @@ class FirstScreen extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-          Global.token = responseJson.data.token;
-          Global.u_id = responseJson.data.id
-          Global.u_name = responseJson.data.name
-          Global.u_age = responseJson.data.age
-          Global.u_gender = responseJson.data.gender
-          Global.u_email = responseJson.data.email
-          Global.u_language = responseJson.data.language
-          Global.u_city = responseJson.data.ethnicity
-          Global.u_country = responseJson.data.country
-          Global.newUser = false;
+          Global.saveData.token = responseJson.data.token;
+          Global.saveData.u_id = responseJson.data.id;
+          Global.saveData.u_name = responseJson.data.name;
+          Global.saveData.u_age = responseJson.data.age;
+          Global.saveData.u_gender = responseJson.data.gender;
+          Global.saveData.u_email = responseJson.data.email;
+          Global.saveData.u_language = responseJson.data.language;
+          Global.saveData.u_city = responseJson.data.ethnicity;
+          Global.saveData.u_country = responseJson.data.country;
+          Global.saveData.newUser = false;
           this.props.navigation.replace("Browse");
         }
       })

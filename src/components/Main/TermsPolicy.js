@@ -18,10 +18,8 @@ var TEXT_INPUT_REF = 'urlInput';
 var WEBVIEW_REF = 'webview';
 
 class TermsPolicy extends Component {
-
   constructor(props) {
     super(props);
-
     this.state = {
       url: 'http://dazzleddate.com/tos',
       status: 'No Page Loaded',
@@ -29,16 +27,12 @@ class TermsPolicy extends Component {
       forwardButtonEnabled: false,
       loading: true,
       scalesPageToFit: true,
-      inputText: '',
-
+      inputText: ''
     }
   }
   static navigationOptions = {
     header: null,
   };
-  componentDidMount() {
-
-  }
   back() {
     this.props.navigation.goBack(null)
   }
@@ -70,7 +64,6 @@ class TermsPolicy extends Component {
       </View>
     );
   }
-
 
   goBack = () => {
     this.refs[WEBVIEW_REF].goBack();

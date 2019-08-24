@@ -1,20 +1,26 @@
 import React, { Component } from "react";
 import {
-  Text,
-  Icon,
-  Content
+  Text
 } from "native-base"
-import { ImageBackground, BackHandler, Image, Platform, Dimensions, TextInput, ScrollView, View, StyleSheet, TouchableOpacity, StatusBar, Alert, Linking } from "react-native";
+import { 
+  ImageBackground,
+  BackHandler,
+  Image,
+  Platform,
+  Dimensions,
+  ScrollView,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  StatusBar
+} from "react-native";
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import { Dropdown } from 'react-native-material-dropdown';
 import { ButtonGroup } from 'react-native-elements';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
-import emailIcon from '../../assets/images/emailIcon.png';
-import passswordIcon from '../../assets/images/passwordIcon.png';
-import checkIcon from '../../assets/images/check.png';
-import uncheckIcon from '../../assets/images/uncheck.png';
 import Global from '../Global';
+
 class Filter extends Component {
   constructor(props) {
     super(props);
@@ -44,9 +50,9 @@ class Filter extends Component {
       return true;
     });
     this.setState({
-      selectedIndex: Global.f_gender - 1,
-      multiSliderValue: [Global.f_fromage, Global.f_toage],
-      sliderOneValue: [Global.f_distance]
+      selectedIndex: Global.saveData.f_gender - 1,
+      multiSliderValue: [Global.saveData.f_fromage, Global.saveData.f_toage],
+      sliderOneValue: [Global.saveData.f_distance]
     });
     this.get_ethnicity();
     this.get_country();
@@ -60,7 +66,7 @@ class Filter extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -71,7 +77,7 @@ class Filter extends Component {
           for (var i = 0; i < data.length; i++) {
             itmes.push({ value: data[i].ethnicity_name });
           }
-          this.setState({ city: Global.f_city, cityData: itmes });
+          this.setState({ city: Global.saveData.f_city, cityData: itmes });
         }
       })
       .catch((error) => {
@@ -84,7 +90,7 @@ class Filter extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -95,7 +101,7 @@ class Filter extends Component {
           for (var i = 0; i < data.length; i++) {
             itmes.push({ value: data[i].country_name })
           }
-          this.setState({ country: Global.f_county, countryData: itmes })
+          this.setState({ country: Global.saveData.f_county, countryData: itmes })
         }
       })
       .catch((error) => {
@@ -109,7 +115,7 @@ class Filter extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -120,7 +126,7 @@ class Filter extends Component {
           for (var i = 0; i < data.length; i++) {
             itmes.push({ value: data[i].language_name })
           }
-          this.setState({ language: Global.f_language, languageData: itmes })
+          this.setState({ language: Global.saveData.f_language, languageData: itmes })
         }
       })
       .catch((error) => {
@@ -194,9 +200,9 @@ class Filter extends Component {
       }
     }
 
-    Global.isFilter = true;
-    Global.removedFilter = false;
-    Global.filterData = {
+    Global.saveData.isFilter = true;
+    Global.saveData.removedFilter = false;
+    Global.saveData.filterData = {
       "Gender": this.state.selectedIndex + 1,
       "fromAge": this.state.multiSliderValue[0],
       "toAge": this.state.multiSliderValue[1],
@@ -206,18 +212,18 @@ class Filter extends Component {
       "Country": coutryindex
     }
 
-    Global.f_gender = this.state.selectedIndex + 1
-    Global.f_fromage = this.state.multiSliderValue[0]
-    Global.f_toage = this.state.multiSliderValue[1]
-    Global.f_distance = this.state.sliderOneValue[0]
-    Global.f_city = this.state.city
-    Global.f_language = this.state.language
-    Global.f_county = this.state.country
+    Global.saveData.f_gender = this.state.selectedIndex + 1
+    Global.saveData.f_fromage = this.state.multiSliderValue[0]
+    Global.saveData.f_toage = this.state.multiSliderValue[1]
+    Global.saveData.f_distance = this.state.sliderOneValue[0]
+    Global.saveData.f_city = this.state.city
+    Global.saveData.f_language = this.state.language
+    Global.saveData.f_county = this.state.country
     this.onBack()
   }
 
   removeAllFilters() {
-    Global.removedFilter = true
+    Global.saveData.removedFilter = true
     this.onBack()
   }
   render() {

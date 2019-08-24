@@ -31,12 +31,6 @@ class Record extends Component {
   static navigationOptions = {
     header: null
   };
-  componentDidMount() {
-
-  }
-  componentWillMount() {
-
-  }
   onRecord() {
     if (this.state.recording) {
       this.stopRecording()
@@ -128,7 +122,7 @@ class Record extends Component {
       console.log("------sssss--------\n\n\n");
       console.log(res);
       alert("Video Upload result for Google storage:\n\n" + JSON.stringify(res))
-      if (Global.newUser) {
+      if (Global.saveData.newUser) {
         this.props.navigation.navigate("Login")
       }
       else {

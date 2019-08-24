@@ -4,7 +4,15 @@ import {
   Text,
   Content,
 } from "native-base";
-import { BackHandler, Image, Dimensions, View, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
+import {
+  BackHandler,
+  Image,
+  Dimensions,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  StatusBar
+} from "react-native";
 
 import Video from 'react-native-video';
 import b_notification from '../../assets/images/notification.png';
@@ -15,7 +23,6 @@ import b_distance from '../../assets/images/distance.png';
 import b_profile from '../../assets/images/profile.png';
 
 import Global from '../Global';
-// import Income from "./Income";
 
 class IncomeDetail extends Component {
   constructor(props) {
@@ -40,33 +47,31 @@ class IncomeDetail extends Component {
 
   componentWillMount() {
     BackHandler.addEventListener('hardwareBackPress', this.back);
-    if (Global.prePage == "Profile") {
+    if (Global.saveData.prePage == "Profile") {
+      Global.saveData.prePage = "";
       this.setState({
-        vUrl: Global.prevUrl,
-        otherId: Global.preOtherId
+        vUrl: Global.saveData.prevUrl,
+        otherId: Global.saveData.preOtherId,
+        isMatchVideo: Global.saveData.isMatchVideo,
+        username: Global.saveData.prename,
+        userage: Global.saveData.preage,
+        userimage: Global.saveData.preimage,
+        matchId: Global.saveData.prematchID,
+        userdistance: Global.saveData.preuserdistance
       });
-      this.setState({
-        isMatchVideo: Global.isMatchVideo,
-        username: Global.prename,
-        userage: Global.preage,
-        userimage: Global.preimage,
-        matchId: Global.prematchID,
-        userdistance: Global.preuserdistance
-      });
-      Global.prePage == "";
     } else {
-      Global.prevUrl = this.props.navigation.state.params.url;
-      Global.preOtherId = this.props.navigation.state.params.otherId;
-      Global.prename = this.props.navigation.state.params.name;
-      Global.preage = this.props.navigation.state.params.age;
-      Global.preimage = this.props.navigation.state.params.imageUrl;
-      Global.prematchID = this.props.navigation.state.params.mid;
-      Global.preuserdistance = parseInt(this.props.navigation.state.params.distance);
-      // alert(JSON.stringify(this.props.navigation.state.params.url));
+      Global.saveData.prevUrl = this.props.navigation.state.params.url;
+      Global.saveData.preOtherId = this.props.navigation.state.params.otherId;
+      Global.saveData.prename = this.props.navigation.state.params.name;
+      Global.saveData.preage = this.props.navigation.state.params.age;
+      Global.saveData.preimage = this.props.navigation.state.params.imageUrl;
+      Global.saveData.prematchID = this.props.navigation.state.params.mid;
+      Global.saveData.preuserdistance = parseInt(this.props.navigation.state.params.distance);
+
       this.setState({
         vUrl: this.props.navigation.state.params.url,
         otherId: this.props.navigation.state.params.otherId,
-        isMatchVideo: Global.isMatchVideo,
+        isMatchVideo: Global.saveData.isMatchVideo,
         username: this.props.navigation.state.params.name,
         userage: this.props.navigation.state.params.age,
         userimage: this.props.navigation.state.params.imageUrl,
@@ -77,7 +82,7 @@ class IncomeDetail extends Component {
   }
   componentDidMount() {
     this.props.navigation.addListener('didFocus', (playload) => {
-      this.setState({ paused: false });
+      this.setState({ paused: false, privatedPaused: false });
     });
   }
   componentWillUnmount() {
@@ -87,15 +92,16 @@ class IncomeDetail extends Component {
     if (this.state.matchId == -1) {
       return;
     }
-    this.setState({ paused: true })
+    this.setState({ paused: true, privatedPaused: true});
     var data = {
+      imageUrl: this.state.userimage,
       data: {
-        imageUrl: this.state.userimage,
         name: this.state.username,
         other_user_id: this.state.otherId,
         match_id: this.state.matchId
       }
     }
+    Global.saveData.prevpage = "IncomeDetail"
     this.props.navigation.navigate("ChatDetail", { data: data })
   }
   onReject() {
@@ -113,7 +119,7 @@ class IncomeDetail extends Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       },
       body: formBody,
     }).then((response) => response.json())
@@ -147,7 +153,7 @@ class IncomeDetail extends Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       },
       body: formBody,
     }).then((response) => response.json())
@@ -164,11 +170,12 @@ class IncomeDetail extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
         if (responseJson.url) {
+          Global.saveData.prevUrl = responseJson.url;
           this.setState({
             vUrl: responseJson.url,
             matchId: matchId,
@@ -184,7 +191,8 @@ class IncomeDetail extends Component {
   gotoProfile() {
     this.setState({ paused: true });
     if (this.state.otherId != -1) {
-      Global.prevpage = "IncomeDetail";
+      Global.saveData.prevpage = "IncomeDetail";
+      Global.saveData.isMatchVideo = this.state.isMatchVideo;
       this.props.navigation.replace("Profile", { id: this.state.otherId, name: this.state.username });
     }
   }
@@ -293,7 +301,8 @@ class IncomeDetail extends Component {
               <Text style={{ color: '#fff', fontSize: 16 }}>{"Start Chat!"}</Text>
             </TouchableOpacity>
           </View>
-        )}
+        )
+        }
       </View>
     );
   }

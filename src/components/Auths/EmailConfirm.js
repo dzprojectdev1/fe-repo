@@ -28,7 +28,7 @@ class EmailConfirm extends Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -48,7 +48,8 @@ class EmailConfirm extends Component {
       })
       .catch((error) => {
         return
-      });
+      }
+    );
   }
   onConfirm() {
     if (this.state.code !== '') {

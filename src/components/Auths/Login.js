@@ -3,6 +3,7 @@ import {
   Text, Content,
 } from "native-base"
 import { Image, ImageBackground, Platform, Dimensions, TextInput, View, StyleSheet, TouchableOpacity, StatusBar, Alert } from "react-native";
+import DeviceInfo from 'react-native-device-info';
 import store from 'react-native-simple-store';
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
@@ -41,9 +42,11 @@ class Login extends Component {
       store.save("email", this.state.email);
       store.save("password", this.state.password);
     }
+    const uniqueId = DeviceInfo.getUniqueID();
     var details = {
       'useremail': this.state.email,
-      'userpassword': this.state.password
+      'userpassword': this.state.password,
+      'deviceId' : uniqueId
     };
 
     var formBody = [];
@@ -63,16 +66,16 @@ class Login extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-          Global.token = responseJson.data.token;
-          Global.u_id = responseJson.data.id
-          Global.u_name = responseJson.data.name
-          Global.u_age = responseJson.data.age
-          Global.u_gender = responseJson.data.gender
-          Global.u_email = responseJson.data.email
-          Global.u_language = responseJson.data.language
-          Global.u_city = responseJson.data.ethnicity
-          Global.u_country = responseJson.data.country
-          Global.newUser = false;
+          Global.saveData.token = responseJson.data.token;
+          Global.saveData.u_id = responseJson.data.id
+          Global.saveData.u_name = responseJson.data.name
+          Global.saveData.u_age = responseJson.data.age
+          Global.saveData.u_gender = responseJson.data.gender
+          Global.saveData.u_email = responseJson.data.email
+          Global.saveData.u_language = responseJson.data.language
+          Global.saveData.u_city = responseJson.data.ethnicity
+          Global.saveData.u_country = responseJson.data.country
+          Global.saveData.newUser = false;
           this.props.navigation.replace("Browse");
         } else {
           Alert.alert("The email or password is invalid,\n please try again");

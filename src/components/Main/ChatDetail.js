@@ -44,20 +44,20 @@ class ChatDetail extends React.Component {
     var userdata = this.props.navigation.state.params.data;
     this.setState({
       my_imgurl: 'https://pickaface.net/gallery/avatar/Opi51c74d0125fd4.png',
-      other_imgurl: userdata.imageUrl,
+      other_imgurl: userdata.data.imageUrl,
       my_id: 0,
       my_name: 'pys',
       other_name: userdata.data.name,
       other_id: userdata.data.other_user_id,
       match_id: userdata.data.match_id
-    });
-    //alert(userdata.data.match_id)
-    this.loadMessages();
+    }, function(){
+      this.loadMessages();
+    });    
   }
   loadMessages = async () => {
     var userdata = this.props.navigation.state.params.data;
     var match_id = userdata.data.match_id;
-    var other_imgurl = userdata.imageUrl;
+    var other_imgurl = userdata.data.imageUrl;
     var my_id = 0;
     var other_id = userdata.data.other_user_id;
     var match_id = userdata.data.match_id;
@@ -66,18 +66,18 @@ class ChatDetail extends React.Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
-        //   alert(JSON.stringify(responseJson))                        
+        //   alert(JSON.stringify(responseJson))
         if (!responseJson.error) {
           var user_data = responseJson.data.user
           var m_data = responseJson.data.content
           m_data.sort(function (a, b) {
             return b.id - a.id;
           });
-          var message_list = []
+          var message_list = [];
           for (var i = 0; i < m_data.length; i++) {
             message_list.push({
               _id: (m_data[i].message_type == 1) ? my_id : other_id,
@@ -185,7 +185,7 @@ class ChatDetail extends React.Component {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': Global.token
+          'Authorization': Global.saveData.token
         },
         body: formBody,
       }).then((response) => response.json())
@@ -207,7 +207,6 @@ class ChatDetail extends React.Component {
     return (
       <Send {...props}>
         <View style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10, marginLeft: 5, marginBottom: 5, backgroundColor: '#EC595A', alignItems: 'center', justifyContent: 'center' }}>
-          {/* <Image source={b_send} style={{width:22.5, height:15, tintColor:'#fff'}}/> */}
           <Icon type="Ionicons" name="ios-send" style={{ color: '#fff' }} />
         </View>
       </Send>
@@ -219,8 +218,8 @@ class ChatDetail extends React.Component {
   }
   gotoProfile() {
     if (this.state.other_id != -1) {
-      Global.prevpage = "ChatDetail"
-      this.props.navigation.navigate("Profile", { id: this.state.other_id, name: this.state.other_name })
+      Global.saveData.prevpage = "ChatDetail";
+      this.props.navigation.navigate("Profile", { id: this.state.other_id, name: this.state.other_name });
     }
   }
   rendercomposer = props => {
@@ -252,7 +251,11 @@ class ChatDetail extends React.Component {
     );
   }
   back() {
-    this.props.navigation.pop();
+    if (Global.saveData.prevpage === 'Chat'){
+      this.props.navigation.replace("Chat");
+    } else {
+      this.props.navigation.pop();
+    }
   }
   setToggle() {
     this.setState({ openMenu: !this.state.openMenu });

@@ -7,7 +7,18 @@ import {
   Text,
   Content,
 } from "native-base";
-import { BackHandler, Image, Platform, Dimensions, View, StyleSheet, TouchableOpacity, StatusBar, Alert } from "react-native";
+import { 
+  AsyncStorage,
+  BackHandler, 
+  Image, 
+  Platform, 
+  Dimensions, 
+  View, 
+  StyleSheet, 
+  TouchableOpacity, 
+  StatusBar, 
+  Alert 
+} from "react-native";
 
 import Video from 'react-native-video';
 import b_browse from '../../assets/images/browse.png';
@@ -15,16 +26,14 @@ import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';
 import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
-
 import b_notification from '../../assets/images/notification.png';
 import b_filters from '../../assets/images/filters.png';
-
 import b_name from '../../assets/images/name.png';
 import b_age from '../../assets/images/age.png';
 import b_distance from '../../assets/images/distance.png';
 import b_profile from '../../assets/images/profile.png';
-
 import Global from '../Global';
+
 class Browse extends Component {
   constructor(props) {
     super(props);
@@ -45,8 +54,9 @@ class Browse extends Component {
     header: null
   };
   componentDidMount() {
+    // alert(JSON.stringify(Global));
     this.props.navigation.addListener('didFocus', (playload) => {
-      if (Global.isFilter) {
+      if (Global.saveData.isFilter) {
         this.getFilterVideos()
       }
       else {
@@ -59,7 +69,7 @@ class Browse extends Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -74,26 +84,24 @@ class Browse extends Component {
         }
       })
       .catch((error) => {
-        alert("1111" + JSON.stringify(error))
         return
       });
   }
   getFilterVideos() {
-
     var details = {
-      'distance': Global.filterData.Distance,
-      'lessAge': Global.filterData.toAge,
-      'greaterAge': Global.filterData.fromAge,
-      'gender': Global.filterData.Gender
+      'distance': Global.saveData.filterData.Distance,
+      'lessAge': Global.saveData.filterData.toAge,
+      'greaterAge': Global.saveData.filterData.fromAge,
+      'gender': Global.saveData.filterData.Gender
     };
-    if (Global.filterData.lang != 0) {
-      details['languageId'] = Global.filterData.lang
+    if (Global.saveData.filterData.lang != 0) {
+      details['languageId'] = Global.saveData.filterData.lang
     }
-    if (Global.filterData.City != 0) {
-      details['ethnicityId'] = Global.filterData.City
+    if (Global.saveData.filterData.City != 0) {
+      details['ethnicityId'] = Global.saveData.filterData.City
     }
-    if (Global.filterData.Country != 0) {
-      details['countryId'] = Global.filterData.Country
+    if (Global.saveData.filterData.Country != 0) {
+      details['countryId'] = Global.saveData.filterData.Country
     }
 
     var formBody = [];
@@ -107,7 +115,7 @@ class Browse extends Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       },
       body: formBody,
     }).then((response) => response.json())
@@ -132,7 +140,8 @@ class Browse extends Component {
         }
       }).catch((error) => {
         return
-      });
+      }
+    );
   }
   getDetails = async (data) => {
     var v_url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data.cdn_filtered_id
@@ -140,7 +149,7 @@ class Browse extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -157,7 +166,8 @@ class Browse extends Component {
       .catch((error) => {
         alert("There is error, please try again!")
         return
-      });
+      }
+    );
   }
   getAge(birth) {
     var b_year = parseInt(birth.split("-")[0]);
@@ -179,13 +189,13 @@ class Browse extends Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       },
       body: formBody,
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-          if (Global.isFilter) {
+          if (Global.saveData.isFilter) {
             this.getFilterVideos()
           } else {
             this.getVideos()
@@ -201,7 +211,6 @@ class Browse extends Component {
     var details = {
       'otherId': this.state.vid
     };
-
     var formBody = [];
     for (var property in details) {
       var encodedKey = encodeURIComponent(property);
@@ -213,13 +222,13 @@ class Browse extends Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       },
       body: formBody,
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-          if (Global.isFilter) {
+          if (Global.saveData.isFilter) {
             this.getFilterVideos()
           }
           else {
@@ -230,26 +239,52 @@ class Browse extends Component {
       .catch((error) => {
         alert(JSON.stringify(error))
         return
-      });
+      }
+    );
   }
   componentWillMount() {
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
+    this.retrieveData();
   }
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
   }
-  backPressed = () => {
+  backPressed = () => {          
     Alert.alert(
       '',
       'Do you want to exit the app?',
       [
         { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-        { text: 'Yes', onPress: () => BackHandler.exitApp() },
+        { text: 'Yes', onPress: () => this.exitApp()},
       ],
       { cancelable: false });
     return true;
   }
+  exitApp = () => {
+    this.saveGlobals().then(() => {
+      BackHandler.exitApp();
+    });
+  }
+  saveGlobals = async () => {
+    try {
+      await AsyncStorage.setItem('globalData', Global.saveData);
+    } catch (error) {
+      // Error saving data
+      console.log(error);
+    }
+  }
+  retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('globalData');      // We have data!!
+      if (value !== null) {
+        alert(JSON.stringify(value));  
+      }
+    } catch (error) {
+      // Error retrieving data
+      alert(error);
+    }
+  };
   gotoFilter() {
     this.setState({
       paused: true
@@ -276,7 +311,7 @@ class Browse extends Component {
     this.setState({ paused: true });
 
     if (this.state.otherid && this.state.otherid !== -1) {
-      Global.prevpage = "Browse";
+      Global.saveData.prevpage = "Browse";
       this.props.navigation.replace("Profile", { id: this.state.otherid, name: this.state.username });
     }
   }
@@ -317,7 +352,9 @@ class Browse extends Component {
                   repeat={true}
                   paused={false}
                   onError={this.videoError}               // Callback when video cannot be loaded
-                  style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }} />)}
+                  style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
+                />
+              )}
               <View style={{ position: 'absolute', left: 0, top: 70, }}>
                 <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>
                   {(this.state.vUrl != "") && (<TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
