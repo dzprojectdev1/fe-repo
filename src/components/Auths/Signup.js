@@ -3,7 +3,14 @@ import {
   Text,
   Content
 } from "native-base"
-import { ImageBackground, Image, Platform, Dimensions, TextInput, View, StyleSheet, TouchableOpacity, StatusBar, Alert } from "react-native";
+import { 
+  ImageBackground, 
+  Image, 
+  Platform, 
+  Dimensions, 
+  TextInput, 
+  View, StyleSheet, 
+  TouchableOpacity, StatusBar, Alert } from "react-native";
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import emailIcon from '../../assets/images/emailIcon.png';
@@ -24,10 +31,6 @@ class Signup extends Component {
   static navigationOptions = {
     header: null
   };
-  componentDidMount() {
-  }
-
-
   handleSignup() {
     if (this.state.name == '') {
       Alert.alert("The name is not inputed")
@@ -51,8 +54,6 @@ class Signup extends Component {
     this.props.navigation.navigate("Login")
   }
   render() {
-
-    var { navigate } = this.props.navigation;
     return (
       <View style={styles.contentContainer}>
         <StatusBar backgroundColor='#fff' barStyle='dark-content' />
@@ -132,11 +133,9 @@ class Signup extends Component {
             </View>
             <View style={{ height: 1, width: DEVICE_WIDTH * 0.8, backgroundColor: '#808080' }} />
           </View>
-
           <View style={{ width: DEVICE_WIDTH, height: 40, alignItems: 'center', justifyContent: 'center', marginTop: 40 }}>
             <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, height: 40, borderRadius: 25, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center' }}
-              onPress={() => this.handleSignup()}
-            >
+              onPress={() => this.handleSignup()}>
               <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>{"SIGN UP"}</Text>
             </TouchableOpacity>
           </View>

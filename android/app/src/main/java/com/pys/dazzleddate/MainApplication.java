@@ -3,6 +3,7 @@ package com.pys.dazzleddate;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.brentvatne.react.ReactVideoPackage;
 import com.zyu.ReactNativeWheelPickerPackage;
 import com.rnfs.RNFSPackage;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNDeviceInfo(),
             new ReactVideoPackage(),
             new ReactNativeWheelPickerPackage(),
             new RNFSPackage(),

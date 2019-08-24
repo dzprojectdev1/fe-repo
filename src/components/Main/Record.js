@@ -28,7 +28,6 @@ class Record extends Component {
       uploadCredentials: null,
     };
   }
-
   static navigationOptions = {
     header: null
   };
@@ -55,9 +54,6 @@ class Record extends Component {
     .catch((error) => {
       console.log(`error`, error);
     });
-  }
-  componentWillMount() {
-
   }
   onRecord() {
     if (this.state.recording) {

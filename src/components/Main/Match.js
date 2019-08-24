@@ -5,7 +5,18 @@ import {
   FooterTab,
   Text,
 } from "native-base";
-import { BackHandler, Image, ScrollView, Platform, Dimensions, View, StyleSheet, FlatList, TouchableOpacity, StatusBar } from "react-native";
+import { 
+  BackHandler, 
+  Image, 
+  ScrollView, 
+  Platform, 
+  Dimensions, 
+  View, 
+  StyleSheet, 
+  FlatList, 
+  TouchableOpacity, 
+  StatusBar 
+} from "react-native";
 
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
@@ -36,7 +47,7 @@ class Match extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -63,7 +74,7 @@ class Match extends Component {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': Global.token
+          'Authorization': Global.saveData.token
         }
       }).then((response) => response.json())
         .then((responseJson) => {
@@ -81,7 +92,7 @@ class Match extends Component {
           return
         });
     }
-    this.setState({ datas: list_items })
+    this.setState({ datas: list_items });
   }
   componentWillMount() {
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
@@ -101,11 +112,11 @@ class Match extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
-        Global.isMatchVideo = true;
+        Global.saveData.isMatchVideo = true;
         this.props.navigation.navigate("IncomeDetail", { url: responseJson.url, mid: mid, otherId: otherId, imageUrl: imgurl, name: name, age: age, distance: distance });
       }).catch((error) => {
         alert("There is error, please try again!");

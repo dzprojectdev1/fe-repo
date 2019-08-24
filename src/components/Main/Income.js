@@ -5,7 +5,18 @@ import {
   FooterTab,
   Text
 } from "native-base";
-import { BackHandler, Image, ScrollView, Platform, Dimensions, View, StyleSheet, FlatList, TouchableOpacity, StatusBar } from "react-native";
+import { 
+  BackHandler, 
+  Image, 
+  ScrollView, 
+  Platform, 
+  Dimensions, 
+  View, 
+  StyleSheet, 
+  FlatList, 
+  TouchableOpacity, 
+  StatusBar 
+} from "react-native";
 
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
@@ -47,7 +58,7 @@ class Income extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -65,7 +76,8 @@ class Income extends Component {
       })
       .catch((error) => {
         return
-      });
+      }
+    );
   }
   getTumbnails = async (data) => {
     var list_items = [];
@@ -76,7 +88,7 @@ class Income extends Component {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': Global.token
+          'Authorization': Global.saveData.token
         }
       }).then((response) => response.json())
         .then((responseJson) => {
@@ -102,12 +114,11 @@ class Income extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
-        // alert(JSON.stringify(responseJson))
-        Global.isMatchVideo = false
+        Global.saveData.isMatchVideo = false
         this.props.navigation.navigate(
           "IncomeDetail",
           {

@@ -25,7 +25,7 @@ class ProfileSetting extends Component {
     header: null
   };
   componentDidMount() {
-    this.setState({ name: Global.u_name })
+    this.setState({ name: Global.saveData.u_name })
     this.get_ethnicity()
     this.get_country()
     this.get_language()
@@ -38,7 +38,7 @@ class ProfileSetting extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -49,7 +49,7 @@ class ProfileSetting extends Component {
           for (var i = 0; i < data.length; i++) {
             itmes.push({ value: data[i].ethnicity_name })
           }
-          this.setState({ city: Global.u_city, cityData: itmes })
+          this.setState({ city: Global.saveData.u_city, cityData: itmes })
         }
       })
       .catch((error) => {
@@ -62,7 +62,7 @@ class ProfileSetting extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -73,7 +73,7 @@ class ProfileSetting extends Component {
           for (var i = 0; i < data.length; i++) {
             itmes.push({ value: data[i].country_name })
           }
-          this.setState({ country: Global.u_country, countryData: itmes })
+          this.setState({ country: Global.saveData.u_country, countryData: itmes })
         }
       })
       .catch((error) => {
@@ -87,7 +87,7 @@ class ProfileSetting extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -98,7 +98,7 @@ class ProfileSetting extends Component {
           for (var i = 0; i < data.length; i++) {
             itmes.push({ value: data[i].language_name })
           }
-          this.setState({ language: Global.u_language, languageData: itmes })
+          this.setState({ language: Global.saveData.u_language, languageData: itmes })
         }
       })
       .catch((error) => {
@@ -163,16 +163,16 @@ class ProfileSetting extends Component {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       },
       body: formBody,
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-          Global.u_name = this.state.name
-          Global.u_city = this.state.city
-          Global.u_country = this.state.country
-          Global.u_language = this.state.language
+          Global.saveData.u_name = this.state.name
+          Global.saveData.u_city = this.state.city
+          Global.saveData.u_country = this.state.country
+          Global.saveData.u_language = this.state.language
           Alert.alert(responseJson.message)
         }
         else {
@@ -180,7 +180,6 @@ class ProfileSetting extends Component {
         }
       })
       .catch((error) => {
-        alert(JSON.stringify(error))
         return
       });
   }
@@ -200,7 +199,7 @@ class ProfileSetting extends Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       }
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -227,66 +226,65 @@ class ProfileSetting extends Component {
       ],
       { cancelable: false });
   }
-  logout() {
-    this.clearGlobal()
-    fetch('http://138.197.203.178:8080/api/user/logout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': Global.token
-      }
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        if (!responseJson.error) {
-          Alert.alert(responseJson.message)
-          this.props.navigation.navigate("FirstScreen")
-        }
-        else {
-          Alert.alert(responseJson.message)
-        }
-      })
-      .catch((error) => {
-        alert(JSON.stringify(error))
-        return
-      });
+  // logout() {
+  //   this.clearGlobal()
+  //   fetch('http://138.197.203.178:8080/api/user/logout', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/x-www-form-urlencoded',
+  //       'Authorization': Global.saveData.token
+  //     }
+  //   }).then((response) => response.json())
+  //     .then((responseJson) => {
+  //       if (!responseJson.error) {
+  //         Global.saveData.token = null;
+  //         this.props.navigation.navigate("FirstScreen")
+  //       }
+  //       else {
+  //         Alert.alert(responseJson.message)
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       alert(JSON.stringify(error))
+  //       return
+  //     });
+  // }
+  logout = () => {
+    this.clearGlobal();
+    this.props.navigation.navigate("FirstScreen");
   }
-  clearGlobal() {
-    Global.u_id = ''
-    Global.u_name = ''
-    Global.u_age = ''
-    Global.u_gender = ''
-    Global.u_email = ''
-    Global.u_language = ''
-    Global.u_city = ''
-    Global.u_country = ''
-    Global.u_ins_id = ''
-    Global.u_ins_comp = ''
-    Global.u_phone = ''
-    Global.u_type = ''
-    Global.u_completedNum = 0
-    Global.u_pendingNum = 0
-    Global.u_totalNum = 0
-    Global.token = ''
-    Global.gusetPost = false
-    Global.newUser = true
-    Global.isFilter = false
-    Global.removedFilter = false
-    Global.filterData = null
-    Global.isMatchVideo = false
-    Global.prevpage = ""
+  clearGlobal = () => {
+    Global.saveData.u_id = '';
+    Global.saveData.u_name = '';
+    Global.saveData.u_age = '';
+    Global.saveData.u_gender = '';
+    Global.saveData.u_email = '';
+    Global.saveData.u_language = '';
+    Global.saveData.u_city = '';
+    Global.saveData.u_country = '';
+    Global.saveData.u_ins_id = '';
+    Global.saveData.u_ins_comp = '';
+    Global.saveData.u_phone = '';
+    Global.saveData.u_type = '';
+    Global.saveData.u_completedNum = 0;
+    Global.saveData.u_pendingNum = 0;
+    Global.saveData.u_totalNum = 0;
+    Global.saveData.token = null;
+    Global.saveData.gusetPost = false;
+    Global.saveData.newUser = true;
+    Global.saveData.isFilter = false;
+    Global.saveData.removedFilter = false;
+    Global.saveData.filterData = null;
+    Global.saveData.isMatchVideo = false;
+    Global.saveData.prevpage = "";
   }
   render() {
-
-    var { navigate } = this.props.navigation;
-    const buttons = ['MALE', 'FEMALE']
-    const { selectedIndex } = this.state
     return (
       <View style={styles.contentContainer}>
         <StatusBar backgroundColor='#fff' barStyle='dark-content' />
         <View style={{ marginTop: 40, flexDirection: 'row', height: 40 }}>
           <TouchableOpacity style={{ height: 40, width: 40, marginLeft: 10, alignItems: 'center', }}
-            onPress={() => this.onBack()}
-          >
+            onPress={() => this.onBack()}>
             <Icon type="Ionicons" name="ios-arrow-back" />
           </TouchableOpacity>
           <View style={{ width: DEVICE_WIDTH - 80, height: 40, alignItems: 'center', justifyContent: 'center' }}>
@@ -327,7 +325,6 @@ class ProfileSetting extends Component {
               />
             </View>
           </View>
-
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 10 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text style={{ color: '#808080', fontSize: 12 }}>{"ETHNICITY"}</Text>
@@ -347,7 +344,6 @@ class ProfileSetting extends Component {
               />
             </View>
           </View>
-
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 10 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text style={{ color: '#808080', fontSize: 12 }}>{"COUNTRY"}</Text>
@@ -371,24 +367,20 @@ class ProfileSetting extends Component {
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
             <View />
             <TouchableOpacity style={{ width: 180, height: 30, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center', borderRadius: 5 }}
-              onPress={() => this.onUpdate()}
-            >
+              onPress={() => this.onUpdate()}>
               <Text style={{ color: '#fff', fontWeight: 'bold' }}>{"Update"}</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 30, }}
-            onPress={() => this.gotoTermofService()}
-          >
+            onPress={() => this.gotoTermofService()}>
             <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{"Term and Conditions / Privacy Policy"}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 15, }}
-            onPress={() => this.onCloseAccout()}
-          >
+            onPress={() => this.onCloseAccout()}>
             <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{"Close My Account"}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 15, }}
-            onPress={() => this.onLogout()}
-          >
+            onPress={() => this.onLogout()}>
             <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{"Log Out"}</Text>
           </TouchableOpacity>
           <View style={{ height: 100 }} />
@@ -398,7 +390,7 @@ class ProfileSetting extends Component {
   }
 }
 const DEVICE_WIDTH = Dimensions.get('window').width;
-const DEVICE_HEIGHT = Dimensions.get('window').height;
+// const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   contentContainer: {
     width: '100%',

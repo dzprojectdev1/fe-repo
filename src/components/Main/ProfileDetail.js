@@ -52,7 +52,9 @@ class ProfileDetail extends Component {
               repeat={true}
               paused={this.state.paused}
               onError={this.videoError}           // Callback when video cannot be loaded
-              style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }} />)}
+              style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }} 
+            />
+          )}
         </Content>
         <TouchableOpacity style={{ position: 'absolute', left: 0, top: 30, width: 60, height: 60, alignItems: 'center', justifyContent: 'center' }}
           onPress={() => this.onReject()}>
