@@ -36,7 +36,7 @@ class Record extends Component {
       method: 'GET',
       headers: {        
         'Content-Type': 'application/json',
-        'Authorization': Global.token
+        'Authorization': Global.saveData.token
       },
     })
     .then(response => {
