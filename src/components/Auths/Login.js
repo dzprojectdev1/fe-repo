@@ -2,8 +2,19 @@ import React, { Component } from "react";
 import {
   Text, Content,
 } from "native-base"
-import { Image, ImageBackground, Platform, Dimensions, TextInput, View, StyleSheet, TouchableOpacity, StatusBar, Alert } from "react-native";
-import DeviceInfo from 'react-native-device-info';
+import { 
+  Image, 
+  ImageBackground, 
+  Platform, 
+  Dimensions, 
+  TextInput, 
+  View, 
+  StyleSheet, 
+  TouchableOpacity, 
+  StatusBar, 
+  Alert 
+} from "react-native";
+import nativeFirebase from 'react-native-firebase';
 import store from 'react-native-simple-store';
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
@@ -42,47 +53,52 @@ class Login extends Component {
       store.save("email", this.state.email);
       store.save("password", this.state.password);
     }
-    const uniqueId = DeviceInfo.getUniqueID();
-    var details = {
-      'useremail': this.state.email,
-      'userpassword': this.state.password,
-      'deviceId' : uniqueId
-    };
-
-    var formBody = [];
-    for (var property in details) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-
-    fetch('http://138.197.203.178:8080/api/user/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: formBody,
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        if (!responseJson.error) {
-          Global.saveData.token = responseJson.data.token;
-          Global.saveData.u_id = responseJson.data.id
-          Global.saveData.u_name = responseJson.data.name
-          Global.saveData.u_age = responseJson.data.age
-          Global.saveData.u_gender = responseJson.data.gender
-          Global.saveData.u_email = responseJson.data.email
-          Global.saveData.u_language = responseJson.data.language
-          Global.saveData.u_city = responseJson.data.ethnicity
-          Global.saveData.u_country = responseJson.data.country
-          Global.saveData.newUser = false;
-          this.props.navigation.replace("Browse");
-        } else {
-          Alert.alert("The email or password is invalid,\n please try again");
+    nativeFirebase.messaging().getToken().then(fcmToken => {
+      if (fcmToken) {
+        alert(JSON.stringify(fcmToken));
+        var details = {
+          'useremail': this.state.email,
+          'userpassword': this.state.password,
+          'deviceId': fcmToken
+        };
+        var formBody = [];
+        for (var property in details) {
+          var encodedKey = encodeURIComponent(property);
+          var encodedValue = encodeURIComponent(details[property]);
+          formBody.push(encodedKey + "=" + encodedValue);
         }
-      }).catch((error) => {
-        return
-      });
+        formBody = formBody.join("&");
+        fetch('http://138.197.203.178:8080/api/user/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: formBody,
+        }).then((response) => response.json())
+          .then((responseJson) => {
+            if (!responseJson.error) {
+              Global.saveData.token = responseJson.data.token;
+              Global.saveData.u_id = responseJson.data.id
+              Global.saveData.u_name = responseJson.data.name
+              Global.saveData.u_age = responseJson.data.age
+              Global.saveData.u_gender = responseJson.data.gender
+              Global.saveData.u_email = responseJson.data.email
+              Global.saveData.u_language = responseJson.data.language
+              Global.saveData.u_city = responseJson.data.ethnicity
+              Global.saveData.u_country = responseJson.data.country
+              Global.saveData.newUser = false;
+              this.props.navigation.replace("Browse");
+            } else {
+              Alert.alert("The email or password is invalid,\n please try again");
+            }
+          }).catch((error) => {
+            return
+          });
+      } else {
+
+      }
+    });
+
   }
   gotoSignup() {
     this.props.navigation.navigate("Signup");

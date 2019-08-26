@@ -19,7 +19,6 @@ import {
   StatusBar, 
   Alert 
 } from "react-native";
-
 import Video from 'react-native-video';
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
@@ -54,7 +53,6 @@ class Browse extends Component {
     header: null
   };
   componentDidMount() {
-    // alert(JSON.stringify(Global));
     this.props.navigation.addListener('didFocus', (playload) => {
       if (Global.saveData.isFilter) {
         this.getFilterVideos()
@@ -62,7 +60,7 @@ class Browse extends Component {
       else {
         this.getVideos();
       }
-    });
+    });    
   }
   getVideos() {
     fetch('http://138.197.203.178:8080/api/match/discover', {
