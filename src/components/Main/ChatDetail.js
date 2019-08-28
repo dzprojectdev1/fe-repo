@@ -41,6 +41,7 @@ class ChatDetail extends React.Component {
   }
 
   componentDidMount() {
+    Global.saveData.nowPage = 'ChatDetail';
     var userdata = this.props.navigation.state.params.data;
     this.setState({
       my_imgurl: 'https://pickaface.net/gallery/avatar/Opi51c74d0125fd4.png',

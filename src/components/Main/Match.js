@@ -40,6 +40,7 @@ class Match extends Component {
     header: null
   };
   componentDidMount() {
+    Global.saveData.nowPage = 'Match';
     this.getHeartUsers();
   }
   getHeartUsers() {

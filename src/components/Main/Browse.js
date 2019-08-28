@@ -17,7 +17,7 @@ import {
   StyleSheet, 
   TouchableOpacity, 
   StatusBar, 
-  Alert 
+  Alert
 } from "react-native";
 import Video from 'react-native-video';
 import b_browse from '../../assets/images/browse.png';
@@ -52,16 +52,28 @@ class Browse extends Component {
   static navigationOptions = {
     header: null
   };
+
+  componentWillMount() {
+    Global.saveData.nowPage = 'Browse';
+    BackHandler.addEventListener('hardwareBackPress', this.backPressed);
+    this.retrieveData();
+  }
+
   componentDidMount() {
     this.props.navigation.addListener('didFocus', (playload) => {
       if (Global.saveData.isFilter) {
-        this.getFilterVideos()
+        this.getFilterVideos();
       }
       else {
         this.getVideos();
       }
-    });    
+    });
   }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
+  }  
+  
   getVideos() {
     fetch('http://138.197.203.178:8080/api/match/discover', {
       method: 'POST',
@@ -194,9 +206,9 @@ class Browse extends Component {
       .then((responseJson) => {
         if (!responseJson.error) {
           if (Global.saveData.isFilter) {
-            this.getFilterVideos()
+            this.getFilterVideos();
           } else {
-            this.getVideos()
+            this.getVideos();
           }
         }
       })
@@ -240,14 +252,7 @@ class Browse extends Component {
       }
     );
   }
-  componentWillMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.backPressed);
-    this.retrieveData();
-  }
-
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
-  }
+  
   backPressed = () => {          
     Alert.alert(
       '',

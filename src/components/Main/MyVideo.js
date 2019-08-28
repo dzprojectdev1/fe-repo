@@ -41,6 +41,7 @@ class MyVideo extends Component {
     header: null
   };
   componentDidMount() {
+    Global.saveData.nowPage = 'MyVideo';
     this.props.navigation.addListener('didFocus', (playload) => {
       this.getVideos()
     });

@@ -28,6 +28,7 @@ class Report extends Component {
     header: null
   };
   componentDidMount() {
+    Global.saveData.nowPage = 'Report';
     this.setState({ id: this.props.navigation.state.params.otherId })
   }
   onBack() {

@@ -5,6 +5,7 @@ import {
 } from "native-base";
 import { Dimensions, View, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
 import Video from 'react-native-video';
+import Global from '../Global';
 
 class ProfileDetail extends Component {
   constructor(props) {
@@ -22,15 +23,18 @@ class ProfileDetail extends Component {
   static navigationOptions = {
     header: null
   };
-  componentDidMount() {
-    this.props.navigation.addListener('didFocus', (playload) => {
-      this.setState({ paused: false })
-    });
-  }
+  
   componentWillMount() {
+    Global.saveData.nowPage = 'ProfileDetail';
     this.setState({
       vUrl: this.props.navigation.state.params.url,
       otherId: this.props.navigation.state.params.otherId
+    });
+  }
+
+  componentDidMount() {
+    this.props.navigation.addListener('didFocus', (playload) => {
+      this.setState({ paused: false })
     });
   }
 

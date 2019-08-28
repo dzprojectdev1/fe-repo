@@ -32,6 +32,7 @@ class Record extends Component {
     header: null
   };
   componentDidMount() {
+    Global.saveData.nowPage = 'Record';
     fetch("http://138.197.203.178:8080/api/storage/uploadCredentials", {
       method: 'GET',
       headers: {        
@@ -162,10 +163,6 @@ class Record extends Component {
     this.props.navigation.pop()
   }
   render() {
-
-    var { navigate } = this.props.navigation;
-    const { recording, processing } = this.state;
-
     return (
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
@@ -213,8 +210,7 @@ class Record extends Component {
           style={{
             position: 'absolute', left: 0, bottom: 30, height: 40, width: DEVICE_WIDTH, flexDirection: 'row',
             alignItems: 'center', justifyContent: 'center'
-          }}
-        >
+          }}>
           <View style={{ width: DEVICE_WIDTH * 0.8, height: 60, flexDirection: 'row', justifyContent: this.state.isRecorded ? 'space-between' : 'center' }}>
             {this.state.isRecorded && this.state.paused && (
               <TouchableOpacity onPress={() => this.openPlay()}>

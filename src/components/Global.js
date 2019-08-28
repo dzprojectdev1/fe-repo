@@ -38,4 +38,5 @@ module.exports.saveData =
         prematchID: "",
         preuserdistance: 0,
         prePage: '',
+        nowPage: ''
     };

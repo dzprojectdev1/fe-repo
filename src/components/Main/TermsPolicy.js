@@ -11,6 +11,8 @@ import {
   Platform,
   Dimensions, TouchableOpacity
 } from 'react-native';
+import Global from '../Global';
+
 var BGWASH = 'rgba(255,255,255,0.8)';
 var DISABLED_WASH = 'rgba(255,255,255,0.25)';
 
@@ -33,6 +35,11 @@ class TermsPolicy extends Component {
   static navigationOptions = {
     header: null,
   };
+
+  componentWillMount() {
+    Global.saveData.nowPage = 'TermsPolicy';
+  }
+
   back() {
     this.props.navigation.goBack(null)
   }

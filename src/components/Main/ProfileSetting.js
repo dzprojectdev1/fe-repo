@@ -25,6 +25,7 @@ class ProfileSetting extends Component {
     header: null
   };
   componentDidMount() {
+    Global.saveData.nowPage = 'ProfileSetting';
     this.setState({ name: Global.saveData.u_name })
     this.get_ethnicity()
     this.get_country()

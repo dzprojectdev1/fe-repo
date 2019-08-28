@@ -46,6 +46,7 @@ class IncomeDetail extends Component {
   };
 
   componentWillMount() {
+    Global.saveData.nowPage = 'IncomeDetail';
     BackHandler.addEventListener('hardwareBackPress', this.back);
     if (Global.saveData.prePage == "Profile") {
       Global.saveData.prePage = "";

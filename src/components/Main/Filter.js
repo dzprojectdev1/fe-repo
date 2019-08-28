@@ -45,6 +45,7 @@ class Filter extends Component {
     header: null
   };
   componentDidMount() {
+    Global.saveData.nowPage = 'Filter';
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       this.onBack(); // works best when the goBack is async
       return true;

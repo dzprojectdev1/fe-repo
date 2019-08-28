@@ -2,7 +2,15 @@ import React, { Component } from "react";
 import {
   Text, Content,
 } from "native-base"
-import { Image, ImageBackground, Platform, Dimensions, TextInput, View, StyleSheet, TouchableOpacity, StatusBar, Alert } from "react-native";
+import { Image, 
+  ImageBackground, 
+  Platform, 
+  Dimensions, 
+  TextInput, 
+  View, 
+  StyleSheet, 
+  TouchableOpacity, 
+  StatusBar, Alert } from "react-native";
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import Global from '../Global';
@@ -75,7 +83,7 @@ class EmailConfirm extends Component {
         .then((responseJson) => {
           alert(JSON.stringify(responseJson))
           if (!responseJson.error) {
-            this.props.navigation.replace("Record");
+            this.props.navigation.replace("Main");
           } else {
             alert(responseJson.message ? responseJson.message : 'Woops! Try again.');
           }

@@ -31,6 +31,7 @@ class Profile extends Component {
     header: null
   };
   componentDidMount() {
+    Global.saveData.nowPage = 'Profile';
     var otherid = this.props.navigation.state.params.id;
     var othername = this.props.navigation.state.params.name;
 

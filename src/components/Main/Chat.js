@@ -43,6 +43,7 @@ class Chat extends Component {
   };
   
   componentWillMount() {
+    Global.saveData.nowPage = 'Chat';
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
     this.getChatData();
   }
@@ -124,7 +125,6 @@ class Chat extends Component {
     this.setState({ datas: list_itmes, searchText: s_text });
   }
   gotoChat(data) {
-    alert(JSON.stringify(data));
     Global.saveData.prevpage = "Chat";
     this.props.navigation.navigate("ChatDetail", { data: data })
   }

@@ -25,18 +25,20 @@ class FirstScreen extends Component {
   static navigationOptions = {
     header: null
   };
+
   componentWillMount() {    
     store.get('email').then((email) => {
       if (email) {
         store.get('password').then((password) => {
           if (password) {
             //login
-            this.props.navigation.navigate("Record");
+            this.props.navigation.navigate("Main");
           }
         });
       }
     });
   }
+  
   onLogin(email, password) {
     var details = {
       'useremail': email,
@@ -70,7 +72,7 @@ class FirstScreen extends Component {
           Global.saveData.u_city = responseJson.data.ethnicity;
           Global.saveData.u_country = responseJson.data.country;
           Global.saveData.newUser = false;
-          this.props.navigation.replace("Browse");
+          this.props.navigation.replace("Main");
         }
       })
       .catch((error) => {

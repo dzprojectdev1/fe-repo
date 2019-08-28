@@ -26,8 +26,7 @@ import Report from './components/Main/Report';
 
 import ChatScreen from './components/Main/ChatScreen';
 
-export default Router = createStackNavigator(
-    {
+export default Router = createStackNavigator({        
         FirstScreen: { screen: FirstScreen },
         //Main
         Income: { screen: Income },
@@ -38,7 +37,7 @@ export default Router = createStackNavigator(
         Filter: { screen: Filter },
         Chat: { screen: Chat },
         // ChatDetail: { screen: ChatDetail },
-        ChatDetail: {screen: ChatScreen},
+        ChatDetail: { screen: ChatScreen },
         MyVideo: { screen: MyVideo },
         MyVideoDetail: { screen: MyVideoDetail },
         Report: { screen: Report },
@@ -53,6 +52,7 @@ export default Router = createStackNavigator(
         Register2: { screen: Register2 },
         EmailConfirm: { screen: EmailConfirm },
     }, {
+        initialRouteName: 'FirstScreen',
         transitionConfig: () => ({
             transitionSpec: {
                 duration: 0,

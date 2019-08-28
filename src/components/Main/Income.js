@@ -40,6 +40,7 @@ class Income extends Component {
     header: null
   };
   componentDidMount() {
+    Global.saveData.nowPage = 'Income';
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
     this.props.navigation.addListener('didFocus', (playload) => {
       this.getHeartUsers()

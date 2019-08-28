@@ -28,6 +28,7 @@ class MyVideoDetail extends Component {
     header: null
   };
   componentDidMount() {
+    Global.saveData.nowPage = 'MyVideoDetail';
     this.setState({ username: 'SANDY', userage: 27, userdistance: 302 })
     this.props.navigation.addListener('didFocus', (playload) => {
       this.setState({ paused: false })

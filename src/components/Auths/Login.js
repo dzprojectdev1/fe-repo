@@ -55,7 +55,6 @@ class Login extends Component {
     }
     nativeFirebase.messaging().getToken().then(fcmToken => {
       if (fcmToken) {
-        alert(JSON.stringify(fcmToken));
         var details = {
           'useremail': this.state.email,
           'userpassword': this.state.password,
@@ -94,8 +93,6 @@ class Login extends Component {
           }).catch((error) => {
             return
           });
-      } else {
-
       }
     });
 

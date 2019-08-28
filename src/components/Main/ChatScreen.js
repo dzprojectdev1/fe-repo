@@ -46,6 +46,7 @@ export default class ChatScreen extends React.Component {
     _menu = null;
 
     componentWillMount() {
+        Global.saveData.nowPage = 'ChatDetail';
         firebase.database().ref().child(Global.saveData.u_id).child(this.state.other.userId)
             .on('child_added', (value) => {
                 this.setState((prevState) => {
@@ -57,7 +58,7 @@ export default class ChatScreen extends React.Component {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow.bind(this));
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide.bind(this));
         BackHandler.addEventListener('hardwareBackPress', this.backPressed);
-        this.getMessageData();
+        // this.getMessageData();
     }
 
     componentDidMount() {        
@@ -67,8 +68,8 @@ export default class ChatScreen extends React.Component {
     }    
 
     componentWillUnmount() {
-        firebase.database().ref().child(Global.saveData.u_id).child(this.state.other.userId).remove();
-        firebase.database().ref().child(this.state.other.userId).child(Global.saveData.u_id).remove();
+        // firebase.database().ref().child(Global.saveData.u_id).child(this.state.other.userId).remove();
+        // firebase.database().ref().child(this.state.other.userId).child(Global.saveData.u_id).remove();
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
         BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
