@@ -33,6 +33,8 @@ import b_distance from '../../assets/images/distance.png';
 import b_profile from '../../assets/images/profile.png';
 import Global from '../Global';
 
+import {SERVER_URL} from '../../config/constants';
+
 class Browse extends Component {
   constructor(props) {
     super(props);
@@ -75,7 +77,7 @@ class Browse extends Component {
   }  
   
   getVideos() {
-    fetch('http://138.197.203.178:8080/api/match/discover', {
+    fetch(`${SERVER_URL}/api/match/discover`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -121,7 +123,7 @@ class Browse extends Component {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    fetch('http://138.197.203.178:8080/api/match/discover', {
+    fetch(`${SERVER_URL}/api/match/discover`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -154,7 +156,8 @@ class Browse extends Component {
     );
   }
   getDetails = async (data) => {
-    var v_url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data.cdn_filtered_id
+    var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=${data.cdn_filtered_id}`;
+
     fetch(v_url, {
       method: 'GET',
       headers: {
@@ -195,7 +198,7 @@ class Browse extends Component {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    fetch('http://138.197.203.178:8080/api/match/dislike', {
+    fetch(`${SERVER_URL}/api/match/dislike`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -228,7 +231,7 @@ class Browse extends Component {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    fetch('http://138.197.203.178:8080/api/match/like', {
+    fetch(`${SERVER_URL}/api/match/like`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',

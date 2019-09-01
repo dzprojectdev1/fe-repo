@@ -17,6 +17,9 @@ import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import { Dropdown } from 'react-native-material-dropdown';
 import Global from '../Global';
+
+import {SERVER_URL} from '../../config/constants';
+
 class Register2 extends Component {
   constructor(props) {
     super(props);
@@ -53,7 +56,7 @@ class Register2 extends Component {
     this.get_language()
   }
   get_ethnicity() {
-    fetch('http://138.197.203.178:8080/api/ethnicity/all', {
+    fetch(`${SERVER_URL}/api/ethnicity/all`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -76,7 +79,7 @@ class Register2 extends Component {
       });
   }
   get_country() {
-    fetch('http://138.197.203.178:8080/api/country/all', {
+    fetch(`${SERVER_URL}/api/country/all`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -100,7 +103,7 @@ class Register2 extends Component {
   }
 
   get_language() {
-    fetch('http://138.197.203.178:8080/api/language/all', {
+    fetch(`${SERVER_URL}/api/language/all`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -145,7 +148,7 @@ class Register2 extends Component {
     }
     formBody = formBody.join("&");
 
-    fetch('http://138.197.203.178:8080/api/user/signup', {
+    fetch(`${SERVER_URL}/api/user/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -175,7 +178,7 @@ class Register2 extends Component {
     }
     formBody = formBody.join("&");
 
-    fetch('http://138.197.203.178:8080/api/user/login', {
+    fetch(`${SERVER_URL}/api/user/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'

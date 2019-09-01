@@ -29,6 +29,8 @@ import b_myvideo from '../../assets/images/myvideo.png';
 import b_delete from '../../assets/images/delete.png';
 import Global from '../Global';
 
+import {SERVER_URL} from '../../config/constants';
+
 class MyVideo extends Component {
   constructor(props) {
     super(props);
@@ -47,7 +49,7 @@ class MyVideo extends Component {
     });
   }
   getVideos() {
-    fetch("http://138.197.203.178:8080/api/video/getMyAllVideo", {
+    fetch(`${SERVER_URL}/api/video/getMyAllVideo`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -131,7 +133,7 @@ class MyVideo extends Component {
       { cancelable: false });
   }
   deleteVideo(otherid) {
-    fetch('http://138.197.203.178:8080/api/video/removeMyVideo/' + otherid, {
+    fetch(`${SERVER_URL}/api/video/removeMyVideo/${otherid}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

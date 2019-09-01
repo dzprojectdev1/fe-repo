@@ -24,6 +24,8 @@ import b_profile from '../../assets/images/profile.png';
 
 import Global from '../Global';
 
+import {SERVER_URL} from '../../config/constants';
+
 class IncomeDetail extends Component {
   constructor(props) {
     super(props);
@@ -116,7 +118,7 @@ class IncomeDetail extends Component {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    fetch('http://138.197.203.178:8080/api/match/sendHeartReject', {
+    fetch(`${SERVER_URL}/api/match/sendHeartReject`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -150,7 +152,7 @@ class IncomeDetail extends Component {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    fetch('http://138.197.203.178:8080/api/match/requestMatch', {
+    fetch(`${SERVER_URL}/api/match/requestMatch`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -167,7 +169,7 @@ class IncomeDetail extends Component {
       });
   }
   getMatchedVideo = (cdnId, matchId) => {
-    fetch('http://138.197.203.178:8080/api/storage/videoLink?fileId=' + cdnId, {
+    fetch(`${SERVER_URL}/api/storage/videoLink?fileId=${cdnId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -9,6 +9,8 @@ import { Dimensions, View, StyleSheet, TouchableOpacity, StatusBar } from "react
 import Video from 'react-native-video';
 import Global from '../Global';
 
+import {SERVER_URL} from '../../config/constants';
+
 class MyVideoDetail extends Component {
   constructor(props) {
     super(props);
@@ -46,7 +48,7 @@ class MyVideoDetail extends Component {
     this.props.navigation.pop()
   }
   onSetPrimary() {
-    fetch('http://138.197.203.178:8080/api/video/setAsPrimary/' + this.state.vid, {
+    fetch(`${SERVER_URL}/api/video/setAsPrimary/` + this.state.vid, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

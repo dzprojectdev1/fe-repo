@@ -14,6 +14,8 @@ import retrying from '../../assets/images/retrying.png';
 import stoping from '../../assets/images/stoping.png';
 import Global from '../Global';
 
+import {SERVER_URL} from '../../config/constants';
+
 class Record extends Component {
   constructor(props) {
     super(props);
@@ -33,7 +35,7 @@ class Record extends Component {
   };
   componentDidMount() {
     Global.saveData.nowPage = 'Record';
-    fetch("http://138.197.203.178:8080/api/storage/uploadCredentials", {
+    fetch(`${SERVER_URL}/api/storage/uploadCredentials`, {
       method: 'GET',
       headers: {        
         'Content-Type': 'application/json',

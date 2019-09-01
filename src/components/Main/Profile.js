@@ -17,6 +17,8 @@ import {
 
 import Global from '../Global';
 
+import {SERVER_URL} from '../../config/constants';
+
 class Profile extends Component {
   constructor(props) {
     super(props);
@@ -39,7 +41,7 @@ class Profile extends Component {
     this.getVideos(otherid);
   }
   getVideos(otherid) {
-    fetch("http://138.197.203.178:8080/api/video/othervideo/" + otherid, {
+    fetch(`${SERVER_URL}/api/video/othervideo/${otherid}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -60,8 +62,8 @@ class Profile extends Component {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
       var value = Object.values(data[i]);
-      var url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + value[0] + "-thumbnail";
-      var vurl = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + value[0];
+      var url = `${SERVER_URL}/api/storage/videoLink?fileId=${value[0]}-screenshot`;
+      var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${value[0]}`;
       await fetch(url, {
         method: 'GET',
         headers: {

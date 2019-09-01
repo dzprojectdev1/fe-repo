@@ -24,6 +24,8 @@ import checkIcon from '../../assets/images/check.png';
 import uncheckIcon from '../../assets/images/uncheck.png';
 import Global from '../Global';
 
+import {SERVER_URL} from '../../config/constants';
+
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -67,7 +69,7 @@ class Login extends Component {
           formBody.push(encodedKey + "=" + encodedValue);
         }
         formBody = formBody.join("&");
-        fetch('http://138.197.203.178:8080/api/user/login', {
+        fetch(`${SERVER_URL}/api/user/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
