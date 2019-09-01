@@ -7,6 +7,8 @@ import { Dimensions, TextInput, ScrollView, View, StyleSheet, TouchableOpacity, 
 import { Dropdown } from 'react-native-material-dropdown';
 import Global from '../Global';
 
+import {SERVER_URL} from '../../config/constants';
+
 class ProfileSetting extends Component {
   constructor(props) {
     super(props);
@@ -35,7 +37,7 @@ class ProfileSetting extends Component {
 
   }
   get_ethnicity() {
-    fetch('http://138.197.203.178:8080/api/ethnicity/all', {
+    fetch(`${SERVER_URL}/api/ethnicity/all`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +61,7 @@ class ProfileSetting extends Component {
       });
   }
   get_country() {
-    fetch('http://138.197.203.178:8080/api/country/all', {
+    fetch(`${SERVER_URL}/api/country/all`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -84,7 +86,7 @@ class ProfileSetting extends Component {
   }
 
   get_language() {
-    fetch('http://138.197.203.178:8080/api/language/all', {
+    fetch(`${SERVER_URL}/api/language/all`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -160,7 +162,7 @@ class ProfileSetting extends Component {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    fetch('http://138.197.203.178:8080/api/user/updateSetting', {
+    fetch(`${SERVER_URL}/api/user/updateSetting`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -196,7 +198,7 @@ class ProfileSetting extends Component {
   }
   closeAccout() {
     this.clearGlobal()
-    fetch('http://138.197.203.178:8080/api/user/removeAccount', {
+    fetch(`${SERVER_URL}/api/user/removeAccount`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -229,7 +231,7 @@ class ProfileSetting extends Component {
   }
   // logout() {
   //   this.clearGlobal()
-  //   fetch('http://138.197.203.178:8080/api/user/logout', {
+  //   fetch(`${SERVER_URL}/api/user/logout`, {
   //     method: 'POST',
   //     headers: {
   //       'Content-Type': 'application/x-www-form-urlencoded',

@@ -22,6 +22,8 @@ import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 import Global from '../Global';
 import firebase from 'firebase';
 
+import {SERVER_URL} from '../../config/constants';
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
 
@@ -144,7 +146,7 @@ export default class ChatScreen extends React.Component {
         }
         formBody = formBody.join("&");
 
-        fetch('http://138.197.203.178:8080/api/chat/blockChat', {
+        fetch(`${SERVER_URL}/api/chat/blockChat`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -171,7 +173,7 @@ export default class ChatScreen extends React.Component {
 
     getMessageData = async () => {
         const { matchId } = this.state;
-        await fetch("http://138.197.203.178:8080/api/chat/getChatWithMatchId/" + matchId, {
+        await fetch(`${SERVER_URL}/api/chat/getChatWithMatchId/${matchId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -261,7 +263,7 @@ export default class ChatScreen extends React.Component {
             formBody.push(encodedKey + "=" + encodedValue);
         }
         formBody = formBody.join("&");
-        fetch('http://138.197.203.178:8080/api/chat/create', {
+        fetch(`${SERVER_URL}/api/chat/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

@@ -14,6 +14,7 @@ import { Image,
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import Global from '../Global';
+import {SERVER_URL} from '../../config/constants';
 
 class EmailConfirm extends Component {
   constructor(props) {
@@ -32,7 +33,7 @@ class EmailConfirm extends Component {
     this.sendCode()
   }
   sendCode() {
-    fetch('http://138.197.203.178:8080/api/user/sendConfirmEmail', {
+    fetch(`${SERVER_URL}/api/user/sendConfirmEmail`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -73,7 +74,7 @@ class EmailConfirm extends Component {
       }
       formBody = formBody.join("&");
 
-      fetch('http://138.197.203.178:8080/api/user/emailVerify', {
+      fetch(`${SERVER_URL}/api/user/emailVerify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'

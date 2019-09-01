@@ -14,6 +14,8 @@ import {
   Alert
 } from "react-native";
 
+import {SERVER_URL} from '../../config/constants';
+
 class Report extends Component {
   constructor(props) {
     super(props);
@@ -52,7 +54,7 @@ class Report extends Component {
     }
     formBody = formBody.join("&");
 
-    fetch('http://138.197.203.178:8080/api/chat/reportUser', {
+    fetch(`${SERVER_URL}/api/chat/reportUser`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'

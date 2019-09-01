@@ -15,6 +15,8 @@ import store from 'react-native-simple-store';
 import firstBg from '../assets/images/first_bg.jpg';
 import Global from './Global';
 
+import {SERVER_URL} from '../config/constants';
+
 class FirstScreen extends Component {
   constructor(props) {
     super(props);
@@ -53,13 +55,16 @@ class FirstScreen extends Component {
     }
     formBody = formBody.join("&");
 
-    fetch('http://138.197.203.178:8080/api/user/login', {
+    fetch(`${SERVER_URL}/api/user/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: formBody,
-    }).then((response) => response.json())
+    })
+      .then((response) => {
+        return response.json();
+      })
       .then((responseJson) => {
         if (!responseJson.error) {
           Global.saveData.token = responseJson.data.token;

@@ -27,6 +27,8 @@ import b_picture from '../../assets/images/picture.png';
 import b_camera from '../../assets/images/camera.png';
 import b_userplus from '../../assets/images/userplus.png';
 
+import {SERVER_URL} from '../../config/constants';
+
 class ChatDetail extends React.Component {
   state = {
     isExtraSending: false,
@@ -63,7 +65,7 @@ class ChatDetail extends React.Component {
     var other_id = userdata.data.other_user_id;
     var match_id = userdata.data.match_id;
 
-    await fetch("http://138.197.203.178:8080/api/chat/getChatWithMatchId/" + match_id, {
+    await fetch(`${SERVER_URL}/api/chat/getChatWithMatchId/${match_id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -182,7 +184,7 @@ class ChatDetail extends React.Component {
         formBody.push(encodedKey + "=" + encodedValue);
       }
       formBody = formBody.join("&");
-      fetch('http://138.197.203.178:8080/api/chat/create', {
+      fetch(`${SERVER_URL}/api/chat/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -289,7 +291,7 @@ class ChatDetail extends React.Component {
     }
     formBody = formBody.join("&");
 
-    fetch('http://138.197.203.178:8080/api/chat/blockChat', {
+    fetch(`${SERVER_URL}/api/chat/blockChat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'

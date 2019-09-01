@@ -21,6 +21,9 @@ import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import { Dropdown } from 'react-native-material-dropdown';
 import Global from '../Global';
+
+import { SERVER_URL } from '../../config/constants';
+
 class Register2 extends Component {
   constructor(props) {
     super(props);
@@ -57,7 +60,7 @@ class Register2 extends Component {
     this.get_language()
   }
   get_ethnicity() {
-    fetch('http://138.197.203.178:8080/api/ethnicity/all', {
+    fetch(`${SERVER_URL}/api/ethnicity/all`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -80,7 +83,7 @@ class Register2 extends Component {
       });
   }
   get_country() {
-    fetch('http://138.197.203.178:8080/api/country/all', {
+    fetch(`${SERVER_URL}/api/country/all`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -104,7 +107,7 @@ class Register2 extends Component {
   }
 
   get_language() {
-    fetch('http://138.197.203.178:8080/api/language/all', {
+    fetch(`${SERVER_URL}/api/language/all`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -210,8 +213,7 @@ class Register2 extends Component {
               formBody.push(encodedKey + "=" + encodedValue);
             }
             formBody = formBody.join("&");
-
-            fetch('http://138.197.203.178:8080/api/user/signup', {
+            fetch(`${SERVER_URL}/api/user/signup`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -232,7 +234,6 @@ class Register2 extends Component {
             alert(error.message);
             return null;
           },
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
         );
       }
     });
@@ -251,34 +252,33 @@ class Register2 extends Component {
           var encodedValue = encodeURIComponent(details[property]);
           formBody.push(encodedKey + "=" + encodedValue);
         }
-        formBody = formBody.join("&");
-        fetch('http://138.197.203.178:8080/api/user/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: formBody,
-        }).then((response) => response.json())
-          .then((responseJson) => {
-            if (!responseJson.error) {
-              Global.saveData.token = responseJson.data.token;
-              Global.saveData.u_id = responseJson.data.id
-              Global.saveData.u_name = responseJson.data.name
-              Global.saveData.u_age = responseJson.data.age
-              Global.saveData.u_gender = responseJson.data.gender
-              Global.saveData.u_email = responseJson.data.email
-              Global.saveData.u_language = responseJson.data.language
-              Global.saveData.u_city = responseJson.data.ethnicity
-              Global.saveData.u_country = responseJson.data.country
-              Global.saveData.newUser = false;
-              this.props.navigation.navigate("EmailConfirm");
-            }
-          })
-          .catch((error) => {
-            alert(JSON.stringify(error))
-            return
-          });
       }
+      formBody = formBody.join("&");
+      fetch(`${SERVER_URL}/api/user/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formBody,
+      }).then((response) => response.json())
+        .then((responseJson) => {
+          if (!responseJson.error) {
+            Global.saveData.token = responseJson.data.token;
+            Global.saveData.u_id = responseJson.data.id
+            Global.saveData.u_name = responseJson.data.name
+            Global.saveData.u_age = responseJson.data.age
+            Global.saveData.u_gender = responseJson.data.gender
+            Global.saveData.u_email = responseJson.data.email
+            Global.saveData.u_language = responseJson.data.language
+            Global.saveData.u_city = responseJson.data.ethnicity
+            Global.saveData.u_country = responseJson.data.country
+            Global.saveData.newUser = false;
+            this.props.navigation.navigate("EmailConfirm");
+          }
+        }).catch((error) => {
+          alert(JSON.stringify(error))
+          return
+        });
     });
   }
   render() {

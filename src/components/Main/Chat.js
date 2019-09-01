@@ -21,6 +21,8 @@ import {
 } from "react-native";
 import firebase from 'firebase';
 
+import { SERVER_URL } from '../../config/constants';
+
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';
@@ -61,7 +63,7 @@ class Chat extends Component {
     return true;
   }
   getChatData() {
-    fetch("http://138.197.203.178:8080/api/chat/all", {
+    fetch(`${SERVER_URL}/api/chat/all`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -79,8 +81,8 @@ class Chat extends Component {
   getTumbnails = async (data) => {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
-      var url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_id + "-thumbnail"
-      var vurl = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_id
+      var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
+      var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
       await fetch(url, {
         method: 'GET',
         headers: {

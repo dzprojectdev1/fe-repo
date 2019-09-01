@@ -29,6 +29,8 @@ import b_myvideo from '../../assets/images/myvideo.png';
 import b_delete from '../../assets/images/delete.png';
 import Global from '../Global';
 
+import {SERVER_URL} from '../../config/constants';
+
 class MyVideo extends Component {
   constructor(props) {
     super(props);
@@ -47,50 +49,61 @@ class MyVideo extends Component {
     });
   }
   getVideos() {
-    fetch("http://138.197.203.178:8080/api/video/getMyAllVideo", {
+    fetch(`${SERVER_URL}/api/video/getMyAllVideo`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': Global.saveData.token
       }
-    }).then((response) => response.json())
-      .then((responseJson) => {
+    })
+      .then(response => response.json())
+      .then(responseJson => {
         if (!responseJson.error) {
-          this.getTumbnails(responseJson.data);
+          console.log('Videos:', responseJson.data);
+          this.getThumbnails(responseJson.data);
         }
       })
       .catch((error) => {
-        return
+        console.log('getVideos() Error', error);
       });
   }
-  getTumbnails = async (data) => {
-    var list_items = [];
-    for (var i = 0; i < data.length; i++) {
-      var url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_id + "-thumbnail"
-      var vurl = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_id
-      await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': Global.saveData.token
-        }
-      }).then((response) => response.json())
-        .then((responseJson) => {
-          list_items.push({
-            index: i,
-            id: data[i].id,
-            otherId: data[i].user_id,
-            primary: data[i].is_primary,
-            imageUrl: responseJson.url,
-            videoUrl: vurl,
-            name: 'NAME',
-            time: 'TIME'
+  getThumbnails(videos) {
+    const list_items = [];
+    Promise.all(
+      videos.map((video, idx) => {
+        return fetch(
+          `${SERVER_URL}/api/storage/videoLink?fileId=${video.cdn_id}-screenshot`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': Global.saveData.token
+            }
+          }
+        )
+          .then(response => response.json())
+          .then(signedUrl => {
+            if (signedUrl && signedUrl.url) {
+              return {
+                index: idx,
+                id: video.id,
+                otherId: video.user_id,
+                primary: video.is_primary,
+                imageUrl: signedUrl.url,
+                videoUrl: `${SERVER_URL}/api/storage/videoLink?fileId=${video.cdn_id}`,
+                name: 'NAME',
+                time: 'TIME'
+              }
+            } else {
+              return null;
+            }
           });
-        }).catch((error) => {
-          return
-        });
-    }
-    this.setState({ datas: list_items })
+      })
+    )
+      .then(assets => assets.filter(Boolean))
+      .then(assets => {
+        this.setState({ datas: assets });
+      });
   }
   componentWillMount() {
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
@@ -131,7 +144,7 @@ class MyVideo extends Component {
       { cancelable: false });
   }
   deleteVideo(otherid) {
-    fetch('http://138.197.203.178:8080/api/video/removeMyVideo/' + otherid, {
+    fetch(`${SERVER_URL}/api/video/removeMyVideo/${otherid}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

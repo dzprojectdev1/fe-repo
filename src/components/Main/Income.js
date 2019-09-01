@@ -27,6 +27,8 @@ import b_name from '../../assets/images/name.png';
 import b_age from '../../assets/images/age.png';
 import Global from '../Global';
 
+import {SERVER_URL} from '../../config/constants';
+
 class Income extends Component {
   constructor(props) {
     super(props);
@@ -55,7 +57,7 @@ class Income extends Component {
     return true;
   }
   getHeartUsers = () => {
-    fetch("http://138.197.203.178:8080/api/match/getReceivedHearts", {
+    fetch(`${SERVER_URL}/api/match/getReceivedHearts`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -83,8 +85,8 @@ class Income extends Component {
   getTumbnails = async (data) => {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
-      var url = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_filtered_id + "-thumbnail"
-      var vurl = "http://138.197.203.178:8080/api/storage/videoLink?fileId=" + data[i].cdn_filtered_id
+      var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_filtered_id}-screenshot`;
+      var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_filtered_id}`;
       await fetch(url, {
         method: 'GET',
         headers: {
