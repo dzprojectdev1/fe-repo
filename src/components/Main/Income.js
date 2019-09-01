@@ -171,7 +171,6 @@ class Income extends Component {
                     </View>
                   </TouchableOpacity>
                 );
-
               }}
               keyExtractor={(item, index) => index}
             />)}

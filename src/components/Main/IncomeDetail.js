@@ -93,8 +93,9 @@ class IncomeDetail extends Component {
     if (this.state.matchId == -1) {
       return;
     }
-    this.setState({ paused: true, privatedPaused: true});
-    var data = {
+    this.setState({ paused: true, privatedPaused: true });
+    alert(JSON.stringify(this.state.userimage));
+    var otherData = {
       imageUrl: this.state.userimage,
       data: {
         name: this.state.username,
@@ -103,7 +104,7 @@ class IncomeDetail extends Component {
       }
     }
     Global.saveData.prevpage = "IncomeDetail"
-    this.props.navigation.navigate("ChatDetail", { data: data })
+    this.props.navigation.navigate("ChatDetail", { data: otherData })
   }
   onReject() {
     var details = {
@@ -176,13 +177,28 @@ class IncomeDetail extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         if (responseJson.url) {
-          Global.saveData.prevUrl = responseJson.url;
-          this.setState({
-            vUrl: responseJson.url,
-            matchId: matchId,
-            isMatchVideo: true,
-            privatedPaused: false
-          });
+          fetch("http://138.197.203.178:8080/api/storage/videoLink?fileId=" + cdnId + "-thumbnail", {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': Global.saveData.token
+            }
+          }).then((t_response) => t_response.json())
+            .then((t_responseJson) => {
+              if (t_responseJson.url) {
+                Global.saveData.prevUrl = responseJson.url;
+                this.setState({
+                  vUrl: responseJson.url,
+                  userimage: t_responseJson.url,
+                  matchId: matchId,
+                  isMatchVideo: true,
+                  privatedPaused: false
+                });
+              }
+            }).catch((error) => {
+              alert("There is error, please try again!");
+              return
+            });
         }
       }).catch((error) => {
         alert("There is error, please try again!");

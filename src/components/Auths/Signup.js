@@ -142,7 +142,7 @@ class Signup extends Component {
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 30 }}>
             <Text style={{ color: '#000', fontSize: 14, }}>{"Already have an account?"}</Text>
             <TouchableOpacity onPress={() => this.gotoLogin()}>
-              <Text style={{ color: '#DE5859', fontSize: 14, textDecorationLine: 'underline', fontWeight: 'bold' }}>{"Sign In"}</Text>
+              <Text style={{ color: '#DE5859', fontSize: 14, textDecorationLine: 'underline', fontWeight: 'bold' }}>{" Sign In "}</Text>
             </TouchableOpacity>
           </View>
           <View style={{ height: 10 }} />

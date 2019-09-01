@@ -3,6 +3,7 @@ package com.pys.dazzleddate;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.evollu.react.fcm.FIRMessagingPackage;
 import io.invertase.firebase.RNFirebasePackage;
@@ -34,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFusedLocationPackage(),
             new RNGestureHandlerPackage(),
             new FIRMessagingPackage(),
             new RNFirebasePackage(),

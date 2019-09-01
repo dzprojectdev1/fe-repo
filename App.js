@@ -1,16 +1,15 @@
 import React from 'react';
-import { View, PermissionsAndroid } from 'react-native';
+import { View, AsyncStorage, PermissionsAndroid } from 'react-native';
 import * as firebase from 'firebase';
 import nativeFirebase from 'react-native-firebase';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
-import Permissions from 'react-native-permissions';
 import AppView from './AppView';
 import Global from './src/components/Global';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-  } 
+  }
 
   async componentWillMount() {
     console.disableYellowBox = true;
@@ -27,31 +26,8 @@ export default class App extends React.Component {
     this.setState({ loading: false });
   }
 
-  async requestCameraPermission() {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        {
-          title: 'Cool Photo App Camera Permission',
-          message:
-            'Cool Photo App needs access to your camera ' +
-            'so you can take awesome pictures.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use the camera');
-      } else {
-        console.log('Camera permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  }
-
   componentDidMount() {
+    this.checkCameraPermission();
     this.checkPermission();
     this.createNotificationListeners();
   }
@@ -59,6 +35,56 @@ export default class App extends React.Component {
   componentWillUnmount() {
     this.notificationListener();
     this.notificationOpenedListener();
+  }
+
+  async checkCameraPermission() {
+    try {
+      var permissions = [];
+      const isCameraPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA);
+      const isRecordAudioPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
+      const isAccessFineLocationPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+      if (!isCameraPermission) {
+        permissions.push(PermissionsAndroid.PERMISSIONS.CAMERA);
+      }
+      if (!isRecordAudioPermission) {
+        permissions.push(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
+      }
+      if (!isAccessFineLocationPermission) {
+        permissions.push(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+      }
+      if (permissions.length === 0) {
+        return;
+      }
+      await this.requestPermissions(permissions);
+    } catch (error) {
+      // Error retrieving data
+      console.error(error);
+    }
+  }
+
+  async requestPermissions(permissions) {
+    try {
+      const granted = await PermissionsAndroid.requestMultiple(
+        permissions,
+        {
+          title: 'Cool App Some Permissions',
+          message:
+            'Cool App needs access to your some permissions.',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted['android.permission.CAMERA'] 
+      && granted['android.permission.RECORD_AUDIO'] 
+      && granted['android.permission.ACCESS_FINE_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED) {
+        alert('You can use the all');
+      } else {
+        alert('all permission denied');
+      }
+    } catch (error) {
+      // Error retrieving data
+      console.error(error);
+    }
   }
 
   async checkPermission() {
@@ -138,7 +164,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <AppView />
         <FlashMessage position="top" />
       </View>
