@@ -4,7 +4,6 @@ if (__DEV__) {
 
 import React from 'react';
 import { View, AsyncStorage, PermissionsAndroid } from 'react-native';
-import { View, PermissionsAndroid, AsyncStorage } from 'react-native';
 import * as firebase from 'firebase';
 import nativeFirebase from 'react-native-firebase';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
