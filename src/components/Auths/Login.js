@@ -2,17 +2,18 @@ import React, { Component } from "react";
 import {
   Text, Content,
 } from "native-base"
-import { 
-  Image, 
-  ImageBackground, 
-  Platform, 
-  Dimensions, 
-  TextInput, 
-  View, 
-  StyleSheet, 
-  TouchableOpacity, 
-  StatusBar, 
-  Alert 
+import {
+  Image,
+  ImageBackground,
+  Platform,
+  Dimensions,
+  TextInput,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  StatusBar,
+  Alert,
+  BackHandler
 } from "react-native";
 import nativeFirebase from 'react-native-firebase';
 import store from 'react-native-simple-store';
@@ -24,7 +25,7 @@ import checkIcon from '../../assets/images/check.png';
 import uncheckIcon from '../../assets/images/uncheck.png';
 import Global from '../Global';
 
-import {SERVER_URL} from '../../config/constants';
+import { SERVER_URL } from '../../config/constants';
 
 class Login extends Component {
   constructor(props) {
@@ -39,15 +40,36 @@ class Login extends Component {
   static navigationOptions = {
     header: null
   };
+
+  componentWillMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.backPressed);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
+  }
+
+  backPressed = () => {
+    Alert.alert(
+      '',
+      'Do you want to exit the app?',
+      [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+        { text: 'Yes', onPress: () => BackHandler.exitApp() },
+      ],
+      { cancelable: false });
+    return true;
+  }
+
   checkRemember() {
     this.setState({ remberCheck: !this.state.remberCheck })
   }
   onLogin() {
-    if (this.state.email == '') {
+    if (this.state.email === '') {
       Alert.alert("The email is not inputed")
       return;
     }
-    if (this.state.password == '') {
+    if (this.state.password === '') {
       Alert.alert("The password is not inputed")
       return;
     }
@@ -77,7 +99,7 @@ class Login extends Component {
           body: formBody,
         }).then((response) => response.json())
           .then((responseJson) => {
-            if (!responseJson.error) {
+            if (!responseJson.error) {              
               Global.saveData.token = responseJson.data.token;
               Global.saveData.u_id = responseJson.data.id
               Global.saveData.u_name = responseJson.data.name
@@ -88,16 +110,25 @@ class Login extends Component {
               Global.saveData.u_city = responseJson.data.ethnicity
               Global.saveData.u_country = responseJson.data.country
               Global.saveData.newUser = false;
-              this.props.navigation.replace("Browse");
+              if (parseInt(responseJson.data.email_status) !== 1) {
+                this.props.navigation.replace("EmailConfirm");
+              } else {
+                this.props.navigation.replace("Browse");
+              }
             } else {
-              Alert.alert("The email or password is invalid,\n please try again");
+              Alert.alert(
+                '',
+                responseJson.message,
+                [
+                  { text: 'Ok', onPress: () => console.log(responseJson.message)},
+                ],
+                { cancelable: true });
             }
           }).catch((error) => {
             return
           });
       }
     });
-
   }
   gotoSignup() {
     this.props.navigation.navigate("Signup");

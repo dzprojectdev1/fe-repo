@@ -2,89 +2,120 @@ import React, { Component } from "react";
 import {
   Text,
 } from "native-base"
-import { 
-  ImageBackground, 
-  Dimensions, 
-  View, 
-  StyleSheet, 
-  TouchableOpacity, 
-  StatusBar 
+import {
+  ImageBackground,
+  Dimensions,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  BackHandler,
+  StatusBar,
+  AsyncStorage,
+  ActivityIndicator,
+  Alert
 } from "react-native";
-import store from 'react-native-simple-store';
+// import store from 'react-native-simple-store';
 // import logo from '../assets/images/logo.png';
 import firstBg from '../assets/images/first_bg.jpg';
 import Global from './Global';
 
-import {SERVER_URL} from '../config/constants';
+import { SERVER_URL } from '../config/constants';
 
 class FirstScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoaded: false,
+      isLoaded: true,
     };
   }
   static navigationOptions = {
     header: null
   };
 
-  componentWillMount() {    
-    store.get('email').then((email) => {
-      if (email) {
-        store.get('password').then((password) => {
-          if (password) {
-            //login
-            this.props.navigation.navigate("Main");
+  // componentWillMount() {
+  //   BackHandler.addEventListener('hardwareBackPress', this.backPressed);    
+  // }
+
+  // componentWillUnmount() {
+  //   BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
+  // } 
+
+  // backPressed = () => {          
+  //   Alert.alert(
+  //     '',
+  //     'Do you want to exit the app?',
+  //     [
+  //       { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+  //       { text: 'Yes', onPress: () => BackHandler.exitApp()},
+  //     ],
+  //     { cancelable: false });
+  //   return true;
+  // }
+
+  componentDidMount() {
+    this.retrieveData().then((userToken) => {
+      if (userToken) {
+        fetch(`${SERVER_URL}/api/user/checkLoginStatus`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': userToken
           }
+        }).then((response) => response.json())
+          .then((responseJson) => {
+            if (responseJson.message === 'Auth Failed') {
+              this.setState({
+                isLoaded: false
+              });
+            }
+            if (!responseJson.error) {
+              Global.saveData.token = userToken;
+              Global.saveData.u_id = responseJson.data.id;
+              Global.saveData.u_name = responseJson.data.name;
+              Global.saveData.u_age = responseJson.data.age;
+              Global.saveData.u_gender = responseJson.data.gender;
+              Global.saveData.u_email = responseJson.data.email;
+              Global.saveData.u_language = responseJson.data.language;
+              Global.saveData.u_city = responseJson.data.ethnicity;
+              Global.saveData.u_country = responseJson.data.country;
+              Global.saveData.newUser = false;
+              if (parseInt(responseJson.data.email_status) !== 1) {
+                this.props.navigation.replace("EmailConfirm");
+              } else {
+                this.props.navigation.replace("Browse");
+              }
+            } else {
+              Alert.alert(
+                '',
+                responseJson.message,
+                [
+                  { text: 'Ok', onPress: () => console.log(responseJson.message)},
+                ],
+                { cancelable: true });
+              this.setState({
+                isLoaded: false
+              });
+            }
+          }).catch((error) => {
+            return
+          });
+      } else {
+        this.setState({
+          isLoaded: false
         });
       }
     });
   }
-  
-  onLogin(email, password) {
-    var details = {
-      'useremail': email,
-      'userpassword': password
-    };
-
-    var formBody = [];
-    for (var property in details) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
+  retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('globalData');      // We have data!!
+      return JSON.parse(value);
+    } catch (error) {
+      // Error retrieving data
+      alert(error);
     }
-    formBody = formBody.join("&");
-
-    fetch(`${SERVER_URL}/api/user/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: formBody,
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((responseJson) => {
-        if (!responseJson.error) {
-          Global.saveData.token = responseJson.data.token;
-          Global.saveData.u_id = responseJson.data.id;
-          Global.saveData.u_name = responseJson.data.name;
-          Global.saveData.u_age = responseJson.data.age;
-          Global.saveData.u_gender = responseJson.data.gender;
-          Global.saveData.u_email = responseJson.data.email;
-          Global.saveData.u_language = responseJson.data.language;
-          Global.saveData.u_city = responseJson.data.ethnicity;
-          Global.saveData.u_country = responseJson.data.country;
-          Global.saveData.newUser = false;
-          this.props.navigation.replace("Main");
-        }
-      })
-      .catch((error) => {
-        alert(JSON.stringify(error))
-        return
-      });
-  }
+    return;
+  };
   gotoLogin() {
     this.props.navigation.replace("Login");
   }
@@ -96,16 +127,23 @@ class FirstScreen extends Component {
       <View style={styles.contentContainer}>
         <ImageBackground source={firstBg} style={{ width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
           <StatusBar backgroundColor='#ED6164' barStyle='dark-content' />
-          <View style={{ position: 'absolute', width: DEVICE_WIDTH, height: 40, bottom: 60, left: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-            <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: 150, height: 40, borderWidth: 1, borderRadius: 20, borderColor: '#fff' }}
-              onPress={() => this.gotoLogin()}>
-              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 14 }}>{"Login"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: 150, height: 40, borderWidth: 1, borderRadius: 20, borderColor: '#fff', marginLeft: 5 }}
-              onPress={() => this.gotoSignUp()}>
-              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 14 }}>{"REGISTER"}</Text>
-            </TouchableOpacity>
-          </View>
+          {(this.state.isLoaded === false) && (
+            <View style={{ position: 'absolute', width: DEVICE_WIDTH, height: 40, bottom: 60, left: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: 150, height: 40, borderWidth: 1, borderRadius: 20, borderColor: '#fff' }}
+                onPress={() => this.gotoLogin()}>
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 14 }}>{"Login"}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: 150, height: 40, borderWidth: 1, borderRadius: 20, borderColor: '#fff', marginLeft: 5 }}
+                onPress={() => this.gotoSignUp()}>
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 14 }}>{"REGISTER"}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          {(this.state.isLoaded === true) && (
+            <View style={{flex: 1, alignSelf: 'center', justifyContent: 'center', justifyContent: 'space-around', padding: 10}}>
+              <ActivityIndicator size="large" color="#FFFFFF"/>
+            </View>
+          )}
         </ImageBackground>
       </View>
     );

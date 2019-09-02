@@ -1,10 +1,9 @@
 if (__DEV__) {
   import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
 }
-
 import React from 'react';
-import { View, AsyncStorage, PermissionsAndroid } from 'react-native';
-import * as firebase from 'firebase';
+import { AsyncStorage, View, PermissionsAndroid } from 'react-native';
+import firebase from 'firebase';
 import nativeFirebase from 'react-native-firebase';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
 import AppView from './AppView';

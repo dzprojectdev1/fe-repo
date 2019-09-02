@@ -10,7 +10,9 @@ import {
   Dimensions, 
   TextInput, 
   View, StyleSheet, 
-  TouchableOpacity, StatusBar, Alert } from "react-native";
+  TouchableOpacity, 
+  StatusBar, 
+  Alert } from "react-native";
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import emailIcon from '../../assets/images/emailIcon.png';

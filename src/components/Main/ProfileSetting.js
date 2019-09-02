@@ -3,11 +3,21 @@ import {
   Text,
   Icon,
 } from "native-base"
-import { Dimensions, TextInput, ScrollView, View, StyleSheet, TouchableOpacity, StatusBar, Alert } from "react-native";
+import {
+  Dimensions,
+  TextInput,
+  ScrollView,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  StatusBar,
+  Alert,
+  AsyncStorage
+} from "react-native";
 import { Dropdown } from 'react-native-material-dropdown';
 import Global from '../Global';
 
-import {SERVER_URL} from '../../config/constants';
+import { SERVER_URL } from '../../config/constants';
 
 class ProfileSetting extends Component {
   constructor(props) {
@@ -33,9 +43,6 @@ class ProfileSetting extends Component {
     this.get_country()
     this.get_language()
   }
-  componentWillMount() {
-
-  }
   get_ethnicity() {
     fetch(`${SERVER_URL}/api/ethnicity/all`, {
       method: 'GET',
@@ -45,7 +52,6 @@ class ProfileSetting extends Component {
       }
     }).then((response) => response.json())
       .then((responseJson) => {
-        //alert(JSON.stringify(responseJson))
         if (!responseJson.error) {
           var data = responseJson.data;
           var itmes = [];
@@ -109,8 +115,6 @@ class ProfileSetting extends Component {
         return
       });
   }
-
-
   onBack() {
     this.props.navigation.pop()
   }
@@ -219,6 +223,15 @@ class ProfileSetting extends Component {
         return
       });
   }
+  removeItemValue = async () => {
+    try {
+      await AsyncStorage.removeItem('globalData');
+      return true;
+    }
+    catch (exception) {
+      return false;
+    }
+  }
   onLogout() {
     Alert.alert(
       '',
@@ -229,32 +242,20 @@ class ProfileSetting extends Component {
       ],
       { cancelable: false });
   }
-  // logout() {
-  //   this.clearGlobal()
-  //   fetch(`${SERVER_URL}/api/user/logout`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/x-www-form-urlencoded',
-  //       'Authorization': Global.saveData.token
-  //     }
-  //   }).then((response) => response.json())
-  //     .then((responseJson) => {
-  //       if (!responseJson.error) {
-  //         Global.saveData.token = null;
-  //         this.props.navigation.navigate("FirstScreen")
-  //       }
-  //       else {
-  //         Alert.alert(responseJson.message)
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       alert(JSON.stringify(error))
-  //       return
-  //     });
-  // }
   logout = () => {
-    this.clearGlobal();
-    this.props.navigation.navigate("FirstScreen");
+    this.removeItemValue().then((result) => {
+      if (result === true) {
+        this.clearGlobal();
+        Alert.alert(
+          '',
+          'You have been logged out successfully',
+          [
+            { text: 'Ok', backgroundColor: '#FCDD80', onPress: () => () => console.log('Ok Pressed')},
+          ],
+          { cancelable: true });
+        this.props.navigation.navigate("FirstScreen");
+      }
+    });
   }
   clearGlobal = () => {
     Global.saveData.u_id = '';

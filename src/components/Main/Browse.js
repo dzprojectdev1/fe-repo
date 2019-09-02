@@ -57,8 +57,7 @@ class Browse extends Component {
 
   componentWillMount() {
     Global.saveData.nowPage = 'Browse';
-    BackHandler.addEventListener('hardwareBackPress', this.backPressed);
-    this.retrieveData();
+    BackHandler.addEventListener('hardwareBackPress', this.backPressed);    
   }
 
   componentDidMount() {
@@ -274,23 +273,12 @@ class Browse extends Component {
   }
   saveGlobals = async () => {
     try {
-      await AsyncStorage.setItem('globalData', Global.saveData);
+      await AsyncStorage.setItem('globalData', JSON.stringify(Global.saveData.token));
     } catch (error) {
       // Error saving data
       console.log(error);
     }
-  }
-  retrieveData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('globalData');      // We have data!!
-      if (value !== null) {
-        alert(JSON.stringify(value));  
-      }
-    } catch (error) {
-      // Error retrieving data
-      alert(error);
-    }
-  };
+  }  
   gotoFilter() {
     this.setState({
       paused: true
