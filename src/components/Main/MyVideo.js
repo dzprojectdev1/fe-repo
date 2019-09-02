@@ -81,7 +81,13 @@ class MyVideo extends Component {
             }
           }
         )
-          .then(response => response.json())
+          .then(response => {
+            return response.json()
+              .catch(e => {
+                console.log(`.json() error:`, e);
+                return null;
+              });
+          })
           .then(signedUrl => {
             if (signedUrl && signedUrl.url) {
               return {
