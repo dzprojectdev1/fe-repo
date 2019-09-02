@@ -120,8 +120,8 @@ class Record extends Component {
     this.setState({ paused: true })
   }
   onUpload() {
-    console.log(this.state.recordedUri);
-    console.log(this.state.uploadCredentials);
+    if (this.state.saving) return;
+
     const {
       policy,
       fileId,
@@ -156,6 +156,10 @@ class Record extends Component {
       .catch(err => {
         console.log(err);
       });
+
+    this.setState({
+      saving: true,
+    });
     // this.props.navigation.navigate("Browse",{url:this.state.recordedUri})
   }
   rgisterVideo() {
@@ -238,7 +242,11 @@ class Record extends Component {
               </TouchableOpacity>)}
             {this.state.isRecorded && (
               <TouchableOpacity onPress={() => this.onUpload()}>
-                <Image source={saving} style={{ width: 60, height: 60 }} />
+                <Image source={saving} style={{
+                  width: 60,
+                  height: 60,
+                  opacity: this.state.saving ? 0.5 : 1,
+                }} />
               </TouchableOpacity>)}
           </View>
         </View>
