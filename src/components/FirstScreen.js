@@ -95,7 +95,7 @@ class FirstScreen extends Component {
               this.setState({
                 isLoaded: false
               });
-            }
+            } 
           }).catch((error) => {
             return
           });
