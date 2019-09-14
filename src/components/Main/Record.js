@@ -151,7 +151,7 @@ class Record extends Component {
       },
     })
       .then(res => {
-        console.log(res);
+        this.props.navigation.navigate("Browse",{url:this.state.recordedUri})
       })
       .catch(err => {
         console.log(err);
@@ -160,7 +160,6 @@ class Record extends Component {
     this.setState({
       saving: true,
     });
-    // this.props.navigation.navigate("Browse",{url:this.state.recordedUri})
   }
   rgisterVideo() {
 

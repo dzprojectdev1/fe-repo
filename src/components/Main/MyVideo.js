@@ -84,7 +84,7 @@ class MyVideo extends Component {
           .then(response => {
             return response.json()
               .catch(e => {
-                console.log(`.json() error:`, e);
+                console.log(`Bad video data error. Returning null here.`, e);
                 return null;
               });
           })
