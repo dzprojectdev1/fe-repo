@@ -53,7 +53,7 @@ class Filter extends Component {
       return true;
     });
     this.setState({
-      selectedIndex: Global.saveData.f_gender - 1,
+      selectedIndex: Global.saveData.u_gender === 1 ? 1 : 0,
       multiSliderValue: [Global.saveData.f_fromage, Global.saveData.f_toage],
       sliderOneValue: [Global.saveData.f_distance]
     });
@@ -281,7 +281,7 @@ class Filter extends Component {
                 sliderLength={DEVICE_WIDTH * 0.8}
                 onValuesChange={this.multiSliderValuesChange}
                 min={18}
-                max={60}
+                max={100}
                 step={1}
                 allowOverlap
                 snapped

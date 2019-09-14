@@ -80,9 +80,9 @@ export default class App extends React.Component {
       if (granted['android.permission.CAMERA'] 
       && granted['android.permission.RECORD_AUDIO'] 
       && granted['android.permission.ACCESS_FINE_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED) {
-        alert('You can use the all');
+        console.log('You can use the all');
       } else {
-        alert('all permission denied');
+        console.log('all permission denied');
       }
     } catch (error) {
       // Error retrieving data

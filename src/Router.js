@@ -23,10 +23,12 @@ import ProfileDetail from './components/Main/ProfileDetail';
 import ProfileSetting from './components/Main/ProfileSetting';
 import TermsPolicy from './components/Main/TermsPolicy';
 import Report from './components/Main/Report';
+// import AppView from '../AppView';
 
 import ChatScreen from './components/Main/ChatScreen';
 
-export default Router = createStackNavigator({        
+export default Router = createStackNavigator({
+        // AppView: {screen: AppView},
         FirstScreen: { screen: FirstScreen },
         //Main
         Income: { screen: Income },
@@ -57,6 +59,9 @@ export default Router = createStackNavigator({
             transitionSpec: {
                 duration: 0,
             },
-        })
+        }),
+        navigationOptions: {
+            header: null
+        }
     }
 );

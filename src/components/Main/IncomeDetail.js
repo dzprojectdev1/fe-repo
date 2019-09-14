@@ -96,7 +96,6 @@ class IncomeDetail extends Component {
       return;
     }
     this.setState({ paused: true, privatedPaused: true });
-    alert(JSON.stringify(this.state.userimage));
     var otherData = {
       imageUrl: this.state.userimage,
       data: {
@@ -282,11 +281,11 @@ class IncomeDetail extends Component {
               </View>
               <View style={{ flexDirection: 'row', marginTop: 5 }}>
                 <Image source={b_age} style={{ width: 15, height: 15 }} />
-                <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userage}</Text>
+                <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userage + ' years old'}</Text>
               </View>
               <View style={{ flexDirection: 'row', marginTop: 5 }}>
                 <Image source={b_distance} style={{ width: 15, height: 15 }} />
-                <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userdistance}</Text>
+                <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userdistance + ' mile'}</Text>
               </View>
             </View>
           </View>

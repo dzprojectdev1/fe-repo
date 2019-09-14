@@ -368,11 +368,11 @@ class Browse extends Component {
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: 5 }}>
                       <Image source={b_age} style={{ width: 15, height: 15 }} />
-                      <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userage}</Text>
+                      <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userage + ' years old'}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: 5 }}>
                       <Image source={b_distance} style={{ width: 15, height: 15 }} />
-                      <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userdistance}</Text>
+                      <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userdistance + ' mile'}</Text>
                     </View>
                   </View>
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
