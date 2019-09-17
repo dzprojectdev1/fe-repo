@@ -24,7 +24,7 @@ import b_profile from '../../assets/images/profile.png';
 
 import Global from '../Global';
 
-import {SERVER_URL} from '../../config/constants';
+import { SERVER_URL } from '../../config/constants';
 
 class IncomeDetail extends Component {
   constructor(props) {
@@ -232,28 +232,25 @@ class IncomeDetail extends Component {
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <Content>
           {!this.state.isMatchVideo && (
-            <Video source={{ uri: this.state.vUrl }}   // Can be a URL or a local file.
-              ref={(ref) => {
-                this.player = ref
-              }}
-              ignoreSilentSwitch={null}
-              resizeMode="cover"
-              repeat={true}
-              paused={this.state.paused}
-              onError={this.videoError}              // Callback when video cannot be loaded
+            <Image
+              source={{ uri: this.state.userimage }}
               style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
             />
           )}
           {this.state.isMatchVideo && (
-            <Video source={{ uri: this.state.vUrl }}   // Can be a URL or a local file.
-              ref={(ref) => {
-                this.cdnPlayer = ref
-              }}
-              ignoreSilentSwitch={null}
-              resizeMode="cover"
-              repeat={true}
-              paused={this.state.privatedPaused}
-              onError={this.videoError}              // Callback when video cannot be loaded
+            // <Video source={{ uri: this.state.vUrl }}   // Can be a URL or a local file.
+            //   ref={(ref) => {
+            //     this.cdnPlayer = ref
+            //   }}
+            //   ignoreSilentSwitch={null}
+            //   resizeMode="cover"
+            //   repeat={true}
+            //   paused={this.state.privatedPaused}
+            //   onError={this.videoError}              // Callback when video cannot be loaded
+            //   style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
+            // />
+            <Image
+              source={{ uri: this.state.userimage }}
               style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
             />
           )}
