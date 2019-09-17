@@ -122,19 +122,20 @@ class MyVideo extends Component {
     return true;
   }
   showUserVideo(url, otherId, id, primary) {
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': Global.saveData.token
-      }
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        this.props.navigation.navigate("MyVideoDetail", { url: responseJson.url, otherId: otherId, id: id, primary })
-      }).catch((error) => {
-        alert("There is error, please try again!");
-        return
-      });
+    // fetch(url, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': Global.saveData.token
+    //   }
+    // }).then((response) => response.json())
+    //   .then((responseJson) => {
+    //     this.props.navigation.navigate("MyVideoDetail", { url: url, otherId: otherId, id: id, primary })
+    //   }).catch((error) => {
+    //     alert("There is error, please try again!");
+    //     return
+    //   });
+    this.props.navigation.navigate("MyVideoDetail", { url: url, otherId: otherId, id: id, primary })
   }
   addVideo() {
     this.props.navigation.navigate("Record")
@@ -193,7 +194,7 @@ class MyVideo extends Component {
               renderItem={({ item: rowData }) => {
                 return (
                   <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }}
-                    onPress={() => this.showUserVideo(rowData.videoUrl, rowData.otherId, rowData.id, rowData.primary)}>
+                    onPress={() => this.showUserVideo(rowData.imageUrl, rowData.otherId, rowData.id, rowData.primary)}>
                     <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20) * 1.5, marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }}>
                       <View style={{ width: '100%', height: 30, marginTop: (DEVICE_WIDTH / 2 - 20) * 1.5 - 50, flexDirection: 'row' }}>
                         <View style={{ width: DEVICE_WIDTH / 2 - 60, height: 30, alignItems: 'center', justifyContent: 'center' }}>

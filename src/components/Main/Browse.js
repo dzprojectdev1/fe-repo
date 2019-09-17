@@ -19,7 +19,7 @@ import {
   StatusBar,
   Alert
 } from "react-native";
-import Video from 'react-native-video';
+// import Video from 'react-native-video';
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';

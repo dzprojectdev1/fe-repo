@@ -3,8 +3,8 @@ import {
   Icon,
   Content,
 } from "native-base";
-import { Dimensions, View, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
-import Video from 'react-native-video';
+import { Dimensions, View, StyleSheet, TouchableOpacity, StatusBar, Image } from "react-native";
+// import Video from 'react-native-video';
 import Global from '../Global';
 
 class ProfileDetail extends Component {
@@ -47,16 +47,20 @@ class ProfileDetail extends Component {
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <Content>
           {(this.state.vUrl != "") && (
-            <Video source={{ uri: this.state.vUrl }}   // Can be a URL or a local file.
-              ref={(ref) => {
-                this.player = ref
-              }}
-              ignoreSilentSwitch={null}
-              resizeMode="cover"
-              repeat={true}
-              paused={this.state.paused}
-              onError={this.videoError}           // Callback when video cannot be loaded
-              style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }} 
+            // <Video source={{ uri: this.state.vUrl }}   // Can be a URL or a local file.
+            //   ref={(ref) => {
+            //     this.player = ref
+            //   }}
+            //   ignoreSilentSwitch={null}
+            //   resizeMode="cover"
+            //   repeat={true}
+            //   paused={this.state.paused}
+            //   onError={this.videoError}           // Callback when video cannot be loaded
+            //   style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }} 
+            // />
+            <Image
+              source={{ uri: this.state.vUrl }}
+              style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
             />
           )}
         </Content>

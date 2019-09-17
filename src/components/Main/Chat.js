@@ -46,22 +46,27 @@ class Chat extends Component {
   
   componentWillMount() {
     Global.saveData.nowPage = 'Chat';
+    Global.saveData.prevpage = "Chat";
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
     this.getChatData();
   }
+
   componentDidMount() {
     firebase.database().ref().child(Global.saveData.u_id)
     .on('child_added', (value) => {
       this.getChatData();
     });
   }
+
   componentWillUnmount() {   
     BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
   }
+
   backPressed = () => {
-    this.props.navigation.replace("Match");
+    this.props.navigation.navigate("Match");
     return true;
   }
+
   getChatData() {
     fetch(`${SERVER_URL}/api/chat/all`, {
       method: 'GET',

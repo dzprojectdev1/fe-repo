@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   Alert
 } from "react-native";
+import DeviceInfo from 'react-native-device-info';
 // import store from 'react-native-simple-store';
 // import logo from '../assets/images/logo.png';
 import firstBg from '../assets/images/first_bg.jpg';
@@ -32,7 +33,30 @@ class FirstScreen extends Component {
     header: null
   };
 
+  getdeviceId = async () => {
+    //Getting the Unique Id from here
+    var id = DeviceInfo.getUniqueID();
+    return id;
+  };
+
   componentDidMount() {
+    // this.getdeviceId().then(deviceId => {
+    //   if (deviceId) {
+    //     fetch(`${SERVER_URL}/api/user/checkDeviceUniqueId/${deviceId}`, {
+    //       method: 'GET',
+    //       headers: {
+    //         'Content-Type': 'application/x-www-form-urlencoded'
+    //       }
+    //     }).then((response) => response.json())
+    //       .then((responseJson) => {
+
+    //       })
+    //   } else {
+    //     this.setState({
+    //       isLoaded: false
+    //     })
+    //   }
+    // })
     this.retrieveData().then((userToken) => {
       if (userToken) {
         fetch(`${SERVER_URL}/api/user/checkLoginStatus`, {
