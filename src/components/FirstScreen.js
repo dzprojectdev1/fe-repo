@@ -32,26 +32,6 @@ class FirstScreen extends Component {
     header: null
   };
 
-  // componentWillMount() {
-  //   BackHandler.addEventListener('hardwareBackPress', this.backPressed);    
-  // }
-
-  // componentWillUnmount() {
-  //   BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
-  // } 
-
-  // backPressed = () => {          
-  //   Alert.alert(
-  //     '',
-  //     'Do you want to exit the app?',
-  //     [
-  //       { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-  //       { text: 'Yes', onPress: () => BackHandler.exitApp()},
-  //     ],
-  //     { cancelable: false });
-  //   return true;
-  // }
-
   componentDidMount() {
     this.retrieveData().then((userToken) => {
       if (userToken) {
@@ -67,8 +47,7 @@ class FirstScreen extends Component {
               this.setState({
                 isLoaded: false
               });
-            }
-            if (!responseJson.error) {
+            } else if (!responseJson.error) {
               Global.saveData.token = userToken;
               Global.saveData.u_id = responseJson.data.id;
               Global.saveData.u_name = responseJson.data.name;
@@ -112,7 +91,7 @@ class FirstScreen extends Component {
       return JSON.parse(value);
     } catch (error) {
       // Error retrieving data
-      alert(error);
+      console.log(error);
     }
     return;
   };

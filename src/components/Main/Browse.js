@@ -7,16 +7,16 @@ import {
   Text,
   Content,
 } from "native-base";
-import { 
+import {
   AsyncStorage,
-  BackHandler, 
-  Image, 
-  Platform, 
-  Dimensions, 
-  View, 
-  StyleSheet, 
-  TouchableOpacity, 
-  StatusBar, 
+  BackHandler,
+  Image,
+  Platform,
+  Dimensions,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  StatusBar,
   Alert
 } from "react-native";
 import Video from 'react-native-video';
@@ -33,7 +33,7 @@ import b_distance from '../../assets/images/distance.png';
 import b_profile from '../../assets/images/profile.png';
 import Global from '../Global';
 
-import {SERVER_URL} from '../../config/constants';
+import { SERVER_URL } from '../../config/constants';
 
 class Browse extends Component {
   constructor(props) {
@@ -57,7 +57,7 @@ class Browse extends Component {
 
   componentWillMount() {
     Global.saveData.nowPage = 'Browse';
-    BackHandler.addEventListener('hardwareBackPress', this.backPressed);    
+    BackHandler.addEventListener('hardwareBackPress', this.backPressed);
   }
 
   componentDidMount() {
@@ -73,8 +73,8 @@ class Browse extends Component {
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
-  }  
-  
+  }
+
   getVideos() {
     fetch(`${SERVER_URL}/api/match/discover`, {
       method: 'POST',
@@ -152,10 +152,10 @@ class Browse extends Component {
       }).catch((error) => {
         return
       }
-    );
+      );
   }
   getDetails = async (data) => {
-    var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=${data.cdn_filtered_id}`;
+    var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=${data.cdn_filtered_id}-screenshot`;
 
     fetch(v_url, {
       method: 'GET',
@@ -179,7 +179,7 @@ class Browse extends Component {
         alert("There is error, please try again!")
         return
       }
-    );
+      );
   }
   getAge(birth) {
     var b_year = parseInt(birth.split("-")[0]);
@@ -252,16 +252,16 @@ class Browse extends Component {
         alert(JSON.stringify(error))
         return
       }
-    );
+      );
   }
-  
-  backPressed = () => {          
+
+  backPressed = () => {
     Alert.alert(
       '',
       'Do you want to exit the app?',
       [
         { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-        { text: 'Yes', onPress: () => this.exitApp()},
+        { text: 'Yes', onPress: () => this.exitApp() },
       ],
       { cancelable: false });
     return true;
@@ -278,7 +278,7 @@ class Browse extends Component {
       // Error saving data
       console.log(error);
     }
-  }  
+  }
   gotoFilter() {
     this.setState({
       paused: true
@@ -336,7 +336,7 @@ class Browse extends Component {
             </View>
           </Content>) : (
             <Content>
-              {(this.state.vUrl != "") && (
+              {/* {(this.state.vUrl != "") && (
                 <Video source={{ uri: this.state.vUrl }}   // Can be a URL or a local file.
                   ref={(ref) => {
                     this.player = ref
@@ -346,6 +346,12 @@ class Browse extends Component {
                   repeat={true}
                   paused={false}
                   onError={this.videoError}               // Callback when video cannot be loaded
+                  style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
+                />
+              )} */}
+              {(this.state.vUrl != "") && (
+                <Image
+                  source={{ uri: this.state.vUrl }}
                   style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
                 />
               )}
