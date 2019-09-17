@@ -33,6 +33,8 @@ import b_distance from '../../assets/images/distance.png';
 import b_profile from '../../assets/images/profile.png';
 import Global from '../Global';
 
+import OnlyGImage from '../../assets/images/OnlyGImage.png';
+
 import {SERVER_URL} from '../../config/constants';
 
 class Browse extends Component {
@@ -57,7 +59,8 @@ class Browse extends Component {
 
   componentWillMount() {
     Global.saveData.nowPage = 'Browse';
-    BackHandler.addEventListener('hardwareBackPress', this.backPressed);    
+    BackHandler.addEventListener('hardwareBackPress', this.backPressed);
+    this.retrieveData();
   }
 
   componentDidMount() {
@@ -273,12 +276,23 @@ class Browse extends Component {
   }
   saveGlobals = async () => {
     try {
-      await AsyncStorage.setItem('globalData', JSON.stringify(Global.saveData.token));
+      await AsyncStorage.setItem('globalData', Global.saveData);
     } catch (error) {
       // Error saving data
       console.log(error);
     }
-  }  
+  }
+  retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('globalData');      // We have data!!
+      if (value !== null) {
+        alert(JSON.stringify(value));  
+      }
+    } catch (error) {
+      // Error retrieving data
+      alert(error);
+    }
+  };
   gotoFilter() {
     this.setState({
       paused: true
@@ -313,6 +327,9 @@ class Browse extends Component {
     if (this.state.otherid !== -1) {
       this.props.navigation.navigate("Report", { id: this.state.otherid })
     }
+  }
+  gotoGpay(){
+    this.props.navigation.navigate("screenGpay01");
   }
   videoError = () => {
     alert('Video Loading Error!');
@@ -368,11 +385,11 @@ class Browse extends Component {
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: 5 }}>
                       <Image source={b_age} style={{ width: 15, height: 15 }} />
-                      <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userage + ' years old'}</Text>
+                      <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userage}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: 5 }}>
                       <Image source={b_distance} style={{ width: 15, height: 15 }} />
-                      <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userdistance + ' mile'}</Text>
+                      <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userdistance}</Text>
                     </View>
                   </View>
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
@@ -418,6 +435,10 @@ class Browse extends Component {
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MY VIDEO"}</Text>
             </Button>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
+              <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
+              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
+            </Button>            
           </FooterTab>
         </Footer>
       </View>

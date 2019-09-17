@@ -128,7 +128,7 @@ export default class ChatScreen extends React.Component {
             'Once blocked, all chat history will disappear from the chat list',
             [
                 { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-                { text: 'Confirm', onPress: () => this.requestBlock() },
+                { text: 'Confirm', onPress: () => this.requestBlock },
             ],
             { cancelable: false }
         );
@@ -146,28 +146,29 @@ export default class ChatScreen extends React.Component {
         }
         formBody = formBody.join("&");
 
-        fetch(`${SERVER_URL}/api/match/block`, {
+        fetch(`${SERVER_URL}/api/chat/blockChat`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': Global.saveData.token
+                'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: formBody,
         }).then((response) => response.json())
             .then((responseJson) => {
-                if (responseJson.error === false) {
-                    firebase.database().ref().child(Global.saveData.u_id).child(this.state.other.userId).remove();
-                    firebase.database().ref().child(this.state.other.userId).child(Global.saveData.u_id).remove();
-                    this.props.navigation.replace("Chat");
+                if (!responseJson.error) {
+                    this.backPressed();
+                }
+                else {
+                    Alert.alert(responseJson.message);
                 }
             }).catch((error) => {
+                alert(JSON.stringify(error));
                 return
             });
     }
 
     setReport = () => {
         this.hideMenu();
-        this.props.navigation.navigate("Report", { otherId: this.state.other.userId });
+        this.props.navigation.navigate("Report", { id: this.state.other.userId });
     }
 
     getMessageData = async () => {
@@ -360,9 +361,9 @@ export default class ChatScreen extends React.Component {
                             button={<TouchableOpacity style={{ width: 40, marginLeft: 10, }} onPress={this.showMenu}>
                                 <Icon type="MaterialCommunityIcons" name="dots-horizontal" />
                             </TouchableOpacity>}>
-                            <MenuItem onPress={this.setBlock}>{'Leave Chat Room'}</MenuItem>
+                            <MenuItem onPress={this.setBlock}>Block</MenuItem>
                             <MenuDivider />
-                            <MenuItem onPress={this.setReport}>{'Report & Leave Chat Room'}</MenuItem>
+                            <MenuItem onPress={this.setReport}>Report</MenuItem>
                         </Menu>
                     </View>
                 </View>
@@ -429,7 +430,7 @@ const styles = StyleSheet.create({
     textBox: {
         borderRadius: 25,
         borderWidth: 1,
-        borderColor: '#8C807F',
+        borderColor: '#efefef',
         flex: 1,
         fontSize: 15,
         paddingHorizontal: 8

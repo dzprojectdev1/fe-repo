@@ -1,9 +1,10 @@
 if (__DEV__) {
   import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
 }
+
 import React from 'react';
-import { AsyncStorage, View, PermissionsAndroid } from 'react-native';
-import firebase from 'firebase';
+import { View, AsyncStorage, PermissionsAndroid } from 'react-native';
+import * as firebase from 'firebase';
 import nativeFirebase from 'react-native-firebase';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
 import AppView from './AppView';
@@ -80,9 +81,9 @@ export default class App extends React.Component {
       if (granted['android.permission.CAMERA'] 
       && granted['android.permission.RECORD_AUDIO'] 
       && granted['android.permission.ACCESS_FINE_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use the all');
+        alert('You can use the all');
       } else {
-        console.log('all permission denied');
+        alert('all permission denied');
       }
     } catch (error) {
       // Error retrieving data

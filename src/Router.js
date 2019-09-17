@@ -23,12 +23,17 @@ import ProfileDetail from './components/Main/ProfileDetail';
 import ProfileSetting from './components/Main/ProfileSetting';
 import TermsPolicy from './components/Main/TermsPolicy';
 import Report from './components/Main/Report';
-// import AppView from '../AppView';
 
 import ChatScreen from './components/Main/ChatScreen';
 
-export default Router = createStackNavigator({
-        // AppView: {screen: AppView},
+// Google Pay 
+import Gpay from './components/GPay/Gpay';
+import screenGpay01 from './components/GPay/screenGpay01';
+import screenGpay02 from './components/GPay/screenGpay02';
+import screenGpay03 from './components/GPay/screenGpay03';
+import screenGpay04 from './components/GPay/screenGpay04';
+
+export default Router = createStackNavigator({        
         FirstScreen: { screen: FirstScreen },
         //Main
         Income: { screen: Income },
@@ -53,15 +58,18 @@ export default Router = createStackNavigator({
         Register1: { screen: Register1 },
         Register2: { screen: Register2 },
         EmailConfirm: { screen: EmailConfirm },
+        //Gpay
+        Gpay: { screen: Gpay },
+        screenGpay01: { screen: screenGpay01 },
+        screenGpay02: { screen: screenGpay02 },
+        screenGpay03: { screen: screenGpay03 },
+        screenGpay04: { screen: screenGpay04 },
     }, {
         initialRouteName: 'FirstScreen',
         transitionConfig: () => ({
             transitionSpec: {
                 duration: 0,
             },
-        }),
-        navigationOptions: {
-            header: null
-        }
+        })
     }
 );

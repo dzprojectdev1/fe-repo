@@ -239,6 +239,7 @@ class Register2 extends Component {
     });
   }
   onLogin() {
+    
     nativeFirebase.messaging().getToken().then(fcmToken => {
       if (fcmToken) {
         var details = {
@@ -277,9 +278,9 @@ class Register2 extends Component {
           }
         }).catch((error) => {
           alert(JSON.stringify(error))
-          return
         });
     });
+
   }
   render() {
     return (

@@ -168,7 +168,7 @@ class Income extends Component {
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
                         <Image source={b_age} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
-                        <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{"" + rowData.age + ' years old'}</Text>
+                        <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{"" + rowData.age}</Text>
                       </View>
                     </View>
                   </TouchableOpacity>

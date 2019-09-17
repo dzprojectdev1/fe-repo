@@ -15,13 +15,12 @@ import {
 } from "react-native";
 
 import {SERVER_URL} from '../../config/constants';
-import Global from '../Global';
 
 class Report extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      otherId: '',
+      id: '',
       problem_title: '',
       problem_content: '',
     };
@@ -32,10 +31,10 @@ class Report extends Component {
   };
   componentDidMount() {
     Global.saveData.nowPage = 'Report';
-    this.setState({ otherId: this.props.navigation.state.params.otherId })
+    this.setState({ id: this.props.navigation.state.params.otherId })
   }
   onBack() {
-    this.props.navigation.pop();
+    this.props.navigation.pop()
   }
   onReport() {
     if (this.state.problem_content == "") {
@@ -43,7 +42,7 @@ class Report extends Component {
       return
     }
     var details = {
-      'otherId': this.state.otherId,
+      'otherId': this.state.id,
       'reportDescription': this.state.problem_content
     };
 
@@ -58,23 +57,17 @@ class Report extends Component {
     fetch(`${SERVER_URL}/api/chat/reportUser`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': Global.saveData.token
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: formBody,
     }).then((response) => response.json())
       .then((responseJson) => {
+        // alert(JSON.stringify(responseJson))
         if (!responseJson.error) {
-          Alert.alert(
-            '',
-            'Report Success',
-            [
-              { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
-            ],
-            { cancelable: true });
-          this.props.navigation.replace('Chat');
-        } else {
-          alert(JSON.stringify(responseJson.message));
+          Alert.alert("Success report!")
+        }
+        else {
+          Alert.alert(responseJson.message)
         }
       })
       .catch((error) => {
@@ -126,7 +119,6 @@ class Report extends Component {
     );
   }
 }
-
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

@@ -3,17 +3,7 @@ import {
   Text,
   Content
 } from "native-base"
-import { 
-  ImageBackground, 
-  Image, 
-  Platform, 
-  Dimensions, 
-  View, 
-  StyleSheet, 
-  TouchableOpacity, 
-  StatusBar,
-  Alert
-} from "react-native";
+import { ImageBackground, Image, Platform, Dimensions, View, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
 import Picker from 'react-native-wheel-picker'
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
@@ -44,8 +34,8 @@ class Register1 extends Component {
   static navigationOptions = {
     header: null
   };
-
   componentDidMount() {
+
     this.setState({
       name: this.props.navigation.state.params.name,
       email: this.props.navigation.state.params.email,
@@ -103,23 +93,10 @@ class Register1 extends Component {
     if (!this.state.isMale) {
       gender = 0
     }
-    var nowDate = new Date();
-    var nowYear = nowDate.getFullYear();
-    var deltaYear = parseInt(nowYear) - parseInt(y_item[this.state.selected_yItem]);
-    if (deltaYear < 18) {
-      Alert.alert(
-        '',
-        'Sorry, you must be over 18 years old to register',
-        [
-          { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-          { text: 'Yes', onPress: () => console.log("Ok Pressed")},
-        ],
-        { cancelable: true });
-    } else {
-      this.props.navigation.navigate("Register2", { name: this.state.name, email: this.state.email, password: this.state.password, fullname: fullname, birthday: birthday, gender: gender })
-    }
+    this.props.navigation.navigate("Register2", { name: this.state.name, email: this.state.email, password: this.state.password, fullname: fullname, birthday: birthday, gender: gender })
   }
   render() {
+
     var { navigate } = this.props.navigation;
     return (
       <View style={styles.contentContainer}>
@@ -140,6 +117,7 @@ class Register1 extends Component {
                 <PickerItem label={value} value={i} key={"money" + value} />
               ))}
             </Picker>
+
             <Picker style={{ width: 60, height: 60, backgroundColor: '#fff', tintColor: '#00f' }}
               selectedValue={this.state.selected_dItem}
               itemStyle={{ color: "#000", fontSize: 16, }}
@@ -148,6 +126,7 @@ class Register1 extends Component {
                 <PickerItem label={value} value={i} key={"money" + value} />
               ))}
             </Picker>
+
             <Picker style={{ width: 60, height: 60, backgroundColor: '#fff', tintColor: '#00f' }}
               selectedValue={this.state.selected_yItem}
               itemStyle={{ color: "#000", fontSize: 16 }}
@@ -156,6 +135,7 @@ class Register1 extends Component {
                 <PickerItem label={value} value={i} key={"money" + value} />
               ))}
             </Picker>
+
           </View>
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, height: 30, marginTop: Platform.select({ 'android': 15, 'ios': 160 }), flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} onPress={() => this.setState({ isMale: true })}>

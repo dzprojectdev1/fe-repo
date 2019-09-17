@@ -10,8 +10,7 @@ import { Image,
   View, 
   StyleSheet, 
   TouchableOpacity, 
-  StatusBar, 
-  Alert } from "react-native";
+  StatusBar, Alert } from "react-native";
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import Global from '../Global';
@@ -31,7 +30,7 @@ class EmailConfirm extends Component {
     header: null
   };
   componentDidMount() {
-    this.sendCode();
+    this.sendCode()
   }
   sendCode() {
     fetch(`${SERVER_URL}/api/user/sendConfirmEmail`, {
@@ -51,8 +50,9 @@ class EmailConfirm extends Component {
             ],
             { cancelable: false },
           );
-        } else {
-          alert(responseJson.message);
+        }
+        else {
+          Alert.alert(responseJson.message)
         }
       })
       .catch((error) => {
@@ -61,6 +61,7 @@ class EmailConfirm extends Component {
     );
   }
   onConfirm() {
+
     if (this.state.code !== '') {
       var details = {
         'confirmCode': this.state.code
@@ -77,19 +78,20 @@ class EmailConfirm extends Component {
       fetch(`${SERVER_URL}/api/user/emailVerify`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': Global.saveData.token
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: formBody,
       }).then((response) => response.json())
         .then((responseJson) => {
+          alert(JSON.stringify(responseJson))
           if (!responseJson.error) {
-            this.props.navigation.replace("Browse");
+            this.props.navigation.replace("Main");
           } else {
             alert(responseJson.message ? responseJson.message : 'Woops! Try again.');
           }
         })
         .catch((error) => {
+          alert(JSON.stringify(error))
           return
         });
     } else {
