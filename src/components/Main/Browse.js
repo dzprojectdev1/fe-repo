@@ -35,6 +35,8 @@ import Global from '../Global';
 
 import {SERVER_URL} from '../../config/constants';
 
+import OnlyGImage from '../../assets/images/OnlyGImage.png';
+
 class Browse extends Component {
   constructor(props) {
     super(props);
@@ -314,6 +316,11 @@ class Browse extends Component {
       this.props.navigation.navigate("Report", { id: this.state.otherid })
     }
   }
+  //////////////////////////////////////////////////
+  gotoGpay(){
+    this.props.navigation.navigate("screenGpay01");
+  }
+  //////////////////////////////////////////////////
   videoError = () => {
     alert('Video Loading Error!');
   }
@@ -418,6 +425,10 @@ class Browse extends Component {
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MY VIDEO"}</Text>
             </Button>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
+              <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
+              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
+            </Button>             
           </FooterTab>
         </Footer>
       </View>
