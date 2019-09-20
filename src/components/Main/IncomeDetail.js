@@ -11,12 +11,13 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  StatusBar
+  StatusBar,
+  ActivityIndicator
 } from "react-native";
 
-import Video from 'react-native-video';
+// import Video from 'react-native-video';
 import b_notification from '../../assets/images/notification.png';
-
+import no_image from '../../assets/images/no-image.png';
 import b_name from '../../assets/images/name.png';
 import b_age from '../../assets/images/age.png';
 import b_distance from '../../assets/images/distance.png';
@@ -39,7 +40,8 @@ class IncomeDetail extends Component {
       userdistance: '',
       otherId: -1,
       isMatchVideo: false,
-      privatedPaused: false
+      privatedPaused: false,
+      isOperating: false
     };
   }
 
@@ -108,6 +110,9 @@ class IncomeDetail extends Component {
     this.props.navigation.navigate("ChatDetail", { data: otherData })
   }
   onReject() {
+    this.setState({
+      isOperating: true
+    });
     var details = {
       'otherId': this.state.otherId
     };
@@ -137,10 +142,12 @@ class IncomeDetail extends Component {
       .catch((error) => {
         return
       });
+    this.setState({ isOperating: false });
   }
   onMatch() {
     this.setState({
-      paused: true
+      paused: true,
+      isOperating: true
     });
     var details = {
       'otherId': this.state.otherId
@@ -162,47 +169,81 @@ class IncomeDetail extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-          this.getMatchedVideo(responseJson.data.cdn_id, responseJson.data.match_id);
+          if (responseJson.data.cdn_id.length) {
+            this.getMatchedVideo(responseJson.data.cdn_id[0].cdn_id, responseJson.data.match_id);
+          } else {
+            this.setState({
+              vUrl: null,
+              userimage: null,
+              matchId: responseJson.data.match_id,
+              isMatchVideo: true,
+              privatedPaused: false
+            });
+          }
         }
       }).catch((error) => {
+        alert(JSON.stringify(error));
         return
       });
+    this.setState({ isOperating: false });
   }
   getMatchedVideo = (cdnId, matchId) => {
-    fetch(`${SERVER_URL}/api/storage/videoLink?fileId=${cdnId}`, {
+    // fetch(`${SERVER_URL}/api/storage/videoLink?fileId=${cdnId}`, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': Global.saveData.token
+    //   }
+    // }).then((response) => response.json())
+    //   .then((responseJson) => {
+    //     if (responseJson.url) {
+    //       fetch("http://138.197.203.178:8080/api/storage/videoLink?fileId=" + cdnId + "-thumbnail", {
+    //         method: 'GET',
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //           'Authorization': Global.saveData.token
+    //         }
+    //       }).then((t_response) => t_response.json())
+    //         .then((t_responseJson) => {
+    //           if (t_responseJson.url) {
+    //             Global.saveData.prevUrl = responseJson.url;
+    //             this.setState({
+    //               vUrl: responseJson.url,
+    //               userimage: t_responseJson.url,
+    //               matchId: matchId,
+    //               isMatchVideo: true,
+    //               privatedPaused: false
+    //             });
+    //           }
+    //         }).catch((error) => {
+    //           alert("There is error, please try again!");
+    //           return
+    //         });
+    //     }
+    //   }).catch((error) => {
+    //     alert("There is error, please try again!");
+    //     return
+    //   });
+    fetch("http://138.197.203.178:8080/api/storage/videoLink?fileId=" + cdnId + "-thumbnail", {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': Global.saveData.token
       }
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        if (responseJson.url) {
-          fetch("http://138.197.203.178:8080/api/storage/videoLink?fileId=" + cdnId + "-thumbnail", {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': Global.saveData.token
-            }
-          }).then((t_response) => t_response.json())
-            .then((t_responseJson) => {
-              if (t_responseJson.url) {
-                Global.saveData.prevUrl = responseJson.url;
-                this.setState({
-                  vUrl: responseJson.url,
-                  userimage: t_responseJson.url,
-                  matchId: matchId,
-                  isMatchVideo: true,
-                  privatedPaused: false
-                });
-              }
-            }).catch((error) => {
-              alert("There is error, please try again!");
-              return
-            });
+    }).then((t_response) => t_response.json())
+      .then((t_responseJson) => {
+        if (t_responseJson.url) {
+          Global.saveData.prevUrl = responseJson.url;
+          this.setState({
+            vUrl: null,
+            userimage: t_responseJson.url,
+            matchId: matchId,
+            isMatchVideo: true,
+            privatedPaused: false
+          });
         }
       }).catch((error) => {
-        alert("There is error, please try again!");
+        alert(JSON.stringify(error));
         return
       });
   }
@@ -233,7 +274,7 @@ class IncomeDetail extends Component {
         <Content>
           {!this.state.isMatchVideo && (
             <Image
-              source={{ uri: this.state.userimage }}
+              source={this.state.userimage === null ? no_image : { uri: this.state.userimage }}
               style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
             />
           )}
@@ -250,7 +291,7 @@ class IncomeDetail extends Component {
             //   style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
             // />
             <Image
-              source={{ uri: this.state.userimage }}
+              source={this.state.userimage === null ? no_image : { uri: this.state.userimage }}
               style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
             />
           )}
