@@ -22,7 +22,7 @@ import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 import Global from '../Global';
 import firebase from 'firebase';
 
-import {SERVER_URL} from '../../config/constants';
+import { SERVER_URL } from '../../config/constants';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
@@ -56,51 +56,59 @@ export default class ChatScreen extends React.Component {
                         messageList: [...prevState.messageList, value.val()]
                     }
                 });
+                if (this.scrollView) {
+                    this.scrollView.scrollToEnd({ animated: true });
+                }
             });
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow.bind(this));
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide.bind(this));
-        BackHandler.addEventListener('hardwareBackPress', this.backPressed);
+        this.backHanlder = BackHandler.addEventListener('hardwareBackPress', this.backPressed);
         // this.getMessageData();
     }
 
-    componentDidMount() {        
+    componentDidMount() {
+        this._mounted = true;
         setTimeout(function () {
             this.scrollView.scrollToEnd({ animated: true });
-        }.bind(this));
-    }    
+        }.bind(this), 1000);
+    }
+
+    // componentDidUpdate(prevProps, prevState) {
+    //     if (this._mounted) {
+    //         setTimeout(function () {
+    //             this.scrollView.scrollToEnd({ animated: true });
+    //         }.bind(this), 1000);
+    //     }
+    // }
 
     componentWillUnmount() {
+        this._mounted = false;
         // firebase.database().ref().child(Global.saveData.u_id).child(this.state.other.userId).remove();
         // firebase.database().ref().child(this.state.other.userId).child(Global.saveData.u_id).remove();
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
-        BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
+        this.backHanlder.remove();
     }
 
     backPressed = () => {
-        if (Global.saveData.prevpage === 'Chat') {
+        if (Global.saveData.prevpage === "Chat") {
             this.props.navigation.replace("Chat");
         } else {
             this.props.navigation.pop();
         }
-    }
-
-    componentDidUpdate() {
-        setTimeout(function () {
-            this.scrollView.scrollToEnd({ animated: true });
-        }.bind(this));
+        return true;
     }
 
     keyboardDidShow(e) {
         if (this.scrollView) {
             this.scrollView.scrollToEnd({ animated: true });
-        }       
+        }
     }
 
     keyboardDidHide(e) {
         if (this.scrollView) {
             this.scrollView.scrollToEnd({ animated: true });
-        }  
+        }
     }
 
     setMenuRef = ref => {
@@ -113,7 +121,7 @@ export default class ChatScreen extends React.Component {
 
     showMenu = () => {
         this._menu.show();
-    };    
+    };
 
     handleChange = key => val => {
         this.setState({
@@ -245,6 +253,9 @@ export default class ChatScreen extends React.Component {
             updates[Global.saveData.u_id + '/' + this.state.other.userId + '/' + msgId] = message;
             updates[this.state.other.userId + '/' + Global.saveData.u_id + '/' + msgId] = message;
             firebase.database().ref().update(updates);
+            if (this.scrollView) {
+                this.scrollView.scrollToEnd({ animated: true });
+            }
             this.createNewMessage();
         }
     }
@@ -366,7 +377,10 @@ export default class ChatScreen extends React.Component {
                         </Menu>
                     </View>
                 </View>
-                <ScrollView style={{ marginTop: 15 }} ref={(ref) => { this.scrollView = ref }}>
+                <ScrollView style={{ marginTop: 15 }} ref={(ref) => { this.scrollView = ref }}
+                    onContentSizeChange={(contentWidth, contentHeight) => {
+                        this.scrollView.scrollToEnd({ animated: true });
+                    }}>
                     <FlatList
                         style={{ padding: 10 }}
                         data={this.state.messageList}
@@ -456,7 +470,7 @@ const styles = StyleSheet.create({
         left: -15,
         top: 1,
     },
-    avatar: {                 
+    avatar: {
         width: 45,
         height: 45,
         borderRadius: 400

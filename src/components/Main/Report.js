@@ -3,18 +3,18 @@ import {
   Text,
   Icon
 } from "native-base"
-import { 
-  Dimensions, 
-  TextInput, 
-  ScrollView, 
-  View, 
-  StyleSheet, 
-  TouchableOpacity, 
-  StatusBar, 
+import {
+  Dimensions,
+  TextInput,
+  ScrollView,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  StatusBar,
   Alert
 } from "react-native";
 
-import {SERVER_URL} from '../../config/constants';
+import { SERVER_URL } from '../../config/constants';
 import Global from '../Global';
 
 class Report extends Component {
@@ -31,7 +31,6 @@ class Report extends Component {
     header: null
   };
   componentDidMount() {
-    Global.saveData.nowPage = 'Report';
     this.setState({ otherId: this.props.navigation.state.params.otherId })
   }
   onBack() {
@@ -72,7 +71,7 @@ class Report extends Component {
               { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
             ],
             { cancelable: true });
-          this.props.navigation.replace('Chat');
+          this.props.navigation.replace('Browse');
         } else {
           alert(JSON.stringify(responseJson.message));
         }

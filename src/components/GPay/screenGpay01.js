@@ -3,29 +3,17 @@ import {
   Text, Content,
 } from "native-base"
 import { 
-  Image, 
-  ImageBackground, 
-  Platform, 
-  Dimensions, 
-  TextInput, 
+  Image,
+  Dimensions,
   View, 
   StyleSheet, 
   TouchableOpacity, 
-  StatusBar, 
-  Alert ,
+  StatusBar,
+  BackHandler
 } from "react-native";
 
-import nativeFirebase from 'react-native-firebase';
-import store from 'react-native-simple-store';
-import logo from '../../assets/images/logo.png';
-import slogo from '../../assets/images/second_bg.png';
 import goback from '../../assets/images/BackOther.png';
 import diamond from '../../assets/images/diamond.png';
-import Flower from '../../assets/images/flower.png';
-import passswordIcon from '../../assets/images/passwordIcon.png';
-import checkIcon from '../../assets/images/check.png';
-import uncheckIcon from '../../assets/images/uncheck.png';
-import Global from '../Global';
 
 import {SERVER_URL} from '../../config/constants';
 
@@ -71,11 +59,25 @@ class screenGpay01 extends Component {
     };
     return buttonListArr;
   }
+
+  componentWillMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.backPressed);
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
+  }
+
+  backPressed = () => {
+    this.props.navigation.navigate("MyVideo");
+    return true;
+  }
   
  
   goBack() {
-    this.props.navigation.navigate("FirstScreen");
+    this.props.navigation.navigate("MyVideo");
   }
+
   render() {
     return (
       <View style={styles.contentContainer}>

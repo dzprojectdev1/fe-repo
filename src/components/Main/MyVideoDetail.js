@@ -4,12 +4,11 @@ import {
   Text,
   Content,
 } from "native-base";
-import { Dimensions, View, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
-
-import Video from 'react-native-video';
+import { Dimensions, View, StyleSheet, TouchableOpacity, StatusBar, Image } from "react-native";
+// import Video from 'react-native-video';
 import Global from '../Global';
 
-import {SERVER_URL} from '../../config/constants';
+import { SERVER_URL } from '../../config/constants';
 
 class MyVideoDetail extends Component {
   constructor(props) {
@@ -69,7 +68,7 @@ class MyVideoDetail extends Component {
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <Content>
-          <Video source={{ uri: this.state.vUrl }}   // Can be a URL or a local file.
+          {/* <Video source={{ uri: this.state.vUrl }}   // Can be a URL or a local file.
             ref={(ref) => {
               this.player = ref
             }}
@@ -78,7 +77,11 @@ class MyVideoDetail extends Component {
             repeat={true}
             paused={this.state.paused}
             onError={this.videoError}        // Callback when video cannot be loaded
-            style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }} />
+            style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }} /> */}
+          <Image
+            source={{ uri: this.state.vUrl }}
+            style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
+          />
         </Content>
         <TouchableOpacity style={{ position: 'absolute', left: 0, top: 30, width: 60, height: 60, alignItems: 'center', justifyContent: 'center' }}
           onPress={() => this.onBack()}>

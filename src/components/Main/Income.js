@@ -5,19 +5,19 @@ import {
   FooterTab,
   Text
 } from "native-base";
-import { 
-  BackHandler, 
-  Image, 
-  ScrollView, 
-  Platform, 
-  Dimensions, 
-  View, 
-  StyleSheet, 
-  FlatList, 
-  TouchableOpacity, 
-  StatusBar 
+import {
+  BackHandler,
+  Image,
+  ScrollView,
+  Platform,
+  Dimensions,
+  View,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  StatusBar
 } from "react-native";
-
+import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';
@@ -27,7 +27,7 @@ import b_name from '../../assets/images/name.png';
 import b_age from '../../assets/images/age.png';
 import Global from '../Global';
 
-import {SERVER_URL} from '../../config/constants';
+import { SERVER_URL } from '../../config/constants';
 
 class Income extends Component {
   constructor(props) {
@@ -80,7 +80,7 @@ class Income extends Component {
       .catch((error) => {
         return
       }
-    );
+      );
   }
   getTumbnails = async (data) => {
     var list_items = [];
@@ -140,6 +140,11 @@ class Income extends Component {
         return
       });
   }
+  //////////////////////////////////////////////////
+  gotoGpay() {
+    this.props.navigation.navigate("screenGpay01");
+  }
+  //////////////////////////////////////////////////
   render() {
     return (
       <View style={styles.contentContainer}>
@@ -198,7 +203,11 @@ class Income extends Component {
             </Button>
             <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("MyVideo")}>
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
-              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MY VIDEO"}</Text>
+              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
+            </Button>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
+              <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
+              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
             </Button>
           </FooterTab>
         </Footer>

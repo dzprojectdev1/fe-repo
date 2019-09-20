@@ -15,6 +15,8 @@ import {
   Alert,
   PermissionsAndroid
 } from "react-native";
+import DeviceInfo from 'react-native-device-info';
+import AnimateLoadingButton from 'react-native-animate-loading-button';
 import Geolocation from 'react-native-geolocation-service';
 import nativeFirebase from 'react-native-firebase';
 import logo from '../../assets/images/logo.png';
@@ -28,12 +30,13 @@ class Register2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      email: '',
-      password: '',
-      fullname: '',
+      nickName: '',
+      // email: '',
+      // password: '',
+      // fullname: '',
       birthday: '',
       gender: '',
+      description: '',
       languageData: [],
       language: '',
       cityData: [],
@@ -48,11 +51,12 @@ class Register2 extends Component {
   };
   componentDidMount() {
     this.setState({
-      name: this.props.navigation.state.params.name,
-      email: this.props.navigation.state.params.email,
-      password: this.props.navigation.state.params.password,
-      fullname: this.props.navigation.state.params.fullname,
+      nickName: this.props.navigation.state.params.nickName,
+      // email: this.props.navigation.state.params.email,
+      // password: this.props.navigation.state.params.password,
+      // fullname: this.props.navigation.state.params.fullname,
       birthday: this.props.navigation.state.params.birthday,
+      description: this.props.navigation.state.params.description,
       gender: this.props.navigation.state.params.gender
     });
     this.get_ethnicity()
@@ -189,62 +193,89 @@ class Register2 extends Component {
       await this.requestLocationPermission();
     }
   }
-  onRegister() {
+  getdeviceId = async () => {
+    //Getting the Unique Id from here
+    var fcmToken = await nativeFirebase.messaging().getToken();
+    var id = DeviceInfo.getUniqueID();
+    var deviceInfo = { device_id: id, fcm_id: fcmToken };
+    return deviceInfo;
+  };
+  onRegister = () => {
+    this.registerLoadingBtn.showLoading(true);
     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(isPermission => {
       if (isPermission) {
         Geolocation.getCurrentPosition(
           (position) => {
-            var details = {
-              'username': this.state.name,
-              'useremail': this.state.email,
-              'userpassword': this.state.password,
-              'usergender': this.state.gender,
-              'language': 1,
-              'country': 1,
-              'ethnicity': 3,
-              'birth_date': this.state.birthday,
-              'lat_geo': position.coords.latitude,
-              'long_geo': position.coords.longitude
-            };
-            var formBody = [];
-            for (var property in details) {
-              var encodedKey = encodeURIComponent(property);
-              var encodedValue = encodeURIComponent(details[property]);
-              formBody.push(encodedKey + "=" + encodedValue);
-            }
-            formBody = formBody.join("&");
-            fetch(`${SERVER_URL}/api/user/signup`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              body: formBody,
-            }).then((response) => response.json())
-              .then((responseJson) => {
-                if (!responseJson.error) {
-                  this.onLogin();
-                }
-              })
-              .catch((error) => {
-                alert(error);
-              });
+            this.getdeviceId().then(deviceInfo => {
+              var details = {
+                'username': this.state.nickName,
+                // 'useremail': this.state.email,
+                // 'userpassword': this.state.password,
+                'usergender': this.state.gender,
+                'description': this.state.description,
+                'language': 1,
+                'country': 1,
+                'ethnicity': 3,
+                'birth_date': this.state.birthday,
+                'lat_geo': position.coords.latitude,
+                'long_geo': position.coords.longitude,
+                'device_id': deviceInfo.device_id,
+                'fcm_id': deviceInfo.fcm_id
+              };
+              var formBody = [];
+              for (var property in details) {
+                var encodedKey = encodeURIComponent(property);
+                var encodedValue = encodeURIComponent(details[property]);
+                formBody.push(encodedKey + "=" + encodedValue);
+              }
+              formBody = formBody.join("&");
+              fetch(`${SERVER_URL}/api/user/signup`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formBody,
+              }).then((response) => response.json())
+                .then((responseJson) => {
+                  this.registerLoadingBtn.showLoading(false);
+                  if (!responseJson.error) {
+                    // this.onLogin();
+                    Global.saveData.token = responseJson.user.token;
+                    Global.saveData.u_id = responseJson.user.id
+                    Global.saveData.u_name = responseJson.user.name
+                    Global.saveData.u_age = responseJson.user.age
+                    Global.saveData.u_gender = responseJson.user.gender
+                    Global.saveData.u_language = responseJson.user.language
+                    Global.saveData.u_city = responseJson.user.ethnicity
+                    Global.saveData.u_country = responseJson.user.country
+                    Global.saveData.u_description = responseJson.user.description;
+                    Global.saveData.newUser = true;
+                    this.props.navigation.navigate("Browse");
+                  }
+                })
+                .catch((error) => {
+                  alert(error);
+                });
+            });
           },
           (error) => {
             // See error code charts below.
             alert(error.message);
             return null;
           },
+          {enableHighAccuracy: Platform.OS != 'android', timeout: 5000,}
         );
       }
     });
+    this.registerLoadingBtn.showLoading(false);
   }
   onLogin() {
     nativeFirebase.messaging().getToken().then(fcmToken => {
       if (fcmToken) {
         var details = {
-          'useremail': this.state.email,
-          'userpassword': this.state.password,
-          'deviceId': fcmToken
+          // 'useremail': this.state.email,
+          // 'userpassword': this.state.password,
+          'fcm_id': fcmToken
         };
         var formBody = [];
         for (var property in details) {
@@ -263,20 +294,20 @@ class Register2 extends Component {
       }).then((response) => response.json())
         .then((responseJson) => {
           if (!responseJson.error) {
-            Global.saveData.token = responseJson.data.token;
-            Global.saveData.u_id = responseJson.data.id
-            Global.saveData.u_name = responseJson.data.name
-            Global.saveData.u_age = responseJson.data.age
-            Global.saveData.u_gender = responseJson.data.gender
-            Global.saveData.u_email = responseJson.data.email
-            Global.saveData.u_language = responseJson.data.language
-            Global.saveData.u_city = responseJson.data.ethnicity
-            Global.saveData.u_country = responseJson.data.country
-            Global.saveData.newUser = false;
-            this.props.navigation.navigate("EmailConfirm");
+            Global.saveData.token = responseJson.user.token;
+            Global.saveData.u_id = responseJson.user.id;
+            Global.saveData.u_name = responseJson.user.name;
+            Global.saveData.u_age = responseJson.user.age;
+            Global.saveData.u_gender = responseJson.user.gender;
+            Global.saveData.u_email = responseJson.user.email;
+            Global.saveData.u_language = responseJson.user.language;
+            Global.saveData.u_city = responseJson.user.ethnicity;
+            Global.saveData.u_country = responseJson.user.country;
+            Global.saveData.newUser = true;
+            this.props.navigation.navigate("Browse");
           }
         }).catch((error) => {
-          alert(JSON.stringify(error))
+          alert(JSON.stringify(error));
           return
         });
     });
@@ -308,7 +339,6 @@ class Register2 extends Component {
               />
             </View>
           </View>
-
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 20 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text style={{ color: '#808080', fontSize: 12 }}>{"Ethnicity"}</Text>
@@ -353,12 +383,23 @@ class Register2 extends Component {
             <Text style={{ color: '#808080', fontSize: 12, textAlign: 'center', marginTop: 10 }}>{"OUR TERMS OF SERVICE AND PRIVACY POLICY"}</Text>
           </View>
           <View style={{ width: DEVICE_WIDTH, height: 50, alignItems: 'center', justifyContent: 'center', marginTop: 30 }}>
-            <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, height: 40, borderRadius: 20, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center' }}
+            {/* <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, height: 40, borderRadius: 20, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center' }}
               onPress={() => this.onRegister()}
             >
-              <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>{"REGISTER"}</Text>
-            </TouchableOpacity>
-          </View>
+              <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>{"REGISTER"}</Text>             
+            </TouchableOpacity> */}
+              <AnimateLoadingButton
+                ref={c => (this.registerLoadingBtn = c)}
+                width={DEVICE_WIDTH * 0.8}
+                height={40}
+                title="REGISTER"
+                titleFontSize={16}
+                titleColor="#fff"
+                backgroundColor="#DE5859"
+                borderRadius={20}
+                onPress={this.onRegister.bind(this)}
+              />
+            </View>
           <View style={{ height: 100 }} />
         </Content>
       </View>

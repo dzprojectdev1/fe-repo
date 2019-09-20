@@ -4,6 +4,7 @@ module.exports.saveData =
         u_name: '',
         u_age: '',
         u_gender: '',
+        u_description: '',
         u_email: '',
         u_language: '',
         u_city: '',

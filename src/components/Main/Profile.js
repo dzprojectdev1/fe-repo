@@ -89,20 +89,21 @@ class Profile extends Component {
     });
   }
   showUserVideo(url, otherId) {
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': Global.saveData.token
-      }
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        this.props.navigation.navigate("ProfileDetail", { url: responseJson.url, otherId: otherId })
-      })
-      .catch((error) => {
-        alert("There is error, please try again!");
-        return
-      });
+    // fetch(url, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': Global.saveData.token
+    //   }
+    // }).then((response) => response.json())
+    //   .then((responseJson) => {
+    //     this.props.navigation.navigate("ProfileDetail", { url: responseJson.url, otherId: otherId })
+    //   })
+    //   .catch((error) => {
+    //     alert("There is error, please try again!");
+    //     return
+    //   });
+    this.props.navigation.navigate("ProfileDetail", { url: url, otherId: otherId })
   }
   onBack() {
     if (Global.saveData.prevpage == "ChatDetail") {
@@ -137,7 +138,7 @@ class Profile extends Component {
               initialNumToRender={this.state.datas.length}
               renderItem={({ item: rowData }) => {
                 return (
-                  <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.videoUrl, rowData.otherId)}>
+                  <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.imageUrl, rowData.otherId)}>
                     <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20) * 1.5, marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }}>
                     </ImageBackground>
                   </TouchableOpacity>

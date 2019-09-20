@@ -5,18 +5,19 @@ import {
   FooterTab,
   Text,
 } from "native-base";
-import { 
-  BackHandler, 
-  Image, 
-  ScrollView, 
-  Platform, 
-  Dimensions, 
-  View, 
-  StyleSheet, 
-  FlatList, 
-  TouchableOpacity, 
-  StatusBar 
+import {
+  BackHandler,
+  Image,
+  ScrollView,
+  Platform,
+  Dimensions,
+  View,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  StatusBar
 } from "react-native";
+import OnlyGImage from '../../assets/images/OnlyGImage.png';
 
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
@@ -27,7 +28,7 @@ import b_myvideo from '../../assets/images/myvideo.png';
 import b_name from '../../assets/images/name.png';
 import Global from '../Global';
 
-import {SERVER_URL} from '../../config/constants';
+import { SERVER_URL } from '../../config/constants';
 
 class Match extends Component {
   constructor(props) {
@@ -126,6 +127,12 @@ class Match extends Component {
         return
       });
   }
+
+  //////////////////////////////////////////////////
+  gotoGpay() {
+    this.props.navigation.navigate("screenGpay01");
+  }
+  //////////////////////////////////////////////////
   render() {
     return (
       <View style={styles.contentContainer}>
@@ -190,7 +197,11 @@ class Match extends Component {
             </Button>
             <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("MyVideo")}>
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
-              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MY VIDEO"}</Text>
+              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
+            </Button>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
+              <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
+              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
             </Button>
           </FooterTab>
         </Footer>

@@ -223,7 +223,7 @@ class IncomeDetail extends Component {
   }
   gotoReport() {
     if (this.state.otherId != -1) {
-      this.props.navigation.navigate("Report", { id: this.state.otherId })
+      this.props.navigation.navigate("Report", { otherId: this.state.otherId });
     }
   }
   render() {

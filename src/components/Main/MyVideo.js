@@ -20,6 +20,7 @@ import {
   StatusBar,
   Alert
 } from "react-native";
+import OnlyGImage from '../../assets/images/OnlyGImage.png';
 
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
@@ -29,7 +30,7 @@ import b_myvideo from '../../assets/images/myvideo.png';
 import b_delete from '../../assets/images/delete.png';
 import Global from '../Global';
 
-import {SERVER_URL} from '../../config/constants';
+import { SERVER_URL } from '../../config/constants';
 
 class MyVideo extends Component {
   constructor(props) {
@@ -59,7 +60,6 @@ class MyVideo extends Component {
       .then(response => response.json())
       .then(responseJson => {
         if (!responseJson.error) {
-          console.log('Videos:', responseJson.data);
           this.getThumbnails(responseJson.data);
         }
       })
@@ -122,19 +122,20 @@ class MyVideo extends Component {
     return true;
   }
   showUserVideo(url, otherId, id, primary) {
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': Global.saveData.token
-      }
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        this.props.navigation.navigate("MyVideoDetail", { url: responseJson.url, otherId: otherId, id: id, primary })
-      }).catch((error) => {
-        alert("There is error, please try again!");
-        return
-      });
+    // fetch(url, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': Global.saveData.token
+    //   }
+    // }).then((response) => response.json())
+    //   .then((responseJson) => {
+    //     this.props.navigation.navigate("MyVideoDetail", { url: url, otherId: otherId, id: id, primary })
+    //   }).catch((error) => {
+    //     alert("There is error, please try again!");
+    //     return
+    //   });
+    this.props.navigation.navigate("MyVideoDetail", { url: url, otherId: otherId, id: id, primary })
   }
   addVideo() {
     this.props.navigation.navigate("Record")
@@ -169,13 +170,18 @@ class MyVideo extends Component {
   gotoProfileSetting() {
     this.props.navigation.navigate("ProfileSetting");
   }
+  //////////////////////////////////////////////////
+  gotoGpay() {
+    this.props.navigation.navigate("screenGpay01");
+  }
+  //////////////////////////////////////////////////
   render() {
     return (
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <View style={{ marginTop: 40, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
           <View style={{ width: DEVICE_WIDTH - 80, marginLeft: 40, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>{"MY VIDEOS"}</Text>
+            <Text>{"PROFILE"}</Text>
           </View>
           <TouchableOpacity style={{ width: 30, height: 40, alignItems: 'center', justifyContent: 'center', marginRight: 10 }}
             onPress={() => this.gotoProfileSetting()}>
@@ -193,7 +199,7 @@ class MyVideo extends Component {
               renderItem={({ item: rowData }) => {
                 return (
                   <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }}
-                    onPress={() => this.showUserVideo(rowData.videoUrl, rowData.otherId, rowData.id, rowData.primary)}>
+                    onPress={() => this.showUserVideo(rowData.imageUrl, rowData.otherId, rowData.id, rowData.primary)}>
                     <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20) * 1.5, marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }}>
                       <View style={{ width: '100%', height: 30, marginTop: (DEVICE_WIDTH / 2 - 20) * 1.5 - 50, flexDirection: 'row' }}>
                         <View style={{ width: DEVICE_WIDTH / 2 - 60, height: 30, alignItems: 'center', justifyContent: 'center' }}>
@@ -248,7 +254,11 @@ class MyVideo extends Component {
             </Button>
             <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => { }}>
               <Image source={b_myvideo} style={{ width: 25, height: 25, tintColor: '#B64F54' }} />
-              <Text style={{ color: '#B64F54', fontSize: 8, fontWeight: 'bold', marginTop: 3 }}>{"MY VIDEO"}</Text>
+              <Text style={{ color: '#B64F54', fontSize: 8, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
+            </Button>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
+              <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
+              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
             </Button>
           </FooterTab>
         </Footer>
