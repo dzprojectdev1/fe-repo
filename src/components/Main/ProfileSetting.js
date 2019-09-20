@@ -232,16 +232,16 @@ class ProfileSetting extends Component {
       return false;
     }
   }
-  onLogout() {
-    Alert.alert(
-      '',
-      'Are you sure you want to log out?',
-      [
-        { text: 'Logout', backgroundColor: '#FCDD80', onPress: () => this.logout() },
-        { text: 'Cancel', backgroundColor: '#FCDD80', onPress: () => () => console.log('Cancel Pressed'), style: 'cancel' },
-      ],
-      { cancelable: false });
-  }
+  // onLogout() {
+  //   Alert.alert(
+  //     '',
+  //     'Are you sure you want to log out?',
+  //     [
+  //       { text: 'Logout', backgroundColor: '#FCDD80', onPress: () => this.logout() },
+  //       { text: 'Cancel', backgroundColor: '#FCDD80', onPress: () => () => console.log('Cancel Pressed'), style: 'cancel' },
+  //     ],
+  //     { cancelable: false });
+  // }
   logout = () => {
     this.removeItemValue().then((result) => {
       if (result === true) {
@@ -383,10 +383,10 @@ class ProfileSetting extends Component {
             onPress={() => this.onCloseAccout()}>
             <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{"Close My Account"}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 15, }}
+          {/* <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 15, }}
             onPress={() => this.onLogout()}>
             <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{"Log Out"}</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View style={{ height: 100 }} />
         </ScrollView>
       </View>

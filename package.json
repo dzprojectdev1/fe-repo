@@ -13,6 +13,7 @@
     "native-base": "^2.12.1",
     "react": "16.8.3",
     "react-native": "0.59.9",
+    "react-native-animate-loading-button": "^1.0.3",
     "react-native-camera": "^2.10.2",
     "react-native-device-info": "^2.3.2",
     "react-native-elements": "^1.1.0",

@@ -46,14 +46,13 @@ const stripeRequestData: RequestDataType = {
 }
 
 export default class Gpay extends Component {
-
   componentDidMount() {
     // Set the environment before the payment request
     if (Platform.OS === 'android') {
       GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST)
     }
   }
-
+  
   payWithGooglePay = () => {
     // Check if Google Pay is available
     GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods)

@@ -31,6 +31,7 @@ import b_name from '../../assets/images/name.png';
 import b_age from '../../assets/images/age.png';
 import b_distance from '../../assets/images/distance.png';
 import b_profile from '../../assets/images/profile.png';
+import no_image from '../../assets/images/no-image.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -88,8 +89,8 @@ class Browse extends Component {
       .then((responseJson) => {
         if (!responseJson.error) {
           if (responseJson.data) {
-            this.setState({ isnoUser: false })
-            this.getDetails(responseJson.data)
+            this.setState({ isnoUser: false });
+            this.getDetails(responseJson.data);
           }
           else {
             this.setState({ isnoUser: true })
@@ -157,31 +158,54 @@ class Browse extends Component {
       );
   }
   getDetails = async (data) => {
-    var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=${data.cdn_filtered_id}-screenshot`;
-
-    fetch(v_url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': Global.saveData.token
-      }
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({
-          paused: false,
-          otherid: data.id,
-          vid: data.id,
-          vUrl: responseJson.url,
-          username: data.name,
-          userage: this.getAge(data.birth_date),
-          userdistance: parseInt(data.distance)
-        });
-      })
-      .catch((error) => {
-        alert("There is error, please try again!")
-        return
-      }
+    if (data.cdn_filtered_id) {      
+      var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=${data.cdn_filtered_id}-screenshot`;      
+      fetch(v_url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': Global.saveData.token
+        }
+      }).then((response) => response.json())
+        .then((responseJson) => {
+          if (responseJson.url) {
+            this.setState({
+              paused: false,
+              otherid: data.id,
+              vid: data.id,
+              vUrl: responseJson.url,
+              username: data.name,
+              userage: this.getAge(data.birth_date),
+              userdistance: parseInt(data.distance)
+            });
+          } else {
+            this.setState({
+              paused: false,
+              otherid: data.id,
+              vid: data.id,
+              vUrl: '',
+              username: data.name,
+              userage: this.getAge(data.birth_date),
+              userdistance: parseInt(data.distance)
+            });
+          }
+        })
+        .catch((error) => {
+          alert(JSON.stringify(error));
+          return
+        }
       );
+    } else {
+      this.setState({
+        paused: false,
+        otherid: data.id,
+        vid: data.id,
+        vUrl: '',
+        username: data.name,
+        userage: this.getAge(data.birth_date),
+        userdistance: parseInt(data.distance)
+      });
+    }    
   }
   getAge(birth) {
     var b_year = parseInt(birth.split("-")[0]);
@@ -241,6 +265,7 @@ class Browse extends Component {
       body: formBody,
     }).then((response) => response.json())
       .then((responseJson) => {
+        alert(JSON.stringify(responseJson));
         if (!responseJson.error) {
           if (Global.saveData.isFilter) {
             this.getFilterVideos()
@@ -254,7 +279,7 @@ class Browse extends Component {
         alert(JSON.stringify(error))
         return
       }
-      );
+    );
   }
 
   backPressed = () => {
@@ -285,23 +310,23 @@ class Browse extends Component {
     this.setState({
       paused: true
     });
-    this.props.navigation.replace("Filter")
+    this.props.navigation.replace("Filter");
   }
   gotoIncome() {
     this.setState({ paused: true })
-    this.props.navigation.replace("Income")
+    this.props.navigation.replace("Income");
   }
   gotoMatch() {
     this.setState({ paused: true })
-    this.props.navigation.replace("Match")
+    this.props.navigation.replace("Match");
   }
   gotoChat() {
     this.setState({ paused: true })
-    this.props.navigation.replace("Chat")
+    this.props.navigation.replace("Chat");
   }
   gotoMyVideo() {
     this.setState({ paused: true })
-    this.props.navigation.replace("MyVideo")
+    this.props.navigation.replace("MyVideo");
   }
   gotoProfile = () => {
     this.setState({ paused: true });
@@ -334,7 +359,7 @@ class Browse extends Component {
               <View style={{ alignSelf: 'flex-end', marginTop: '10%', marginRight: '5%', position: 'absolute', }}>
                 <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                   onPress={() => this.gotoFilter()}>
-                  <Image source={b_filters} style={{ width: 30, height: 30 }} />
+                  <Image source={b_filters} style={{width : 25, height: 25 }} />
                 </TouchableOpacity>
               </View>
               <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: '50%', paddingBottom: '50%' }}>
@@ -356,24 +381,35 @@ class Browse extends Component {
                   style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
                 />
               )} */}
-              {(this.state.vUrl != "") && (
+              {(this.state.vUrl !== "") && (
                 <Image
                   source={{ uri: this.state.vUrl }}
                   style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
                 />
               )}
+              {/* {(this.state.vUrl === "") && (
+                <Content style={{ backgroundColor: 'grey', height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}>
+                  <Icon type="FontAwesome" name="photo" style={{justifyContent: 'center', fontSize: DEVICE_WIDTH * 0.25, color: '#f5c0c1', alignSelf: 'center', marginTop: DEVICE_HEIGHT * 0.45}} />
+                </Content>
+              )} */}
+              {(this.state.vUrl === "") && (
+              <Image
+                source={no_image}
+                style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
+              />
+              )}
               <View style={{ position: 'absolute', left: 0, top: 70, }}>
                 <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                  {(this.state.vUrl != "") && (<TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
+                  <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.gotoReport()}>
-                    <Image source={b_notification} style={{ width: 30, height: 30 }} />
-                  </TouchableOpacity>)}
+                    <Image source={b_notification} style={{width : 25, height: 25 }} />
+                  </TouchableOpacity>
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.gotoFilter()}>
-                    <Image source={b_filters} style={{ width: 30, height: 30 }} />
+                    <Image source={b_filters} style={{width : 25, height: 25 }} />
                   </TouchableOpacity>
                 </View>
-                {(this.state.vUrl != "") && (<View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
+               <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
                   <View>
                     <View style={{ flexDirection: 'row' }}>
                       <Image source={b_name} style={{ width: 15, height: 15 }} />
@@ -390,11 +426,11 @@ class Browse extends Component {
                   </View>
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                     onPress={this.gotoProfile}>
-                    <Image source={b_profile} style={{ width: 30, height: 30 }} />
+                    <Image source={b_profile} style={{width : 25, height: 25 }} />
                   </TouchableOpacity>
-                </View>)}
+                </View>
               </View>
-              {(this.state.vUrl != "") && (<View style={{ position: 'absolute', left: 0, bottom: 120 }}>
+              <View style={{ position: 'absolute', left: 0, bottom: 120 }}>
                 <View style={{ width: DEVICE_WIDTH * 0.5, marginLeft: DEVICE_WIDTH * 0.25, flexDirection: 'row', justifyContent: 'space-between' }}>
                   <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.onReject()}>
@@ -405,34 +441,34 @@ class Browse extends Component {
                     <Icon type="FontAwesome" name="heart" style={{ color: '#fff' }} />
                   </TouchableOpacity>
                 </View>
-              </View>)}
+              </View>
             </Content>
           )
         }
-        <Footer style={{ borderTopColor: '#222F3F', height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
-          <FooterTab style={{ backgroundColor: '#222F3F' }}>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent >
-              <Image source={b_browse} style={{ width: 25, height: 25, tintColor: '#B64F54' }} />
-              <Text style={{ color: '#B64F54', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"BROWSE"}</Text>
+        <Footer style={{ borderTopColor: '#222F3F', height: Platform.select({ 'android': 60, 'ios': 40 }) }}>
+          <FooterTab style={{ backgroundColor: '#222F3F', alignSelf: 'stretch', alignItems: 'center', alignContent: 'space-around', flex: 1, flexDirection: 'row' }}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0,  }} transparent >
+              <Image source={b_browse} style={{width : 25, height: 25, tintColor: '#B64F54' }} />
+              <Text style={{ color: '#B64F54', fontSize: 6, fontWeight: 'bold', marginTop: 3, width: '100%' }}>{"BROWSE"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoIncome()}>
-              <Image source={b_incoming} style={{ width: 25, height: 25 }} />
-              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"INCOMING"}</Text>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0, margin: 0, padding: 0 }} transparent onPress={() => this.gotoIncome()}>
+              <Image source={b_incoming} style={{width : 25, height: 25 }} />
+              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3, width: '100%' }}>{"INCOMING"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoMatch()}>
-              <Image source={b_match} style={{ width: 25, height: 25 }} />
-              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MATCH"}</Text>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0,  }} transparent onPress={() => this.gotoMatch()}>
+              <Image source={b_match} style={{width : 25, height: 25 }} />
+              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3, width: '100%' }}>{"MATCH"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoChat()}>
-              <Image source={b_chat} style={{ width: 25, height: 25 }} />
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0,  }} transparent onPress={() => this.gotoChat()}>
+              <Image source={b_chat} style={{width : 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"CHAT"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoMyVideo()}>
-              <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
-              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MY VIDEO"}</Text>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0,  }} transparent onPress={() => this.gotoMyVideo()}>
+              <Image source={b_myvideo} style={{width : 25, height: 25 }} />
+              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
-              <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0,  }} transparent onPress={() => this.gotoGpay()}>
+              <Image source={OnlyGImage} style={{width : 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
             </Button>             
           </FooterTab>

@@ -3,41 +3,42 @@ import {
   Text,
   Content
 } from "native-base"
-import { 
-  ImageBackground, 
-  Image, 
-  Platform, 
-  Dimensions, 
-  View, 
-  StyleSheet, 
-  TouchableOpacity, 
+import {
+  ImageBackground,
+  Image,
+  Platform,
+  Dimensions,
+  View,
+  StyleSheet,
+  TouchableOpacity,
   StatusBar,
-  Alert
+  TextInput
+  // Alert
 } from "react-native";
-import Picker from 'react-native-wheel-picker'
+// import Picker from 'react-native-wheel-picker';
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import radioIcon from '../../assets/images/radio.png';
 import unradioIcon from '../../assets/images/unradio.png';
 
-var PickerItem = Picker.Item;
+// var PickerItem = Picker.Item;
 
 class Register1 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      email: '',
-      password: '',
-      fullname: '',
+      nickName: '',
+      // email: '',
+      // password: '',
       birthday: new Date(),
       isMale: true,
-      selected_dItem: 6,
-      selected_yItem: 30,
-      selected_mItem: 6,
-      mitemList: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Spe', 'Oct', 'Nov', 'Dec'],
-      yitemList: ['2019'],
-      ditemList: ['1'],
+      description: '',
+      // selected_dItem: 6,
+      // selected_yItem: 30,
+      // selected_mItem: 6,
+      // mitemList: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Spe', 'Oct', 'Nov', 'Dec'],
+      // yitemList: ['2019'],
+      // ditemList: ['1'],
     };
   }
 
@@ -47,80 +48,82 @@ class Register1 extends Component {
 
   componentDidMount() {
     this.setState({
-      name: this.props.navigation.state.params.name,
-      email: this.props.navigation.state.params.email,
-      password: this.props.navigation.state.params.password
+      nickName: this.props.navigation.state.params.nickName,
+      birthday: this.props.navigation.state.params.birthday
+      // email: this.props.navigation.state.params.email,
+      // password: this.props.navigation.state.params.password
     });
   }
-  componentWillMount() {
-    var y_item = []
-    var d_item = []
-    for (var i = 1959; i < 2059; i++) {
-      y_item.push("" + i);
-    }
-    for (var i = 1; i < 32; i++) {
-      d_item.push("" + i)
-    }
-    this.setState({ yitemList: y_item, ditemList: d_item })
-  }
+  // componentWillMount() {
+  //   var y_item = []
+  //   var d_item = []
+  //   for (var i = 1959; i < 2059; i++) {
+  //     y_item.push("" + i);
+  //   }
+  //   for (var i = 1; i < 32; i++) {
+  //     d_item.push("" + i)
+  //   }
+  //   this.setState({ yitemList: y_item, ditemList: d_item })
+  // }
 
-  ondPickerSelect(index) {
-    this.setState({
-      selected_dItem: index,
-    })
-  }
-  onmPickerSelect(index) {
-    this.setState({
-      selected_mItem: index,
-    })
-  }
-  onyPickerSelect(index) {
-    this.setState({
-      selected_yItem: index,
-    })
-  }
+  // ondPickerSelect(index) {
+  //   this.setState({
+  //     selected_dItem: index,
+  //   })
+  // }
+  // onmPickerSelect(index) {
+  //   this.setState({
+  //     selected_mItem: index,
+  //   })
+  // }
+  // onyPickerSelect(index) {
+  //   this.setState({
+  //     selected_yItem: index,
+  //   })
+  // }
   goNext() {
-    var y_item = this.state.yitemList;
-    var m_item = this.state.mitemList;
-    var d_item = this.state.ditemList;
-    var mon = "";
-    var date = "";
-    if ((this.state.selected_mItem + 1) < 10) {
-      mon = "0" + (this.state.selected_mItem + 1);
-    }
-    else {
-      mon = "" + (this.state.selected_mItem + 1);
-    }
-    if ((this.state.selected_dItem + 1) < 10) {
-      date = "0" + d_item[this.state.selected_dItem]
-    }
-    else {
-      date = "" + d_item[this.state.selected_dItem]
-    }
-    var birthday = y_item[this.state.selected_yItem] + "-" + mon + "-" + date;
+    // var y_item = this.state.yitemList;
+    // var m_item = this.state.mitemList;
+    // var d_item = this.state.ditemList;
+    // var mon = "";
+    // var date = "";
+    // if ((this.state.selected_mItem + 1) < 10) {
+    //   mon = "0" + (this.state.selected_mItem + 1);
+    // }
+    // else {
+    //   mon = "" + (this.state.selected_mItem + 1);
+    // }
+    // if ((this.state.selected_dItem + 1) < 10) {
+    //   date = "0" + d_item[this.state.selected_dItem]
+    // }
+    // else {
+    //   date = "" + d_item[this.state.selected_dItem]
+    // }
+    // var birthday = y_item[this.state.selected_yItem] + "-" + mon + "-" + date;
     var gender = 1;
-    var fullname = this.state.fullname
     if (!this.state.isMale) {
       gender = 0
     }
-    var nowDate = new Date();
-    var nowYear = nowDate.getFullYear();
-    var deltaYear = parseInt(nowYear) - parseInt(y_item[this.state.selected_yItem]);
-    if (deltaYear < 18) {
-      Alert.alert(
-        '',
-        'Sorry, you must be over 18 years old to register',
-        [
-          { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-          { text: 'Yes', onPress: () => console.log("Ok Pressed")},
-        ],
-        { cancelable: true });
-    } else {
-      this.props.navigation.navigate("Register2", { name: this.state.name, email: this.state.email, password: this.state.password, fullname: fullname, birthday: birthday, gender: gender })
-    }
+    // var nowDate = new Date();
+    // var nowYear = nowDate.getFullYear();
+    // var deltaYear = parseInt(nowYear) - parseInt(y_item[this.state.selected_yItem]);
+    // if (deltaYear < 18) {
+    //   Alert.alert(
+    //     '',
+    //     'Sorry, you must be over 18 years old to register',
+    //     [
+    //       { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+    //       { text: 'Yes', onPress: () => console.log("Ok Pressed")},
+    //     ],
+    //     { cancelable: true });
+    // } else {
+    //   // this.props.navigation.navigate("Register2", { nickName: this.state.nickName, email: this.state.email, password: this.state.password, birthday: birthday, gender: gender })
+    // }
+    this.props.navigation.navigate("Register2",
+     { nickName: this.state.nickName, birthday: this.state.birthday, gender: gender, description: this.state.description }
+    );
   }
   render() {
-    var { navigate } = this.props.navigation;
     return (
       <View style={styles.contentContainer}>
         <StatusBar backgroundColor='#fff' barStyle='dark-content' />
@@ -129,6 +132,19 @@ class Register1 extends Component {
         </ImageBackground>
         <Content>
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 50, }}>
+            <Text style={{ color: '#808080', fontSize: 12, marginLeft: 10 }}>{"INTRODUCTION"}</Text>
+          </View>
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1,  marginTop: Platform.select({ 'android': 15, 'ios': 160 })}}>
+            <TextInput
+              style={{ borderColor: 'gray', borderWidth: 1 }}
+              onChangeText={description => { this.setState({ description }) }}
+              value={this.state.description}
+              maxLength={40}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
+          {/* <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 50, }}>
             <Text style={{ color: '#808080', fontSize: 12, marginLeft: 10 }}>{"BIRTHDAY"}</Text>
           </View>
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, height: 60, marginTop: Platform.select({ 'android': 15, 'ios': 0 }), flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -156,6 +172,9 @@ class Register1 extends Component {
                 <PickerItem label={value} value={i} key={"money" + value} />
               ))}
             </Picker>
+          </View> */}
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 50, }}>
+            <Text style={{ color: '#808080', fontSize: 12, marginLeft: 10 }}>{"GENDER"}</Text>
           </View>
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, height: 30, marginTop: Platform.select({ 'android': 15, 'ios': 160 }), flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} onPress={() => this.setState({ isMale: true })}>

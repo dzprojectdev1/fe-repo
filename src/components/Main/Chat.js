@@ -22,7 +22,7 @@ import {
 import firebase from 'firebase';
 
 import { SERVER_URL } from '../../config/constants';
-
+import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';
@@ -43,7 +43,7 @@ class Chat extends Component {
   static navigationOptions = {
     header: null
   };
-  
+
   componentWillMount() {
     Global.saveData.nowPage = 'Chat';
     Global.saveData.prevpage = "Chat";
@@ -53,12 +53,12 @@ class Chat extends Component {
 
   componentDidMount() {
     firebase.database().ref().child(Global.saveData.u_id)
-    .on('child_added', (value) => {
-      this.getChatData();
-    });
+      .on('child_added', (value) => {
+        this.getChatData();
+      });
   }
 
-  componentWillUnmount() {   
+  componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
   }
 
@@ -135,6 +135,11 @@ class Chat extends Component {
     Global.saveData.prevpage = "Chat";
     this.props.navigation.navigate("ChatDetail", { data: data })
   }
+  //////////////////////////////////////////////////
+  gotoGpay() {
+    this.props.navigation.navigate("screenGpay01");
+  }
+  //////////////////////////////////////////////////
   render() {
     return (
       <View style={styles.contentContainer}>
@@ -203,7 +208,11 @@ class Chat extends Component {
             </Button>
             <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("MyVideo")}>
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
-              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MY VIDEO"}</Text>
+              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
+            </Button>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
+              <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
+              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
             </Button>
           </FooterTab>
         </Footer>
