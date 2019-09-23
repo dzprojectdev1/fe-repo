@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   Alert
 } from "react-native";
+import nativeFirebase from 'react-native-firebase';
 import DeviceInfo from 'react-native-device-info';
 // import store from 'react-native-simple-store';
 // import logo from '../assets/images/logo.png';
@@ -40,53 +41,68 @@ class FirstScreen extends Component {
   };
 
   componentDidMount() {
-    this.getdeviceId().then(deviceId => {
-      if (deviceId) {
-        fetch(`${SERVER_URL}/api/user/checkDeviceUniqueId/${deviceId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-        }).then((response) => response.json())
-          .then((responseJson) => {
-            
-            if (responseJson.error === false) {
-              if (responseJson.user) {
-                //logined
-                Global.saveData.token = responseJson.user.token;
-                Global.saveData.u_id = responseJson.user.id;
-                Global.saveData.u_name = responseJson.user.name;
-                Global.saveData.u_age = responseJson.user.age;
-                Global.saveData.u_gender = responseJson.user.gender;
-                Global.saveData.u_email = responseJson.user.email;
-                Global.saveData.u_language = responseJson.user.language;
-                Global.saveData.u_city = responseJson.user.ethnicity;
-                Global.saveData.u_country = responseJson.user.country;
-                Global.saveData.u_description = responseJson.user.description;
-                Global.saveData.newUser = false;
-                
-                this.setState({
-                  isLoaded: false
-                }, function() {
-                  this.props.navigation.replace("Browse");
-                });                
-              } else {
-                this.setState({
-                  isLoaded: false
-                }, function() {
-                  this.props.navigation.navigate("Signup");
-                });
-              }
+    nativeFirebase.messaging().getToken().then(fcmToken => {
+      if (fcmToken) {
+        this.getdeviceId().then(deviceId => {
+          if (deviceId) {
+            var details = {
+              'fcmId': fcmToken
+            };
+            var formBody = [];
+            for (var property in details) {
+              var encodedKey = encodeURIComponent(property);
+              var encodedValue = encodeURIComponent(details[property]);
+              formBody.push(encodedKey + "=" + encodedValue);
             }
-          }).catch(error => {
-            alert(JSON.stringify(error));
-          });
-      } else {
-        this.setState({
-          isLoaded: false
-        })
-      }
-    })
+            formBody = formBody.join("&");
+            fetch(`${SERVER_URL}/api/user/checkDeviceUniqueId/${deviceId}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: formBody
+            }).then((response) => response.json())
+              .then((responseJson) => {
+                if (responseJson.error === false) {
+                  if (responseJson.user) {
+                    //logined
+                    Global.saveData.token = responseJson.user.token;
+                    Global.saveData.u_id = responseJson.user.id;
+                    Global.saveData.u_name = responseJson.user.name;
+                    Global.saveData.u_age = responseJson.user.age;
+                    Global.saveData.u_gender = responseJson.user.gender;
+                    Global.saveData.u_email = responseJson.user.email;
+                    Global.saveData.u_language = responseJson.user.language;
+                    Global.saveData.u_city = responseJson.user.ethnicity;
+                    Global.saveData.u_country = responseJson.user.country;
+                    Global.saveData.u_description = responseJson.user.description;
+                    Global.saveData.newUser = false;
+                    
+                    this.setState({
+                      isLoaded: false
+                    }, function() {
+                      this.props.navigation.replace("Browse");
+                    });                
+                  } else {
+                    this.setState({
+                      isLoaded: false
+                    }, function() {
+                      this.props.navigation.navigate("Signup");
+                    });
+                  }
+                }
+              }).catch(error => {
+                alert(JSON.stringify(error));
+              });
+          } else {
+            this.setState({
+              isLoaded: false
+            })
+          }
+        });
+      } 
+    });
+    
     // this.retrieveData().then((userToken) => {
     //   if (userToken) {
     //     fetch(`${SERVER_URL}/api/user/checkLoginStatus`, {

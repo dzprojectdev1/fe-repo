@@ -23,6 +23,7 @@ import firebase from 'firebase';
 
 import { SERVER_URL } from '../../config/constants';
 import OnlyGImage from '../../assets/images/OnlyGImage.png';
+import hiddenMan from '../../assets/images/hidden_man.png';
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';
@@ -86,27 +87,37 @@ class Chat extends Component {
   getTumbnails = async (data) => {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
-      var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
-      var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
-      await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': Global.saveData.token
-        }
-      }).then((response) => response.json())
-        .then((responseJson) => {
-          list_items.push({
-            index: i,
-            imageUrl: responseJson.url,
-            videoUrl: vurl,
-            data: data[i]
+      if (data[i].cdn_id) {
+        var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
+        // var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
+        await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': Global.saveData.token
+          }
+        }).then((response) => response.json())
+          .then((responseJson) => {
+            list_items.push({
+              index: i,
+              imageUrl: responseJson.url,
+              // videoUrl: vurl,
+              data: data[i]
+            });
+          })
+          .catch((error) => {
+            alert(JSON.stringify(error))
+            return
           });
-        })
-        .catch((error) => {
-          alert(JSON.stringify(error))
-          return
+      } else {
+        list_items.push({
+          index: i,
+          imageUrl: null,
+          // videoUrl: vurl,
+          data: data[i]
         });
+      }
+
     }
     this.setState({
       datas: list_items,
@@ -170,7 +181,7 @@ class Chat extends Component {
                 return (
                   <TouchableOpacity style={{ width: DEVICE_WIDTH - 10, flexDirection: 'row', marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.gotoChat(rowData)}>
                     <View style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
-                      <Image source={{ uri: rowData.imageUrl }} resizeMode="cover" style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#5A5A5A' }} />
+                      <Image source={rowData.imageUrl ? { uri: rowData.imageUrl } : hiddenMan} resizeMode="cover" style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#5A5A5A' }} />
                     </View>
                     <View style={{ width: DEVICE_WIDTH - 170, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
                       <View style={{ width: DEVICE_WIDTH - 170 }}>

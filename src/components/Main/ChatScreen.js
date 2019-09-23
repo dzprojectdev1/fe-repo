@@ -21,7 +21,7 @@ import {
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 import Global from '../Global';
 import firebase from 'firebase';
-
+import hiddenMan from '../../assets/images/hidden_man.png';
 import { SERVER_URL } from '../../config/constants';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
@@ -41,7 +41,7 @@ export default class ChatScreen extends React.Component {
             },
             matchId: props.navigation.state.params.data.data.match_id,
             textMessage: '',
-            messageList: ''
+            messageList: []
         }
     }
 
@@ -50,7 +50,7 @@ export default class ChatScreen extends React.Component {
     componentWillMount() {
         Global.saveData.nowPage = 'ChatDetail';
         firebase.database().ref().child(Global.saveData.u_id).child(this.state.other.userId)
-            .on('child_added', (value) => {
+            .on('child_added', (value) => {                
                 this.setState((prevState) => {
                     return {
                         messageList: [...prevState.messageList, value.val()]
@@ -339,7 +339,7 @@ export default class ChatScreen extends React.Component {
                             <TouchableHighlight style={styles.avatarBtn} onPress={() => this.gotoProfilePage()}>
                                 <Image
                                     style={styles.avatar}
-                                    source={{ uri: this.state.other.imgUrl }}
+                                    source={this.state.other.imgUrl ? { uri: this.state.other.imgUrl } : hiddenMan }
                                 />
                             </TouchableHighlight>
                         )}

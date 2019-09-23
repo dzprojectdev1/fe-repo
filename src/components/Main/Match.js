@@ -18,7 +18,7 @@ import {
   StatusBar
 } from "react-native";
 import OnlyGImage from '../../assets/images/OnlyGImage.png';
-
+import hiddenMan from '../../assets/images/hidden_man.png';
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';
@@ -72,29 +72,43 @@ class Match extends Component {
   getTumbnails = async (data) => {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
-      var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
-      var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
-      await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': Global.saveData.token
-        }
-      }).then((response) => response.json())
-        .then((responseJson) => {
-          list_items.push({
-            index: i, mid: data[i].id,
-            otherId: data[i].other_user_id,
-            imageUrl: responseJson.url,
-            videoUrl: vurl,
-            name: data[i].name,
-            time: 'TIME',
-            age: data[i].age,
-            distance: data[i].distance
+      if (data[i].cdn_id){
+        var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
+        var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
+        await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': Global.saveData.token
+          }
+        }).then((response) => response.json())
+          .then((responseJson) => {
+            list_items.push({
+              index: i, 
+              mid: data[i].id,
+              otherId: data[i].other_user_id,
+              imageUrl: responseJson.url,
+              name: data[i].name,
+              time: 'TIME',
+              age: data[i].age,
+              distance: data[i].distance
+            });
+          }).catch((error) => {
+            return
           });
-        }).catch((error) => {
-          return
+      } else {
+        list_items.push({
+          index: i,
+          mid: data[i].id,
+          otherId: data[i].other_user_id,
+          imageUrl: null,
+          name: data[i].name,
+          time: 'TIME',
+          age: data[i].age,
+          distance: data[i].distance
         });
+      }
+      
     }
     this.setState({ datas: list_items });
   }
@@ -112,20 +126,22 @@ class Match extends Component {
   }
 
   showUserVideo(url, mid, otherId, name, imgurl, age, distance) {
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': Global.saveData.token
-      }
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        Global.saveData.isMatchVideo = true;
-        this.props.navigation.navigate("IncomeDetail", { url: responseJson.url, mid: mid, otherId: otherId, imageUrl: imgurl, name: name, age: age, distance: distance });
-      }).catch((error) => {
-        alert("There is error, please try again!");
-        return
-      });
+    // fetch(url, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': Global.saveData.token
+    //   }
+    // }).then((response) => response.json())
+    //   .then((responseJson) => {
+    //     Global.saveData.isMatchVideo = true;
+    //     this.props.navigation.navigate("IncomeDetail", { url: responseJson.url, mid: mid, otherId: otherId, imageUrl: imgurl, name: name, age: age, distance: distance });
+    //   }).catch((error) => {
+    //     alert("There is error, please try again!");
+    //     return
+    //   });
+      Global.saveData.isMatchVideo = true;
+      this.props.navigation.navigate("IncomeDetail", { url: null, mid: mid, otherId: otherId, imageUrl: imgurl, name: name, age: age, distance: distance });
   }
 
   //////////////////////////////////////////////////
@@ -159,7 +175,7 @@ class Match extends Component {
                 renderItem={({ item: rowData }) => {
                   return (
                     <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.videoUrl, rowData.mid, rowData.otherId, rowData.name, rowData.imageUrl, rowData.age, rowData.distance)}>
-                      <Image source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
+                      <Image source={rowData.imgUrl ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
                       <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
                           <Image source={b_name} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
