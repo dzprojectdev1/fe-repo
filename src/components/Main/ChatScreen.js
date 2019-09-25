@@ -390,6 +390,7 @@ export default class ChatScreen extends React.Component {
                 </ScrollView>
                 <View style={styles.inputBar}>
                     <TextInput
+                        multiline 
                         style={styles.textBox}
                         value={this.state.textMessage}
                         onChangeText={this.handleChange('textMessage')}
@@ -446,7 +447,8 @@ const styles = StyleSheet.create({
         borderColor: '#8C807F',
         flex: 1,
         fontSize: 15,
-        paddingHorizontal: 8
+        paddingHorizontal: 8,
+        paddingRight: 30
     },
     chatbox: {
         flexDirection: 'row',

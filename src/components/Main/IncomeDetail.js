@@ -357,8 +357,7 @@ class IncomeDetail extends Component {
               <Text style={{ color: '#fff', fontSize: 16 }}>{"Start Chat!"}</Text>
             </TouchableOpacity>
           </View>
-        )
-        }
+        )}
       </View>
     );
   }

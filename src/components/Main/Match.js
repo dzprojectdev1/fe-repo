@@ -72,7 +72,7 @@ class Match extends Component {
   getTumbnails = async (data) => {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
-      if (data[i].cdn_id){
+      if (data[i].cdn_id) {
         var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
         var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
         await fetch(url, {
@@ -84,7 +84,7 @@ class Match extends Component {
         }).then((response) => response.json())
           .then((responseJson) => {
             list_items.push({
-              index: i, 
+              index: i,
               mid: data[i].id,
               otherId: data[i].other_user_id,
               imageUrl: responseJson.url,
@@ -108,7 +108,7 @@ class Match extends Component {
           distance: data[i].distance
         });
       }
-      
+
     }
     this.setState({ datas: list_items });
   }
@@ -140,8 +140,8 @@ class Match extends Component {
     //     alert("There is error, please try again!");
     //     return
     //   });
-      Global.saveData.isMatchVideo = true;
-      this.props.navigation.navigate("IncomeDetail", { url: null, mid: mid, otherId: otherId, imageUrl: imgurl, name: name, age: age, distance: distance });
+    Global.saveData.isMatchVideo = true;
+    this.props.navigation.navigate("IncomeDetail", { url: null, mid: mid, otherId: otherId, imageUrl: imgurl, name: name, age: age, distance: distance });
   }
 
   //////////////////////////////////////////////////
@@ -156,46 +156,43 @@ class Match extends Component {
         <View style={{ marginTop: 40, alignItems: 'center', justifyContent: 'center' }}>
           <Text>{"MATCH"}</Text>
         </View>
-        <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
-          {this.state.datas.length === 0 ? (<View style={{
-            flex: 1,
-            paddingBottom: '50%',
-            paddingTop: '50%',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <Text style={{ fontSize: 20, textAlignVertical: 'center' }}> {this.state.alertMsg} </Text>
-          </View>) : (
-              <FlatList
-                numColumns={2}
-                style={{ flex: 0 }}
-                removeClippedSubviews={true}
-                data={this.state.datas}
-                initialNumToRender={this.state.datas.length}
-                renderItem={({ item: rowData }) => {
-                  return (
-                    <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.videoUrl, rowData.mid, rowData.otherId, rowData.name, rowData.imageUrl, rowData.age, rowData.distance)}>
-                      <Image source={rowData.imgUrl ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
-                      <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
-                          <Image source={b_name} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
-                          <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.name}</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
-                          <Image source={b_age} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
-                          <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{"" + rowData.age + ' years old'}</Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                }}
-                keyExtractor={(item, index) => index}
-              />)}
+        {this.state.datas.length === 0 ? (<View style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Text style={{ fontSize: 20, textAlignVertical: 'center' }}> {this.state.alertMsg} </Text>
+        </View>) : (<ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
+          <FlatList
+            numColumns={2}
+            style={{ flex: 0 }}
+            removeClippedSubviews={true}
+            data={this.state.datas}
+            initialNumToRender={this.state.datas.length}
+            renderItem={({ item: rowData }) => {
+              return (
+                <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.videoUrl, rowData.mid, rowData.otherId, rowData.name, rowData.imageUrl, rowData.age, rowData.distance)}>
+                  <Image source={rowData.imgUrl ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
+                  <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
+                      <Image source={b_name} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
+                      <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.name}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
+                      <Image source={b_age} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
+                      <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{"" + rowData.age + ' years old'}</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+            keyExtractor={(item, index) => index}
+          />
           <View style={{ height: 50 }} />
-        </ScrollView>
+        </ScrollView>)}
         <Footer style={{ backgroundColor: '#222F3F', borderTopColor: '#222F3F', height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
           <FooterTab>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Browse")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("BrowseList")}>
               <Image source={b_browse} style={{ width: 25, height: 25, }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"BROWSE"}</Text>
             </Button>

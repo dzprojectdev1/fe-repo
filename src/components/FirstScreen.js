@@ -81,7 +81,7 @@ class FirstScreen extends Component {
                     this.setState({
                       isLoaded: false
                     }, function() {
-                      this.props.navigation.replace("Browse");
+                      this.props.navigation.replace("BrowseList");
                     });                
                   } else {
                     this.setState({

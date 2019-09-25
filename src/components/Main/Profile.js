@@ -106,13 +106,14 @@ class Profile extends Component {
     this.props.navigation.navigate("ProfileDetail", { url: url, otherId: otherId })
   }
   onBack() {
-    if (Global.saveData.prevpage == "ChatDetail") {
-      this.props.navigation.pop();
-    }
-    else {
-      Global.saveData.prePage = "Profile"
-      this.props.navigation.replace(Global.saveData.prevpage);
-    }
+    // if (Global.saveData.prevpage === "ChatDetail" || Global.saveData.prevpage === "Browse" ) {
+    //   this.props.navigation.pop();
+    // }
+    // else {
+    //   Global.saveData.prePage = "Profile"
+    //   this.props.navigation.replace(Global.saveData.prevpage);
+    // }
+    this.props.navigation.pop();
   }
 
   render() {
