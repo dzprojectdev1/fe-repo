@@ -54,7 +54,7 @@ class Income extends Component {
     BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
   }
   backPressed = () => {
-    this.props.navigation.replace("Browse");
+    this.props.navigation.replace("BrowseList");
     return true;
   }
   getHeartUsers = () => {
@@ -178,11 +178,11 @@ class Income extends Component {
         <View style={{ marginTop: 40, alignItems: 'center', justifyContent: 'center' }}>
           <Text>{"Incoming Hearts"}</Text>
         </View>
-        <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
-          {(this.state.datas.length === 0 ?
-            <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 200 }}>
+        {(this.state.datas.length === 0 ?
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
               <Text style={{ fontSize: 20, }}>{this.state.alertMsg}</Text>
-            </View> : <FlatList
+            </View> : <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
+           <FlatList
               numColumns={2}
               style={{ flex: 0 }}
               data={this.state.datas}
@@ -206,12 +206,12 @@ class Income extends Component {
                 );
               }}
               keyExtractor={(item, index) => index}
-            />)}
+            />
           <View style={{ height: 50 }} />
-        </ScrollView>
+        </ScrollView>)}
         <Footer style={{ backgroundColor: '#222F3F', borderTopColor: '#222F3F', height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
           <FooterTab>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Browse")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("BrowseList")}>
               <Image source={b_browse} style={{ width: 25, height: 25, }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"BROWSE"}</Text>
             </Button>
@@ -219,7 +219,7 @@ class Income extends Component {
               <Image source={b_incoming} style={{ width: 25, height: 25, tintColor: '#B64F54' }} />
               <Text style={{ color: '#B64F54', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"INCOMING"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Match")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("Match")}>
               <Image source={b_match} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MATCH"}</Text>
             </Button>
@@ -227,7 +227,7 @@ class Income extends Component {
               <Image source={b_chat} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"CHAT"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("MyVideo")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("MyVideo")}>
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
             </Button>
@@ -248,6 +248,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: '#fff',
+    flexDirection: 'column'
   },
   instructions: {
     textAlign: 'center',

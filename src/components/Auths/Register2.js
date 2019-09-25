@@ -10,7 +10,7 @@ import {
   Dimensions,
   View,
   StyleSheet,
-  TouchableOpacity,
+  // TouchableOpacity,
   StatusBar,
   Alert,
   PermissionsAndroid
@@ -76,7 +76,7 @@ class Register2 extends Component {
           var data = responseJson.data;
           var itmes = [];
           for (var i = 0; i < data.length; i++) {
-            itmes.push({ value: data[i].ethnicity_name })
+            itmes.push({ value: data[i].ethnicity_name, id: data[i].id })
           }
           this.setState({ city: data[0].ethnicity_name, cityData: itmes })
         }
@@ -99,7 +99,7 @@ class Register2 extends Component {
           var data = responseJson.data;
           var itmes = [];
           for (var i = 0; i < data.length; i++) {
-            itmes.push({ value: data[i].country_name })
+            itmes.push({ value: data[i].country_name, id: data[i].id })
           }
           this.setState({ country: data[0].country_name, countryData: itmes })
         }
@@ -123,7 +123,7 @@ class Register2 extends Component {
           var data = responseJson.data;
           var itmes = [];
           for (var i = 0; i < data.length; i++) {
-            itmes.push({ value: data[i].language_name })
+            itmes.push({ value: data[i].language_name, id: data[i].id })
           }
           this.setState({ language: data[0].language_name, languageData: itmes })
         }
@@ -207,55 +207,70 @@ class Register2 extends Component {
         Geolocation.getCurrentPosition(
           (position) => {
             this.getdeviceId().then(deviceInfo => {
+              let language_index = 1;
+              this.state.languageData.forEach((item, index) => {
+                if (item.value === this.state.language)
+                  language_index = item.id;
+              });
+              let country_index = 1;
+              this.state.countryData.forEach((item, index) => {
+                if (item.value === this.state.country)
+                  country_index = item.id;
+              });
+              let city_index = 1;
+              this.state.cityData.forEach((item, index) => {
+                if (item.value === this.state.city)
+                  city_index = item.id;
+              })
               var details = {
                 'username': this.state.nickName,
                 // 'useremail': this.state.email,
                 // 'userpassword': this.state.password,
                 'usergender': this.state.gender,
                 'description': this.state.description,
-                'language': 1,
-                'country': 1,
-                'ethnicity': 3,
+                'language': language_index,
+                'country': country_index,
+                'ethnicity': city_index,
                 'birth_date': this.state.birthday,
                 'lat_geo': position.coords.latitude,
                 'long_geo': position.coords.longitude,
                 'device_id': deviceInfo.device_id,
                 'fcm_id': deviceInfo.fcm_id
               };
-              var formBody = [];
-              for (var property in details) {
-                var encodedKey = encodeURIComponent(property);
-                var encodedValue = encodeURIComponent(details[property]);
-                formBody.push(encodedKey + "=" + encodedValue);
-              }
-              formBody = formBody.join("&");
-              fetch(`${SERVER_URL}/api/user/signup`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: formBody,
-              }).then((response) => response.json())
-                .then((responseJson) => {
-                  this.registerLoadingBtn.showLoading(false);
-                  if (!responseJson.error) {
-                    // this.onLogin();
-                    Global.saveData.token = responseJson.user.token;
-                    Global.saveData.u_id = responseJson.user.id
-                    Global.saveData.u_name = responseJson.user.name
-                    Global.saveData.u_age = responseJson.user.age
-                    Global.saveData.u_gender = responseJson.user.gender
-                    Global.saveData.u_language = responseJson.user.language
-                    Global.saveData.u_city = responseJson.user.ethnicity
-                    Global.saveData.u_country = responseJson.user.country
-                    Global.saveData.u_description = responseJson.user.description;
-                    Global.saveData.newUser = true;
-                    this.props.navigation.navigate("Browse");
-                  }
-                })
-                .catch((error) => {
-                  alert(error);
-                });
+                var formBody = [];
+                for (var property in details) {
+                  var encodedKey = encodeURIComponent(property);
+                  var encodedValue = encodeURIComponent(details[property]);
+                  formBody.push(encodedKey + "=" + encodedValue);
+                }
+                formBody = formBody.join("&");
+                fetch(`${SERVER_URL}/api/user/signup`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                  body: formBody,
+                }).then((response) => response.json())
+                  .then((responseJson) => {
+                    this.registerLoadingBtn.showLoading(false);
+                    if (!responseJson.error) {
+                      // this.onLogin();
+                      Global.saveData.token = responseJson.user.token;
+                      Global.saveData.u_id = responseJson.user.id
+                      Global.saveData.u_name = responseJson.user.name
+                      Global.saveData.u_age = responseJson.user.age
+                      Global.saveData.u_gender = responseJson.user.gender
+                      Global.saveData.u_language = responseJson.user.language
+                      Global.saveData.u_city = responseJson.user.ethnicity
+                      Global.saveData.u_country = responseJson.user.country
+                      Global.saveData.u_description = responseJson.user.description;
+                      Global.saveData.newUser = true;
+                      this.props.navigation.navigate("BrowseList");
+                    }
+                  })
+                  .catch((error) => {
+                    alert(error);
+                  });
             });
           },
           (error) => {
@@ -263,7 +278,7 @@ class Register2 extends Component {
             alert(error.message);
             return null;
           },
-          {enableHighAccuracy: Platform.OS != 'android', timeout: 5000,}
+          { enableHighAccuracy: Platform.OS != 'android', timeout: 5000, }
         );
       }
     });
@@ -388,18 +403,18 @@ class Register2 extends Component {
             >
               <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>{"REGISTER"}</Text>             
             </TouchableOpacity> */}
-              <AnimateLoadingButton
-                ref={c => (this.registerLoadingBtn = c)}
-                width={DEVICE_WIDTH * 0.8}
-                height={40}
-                title="REGISTER"
-                titleFontSize={16}
-                titleColor="#fff"
-                backgroundColor="#DE5859"
-                borderRadius={20}
-                onPress={this.onRegister.bind(this)}
-              />
-            </View>
+            <AnimateLoadingButton
+              ref={c => (this.registerLoadingBtn = c)}
+              width={DEVICE_WIDTH * 0.8}
+              height={40}
+              title="REGISTER"
+              titleFontSize={16}
+              titleColor="#fff"
+              backgroundColor="#DE5859"
+              borderRadius={20}
+              onPress={this.onRegister.bind(this)}
+            />
+          </View>
           <View style={{ height: 100 }} />
         </Content>
       </View>
