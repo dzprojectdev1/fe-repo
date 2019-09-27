@@ -77,6 +77,7 @@ class FirstScreen extends Component {
                     Global.saveData.u_country = responseJson.user.country;
                     Global.saveData.u_description = responseJson.user.description;
                     Global.saveData.newUser = false;
+                    Global.saveData.coin_count = responseJson.user.coin_count;
                     
                     this.setState({
                       isLoaded: false
