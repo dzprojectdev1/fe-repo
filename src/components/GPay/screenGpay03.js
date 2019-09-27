@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import {
-  Text, Content,
-} from "native-base"
+import { Text } from "native-base";
 import { 
   Image, 
   ImageBackground, 
@@ -14,75 +12,28 @@ import {
   StatusBar, 
   Alert ,
 } from "react-native";
-///////////////////////////////////////////////////////////////////////////////
-import { GooglePay, RequestDataType, AllowedCardNetworkType, AllowedCardAuthMethodsType } from 'react-native-google-pay'
 
-const allowedCardNetworks: AllowedCardNetworkType[] = ['AMEX', 'JCB', 'MASTERCARD', 'VISA']
-const allowedCardAuthMethods: AllowedCardAuthMethodsType[] = ['PAN_ONLY', 'CRYPTOGRAM_3DS']
+import { GooglePay } from 'react-native-google-pay'
+import Global from '../Global';
+import { SERVER_URL } from '../../config/constants'
 
-const requestData: RequestDataType = {
-  cardPaymentMethod: {
-    tokenizationSpecification: {
-      type: 'PAYMENT_GATEWAY',
-      gateway: 'example',
-      gatewayMerchantId: 'exampleGatewayMerchantId',
-    },
-    allowedCardNetworks,
-    allowedCardAuthMethods,
-  },
-  transaction: {
-    totalPrice: '123',
-    totalPriceStatus: 'FINAL',
-    currencyCode: 'RUB',
-  },
-  merchantName: 'Example Merchant',
-}
+const allowedCardNetworks = ['AMEX', 'DISCOVER', 'INTERAC', 'JCB', 'MASTERCARD', 'VISA']
+const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS']
 
-const stripeRequestData: RequestDataType = {
-  cardPaymentMethod: {
-    tokenizationSpecification: {
-      type: 'PAYMENT_GATEWAY',
-      gateway: 'stripe',
-      gatewayMerchantId: '',
-      stripe: {
-        publishableKey: 'pk_test_TYooMQauvdEDq54NiTphI7jx',
-        version: '2018-11-08',
-      },
-    },
-    allowedCardNetworks,
-    allowedCardAuthMethods,
-  },
-  transaction: {
-    totalPrice: '123',
-    totalPriceStatus: 'FINAL',
-    currencyCode: 'RUB',
-  },
-  merchantName: 'Example Merchant',
-}
-
-import nativeFirebase from 'react-native-firebase';
-import store from 'react-native-simple-store';
-import logo from '../../assets/images/logo.png';
-import slogo from '../../assets/images/second_bg.png';
 import goback from '../../assets/images/BackOther.png';
 import Flag from '../../assets/images/flag.png';
 import waterball from '../../assets/images/waterball.png';
 import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import diamond from '../../assets/images/diamond.png';
-import {CheckField, InputField} from '../../commonUI/components/inputs';
-import SelectEmailImage from '../../assets/images/forward.png';
-import Flower from '../../assets/images/flower.png';
-import passswordIcon from '../../assets/images/passwordIcon.png';
+import { InputField } from '../../commonUI/components/inputs';
 import checkIcon from '../../assets/images/check.png';
 import uncheckIcon from '../../assets/images/uncheck.png';
-import Global from '../Global';
-
-import {SERVER_URL} from '../../config/constants';
 
 const GempriceListVal = [200, 700, 1200, 2500, 8000, 15000];
 const PaypriceListVal = [0.99, 2.49, 4.49, 8.49, 25.99, 42.99];
 
 class screenGpay03 extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -91,7 +42,7 @@ class screenGpay03 extends Component {
       remberCheck: false,
     };
   }
- ////////////////////////////////////////////////////////////////////////////////////// 
+  
   componentDidMount() {
     // Set the environment before the payment request
     if (Platform.OS === 'android') {
@@ -100,6 +51,25 @@ class screenGpay03 extends Component {
   }
 
   payWithGooglePay = () => {
+
+    requestData = {
+      cardPaymentMethod: {
+        tokenizationSpecification: {
+          type: 'PAYMENT_GATEWAY',
+          gateway: 'example',
+          gatewayMerchantId: '09970745442821808404',
+        },
+        allowedCardNetworks,
+        allowedCardAuthMethods,
+      },
+      transaction: {
+        totalPrice: '' + Global.saveData.gem_price,
+        totalPriceStatus: 'FINAL',
+        currencyCode: 'USD',
+      },
+      merchantName: 'DazzledDate',
+    }
+
     // Check if Google Pay is available
     GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods)
       .then((ready) => {
@@ -112,38 +82,90 @@ class screenGpay03 extends Component {
         }
       })
   }
+
   payWithStripeGooglePay = () => {
+
+    stripeRequestData = {
+      cardPaymentMethod: {
+        tokenizationSpecification: {
+          type: 'PAYMENT_GATEWAY',
+          gateway: 'stripe',
+          gatewayMerchantId: '09970745442821808404',
+          stripe: {
+            publishableKey: 'pk_test_U7NPnxz2NYz97SIXIn4clk7X00RvBL7jHh',
+            version: '2018-10-31',
+          },
+        },
+        allowedCardNetworks,
+        allowedCardAuthMethods,
+      },
+      transaction: {
+        totalPrice: '' + Global.saveData.gem_price,
+        totalPriceStatus: 'FINAL',
+        currencyCode: 'USD',
+      },
+      merchantName: 'DazzledDate',
+    }
+
     // Check if Google Pay is available
     GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods)
       .then((ready) => {
-        // if (ready) {
+        if (ready) {
           // Request payment token
           GooglePay.requestPayment(stripeRequestData)
             .then(this.handleSuccess)
             .catch(this.handleError)
-        // }
+          // this.handleSuccess();
+        }
       })
   }
-  handleSuccess = (token: string) => {
+
+  handleSuccess = (token) => {
     // Send a token to your payment gateway
-    Alert.alert('Success', `token: ${token}`)
-    this.props.navigation.navigate("screenGpay04")
+    var formBody = [];
+    formBody.push('user_id' + "=" + Global.saveData.u_id);
+    formBody.push('coin_number' + "=" + Global.saveData.gem_number);
+    formBody.push('coin_price' + "=" + Global.saveData.gem_price);
+    formBody.push('currency=USD');
+    
+    formBody = formBody.join("&");
+    
+    fetch(`${SERVER_URL}/api/transaction/putCoin`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded'
+      },
+      body: formBody
+    }).then((response) => response.json())
+    .then((responseJSON) => {
+      if (responseJSON.error === false) {
+        if (responseJSON.coin_count) {
+          Global.saveData.coin_count = responseJSON.coin_count;
+          this.props.navigation.navigate("screenGpay04")
+        }
+      }
+    }).catch((error) => {
+      alert(error);
+    })
   }
 
-  handleError = (error: any) =>{
-     Alert.alert('Error', '${error.code}\n${error.message}')
+  handleError = (error) =>{
+     Alert.alert('Error', `${error.code}\n${error.message}`)
      this.props.navigation.navigate("screenGpay04")
   }
-//////////////////////////////////////////////////////////////////////////////////////////////
+  
   static navigationOptions = {
     header: null
   };
+
   checkRemember() {
     this.setState({ remberCheck: !this.state.remberCheck })
   }
+
   onChangeField(emailAddr, fieldValue) {
-    ;
-    }
+    
+  }
+
   createView = () =>{
     buttonListArr = [];
  
@@ -185,9 +207,11 @@ class screenGpay03 extends Component {
   goBack() {
     this.props.navigation.goBack("screenGpay02");
   }
+
   onBuy(){
     this.props.navigation.navigate("screenGpay04");
   }
+
   render() {
     return (
      <View style={styles.contentContainer}>
@@ -198,7 +222,7 @@ class screenGpay03 extends Component {
             </TouchableOpacity>
             <Text style={{ color: '#000', fontSize: 15, fontWeight: 'bold', marginLeft: 20, textAlign:'left', justifyContent:'center' }}>{"Gem shop"}</Text>
         </View>
-            <View style={{justifyContent:'center', alignItems: 'center', }}>
+            {/* <View style={{justifyContent:'center', alignItems: 'center', }}>
                 <View style={styles.list_item_spread} >
                     <Text style={{ color: '#000', fontSize: 17, justifyContent: 'center', alignItems: 'center' }}>{"My gem"}</Text>
                     <Text style={{ color: '#45b8d6', fontSize: 14, justifyContent:'center', alignItems: 'center' }}>{"30"}</Text>
@@ -235,7 +259,7 @@ class screenGpay03 extends Component {
                 </View><View style={{height: 40, width: '90%', marginTop: 5, borderRadius: 5, backgroundColor: 'pink'}}>
                   <Text style={{color:'white', fontSize: 12, textAlign:'center', flexDirection:'row', marginTop: 11}}>{"Free Gem3"}</Text>
                 </View>
-            </View>
+            </View> */}
             <View backgroundColor={"#000"} style = {{position: 'absolute', top:0, width:'100%', height:'100%', opacity: 0.7}} ></View>
             <View style={styles.dialog_screen}>
               <View style={{flexDirection:'row', height:50, width: '100%', alignItems:'center'}}>
@@ -253,12 +277,12 @@ class screenGpay03 extends Component {
                             <Text style={{color: 'gray', fontSize: 7, textAlign:'right', paddingRight:10}}>{"+tax 1"}</Text>
                         </View>
                     </View>
-                    <Text style={{ color: 'gray', fontSize: 8, marginLeft: 10 }}>{"PayPal: sm840817@hotmail.com"}</Text>
+                    <Text style={{ color: 'gray', fontSize: 8, marginLeft: 10 }}>{Global.saveData.u_email}</Text>
                 </View>
               </View>
               <View style={{height:20, width: '100%', flexDirection:'row', alignItems:'center'}}>
                 <Image source={OnlyGImage} style={{ width: 20, height: 20, marginLeft:15 }} />
-                <Text style={{color:'gray', fontSize:8, marginLeft: 5}}>{"msjsam@gmail.com"}</Text>
+                <Text style={{color:'gray', fontSize:8, marginLeft: 5}}>{Global.saveData.u_email}</Text>
               </View>
 			      	<InputField name='user_pwd' placeholder='Enter your password' onChangeField={this.onChangeField.bind(this)}  passwordField/>
 
