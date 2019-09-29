@@ -20,6 +20,8 @@ import {
   StatusBar,
   Alert
 } from "react-native";
+import ImagePicker from 'react-native-image-picker';
+
 import OnlyGImage from '../../assets/images/OnlyGImage.png';
 
 import b_browse from '../../assets/images/browse.png';
@@ -31,6 +33,7 @@ import b_delete from '../../assets/images/delete.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
+import { uploadPhoto } from '../../util/upload';
 
 class MyVideo extends Component {
   constructor(props) {
@@ -138,7 +141,32 @@ class MyVideo extends Component {
     this.props.navigation.navigate("MyVideoDetail", { url: url, otherId: otherId, id: id, primary })
   }
   addVideo() {
-    this.props.navigation.navigate("Record")
+    // this.props.navigation.navigate("Record")
+    
+    // More info on all the options is below in the API Reference... just some common use cases shown here
+    const options = {
+      title: 'Select Picture',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    ImagePicker.showImagePicker(options, (imagePickerResponse) => {
+      // console.log('Response = ', response);
+      if (imagePickerResponse.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (imagePickerResponse.error) {
+        console.log('ImagePicker Error: ', imagePickerResponse.error);
+      } else if (imagePickerResponse.customButton) {
+        console.log('User tapped custom button: ', imagePickerResponse.customButton);
+      } else {
+        uploadPhoto(imagePickerResponse)
+          .then(() => {
+            this.getVideos();
+          });
+      }
+    });
   }
   onDeleteVideo(otherid) {
     Alert.alert(
