@@ -15,6 +15,7 @@ import {
   AsyncStorage
 } from "react-native";
 import { Dropdown } from 'react-native-material-dropdown';
+import { Button } from 'react-native-elements';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -30,21 +31,47 @@ class ProfileSetting extends Component {
       city: '',
       country: '',
       countryData: [],
+      isLoading: false,
+      disabled: true
     };
   }
 
   static navigationOptions = {
     header: null
   };
-  componentDidMount() {
-    Global.saveData.nowPage = 'ProfileSetting';
-    this.setState({ name: Global.saveData.u_name })
-    this.get_ethnicity()
-    this.get_country()
-    this.get_language()
+  componentWillMount() {
+    this.getDetailData();
+    this.get_ethnicity();
+    this.get_country();
+    this.get_language();
   }
-  get_ethnicity() {
-    fetch(`${SERVER_URL}/api/ethnicity/all`, {
+  componentDidMount() {
+    Global.saveData.nowPage = 'ProfileSetting';    
+  }
+  getDetailData = async () => {
+    fetch(`${SERVER_URL}/api/user/getMyDetailInfo`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': Global.saveData.token
+      }
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+          var data = responseJson.data;
+          this.setState({
+            name: data.name ? data.name : '',
+            description: data.description ? data.description : ''
+          })
+        }
+      })
+      .catch((error) => {
+        alert(JSON.stringify(error))
+        return
+      });
+  }
+  get_ethnicity = async () => {
+    await fetch(`${SERVER_URL}/api/ethnicity/all`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -66,8 +93,8 @@ class ProfileSetting extends Component {
         return
       });
   }
-  get_country() {
-    fetch(`${SERVER_URL}/api/country/all`, {
+  get_country = async () => {
+    await fetch(`${SERVER_URL}/api/country/all`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -91,8 +118,8 @@ class ProfileSetting extends Component {
       });
   }
 
-  get_language() {
-    fetch(`${SERVER_URL}/api/language/all`, {
+  get_language = async () => {
+    await fetch(`${SERVER_URL}/api/language/all`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -122,10 +149,13 @@ class ProfileSetting extends Component {
     this.props.navigation.navigate("TermsPolicy")
   }
   onUpdate() {
-    if (this.state.name == '') {
+    if (this.state.name === '') {
       Alert.alert("The name field is not inputed")
       return
     }
+    this.setState({
+      isLoading: true
+    });
     var lanD = this.state.languageData
     var lanindex = 1;
     for (var i = 0; i < lanD.length; i++) {
@@ -154,11 +184,11 @@ class ProfileSetting extends Component {
     }
     var details = {
       'name': this.state.name,
+      'description': this.state.description,
       'languageId': lanindex,
       'ethnicityId': cityindex,
       'countryId': coutryindex
     };
-
     var formBody = [];
     for (var property in details) {
       var encodedKey = encodeURIComponent(property);
@@ -175,18 +205,32 @@ class ProfileSetting extends Component {
       body: formBody,
     }).then((response) => response.json())
       .then((responseJson) => {
+        
         if (!responseJson.error) {
+          this.setState({
+            isLoading: false,
+            disabled: true
+          });
           Global.saveData.u_name = this.state.name
           Global.saveData.u_city = this.state.city
           Global.saveData.u_country = this.state.country
           Global.saveData.u_language = this.state.language
-          Alert.alert(responseJson.message)
+          alert(responseJson.message);
         }
         else {
-          Alert.alert(responseJson.message)
+          this.setState({
+            isLoading: false,
+            disabled: false
+          });
+          alert(responseJson.message);
+
         }
       })
       .catch((error) => {
+        this.setState({
+          isLoading: false,
+          disabled: false
+        });
         return
       });
   }
@@ -201,7 +245,7 @@ class ProfileSetting extends Component {
       { cancelable: false });
   }
   closeAccout() {
-    this.clearGlobal()
+    this.clearGlobal();
     fetch(`${SERVER_URL}/api/user/removeAccount`, {
       method: 'POST',
       headers: {
@@ -242,21 +286,21 @@ class ProfileSetting extends Component {
   //     ],
   //     { cancelable: false });
   // }
-  logout = () => {
-    this.removeItemValue().then((result) => {
-      if (result === true) {
-        this.clearGlobal();
-        Alert.alert(
-          '',
-          'You have been logged out successfully',
-          [
-            { text: 'Ok', backgroundColor: '#FCDD80', onPress: () => () => console.log('Ok Pressed')},
-          ],
-          { cancelable: true });
-        this.props.navigation.navigate("FirstScreen");
-      }
-    });
-  }
+  // logout = () => {
+  //   this.removeItemValue().then((result) => {
+  //     if (result === true) {
+  //       this.clearGlobal();
+  //       Alert.alert(
+  //         '',
+  //         'You have been logged out successfully',
+  //         [
+  //           { text: 'Ok', backgroundColor: '#FCDD80', onPress: () => () => console.log('Ok Pressed') },
+  //         ],
+  //         { cancelable: true });
+  //       this.props.navigation.navigate("FirstScreen");
+  //     }
+  //   });
+  // }
   clearGlobal = () => {
     Global.saveData.u_id = '';
     Global.saveData.u_name = '';
@@ -303,8 +347,23 @@ class ProfileSetting extends Component {
               value={this.state.name}
               placeholder="Name"
               placeholderTextColor="#808080"
-              onChangeText={name => this.setState({ name })}
+              onChangeText={name => this.setState({ name, disabled: false })}
               autoCapitalize="none"
+              underlineColorAndroid="transparent"
+            />
+            <View style={{ height: 1, width: DEVICE_WIDTH * 0.8, backgroundColor: '#808080' }} />
+          </View>
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 10 }}>
+            <TextInput
+              style={{ backgroundColor: 'transparent', width: DEVICE_WIDTH * 0.8, paddingLeft: 2, color: '#000' }}
+              selectionColor="#009788"
+              value={this.state.description}
+              placeholder="Introduction (Max length is 255)"
+              multiline
+              maxLength={255}
+              placeholderTextColor="#808080"
+              onChangeText={intro => this.setState({ description: intro, disabled: false })}
+              autoCapitalize="sentences"
               underlineColorAndroid="transparent"
             />
             <View style={{ height: 1, width: DEVICE_WIDTH * 0.8, backgroundColor: '#808080' }} />
@@ -323,7 +382,7 @@ class ProfileSetting extends Component {
                 baseColor="#DE5859"//indicator color
                 textColor="#000"
                 data={this.state.languageData}
-                onChangeText={(language) => this.setState({ language })}
+                onChangeText={(language) => this.setState({ language, disabled: false })}
                 value={this.state.language}
                 dropdownPosition={-4}
               />
@@ -342,7 +401,7 @@ class ProfileSetting extends Component {
                 baseColor="#DE5859"//indicator color
                 textColor="#000"
                 data={this.state.cityData}
-                onChangeText={(city) => this.setState({ city })}
+                onChangeText={(city) => this.setState({ city, disabled: false })}
                 value={this.state.city}
                 dropdownPosition={-4}
               />
@@ -362,18 +421,25 @@ class ProfileSetting extends Component {
                 baseColor="#DE5859"//indicator color
                 textColor="#000"
                 data={this.state.countryData}
-                onChangeText={(country) => this.setState({ country })}
+                onChangeText={(country) => this.setState({ country, disabled: false })}
                 value={this.state.country}
                 dropdownPosition={-4}
               />
             </View>
           </View>
-          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View />
-            <TouchableOpacity style={{ width: 180, height: 30, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center', borderRadius: 5 }}
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }} >
+            {/* <View /> */}
+            {/* <TouchableOpacity style={{ width: 180, height: 30, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center', borderRadius: 5 }}
               onPress={() => this.onUpdate()}>
               <Text style={{ color: '#fff', fontWeight: 'bold' }}>{"Update"}</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            <Button
+              title="Save Changes"
+              buttonStyle={{ backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center', borderRadius: 5, padding: 10 }}
+              loading={this.state.isLoading}
+              onPress={() => this.onUpdate()}
+              disabled={this.state.disabled}
+            />
           </View>
           <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 30, }}
             onPress={() => this.gotoTermofService()}>
@@ -381,7 +447,7 @@ class ProfileSetting extends Component {
           </TouchableOpacity>
           <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 15, }}
             onPress={() => this.onCloseAccout()}>
-            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{"Close My Account"}</Text>
+            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{"Deactivate My Account"}</Text>
           </TouchableOpacity>
           {/* <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 15, }}
             onPress={() => this.onLogout()}>

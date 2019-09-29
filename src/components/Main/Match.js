@@ -42,12 +42,15 @@ class Match extends Component {
   static navigationOptions = {
     header: null
   };
+  // async componentWillMount() {
+  //   await this.getHeartUsers();
+  // }
   componentDidMount() {
-    Global.saveData.nowPage = 'Match';
+    Global.saveData.nowPage = 'Match';    
     this.getHeartUsers();
   }
-  getHeartUsers() {
-    fetch(`${SERVER_URL}/api/match/matches`, {
+  getHeartUsers = async() => {
+    await fetch(`${SERVER_URL}/api/match/matches`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -83,16 +86,18 @@ class Match extends Component {
           }
         }).then((response) => response.json())
           .then((responseJson) => {
-            list_items.push({
-              index: i,
-              mid: data[i].id,
-              otherId: data[i].other_user_id,
-              imageUrl: responseJson.url,
-              name: data[i].name,
-              time: 'TIME',
-              age: data[i].age,
-              distance: data[i].distance
-            });
+            if (responseJson.url) {
+              list_items.push({
+                index: i,
+                mid: data[i].id,
+                otherId: data[i].other_user_id,
+                imageUrl: responseJson.url,
+                name: data[i].name,
+                time: 'TIME',
+                age: data[i].age,
+                distance: data[i].distance
+              });
+            }
           }).catch((error) => {
             return
           });
@@ -172,7 +177,7 @@ class Match extends Component {
             renderItem={({ item: rowData }) => {
               return (
                 <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.videoUrl, rowData.mid, rowData.otherId, rowData.name, rowData.imageUrl, rowData.age, rowData.distance)}>
-                  <Image source={rowData.imgUrl ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
+                  <Image source={rowData.imageUrl ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
                   <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
                       <Image source={b_name} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
@@ -192,11 +197,11 @@ class Match extends Component {
         </ScrollView>)}
         <Footer style={{ backgroundColor: '#222F3F', borderTopColor: '#222F3F', height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
           <FooterTab>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("BrowseList")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("BrowseList")}>
               <Image source={b_browse} style={{ width: 25, height: 25, }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"BROWSE"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Income")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("Income")}>
               <Image source={b_incoming} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"INCOMING"}</Text>
             </Button>
@@ -204,11 +209,11 @@ class Match extends Component {
               <Image source={b_match} style={{ width: 25, height: 25, tintColor: '#B64F54' }} />
               <Text style={{ color: '#B64F54', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MATCH"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Chat")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("Chat")}>
               <Image source={b_chat} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"CHAT"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("MyVideo")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("MyVideo")}>
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
             </Button>

@@ -136,12 +136,12 @@ class Register1 extends Component {
           </View>
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1,  marginTop: Platform.select({ 'android': 15, 'ios': 160 })}}>
             <TextInput
-              style={{ borderColor: 'gray', borderWidth: 1 }}
+              style={{ borderColor: 'gray', borderWidth: 1, minHeight: DEVICE_HEIGHT * 0.3 }}
               onChangeText={description => { this.setState({ description }) }}
               value={this.state.description}
-              maxLength={40}
+              maxLength={255}
               multiline
-              numberOfLines={4}
+              textAlignVertical="top"
             />
           </View>
           {/* <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 50, }}>

@@ -9,6 +9,7 @@ import {
   BackHandler,
   ActivityIndicator,
   Image,
+  ScrollView,
   // Platform,
   Dimensions,
   View,
@@ -31,7 +32,8 @@ import b_name from '../../assets/images/name.png';
 import b_age from '../../assets/images/age.png';
 import b_distance from '../../assets/images/distance.png';
 import b_profile from '../../assets/images/profile.png';
-import no_image from '../../assets/images/no-image.png';
+// import no_image from '../../assets/images/no-image.png';
+import no_photo from '../../assets/images/no_photo.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -45,7 +47,8 @@ class Browse extends Component {
       hateIcon: 'close',
       isLoading: false,
       disabled: false,
-      noMoreUsers: false
+      noMoreUsers: false,
+      // operatedIDArr: [],
     };
   }
 
@@ -139,7 +142,7 @@ class Browse extends Component {
             if (responseJson.data) {
               this.setState({
                 noMoreUsers: false
-              })
+              });
               this.getDetails(responseJson.data);
             } else {
               this.setState({
@@ -164,15 +167,21 @@ class Browse extends Component {
         }
       }).then((response) => response.json())
         .then((responseJson) => {
+          var otherData = {};
           if (responseJson.url) {
-            var otherData = {
+            otherData = {
               imageUrl: responseJson.url,
               detail: data
             };
-            this.setState({
-              otherData
-            })
+          } else {
+            otherData = {
+              imageUrl: null,
+              detail: data
+            };           
           }
+          this.setState({
+            otherData
+          });
         })
         .catch((error) => {
           alert(JSON.stringify(error));
@@ -212,18 +221,21 @@ class Browse extends Component {
       },
       body: formBody,
     }).then((response) => response.json())
-      .then((responseJson) => {
+      .then((responseJson) => {       
+        if (!responseJson.error) {
+          // let operateArr = this.state.operatedIDArr;
+          // let newIdArr = [];
+          // newIdArr.push(this.state.otherData.detail.id);
+          // operateArr = operateArr.concat(newIdArr);
+          // this.setState({
+          //   operatedIDArr: operateArr
+          // });
+          this.getFilterVideos();
+        }
         this.setState({
           isLoading: false,
           disabled: false
         });
-        if (!responseJson.error) {
-          if (Global.saveData.isFilter) {
-            this.getFilterVideos();
-          } else {
-            this.getVideos();
-          }
-        }
       })
       .catch((error) => {
         this.setState({
@@ -256,14 +268,22 @@ class Browse extends Component {
       },
       body: formBody,
     }).then((response) => response.json())
-      .then((responseJson) => {
+      .then((responseJson) => {       
+        // alert(JSON.stringify(responseJson));
+        if (!responseJson.error) {
+          // let operateArr = this.state.operatedIDArr;
+          // let newIdArr = [];
+          // newIdArr.push(this.state.otherData.detail.id);
+          // operateArr = operateArr.concat(newIdArr);
+          // this.setState({
+          //     operatedIDArr: operateArr
+          // });
+          this.getFilterVideos();
+        }
         this.setState({
           isLoading: false,
           disabled: false
         });
-        if (!responseJson.error) {
-          this.getFilterVideos();
-        }
       })
       .catch((error) => {
         this.setState({
@@ -275,7 +295,8 @@ class Browse extends Component {
   }
 
   backPressed = () => {
-    this.props.navigation.pop();
+    // this.props.navigation.navigate("BrowseList", {ids: this.state.operatedIDArr});
+    this.props.navigation.replace("BrowseList");
     return true;
   }
   gotoFilter() {
@@ -342,15 +363,32 @@ class Browse extends Component {
                   style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
                 />
               )} */}
-              <Image
-                source={this.state.otherData.imageUrl ? { uri: this.state.otherData.imageUrl } : no_image}
-                style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
-              />
-              <View style={{ position: 'absolute', left: 0, top: 50, }}>
-                <TouchableOpacity style={{ width: 60, height: 60, marginBottom: 20, alignItems: 'center', justifyContent: 'center' }}
+              {this.state.otherData.imageUrl ? (
+                <Image
+                  source={{ uri: this.state.otherData.imageUrl }}
+                  style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
+                />
+              ) : (
+                  <View style={{
+                    flex: 1,
+                    backgroundColor: '#989392',
+                    height: DEVICE_HEIGHT,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Image
+                      source={no_photo}
+                      style={{ justifyContent: 'center', alignSelf: 'center' }}
+                    />
+                  </View>
+                )}
+              <View style={{ position: 'absolute', left: 0, top: 30 }}>
+                <TouchableOpacity style={{ width: 60, height: 60, alignItems: 'center', justifyContent: 'center' }}
                   onPress={this.backPressed}>
                   <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
                 </TouchableOpacity>
+              </View>
+              <View style={{ position: 'absolute', left: 20, top: 40, }}>
                 <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.gotoReport()}>
@@ -362,27 +400,33 @@ class Browse extends Component {
                   </TouchableOpacity>
                 </View>
                 <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <View>
-                    <View style={{ flexDirection: 'row' }}>
-                      <Image source={b_name} style={{ width: 15, height: 15 }} />
-                      <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.name}</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                      <Image source={b_age} style={{ width: 15, height: 15 }} />
-                      <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.age + ' years old'}</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                      <Image source={b_distance} style={{ width: 15, height: 15 }} />
-                      <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{parseInt(this.state.otherData.detail.distance) + ' mile'}</Text>
-                    </View>
-                  </View>
+                  <View></View>
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                     onPress={this.gotoProfile}>
                     <Image source={b_profile} style={{ width: 25, height: 25 }} />
                   </TouchableOpacity>
                 </View>
               </View>
-              <View style={{ position: 'absolute', left: 0, bottom: 120 }}>
+              <View style={{ position: 'absolute', left: 0, bottom: 40 }}>
+                <View style={{marginLeft: DEVICE_WIDTH * 0.1, marginBottom: 20}}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Image source={b_name} style={{ width: 15, height: 15 }} />
+                    <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.name}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                    <Image source={b_age} style={{ width: 15, height: 15 }} />
+                    <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.age + ' years old'}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                    <Image source={b_distance} style={{ width: 15, height: 15 }} />
+                    <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{parseInt(this.state.otherData.detail.distance) + ' mile'}</Text>
+                  </View>
+                  <View style={{marginTop: 10, marginRight: 20}}>
+                    <ScrollView contentContainerStyle={{paddingVertical: 20}} style={{ maxHeight: DEVICE_HEIGHT * 0.3}}>
+                      <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff'}}>{this.state.otherData.detail.description}</Text>
+                    </ScrollView>
+                  </View>
+                </View>
                 <View style={{ width: DEVICE_WIDTH * 0.5, marginLeft: DEVICE_WIDTH * 0.25, flexDirection: 'row', justifyContent: 'space-between' }}>
                   {/* <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.onReject()}>
@@ -440,7 +484,7 @@ class Browse extends Component {
             <Button style={{ backgroundColor: '#222F3F', borderRadius: 0,  }} transparent onPress={() => this.gotoGpay()}>
               <Image source={OnlyGImage} style={{width : 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
-            </Button>             
+            </Button>
           </FooterTab>
         </Footer> */}
       </View>

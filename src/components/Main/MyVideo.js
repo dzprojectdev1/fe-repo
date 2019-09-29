@@ -7,6 +7,7 @@ import {
   Text,
 } from "native-base";
 import {
+  ActivityIndicator,
   ImageBackground,
   BackHandler,
   Image,
@@ -36,7 +37,9 @@ class MyVideo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      datas: []
+      datas: [],
+      isLoading: true,
+      noData: false
     };
   }
 
@@ -60,7 +63,14 @@ class MyVideo extends Component {
       .then(response => response.json())
       .then(responseJson => {
         if (!responseJson.error) {
-          this.getThumbnails(responseJson.data);
+          if (responseJson.data.length) {
+            this.getThumbnails(responseJson.data);
+          } else {
+            this.setState({
+              noData: true,
+              isLoading: false
+            });
+          }
         }
       })
       .catch((error) => {
@@ -108,7 +118,7 @@ class MyVideo extends Component {
     )
       .then(assets => assets.filter(Boolean))
       .then(assets => {
-        this.setState({ datas: assets });
+        this.setState({ datas: assets, isLoading: false, noData: false });
       });
   }
   componentWillMount() {
@@ -179,7 +189,7 @@ class MyVideo extends Component {
     return (
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-        <View style={{ marginTop: 40, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ marginTop: 35, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
           <View style={{ width: DEVICE_WIDTH - 80, marginLeft: 40, alignItems: 'center', justifyContent: 'center' }}>
             <Text>{"PROFILE"}</Text>
           </View>
@@ -188,8 +198,28 @@ class MyVideo extends Component {
             <Icon type="MaterialCommunityIcons" name="menu" style={{ color: "#000", marginTop: 5 }} />
           </TouchableOpacity>
         </View>
+        {this.state.isLoading && (
+          <View style={{
+            flex: 1, justifyContent: 'center', alignSelf: 'center', margin: 40
+          }}>
+            <ActivityIndicator style={{ color: '#DE5859' }} />
+          </View>
+        )}
+        {this.state.noData && !this.state.isLoading && (
+          <View style={{
+            flex: 1, justifyContent: 'center', alignSelf: 'center', margin: 35
+          }}>
+            <Text style={{
+              color: '#000',
+              fontSize: 20,
+              textAlign: "center",
+              alignContent: 'center'
+            }}>You dont have any photo. {'\n'} Please upload more than one so that others can find you more easily.</Text>
+          </View>
+        )}
+        
         <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
-          {(this.state.datas.length != 0) && (
+          {(this.state.datas.length !== 0) && (
             <FlatList
               numColumns={2}
               style={{ flex: 0 }}
@@ -236,19 +266,19 @@ class MyVideo extends Component {
         </TouchableOpacity>
         <Footer style={{ height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
           <FooterTab>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("BrowseList")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("BrowseList")}>
               <Image source={b_browse} style={{ width: 25, height: 25, }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"BROWSE"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("Income")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Income")}>
               <Image source={b_incoming} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"INCOMING"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("Match")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Match")}>
               <Image source={b_match} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MATCH"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("Chat")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Chat")}>
               <Image source={b_chat} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"CHAT"}</Text>
             </Button>

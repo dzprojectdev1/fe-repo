@@ -30,8 +30,8 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    this.checkCameraPermission();
-    this.checkPermission();
+    this.checkDefaultPermissions();
+    this.checkFirebasePermission();
     this.createNotificationListeners();
   }
 
@@ -40,17 +40,41 @@ export default class App extends React.Component {
     this.notificationOpenedListener();
   }
 
-  async checkCameraPermission() {
+  // async checkLocationPermission() {
+  //   try {
+  //     const granted = await PermissionsAndroid.request(
+  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  //       {
+  //         title: 'This app need location permission',
+  //         // message:
+  //         //   'Cool Photo App needs access to your camera ' +
+  //         //   'so you can take awesome pictures.',
+  //         // buttonNeutral: 'Ask Me Later',
+  //         // buttonNegative: 'Cancel',
+  //         buttonPositive: 'OK',
+  //       },
+  //     );
+  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+  //       console.log('You can use the camera');
+  //     } else {
+  //       console.log('Camera permission denied');
+  //     }
+  //   } catch (err) {
+  //     console.warn(err);
+  //   }
+  // }
+
+  async checkDefaultPermissions() {
     try {
       var permissions = [];
-      const isCameraPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA);
-      const isRecordAudioPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
+      // const isCameraPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA);
+      const isStoragePermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
       const isAccessFineLocationPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-      if (!isCameraPermission) {
-        permissions.push(PermissionsAndroid.PERMISSIONS.CAMERA);
-      }
-      if (!isRecordAudioPermission) {
-        permissions.push(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
+      // if (!isCameraPermission) {
+      //   permissions.push(PermissionsAndroid.PERMISSIONS.CAMERA);
+      // }
+      if (!isStoragePermission) {
+        permissions.push(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
       }
       if (!isAccessFineLocationPermission) {
         permissions.push(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
@@ -77,8 +101,8 @@ export default class App extends React.Component {
           buttonPositive: 'OK',
         },
       );
-      if (granted['android.permission.CAMERA'] 
-      && granted['android.permission.RECORD_AUDIO'] 
+
+      if (granted['android.permission.WRITE_EXTERNAL_STORAGE'] 
       && granted['android.permission.ACCESS_FINE_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('You can use the all');
       } else {
@@ -90,7 +114,7 @@ export default class App extends React.Component {
     }
   }
 
-  async checkPermission() {
+  async checkFirebasePermission() {
     const enabled = await nativeFirebase.messaging().hasPermission();
     if (enabled) {
       this.getToken();
@@ -160,7 +184,7 @@ export default class App extends React.Component {
         message: title,
         description: body,
         type: "default",
-        icon: 'info'
+        icon: "info"
       });
     }
   }

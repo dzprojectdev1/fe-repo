@@ -53,9 +53,40 @@ class Chat extends Component {
 
     componentWillMount() {
         Global.saveData.nowPage = 'BrowseList';
-        BackHandler.addEventListener('hardwareBackPress', this.backPressed);
+        BackHandler.addEventListener('hardwareBackPress', this.backPressed);        
+    }
+
+    componentDidMount(){
         this.fetchUsers();
     }
+
+    // componentWillReceiveProps(nextProps) {
+    //     if (nextProps.navigation.state.params.ids){
+    //         let operatedIds = nextProps.navigation.state.params.ids;
+    //         if (operatedIds.length) {                
+    //             let oldData = this.state.discoveredList;
+    //             let filterIndexArr = [];
+    //             for (var i=0; i < operatedIds.length; i ++) {
+    //                 for (var j=0; j < oldData.length; j ++) {
+    //                     let item = oldData[j];
+    //                     if (item.detail.id === operatedIds[i]) {
+    //                         filterIndexArr.push(j);
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+    //             var filteredNewData = [];
+    //             alert(JSON.stringify(filterIndexArr));
+    //             for (var i in filterIndexArr) {
+    //                 alert(JSON.stringify(i));
+    //                 filteredNewData = oldData.filter((item, index) => parseInt(i) !== index)
+    //             }
+    //             this.setState({
+    //                 discoveredList: filteredNewData
+    //             });
+    //         }
+    //     }
+    // }
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
@@ -74,7 +105,7 @@ class Chat extends Component {
     }
 
     onSearch = (searchKey) => {
-
+        
     }
 
     fetchUsers = () => {
@@ -119,7 +150,6 @@ class Chat extends Component {
                 body: formBody,
             }).then((response) => response.json())
                 .then((responseJson) => {
-                    // alert(JSON.stringify(responseJson));
                     if (!responseJson.error) {
                         if (responseJson.data) {
                             let newData = responseJson.data;                           
@@ -253,9 +283,11 @@ class Chat extends Component {
         return (
             <View
                 style={{
-                    height: 2,
-                    width: '100%',
-                    backgroundColor: '#CED0CE'
+                    justifyContent: 'center',
+                    alignSelf: 'center',
+                    height: 1,
+                    width: '90%',
+                    backgroundColor: '#CED0CE',
                 }}
             />
         );
@@ -300,7 +332,7 @@ class Chat extends Component {
         return (
             <View style={styles.contentContainer}>
                 <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-                <View style={{ flexDirection: 'row', marginTop: 40, alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: 'row', marginTop: 35, alignItems: 'center', justifyContent: 'space-between' }}>
                     <View></View>
                     <Text style={{ justifyContent: 'center' }}>{"BROWSE"}</Text>
                     <TouchableOpacity style={{ width: 25, height: 25, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: "flex-end", marginRight: 15 }}
@@ -382,7 +414,9 @@ class Chat extends Component {
                                                     fontStyle: 'italic',
                                                     alignItems: 'center',
                                                     color: '#7d7d7d',
-                                                }}>
+                                                    width: '80%',
+                                                    flexWrap: 'nowrap',
+                                                }} ellipsizeMode={'tail'} numberOfLines={1}>
                                                     {item.detail.description ? item.detail.description : 'No Introduction'}
                                                 </Text>
                                                 <View>
@@ -425,7 +459,6 @@ class Chat extends Component {
                         <Image source={b_filters} style={{ width: 25, height: 25 }} />
                     </TouchableOpacity> */}
                 {/* </View> */}
-
                 <Footer style={{ borderTopColor: '#222F3F', height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
                     <FooterTab style={{ backgroundColor: '#222F3F', alignSelf: 'stretch', alignItems: 'center', alignContent: 'space-around', flex: 1, flexDirection: 'row' }}>
                         <Button style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent >
@@ -448,7 +481,7 @@ class Chat extends Component {
                             <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
                             <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
                         </Button>
-                        <Button style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.props.navigation.navigate("screenGpay01")}>
+                        <Button style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.props.navigation.replace("screenGpay01")}>
                             <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
                             <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
                         </Button>

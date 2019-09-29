@@ -12,7 +12,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   StatusBar,
-  ActivityIndicator
+  // ActivityIndicator
 } from "react-native";
 
 // import Video from 'react-native-video';
@@ -22,7 +22,7 @@ import b_name from '../../assets/images/name.png';
 import b_age from '../../assets/images/age.png';
 import b_distance from '../../assets/images/distance.png';
 import b_profile from '../../assets/images/profile.png';
-
+import no_photo from '../../assets/images/no_photo.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -233,7 +233,7 @@ class IncomeDetail extends Component {
     }).then((t_response) => t_response.json())
       .then((t_responseJson) => {
         if (t_responseJson.url) {
-          Global.saveData.prevUrl = responseJson.url;
+          Global.saveData.prevUrl = t_responseJson.url;
           this.setState({
             vUrl: null,
             userimage: t_responseJson.url,
@@ -290,10 +290,25 @@ class IncomeDetail extends Component {
             //   onError={this.videoError}              // Callback when video cannot be loaded
             //   style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
             // />
-            <Image
-              source={this.state.userimage === null ? no_image : { uri: this.state.userimage }}
-              style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
-            />
+            this.state.userimage ? (
+              <Image
+                source={{ uri: this.state.userimage }}
+                style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
+              />
+            ) : (
+                <View style={{
+                  flex: 1,
+                  backgroundColor: '#989392',
+                  height: DEVICE_HEIGHT,
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <Image
+                    source={no_image}
+                    style={{ justifyContent: 'center', alignSelf: 'center' }}
+                  />
+                </View>
+              )
           )}
         </Content>
         <View style={{ position: 'absolute', left: 0, top: 50, }}>
