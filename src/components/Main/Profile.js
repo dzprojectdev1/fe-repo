@@ -4,6 +4,7 @@ import {
   Text,
 } from "native-base";
 import { 
+  ActivityIndicator,
   ImageBackground, 
   ScrollView,
   Platform, 
@@ -25,7 +26,9 @@ class Profile extends Component {
     this.state = {
       id: '',
       name: '',
-      datas: []
+      datas: [],
+      isLoading: true,
+      noData: false
     };
   }
 
@@ -50,10 +53,21 @@ class Profile extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-          this.getTumbnails(responseJson.data)
+          if (responseJson.data.length){
+            this.getTumbnails(responseJson.data)
+          } else {
+            this.setState({
+              noData: true,
+              isLoading: false
+            });
+          }
         }
       })
       .catch((error) => {
+        this.setState({
+          noData: false,
+          isLoading: false
+        });
         return
       });
   }
@@ -85,7 +99,9 @@ class Profile extends Component {
         });
     }
     this.setState({
-      datas: list_items
+      datas: list_items,
+      noData: false,
+      isLoading: false
     });
   }
   showUserVideo(url, otherId) {
@@ -129,6 +145,25 @@ class Profile extends Component {
             <Text style={{ fontSize: 16 }}>{this.state.name}</Text>
           </View>
         </View>
+        {this.state.isLoading && (
+          <View style={{
+            flex: 1, justifyContent: 'center', alignSelf: 'center', margin: 40
+          }}>
+            <ActivityIndicator style={{ color: '#DE5859' }} />
+          </View>
+        )}
+        {this.state.noData && !this.state.isLoading && (
+          <View style={{
+            flex: 1, justifyContent: 'center', alignSelf: 'center', margin: 35
+          }}>
+            <Text style={{
+              color: '#000',
+              fontSize: 20,
+              textAlign: "center",
+              alignContent: 'center'
+            }}>You dont have any photo. {'\n'} Please upload more than one so that others can find you more easily.</Text>
+          </View>
+        )}
         <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
           {(this.state.datas.length != 0) && (
             <FlatList

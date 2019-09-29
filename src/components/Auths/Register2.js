@@ -179,7 +179,6 @@ class Register2 extends Component {
             lat_geo: position.coords.latitude,
             long_geo: position.coords.longitude
           };
-          alert(JSON.stringify(usergeo));
           return usergeo;
         },
         (error) => {
@@ -251,8 +250,7 @@ class Register2 extends Component {
                   },
                   body: formBody,
                 }).then((response) => response.json())
-                  .then((responseJson) => {
-                    this.registerLoadingBtn.showLoading(false);
+                  .then((responseJson) => {                    
                     if (!responseJson.error) {
                       // this.onLogin();
                       Global.saveData.token = responseJson.user.token;
@@ -265,8 +263,10 @@ class Register2 extends Component {
                       Global.saveData.u_country = responseJson.user.country
                       Global.saveData.u_description = responseJson.user.description;
                       Global.saveData.newUser = true;
+                      this.registerLoadingBtn.showLoading(false);
                       this.props.navigation.navigate("BrowseList");
                     }
+                    this.registerLoadingBtn.showLoading(false);
                   })
                   .catch((error) => {
                     alert(error);
@@ -284,49 +284,50 @@ class Register2 extends Component {
     });
     this.registerLoadingBtn.showLoading(false);
   }
-  onLogin() {
-    nativeFirebase.messaging().getToken().then(fcmToken => {
-      if (fcmToken) {
-        var details = {
-          // 'useremail': this.state.email,
-          // 'userpassword': this.state.password,
-          'fcm_id': fcmToken
-        };
-        var formBody = [];
-        for (var property in details) {
-          var encodedKey = encodeURIComponent(property);
-          var encodedValue = encodeURIComponent(details[property]);
-          formBody.push(encodedKey + "=" + encodedValue);
-        }
-      }
-      formBody = formBody.join("&");
-      fetch(`${SERVER_URL}/api/user/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formBody,
-      }).then((response) => response.json())
-        .then((responseJson) => {
-          if (!responseJson.error) {
-            Global.saveData.token = responseJson.user.token;
-            Global.saveData.u_id = responseJson.user.id;
-            Global.saveData.u_name = responseJson.user.name;
-            Global.saveData.u_age = responseJson.user.age;
-            Global.saveData.u_gender = responseJson.user.gender;
-            Global.saveData.u_email = responseJson.user.email;
-            Global.saveData.u_language = responseJson.user.language;
-            Global.saveData.u_city = responseJson.user.ethnicity;
-            Global.saveData.u_country = responseJson.user.country;
-            Global.saveData.newUser = true;
-            this.props.navigation.navigate("Browse");
-          }
-        }).catch((error) => {
-          alert(JSON.stringify(error));
-          return
-        });
-    });
-  }
+  // onLogin() {
+  //   nativeFirebase.messaging().getToken().then(fcmToken => {
+  //     if (fcmToken) {
+  //       var details = {
+  //         // 'useremail': this.state.email,
+  //         // 'userpassword': this.state.password,
+  //         'fcm_id': fcmToken
+  //       };
+  //       var formBody = [];
+  //       for (var property in details) {
+  //         var encodedKey = encodeURIComponent(property);
+  //         var encodedValue = encodeURIComponent(details[property]);
+  //         formBody.push(encodedKey + "=" + encodedValue);
+  //       }
+  //     }
+  //     formBody = formBody.join("&");
+  //     fetch(`${SERVER_URL}/api/user/login`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/x-www-form-urlencoded'
+  //       },
+  //       body: formBody,
+  //     }).then((response) => response.json())
+  //       .then((responseJson) => {
+  //         if (!responseJson.error) {
+  //           Global.saveData.token = responseJson.user.token;
+  //           Global.saveData.u_id = responseJson.user.id;
+  //           Global.saveData.u_name = responseJson.user.name;
+  //           Global.saveData.u_age = responseJson.user.age;
+  //           Global.saveData.u_gender = responseJson.user.gender;
+  //           Global.saveData.u_email = responseJson.user.email;
+  //           Global.saveData.u_language = responseJson.user.language;
+  //           Global.saveData.u_city = responseJson.user.ethnicity;
+  //           Global.saveData.u_country = responseJson.user.country;
+  //           Global.saveData.newUser = true;
+  //           this.props.navigation.navigate("Browse");
+  //         }
+  //       }).catch((error) => {
+  //         alert(JSON.stringify(error));
+  //         return
+  //       });
+  //   });
+  // }
+
   render() {
     return (
       <View style={styles.contentContainer}>
