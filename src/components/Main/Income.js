@@ -104,6 +104,7 @@ class Income extends Component {
               videoUrl: vurl,
               name: data[i].name,
               age: data[i].age,
+              description: data[i].description,
               distance: data[i].distance
             });
           })
@@ -118,6 +119,7 @@ class Income extends Component {
           videoUrl: null,
           name: data[i].name,
           age: data[i].age,
+          description: data[i].description,
           distance: data[i].distance
         });
       }
@@ -125,7 +127,7 @@ class Income extends Component {
     this.setState({ datas: list_items })
   }
 
-  showUserVideo(url, otherId, name, imgurl, age, distance) {
+  showUserVideo(data) {
     // fetch(url, {
     //   method: 'GET',
     //   headers: {
@@ -158,11 +160,11 @@ class Income extends Component {
       {
         url: null,
         mid: -1,
-        otherId: otherId,
-        imageUrl: imgurl,
-        name: name,
-        age: age,
-        distance: distance
+        otherId: data.otherId,
+        imageUrl: data.imageUrl,
+        name: data.name,
+        age: data.age,
+        distance: data.distance
       }
     )
   }
@@ -190,7 +192,7 @@ class Income extends Component {
               initialNumToRender={this.state.datas.length}
               renderItem={({ item: rowData }) => {
                 return (
-                  <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.videoUrl, rowData.otherId, rowData.name, rowData.imageUrl, rowData.age, rowData.distance)}>
+                  <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData)}>
                     <Image source={rowData.imageUrl !== null ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
                     <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>

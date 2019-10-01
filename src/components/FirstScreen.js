@@ -93,7 +93,7 @@ class FirstScreen extends Component {
                   }
                 }
               }).catch(error => {
-                alert(JSON.stringify(error));
+                // alert(JSON.stringify(error));
               });
           } else {
             this.setState({
