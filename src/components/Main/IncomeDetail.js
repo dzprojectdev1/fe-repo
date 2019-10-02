@@ -172,17 +172,22 @@ class IncomeDetail extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-          if (responseJson.data.cdn_id.length) {
-            this.getMatchedVideo(responseJson.data.cdn_id[0].cdn_id, responseJson.data.match_id);
-          } else {
-            this.setState({
-              vUrl: null,
-              userimage: null,
-              matchId: responseJson.data.match_id,
-              isMatchVideo: true,
-              privatedPaused: false
-            });
-          }
+          // if (responseJson.data.cdn_id.length) {
+          //   this.getMatchedVideo(responseJson.data.cdn_id[0].cdn_id, responseJson.data.match_id);
+          // } else {
+          //   this.setState({
+          //     vUrl: null,
+          //     userimage: null,
+          //     matchId: responseJson.data.match_id,
+          //     isMatchVideo: true,
+          //     privatedPaused: false
+          //   });
+          // }
+          this.setState({
+            matchId: responseJson.data.match_id,
+            isMatchVideo: true,
+            privatedPaused: false
+          });
         }
       }).catch((error) => {
         alert(JSON.stringify(error));
@@ -255,7 +260,7 @@ class IncomeDetail extends Component {
     if (this.state.otherId != -1) {
       Global.saveData.prevpage = "IncomeDetail";
       Global.saveData.isMatchVideo = this.state.isMatchVideo;
-      this.props.navigation.replace("Profile", { id: this.state.otherId, name: this.state.username });
+      this.props.navigation.replace("Profile", { id: this.state.otherId, name: this.state.username, isMatched: this.state.isMatchVideo, description: this.state.description });
     }
   }
   back = () => {
@@ -372,38 +377,39 @@ class IncomeDetail extends Component {
               <Image source={b_distance} style={{ width: 15, height: 15 }} />
               <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userdistance + ' mile'}</Text>
             </View>
-            <View style={{ marginTop: 10}}>
+            <View style={{ marginTop: 10 }}>
               <ScrollView contentContainerStyle={{ paddingVertical: 20 }} style={{ maxHeight: DEVICE_HEIGHT * 0.3 }}>
                 <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#fff' }}>{this.state.description}</Text>
               </ScrollView>
             </View>
-            <View style={{ width: DEVICE_WIDTH * 0.5, marginLeft: DEVICE_WIDTH * 0.15, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', alignSelf: 'center'}}>
-            {!this.state.isMatchVideo && (
-              <View style={{ width: DEVICE_WIDTH * 0.5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}
-                  onPress={() => this.onReject()}>  
-                  <Icon type="FontAwesome" name="close" style={{ color: '#B64F54' }} />
-                </TouchableOpacity>
-                <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
-                  onPress={() => this.onMatch()}>
-                  <Icon type="FontAwesome" name="heart" style={{ color: '#fff' }} />
-                </TouchableOpacity>
-              </View>)}
-            {this.state.isMatchVideo && (
-              <TouchableOpacity
-                style={{
-                  width: DEVICE_WIDTH * 0.5,
-                  height: 40,
-                  alignSelf: 'center',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#B64F54',
-                  borderRadius: DEVICE_WIDTH * 0.25
-                }}
-                onPress={() => this.gotoChat()}>
-                <Text style={{ color: '#fff', fontSize: 16 }}>{"Start Chat!"}</Text>
-              </TouchableOpacity>
-            )}
+            <View style={{ width: DEVICE_WIDTH * 0.5, marginLeft: DEVICE_WIDTH * 0.15, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
+              {!this.state.isMatchVideo && (
+                <View style={{ width: DEVICE_WIDTH * 0.5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}
+                    onPress={() => this.onReject()}>
+                    <Icon type="FontAwesome" name="close" style={{ color: '#B64F54' }} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
+                    onPress={() => this.onMatch()}>
+                    <Icon type="FontAwesome" name="heart" style={{ color: '#fff' }} />
+                  </TouchableOpacity>
+                </View>)}
+              {this.state.isMatchVideo && (
+                <View>
+                  <TouchableOpacity
+                    style={{
+                      width: DEVICE_WIDTH * 0.5,
+                      height: 40,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#B64F54',
+                      borderRadius: DEVICE_WIDTH * 0.25
+                    }}
+                    onPress={() => this.gotoChat()}>
+                    <Text style={{ color: '#fff', fontSize: 16 }}>{"Start Chat!"}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           </View>
         </View>

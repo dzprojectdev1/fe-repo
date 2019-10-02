@@ -104,6 +104,7 @@ class Income extends Component {
               videoUrl: vurl,
               name: data[i].name,
               age: data[i].age,
+              gender: data[i].gender,
               description: data[i].description,
               distance: data[i].distance
             });
@@ -119,8 +120,9 @@ class Income extends Component {
           videoUrl: null,
           name: data[i].name,
           age: data[i].age,
+          gender: data[i].gender,
           description: data[i].description,
-          distance: data[i].distance
+          distance: data[i].distance,
         });
       }
     }
@@ -164,7 +166,9 @@ class Income extends Component {
         imageUrl: data.imageUrl,
         name: data.name,
         age: data.age,
-        distance: data.distance
+        gender: data.gender,
+        distance: data.distance,
+        description: data.description
       }
     )
   }
@@ -197,10 +201,11 @@ class Income extends Component {
                     <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
                         <Image source={b_name} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
-                        <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.name}</Text>
+                        <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.name}</Text>
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
-                        <Image source={b_age} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
+                        {/* <Image source={b_age} style={{ width: 10, height: 10, tintColor: '#B64F54' }} /> */}
+                        <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#B64F54' }}>{rowData.gender === 1 ? 'Male' :  'Female'}</Text>
                         <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{"" + rowData.age + ' years old'}</Text>
                       </View>
                     </View>

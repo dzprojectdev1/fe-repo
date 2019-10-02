@@ -104,13 +104,15 @@ export default class App extends React.Component {
 
       if (granted['android.permission.WRITE_EXTERNAL_STORAGE'] 
       && granted['android.permission.ACCESS_FINE_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED) {
-        alert('You can use the all');
+        console.log('You can use the all');
       } else {
         console.log('all permission denied');
       }
+      return;
     } catch (error) {
       // Error retrieving data
       console.error(error);
+      return;
     }
   }
 

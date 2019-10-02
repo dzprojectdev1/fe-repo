@@ -77,8 +77,7 @@ class FirstScreen extends Component {
                     Global.saveData.u_country = responseJson.user.country;
                     Global.saveData.u_description = responseJson.user.description;
                     Global.saveData.newUser = false;
-                    Global.saveData.coin_count = responseJson.user.coin_count;
-                    
+                    Global.saveData.coin_count = responseJson.user.coin_count;                    
                     this.setState({
                       isLoaded: false
                     }, function() {
@@ -87,13 +86,13 @@ class FirstScreen extends Component {
                   } else {
                     this.setState({
                       isLoaded: false
-                    }, function() {
+                    }, function() { 
                       this.props.navigation.navigate("Signup");
                     });
                   }
                 }
               }).catch(error => {
-                // alert(JSON.stringify(error));
+                alert(JSON.stringify(error));
               });
           } else {
             this.setState({

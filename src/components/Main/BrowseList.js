@@ -122,8 +122,11 @@ class Chat extends Component {
                     offset: pageNum * countPerPage,
                     gender: filterStore.gender,
                     lessAge: filterStore.toAge,
-                    greaterAge: filterStore.fromAge
+                    greaterAge: filterStore.fromAge,
                 };
+                if (filterStore.distance) {
+                    details.distance = filterStore.distance;
+                }
                 if (filterStore.city_index) {
                     details.ethnicityId = filterStore.city_index;
                 }
@@ -184,8 +187,11 @@ class Chat extends Component {
                     offset: 0,
                     gender: filterStore.gender,
                     lessAge: filterStore.toAge,
-                    greaterAge: filterStore.fromAge
+                    greaterAge: filterStore.fromAge,
                 };
+                if (filterStore.distance) {
+                    details.distance = filterStore.distance;
+                }
                 if (filterStore.city_index) {
                     details.ethnicityId = filterStore.city_index;
                 }

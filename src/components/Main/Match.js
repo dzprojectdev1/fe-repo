@@ -46,10 +46,10 @@ class Match extends Component {
   //   await this.getHeartUsers();
   // }
   componentDidMount() {
-    Global.saveData.nowPage = 'Match';    
+    Global.saveData.nowPage = 'Match';
     this.getHeartUsers();
   }
-  getHeartUsers = async() => {
+  getHeartUsers = async () => {
     await fetch(`${SERVER_URL}/api/match/matches`, {
       method: 'GET',
       headers: {
@@ -95,7 +95,9 @@ class Match extends Component {
                 name: data[i].name,
                 time: 'TIME',
                 age: data[i].age,
-                distance: data[i].distance
+                gender: data[i].gender,
+                distance: data[i].distance,
+                description: data[i].description
               });
             }
           }).catch((error) => {
@@ -110,7 +112,9 @@ class Match extends Component {
           name: data[i].name,
           time: 'TIME',
           age: data[i].age,
-          distance: data[i].distance
+          gender: data[i].gender,
+          distance: data[i].distance,
+          description: data[i].description
         });
       }
 
@@ -130,7 +134,7 @@ class Match extends Component {
     return true;
   }
 
-  showUserVideo(url, mid, otherId, name, imgurl, age, distance) {
+  showUserVideo(url, mid, otherId, name, imgurl, age, distance, gender, description) {
     // fetch(url, {
     //   method: 'GET',
     //   headers: {
@@ -146,7 +150,9 @@ class Match extends Component {
     //     return
     //   });
     Global.saveData.isMatchVideo = true;
-    this.props.navigation.navigate("IncomeDetail", { url: null, mid: mid, otherId: otherId, imageUrl: imgurl, name: name, age: age, distance: distance });
+    this.props.navigation.navigate("IncomeDetail",
+      { url: null, mid: mid, otherId: otherId, imageUrl: imgurl, name: name, age: age, distance: distance, gender: gender, description: description }
+    );
   }
 
   //////////////////////////////////////////////////
@@ -176,16 +182,16 @@ class Match extends Component {
             initialNumToRender={this.state.datas.length}
             renderItem={({ item: rowData }) => {
               return (
-                <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.videoUrl, rowData.mid, rowData.otherId, rowData.name, rowData.imageUrl, rowData.age, rowData.distance)}>
+                <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.videoUrl, rowData.mid, rowData.otherId, rowData.name, rowData.imageUrl, rowData.age, rowData.distance, rowData.gender, rowData.description)}>
                   <Image source={rowData.imageUrl ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
                   <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5, flex: 2 }}>
                       <Image source={b_name} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
-                      <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.name}</Text>
+                      <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54', width: '80%', flexWrap: 'nowrap', }} ellipsizeMode={"tail"} numberOfLines={1}>{rowData.name}</Text>
                     </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
-                      <Image source={b_age} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
-                      <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{"" + rowData.age + ' years old'}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                      <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#B64F54', width: '100%', flexWrap: 'nowrap', }} ellipsizeMode={"tail"} numberOfLines={1}>{rowData.gender === 1 ? 'Male' : 'Female'}</Text>
+                      <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#B64F54', width: '150%', flexWrap: 'nowrap', }} numberOfLines={1}>{"" + rowData.age + ' years old'}</Text>
                     </View>
                   </View>
                 </TouchableOpacity>
