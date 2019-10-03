@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Text } from "native-base";
 import { 
   Image, 
-  ImageBackground, 
   Platform, 
   Dimensions, 
   TextInput, 
@@ -10,8 +9,12 @@ import {
   StyleSheet, 
   TouchableOpacity, 
   StatusBar, 
-  Alert ,
+  Alert,
+  Switch,
+  CheckBox
 } from "react-native";
+
+import AsyncStorage from '@react-native-community/async-storage';
 
 import { GooglePay } from 'react-native-google-pay'
 import Global from '../Global';
@@ -21,13 +24,9 @@ const allowedCardNetworks = ['AMEX', 'DISCOVER', 'INTERAC', 'JCB', 'MASTERCARD',
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS']
 
 import goback from '../../assets/images/BackOther.png';
-import Flag from '../../assets/images/flag.png';
 import waterball from '../../assets/images/waterball.png';
 import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import diamond from '../../assets/images/diamond.png';
-import { InputField } from '../../commonUI/components/inputs';
-import checkIcon from '../../assets/images/check.png';
-import uncheckIcon from '../../assets/images/uncheck.png';
 
 const GempriceListVal = [200, 700, 1200, 2500, 8000, 15000];
 const PaypriceListVal = [0.99, 2.49, 4.49, 8.49, 25.99, 42.99];
@@ -39,14 +38,61 @@ class screenGpay03 extends Component {
     this.state = {
       email: '',
       password: '',
-      remberCheck: false,
+      rememberMe: false,
+      password: ''
     };
   }
   
-  componentDidMount() {
+  async componentDidMount() {
     // Set the environment before the payment request
     if (Platform.OS === 'android') {
       GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST)
+    }
+
+    const password = await this.getRememberedPassword();
+
+    this.setState({
+      password: password || "",
+      rememberMe: password? true: false
+    });
+  }
+
+  toggleRememberMe = value => {
+    this.setState({rememberMe: value})
+    if (value === true) {
+      this.rememberUser();
+    }
+    else 
+    {
+      this.forgetUser();
+    }
+  }
+
+  rememberUser = async() => {
+    try {
+      await AsyncStorage.setItem('user_password', this.state.password);
+    } catch(error) {
+      Alert.alert(error);
+    }
+  }
+
+  getRememberedPassword = async() => {
+    try {
+      const password = await AsyncStorage.getItem('user_password');
+
+      if (password !== null) {
+        return password;
+      }
+    } catch (error) {
+      Alert.alert(error);
+    }
+  }
+
+  forgetUser = async() => {
+    try {
+      await AsyncStorage.removeItem('user_password');
+    } catch (error) {
+      Alert.alert(error);
     }
   }
 
@@ -158,14 +204,6 @@ class screenGpay03 extends Component {
     header: null
   };
 
-  checkRemember() {
-    this.setState({ remberCheck: !this.state.remberCheck })
-  }
-
-  onChangeField(emailAddr, fieldValue) {
-    
-  }
-
   createView = () =>{
     buttonListArr = [];
  
@@ -222,44 +260,6 @@ class screenGpay03 extends Component {
             </TouchableOpacity>
             <Text style={{ color: '#000', fontSize: 15, fontWeight: 'bold', marginLeft: 20, textAlign:'left', justifyContent:'center' }}>{"Gem shop"}</Text>
         </View>
-            {/* <View style={{justifyContent:'center', alignItems: 'center', }}>
-                <View style={styles.list_item_spread} >
-                    <Text style={{ color: '#000', fontSize: 17, justifyContent: 'center', alignItems: 'center' }}>{"My gem"}</Text>
-                    <Text style={{ color: '#45b8d6', fontSize: 14, justifyContent:'center', alignItems: 'center' }}>{"30"}</Text>
-                </View>
-                <View style={styles.list_item_normal}>
-                  <View style={{flexDirection: 'row', paddingTop: 7}}>
-                      <Image source={Flag} style={{ width: 20, height: 15 }} />
-                      <Text style={{ color: '#000', fontSize: 12, marginLeft: 10 }}>{"1-day ticket"}</Text>
-                      <View style={{flex:1, alignItems:"flex-end"}}>
-                        <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
-                         <Text style={{color: '#fff', fontSize: 12, textAlign:'center', marginRight:10, backgroundColor:'red', width:35, height:16, borderRadius:10}}>{"Hit"}</Text>
-                         <Text style={{color: '#000', fontSize: 12, textAlign:'right', paddingRight:10}}>{"$4.49"}</Text>
-                         </View>
-                      </View>
-                  </View>
-                </View>
-                <View style={styles.list_item_normal}>
-                  <View style={{flexDirection: 'row', paddingTop: 7}}>
-                      <Image source={Flag} style={{ width: 20, height: 15 }} />
-                      <Text style={{ color: '#000', fontSize: 12, marginLeft: 10 }}>{"1-day ticket"}</Text>
-                      <View style={{flex:1, alignItems:"flex-end"}}>
-                         <Text style={{color: '#000', fontSize: 12, textAlign:'right', paddingRight:10}}>{"$8.49"}</Text>
-                      </View>
-                  </View>
-                </View>
-                {this.createView()}
-                <View style={{height: 30, width: '90%', marginTop: 10, borderRadius: 5, backgroundColor: 'green'}}>
-                  <Text style={{color:'white', fontSize: 12, textAlign:'center', flexDirection:'row', marginTop: 7}}>{"Get free Gem (once per day)"}</Text>
-                </View>
-                <View style={{height: 30, width: '90%', marginTop: 5, borderRadius: 5, backgroundColor: 'blue'}}>
-                  <Text style={{color:'white', fontSize: 12, textAlign:'center', flexDirection:'row', marginTop: 7}}>{"Free Gem1"}</Text>
-                </View><View style={{height: 30, width: '90%', marginTop: 5, borderRadius: 5, backgroundColor: 'red'}}>
-                  <Text style={{color:'white', fontSize: 12, textAlign:'center', flexDirection:'row', marginTop: 7}}>{"Free Gem2"}</Text>
-                </View><View style={{height: 40, width: '90%', marginTop: 5, borderRadius: 5, backgroundColor: 'pink'}}>
-                  <Text style={{color:'white', fontSize: 12, textAlign:'center', flexDirection:'row', marginTop: 11}}>{"Free Gem3"}</Text>
-                </View>
-            </View> */}
             <View backgroundColor={"#000"} style = {{position: 'absolute', top:0, width:'100%', height:'100%', opacity: 0.7}} ></View>
             <View style={styles.dialog_screen}>
               <View style={{flexDirection:'row', height:50, width: '100%', alignItems:'center'}}>
@@ -284,13 +284,11 @@ class screenGpay03 extends Component {
                 <Image source={OnlyGImage} style={{ width: 20, height: 20, marginLeft:15 }} />
                 <Text style={{color:'gray', fontSize:8, marginLeft: 5}}>{Global.saveData.u_email}</Text>
               </View>
-			      	<InputField name='user_pwd' placeholder='Enter your password' onChangeField={this.onChangeField.bind(this)}  passwordField/>
-
+              <TextInput secureTextEntry={true} style={styles.verify_password_input} placeholder="Enter your password" onChangeText={(password) => this.setState({password})} value={this.state.password} />
               <View style={{height:60, width: '100%', justifyContent:'center', flexDirection:'column', alignItems:'flex-start'}}>
-              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop:10, marginLeft:15 }} onPress={() => this.checkRemember()}>
-                  {this.state.remberCheck && <Image source={checkIcon} style={{ width: 15, height: 15 }} />}
-                  {!this.state.remberCheck && <Image source={uncheckIcon} style={{ width: 15, height: 15 }} />}
-                  <Text style={{ color: 'gray', marginLeft: 10, fontSize: 10, }}>{"Remember me on this device"}</Text>
+              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop:10, marginLeft:15 }}>
+                  <CheckBox value={this.state.rememberMe} onValueChange={(value) => this.toggleRememberMe(value)} />
+                  <Text style={{ color: 'gray', fontSize: 10, }}>{"Remember me on this device"}</Text>
               </TouchableOpacity>
                 <View style={{flexDirection:'row'}}>
                     <TouchableOpacity>
@@ -309,10 +307,6 @@ class screenGpay03 extends Component {
           </View>
        </View>
     );
-  }
-
-  onCheckRemember() {
-    ;
   }
 }
 const DEVICE_WIDTH = Dimensions.get('window').width;
@@ -357,8 +351,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '84%',
     marginLeft: '8%',
-    height:200,
+    height:210,
     flex: 1,
+  },
+  verify_password_input: {
+    borderBottomColor: '#2e7660',
+    borderBottomWidth: 2,
+    marginLeft: 20,
+    marginRight: 20,
+    height: 40
   }
 });
 export default screenGpay03;
