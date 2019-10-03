@@ -108,9 +108,11 @@ export default class App extends React.Component {
       } else {
         console.log('all permission denied');
       }
+      return;
     } catch (error) {
       // Error retrieving data
       console.error(error);
+      return;
     }
   }
 

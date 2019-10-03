@@ -104,6 +104,8 @@ class Income extends Component {
               videoUrl: vurl,
               name: data[i].name,
               age: data[i].age,
+              gender: data[i].gender,
+              description: data[i].description,
               distance: data[i].distance
             });
           })
@@ -118,14 +120,16 @@ class Income extends Component {
           videoUrl: null,
           name: data[i].name,
           age: data[i].age,
-          distance: data[i].distance
+          gender: data[i].gender,
+          description: data[i].description,
+          distance: data[i].distance,
         });
       }
     }
     this.setState({ datas: list_items })
   }
 
-  showUserVideo(url, otherId, name, imgurl, age, distance) {
+  showUserVideo(data) {
     // fetch(url, {
     //   method: 'GET',
     //   headers: {
@@ -158,11 +162,13 @@ class Income extends Component {
       {
         url: null,
         mid: -1,
-        otherId: otherId,
-        imageUrl: imgurl,
-        name: name,
-        age: age,
-        distance: distance
+        otherId: data.otherId,
+        imageUrl: data.imageUrl,
+        name: data.name,
+        age: data.age,
+        gender: data.gender,
+        distance: data.distance,
+        description: data.description
       }
     )
   }
@@ -190,15 +196,16 @@ class Income extends Component {
               initialNumToRender={this.state.datas.length}
               renderItem={({ item: rowData }) => {
                 return (
-                  <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.videoUrl, rowData.otherId, rowData.name, rowData.imageUrl, rowData.age, rowData.distance)}>
+                  <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData)}>
                     <Image source={rowData.imageUrl !== null ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
                     <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
                         <Image source={b_name} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
-                        <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.name}</Text>
+                        <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.name}</Text>
                       </View>
                       <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
-                        <Image source={b_age} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
+                        {/* <Image source={b_age} style={{ width: 10, height: 10, tintColor: '#B64F54' }} /> */}
+                        <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#B64F54' }}>{rowData.gender === 1 ? 'Male' :  'Female'}</Text>
                         <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{"" + rowData.age + ' years old'}</Text>
                       </View>
                     </View>

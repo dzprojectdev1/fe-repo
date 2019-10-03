@@ -102,7 +102,7 @@ class Register1 extends Component {
     // var birthday = y_item[this.state.selected_yItem] + "-" + mon + "-" + date;
     var gender = 1;
     if (!this.state.isMale) {
-      gender = 0
+      gender = 2
     }
     // var nowDate = new Date();
     // var nowYear = nowDate.getFullYear();

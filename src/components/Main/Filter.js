@@ -60,7 +60,7 @@ class Filter extends Component {
         let filterStore = JSON.parse(result);
         let sliderOneValue = [];
         let multiSliderValue = [];
-        sliderOneValue.push(filterStore.distance);
+        sliderOneValue.push(filterStore.distance ? filterStore.distance : 2000);
         multiSliderValue.push(filterStore.fromAge, filterStore.toAge);
         // alert(JSON.stringify(multiSliderValue));
         this.setState({
@@ -236,7 +236,7 @@ class Filter extends Component {
       gender: this.state.selectedIndex + 1,
       fromAge: this.state.multiSliderValue[0],
       toAge: this.state.multiSliderValue[1],
-      distance: this.state.sliderOneValue[0],
+      distance: this.state.sliderOneValue[0] === 2000 ? null : this.state.sliderOneValue[0],
       language_index: lanindex,
       city_index: cityindex,
       country_index: countryIndex
@@ -324,9 +324,9 @@ class Filter extends Component {
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 10 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={{ color: '#808080', fontSize: 12 }}>{"DISTANCE"}</Text>
-              {(this.state.sliderOneValue[0] != 2000) &&
+              {(this.state.sliderOneValue[0] !== 2000) &&
                 <Text style={{ color: '#808080', fontSize: 12 }}>{"" + this.state.sliderOneValue + " mile"}</Text>}
-              {(this.state.sliderOneValue[0] == 2000) &&
+              {(this.state.sliderOneValue[0] === 2000) &&
                 <Text style={{ color: '#808080', fontSize: 12 }}>{"NO LIMIT"}</Text>}
             </View>
             <View>
@@ -344,7 +344,7 @@ class Filter extends Component {
                   )
                 }}
                 min={0}
-                max={2000}
+                max={2001}
                 onValuesChangeStart={this.sliderOneValuesChangeStart}
                 onValuesChange={this.sliderOneValuesChange}
                 onValuesChangeFinish={this.sliderOneValuesChangeFinish}

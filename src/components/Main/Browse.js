@@ -106,11 +106,13 @@ class Browse extends Component {
     AsyncStorage.getItem('filterData', (err, result) => {
       var details = {};
       if (result !== null) {
+        alert(result);
         let filterStore = JSON.parse(result);
         details = {
           gender: filterStore.gender,
           lessAge: filterStore.toAge,
-          greaterAge: filterStore.fromAge
+          greaterAge: filterStore.fromAge,
+          distance: filterStore.distance
         };
         if (filterStore.city_index) {
           details.ethnicityId = filterStore.city_index;

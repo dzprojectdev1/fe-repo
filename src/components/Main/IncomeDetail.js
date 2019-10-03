@@ -12,6 +12,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   StatusBar,
+  ScrollView,
   // ActivityIndicator
 } from "react-native";
 
@@ -38,6 +39,7 @@ class IncomeDetail extends Component {
       userimage: '',
       matchId: -1,
       userdistance: '',
+      description: '',
       otherId: -1,
       isMatchVideo: false,
       privatedPaused: false,
@@ -81,7 +83,8 @@ class IncomeDetail extends Component {
         userage: this.props.navigation.state.params.age,
         userimage: this.props.navigation.state.params.imageUrl,
         matchId: this.props.navigation.state.params.mid,
-        userdistance: parseInt(this.props.navigation.state.params.distance)
+        userdistance: parseInt(this.props.navigation.state.params.distance),
+        description: this.props.navigation.state.params.description
       });
     }
   }
@@ -169,17 +172,22 @@ class IncomeDetail extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-          if (responseJson.data.cdn_id.length) {
-            this.getMatchedVideo(responseJson.data.cdn_id[0].cdn_id, responseJson.data.match_id);
-          } else {
-            this.setState({
-              vUrl: null,
-              userimage: null,
-              matchId: responseJson.data.match_id,
-              isMatchVideo: true,
-              privatedPaused: false
-            });
-          }
+          // if (responseJson.data.cdn_id.length) {
+          //   this.getMatchedVideo(responseJson.data.cdn_id[0].cdn_id, responseJson.data.match_id);
+          // } else {
+          //   this.setState({
+          //     vUrl: null,
+          //     userimage: null,
+          //     matchId: responseJson.data.match_id,
+          //     isMatchVideo: true,
+          //     privatedPaused: false
+          //   });
+          // }
+          this.setState({
+            matchId: responseJson.data.match_id,
+            isMatchVideo: true,
+            privatedPaused: false
+          });
         }
       }).catch((error) => {
         alert(JSON.stringify(error));
@@ -252,7 +260,7 @@ class IncomeDetail extends Component {
     if (this.state.otherId != -1) {
       Global.saveData.prevpage = "IncomeDetail";
       Global.saveData.isMatchVideo = this.state.isMatchVideo;
-      this.props.navigation.replace("Profile", { id: this.state.otherId, name: this.state.username });
+      this.props.navigation.replace("Profile", { id: this.state.otherId, name: this.state.username, isMatched: this.state.isMatchVideo, description: this.state.description });
     }
   }
   back = () => {
@@ -273,10 +281,25 @@ class IncomeDetail extends Component {
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <Content>
           {!this.state.isMatchVideo && (
-            <Image
-              source={this.state.userimage === null ? no_image : { uri: this.state.userimage }}
-              style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
-            />
+            this.state.userimage ? (
+              <Image
+                source={{ uri: this.state.userimage }}
+                style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
+              />
+            ) : (
+                <View style={{
+                  flex: 1,
+                  backgroundColor: '#989392',
+                  height: DEVICE_HEIGHT,
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <Image
+                    source={no_photo}
+                    style={{ justifyContent: 'center', alignSelf: 'center' }}
+                  />
+                </View>
+              )
           )}
           {this.state.isMatchVideo && (
             // <Video source={{ uri: this.state.vUrl }}   // Can be a URL or a local file.
@@ -304,19 +327,98 @@ class IncomeDetail extends Component {
                   justifyContent: 'center'
                 }}>
                   <Image
-                    source={no_image}
+                    source={no_photo}
                     style={{ justifyContent: 'center', alignSelf: 'center' }}
                   />
                 </View>
               )
           )}
         </Content>
-        <View style={{ position: 'absolute', left: 0, top: 50, }}>
-          <TouchableOpacity style={{ width: 60, height: 60, marginBottom: 20, alignItems: 'center', justifyContent: 'center' }}
+        <View style={{ position: 'absolute', left: 0, top: 30 }}>
+          <TouchableOpacity style={{ width: 60, height: 60, alignItems: 'center', justifyContent: 'center' }}
             onPress={() => this.back()}>
             <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
           </TouchableOpacity>
+        </View>
+        <View style={{ position: 'absolute', left: 20, top: 40 }}>
+          {/* <TouchableOpacity style={{ width: 60, height: 60, marginBottom: 20, alignItems: 'center', justifyContent: 'center' }}
+            onPress={() => this.back()}>
+            <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
+          </TouchableOpacity> */}
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
+              onPress={() => this.gotoReport()}>
+              <Image source={b_notification} style={{ width: 25, height: 25 }} />
+            </TouchableOpacity>
+            <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
+              onPress={() => this.gotoProfile()}>
+              <Image source={b_profile} style={{ width: 30, height: 30 }} />
+            </TouchableOpacity>
+          </View>
+          {/* <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View></View>
+            <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
+              onPress={this.gotoProfile}>
+              <Image source={b_profile} style={{ width: 25, height: 25 }} />
+            </TouchableOpacity>
+          </View> */}
+        </View>
+        <View style={{ position: 'absolute', left: 0, bottom: 40 }}>
+          <View style={{ marginLeft: DEVICE_WIDTH * 0.1, marginBottom: 20 }}>
+            <View style={{ flexDirection: 'row' }}>
+              <Image source={b_name} style={{ width: 15, height: 15 }} />
+              <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.username}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', marginTop: 5 }}>
+              <Image source={b_age} style={{ width: 15, height: 15 }} />
+              <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userage + ' years old'}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', marginTop: 5 }}>
+              <Image source={b_distance} style={{ width: 15, height: 15 }} />
+              <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userdistance + ' mile'}</Text>
+            </View>
+            <View style={{ marginTop: 10 }}>
+              <ScrollView contentContainerStyle={{ paddingVertical: 20 }} style={{ maxHeight: DEVICE_HEIGHT * 0.3 }}>
+                <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#fff' }}>{this.state.description}</Text>
+              </ScrollView>
+            </View>
+            <View style={{ width: DEVICE_WIDTH * 0.5, marginLeft: DEVICE_WIDTH * 0.15, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
+              {!this.state.isMatchVideo && (
+                <View style={{ width: DEVICE_WIDTH * 0.5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}
+                    onPress={() => this.onReject()}>
+                    <Icon type="FontAwesome" name="close" style={{ color: '#B64F54' }} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
+                    onPress={() => this.onMatch()}>
+                    <Icon type="FontAwesome" name="heart" style={{ color: '#fff' }} />
+                  </TouchableOpacity>
+                </View>)}
+              {this.state.isMatchVideo && (
+                <View>
+                  <TouchableOpacity
+                    style={{
+                      width: DEVICE_WIDTH * 0.5,
+                      height: 40,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#B64F54',
+                      borderRadius: DEVICE_WIDTH * 0.25
+                    }}
+                    onPress={() => this.gotoChat()}>
+                    <Text style={{ color: '#fff', fontSize: 16 }}>{"Start Chat!"}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </View>
+        </View>
+        {/* <View style={{ position: 'absolute', left: 0, top: 50, }}> */}
+        {/* <TouchableOpacity style={{ width: 60, height: 60, marginBottom: 20, alignItems: 'center', justifyContent: 'center' }}
+            onPress={() => this.back()}>
+            <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
+          </TouchableOpacity> */}
+        {/* <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>
             <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
               onPress={() => this.gotoReport()}>
               <Image source={b_notification} style={{ width: 30, height: 30 }} />
@@ -342,8 +444,8 @@ class IncomeDetail extends Component {
               </View>
             </View>
           </View>
-        </View>
-        {!this.state.isMatchVideo && (
+        </View> */}
+        {/* {!this.state.isMatchVideo && (
           <View style={{ position: 'absolute', left: 0, bottom: 120 }}>
             <View style={{ width: DEVICE_WIDTH * 0.5, marginLeft: DEVICE_WIDTH * 0.25, flexDirection: 'row', justifyContent: 'space-between' }}>
               <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}
@@ -372,7 +474,7 @@ class IncomeDetail extends Component {
               <Text style={{ color: '#fff', fontSize: 16 }}>{"Start Chat!"}</Text>
             </TouchableOpacity>
           </View>
-        )}
+        )} */}
       </View>
     );
   }

@@ -3,22 +3,22 @@ import {
   Icon,
   Text,
 } from "native-base";
-import { 
+import {
   ActivityIndicator,
-  ImageBackground, 
+  ImageBackground,
   ScrollView,
-  Platform, 
-  Dimensions, 
-  View, 
-  StyleSheet, 
-  FlatList, 
-  TouchableOpacity, 
-  StatusBar 
+  Platform,
+  Dimensions,
+  View,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  StatusBar
 } from "react-native";
 
 import Global from '../Global';
 
-import {SERVER_URL} from '../../config/constants';
+import { SERVER_URL } from '../../config/constants';
 
 class Profile extends Component {
   constructor(props) {
@@ -28,7 +28,9 @@ class Profile extends Component {
       name: '',
       datas: [],
       isLoading: true,
-      noData: false
+      noData: false,
+      isMatched: props.navigation.state.params.isMatched,
+      description: props.navigation.state.params.description
     };
   }
 
@@ -53,7 +55,7 @@ class Profile extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-          if (responseJson.data.length){
+          if (responseJson.data.length) {
             this.getTumbnails(responseJson.data)
           } else {
             this.setState({
@@ -162,6 +164,20 @@ class Profile extends Component {
               textAlign: "center",
               alignContent: 'center'
             }}>You dont have any photo. {'\n'} Please upload more than one so that others can find you more easily.</Text>
+          </View>
+        )}
+        {this.state.isMatched && (
+          <View style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignSelf: "center",
+            alignItems: 'center',
+            marginTop: 20,
+            marginBottom: 20
+          }}>
+            <Text style={{ fontSize: 16, alignContent: 'center' }}>
+              {this.state.description}
+            </Text>
           </View>
         )}
         <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
