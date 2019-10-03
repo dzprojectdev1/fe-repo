@@ -8,6 +8,7 @@ import {
   StyleSheet, 
   TouchableOpacity, 
   StatusBar, 
+  Linking
 } from "react-native";
 
 import goback from '../../assets/images/BackOther.png';
@@ -103,44 +104,6 @@ class screenGpay02 extends Component {
           </TouchableOpacity>
           <Text style={{ color: '#000', fontSize: 15, fontWeight: 'bold', marginLeft: 20, textAlign:'left', justifyContent:'center' }}>{"Gem shop"}</Text>
         </View>
-        {/* <View style={{justifyContent:'center', alignItems: 'center', }}>
-          <View style={styles.list_item_spread} >
-            <Text style={{ color: '#000', fontSize: 17, justifyContent: 'center', alignItems: 'center' }}>{"My gem"}</Text>
-            <Text style={{ color: '#45b8d6', fontSize: 14, justifyContent:'center', alignItems: 'center' }}>{"30"}</Text>
-          </View>
-          <View style={styles.list_item_normal}>
-            <View style={{flexDirection: 'row', paddingTop: 7}}>
-              <Image source={Flag} style={{ width: 20, height: 15 }} />
-              <Text style={{ color: '#000', fontSize: 12, marginLeft: 10 }}>{"1-day ticket"}</Text>
-              <View style={{flex:1, alignItems:"flex-end"}}>
-                <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
-                  <Text style={{color: '#fff', fontSize: 12, textAlign:'center', marginRight:10, backgroundColor:'red', width:35, height:16, borderRadius:10}}>{"Hit"}</Text>
-                  <Text style={{color: '#000', fontSize: 12, textAlign:'right', paddingRight:10}}>{"$4.49"}</Text>
-                  </View>
-              </View>
-            </View>
-          </View>
-          <View style={styles.list_item_normal}>
-            <View style={{flexDirection: 'row', paddingTop: 7}}>
-              <Image source={Flag} style={{ width: 20, height: 15 }} />
-              <Text style={{ color: '#000', fontSize: 12, marginLeft: 10 }}>{"1-day ticket"}</Text>
-              <View style={{flex:1, alignItems:"flex-end"}}>
-                <Text style={{color: '#000', fontSize: 12, textAlign:'right', paddingRight:10}}>{"$8.49"}</Text>
-              </View>
-            </View>
-          </View>
-          {this.createView()}
-          <View style={{height: 30, width: '90%', marginTop: 10, borderRadius: 5, backgroundColor: 'green'}}>
-            <Text style={{color:'white', fontSize: 12, textAlign:'center', flexDirection:'row', marginTop: 7}}>{"Get free Gem (once per day)"}</Text>
-          </View>
-          <View style={{height: 30, width: '90%', marginTop: 5, borderRadius: 5, backgroundColor: 'blue'}}>
-            <Text style={{color:'white', fontSize: 12, textAlign:'center', flexDirection:'row', marginTop: 7}}>{"Free Gem1"}</Text>
-          </View><View style={{height: 30, width: '90%', marginTop: 5, borderRadius: 5, backgroundColor: 'red'}}>
-            <Text style={{color:'white', fontSize: 12, textAlign:'center', flexDirection:'row', marginTop: 7}}>{"Free Gem2"}</Text>
-          </View><View style={{height: 40, width:'90%', marginTop: 5, borderRadius: 5, backgroundColor: 'pink'}}>
-            <Text style={{color:'white', fontSize: 12, textAlign:'center', flexDirection:'row', marginTop: 11}}>{"Free Gem3"}</Text>
-          </View>
-        </View> */}
         <View backgroundColor={"#000"} style = {{position: 'absolute', top:0, width:'100%', height:'100%', opacity: 0.7}} ></View>
         <View style={styles.dialog_screen}>
           <View style={{height:30, width:'100%', borderBottomWidth: 1 , borderBottomColor:'gray', flexDirection:'row', alignItems:'center'}}>
@@ -177,19 +140,19 @@ class screenGpay02 extends Component {
               <Text style={{color:'gray', fontSize:6}}>{"Buy"}</Text>
               <Text style={{color:'gray', fontSize:6}}>{"'"}</Text>
               <Text style={{color:'gray', fontSize:6}}>{" you accept the following terms of service:"}</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={ ()=>{ Linking.openURL('https://payments.google.com/payments/apis-secure/u/0/get_legal_document?ldo=0&ldt=googlepaytos&ldl=und')}}>
                 <Text style={{color:'gray', fontSize:6, borderBottomColor:'gray', borderBottomWidth:1}}>{" Terms of Service - Android(US),"}</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={ ()=>{ Linking.openURL('https://payments.google.com/payments/apis-secure/get_legal_document?ldo=0&ldt=privacynotice&ldl=en-GB')}}>
               <Text style={{color:'gray', fontSize:6, marginLeft: 15, borderBottomColor:'gray', borderBottomWidth:1}}>{"Privacy Notice"}</Text>                
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() =>this.onBuy()}>
-            <View style={{height:40, width: '100%', flexDirection:'row', justifyContent: 'center', alignItems:'center'}}>
-              <Image source={Gpaybutton} style={{ width: 80, height: 50}} />
-            </View>           
-          </TouchableOpacity>   
+            <TouchableOpacity onPress={() =>this.onBuy()}>
+              <View style={{height:40, width: '100%', flexDirection:'row', backgroundColor:'green', justifyContent: 'center', alignItems:'center'}}>
+                <Text style={{color:'white', fontSize:14, marginLeft: 15}}>{"BUY"}</Text>
+              </View>           
+            </TouchableOpacity>   
         </View>
       </View>
     );
@@ -241,7 +204,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '84%',
     marginLeft: '8%',
-    height:220,
+    height:200,
     flex: 1,
   }
 });
