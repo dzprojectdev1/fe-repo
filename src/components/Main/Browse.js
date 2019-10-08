@@ -16,14 +16,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   StatusBar,
-  // Alert
+  Alert
 } from "react-native";
 import { Button } from 'react-native-elements';
+import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
 // import Video from 'react-native-video';
 // import b_browse from '../../assets/images/browse.png';
 // import b_incoming from '../../assets/images/incoming.png';
 // import b_match from '../../assets/images/match.png';
-// import b_chat from '../../assets/images/chat.png';
+import b_chat from '../../assets/images/chat.png';
 // import b_myvideo from '../../assets/images/myvideo.png';
 // import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import b_notification from '../../assets/images/notification.png';
@@ -34,6 +35,8 @@ import b_distance from '../../assets/images/distance.png';
 import b_profile from '../../assets/images/profile.png';
 // import no_image from '../../assets/images/no-image.png';
 import no_photo from '../../assets/images/no_photo.png';
+import diamond from '../../assets/images/diamond_trans.png';
+import instant_chat from '../../assets/images/instant_chat.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -48,6 +51,9 @@ class Browse extends Component {
       isLoading: false,
       disabled: false,
       noMoreUsers: false,
+      coinCount: Global.saveData.coin_count,
+      visible: false,
+      matchId: -1
       // operatedIDArr: [],
     };
   }
@@ -252,6 +258,46 @@ class Browse extends Component {
       isLoading: true,
       disabled: true
     });
+
+    // var user_id = Global.saveData.u_id;
+
+    // fetch(`${SERVER_URL}/api/transaction/gemRemove/${user_id}`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //     'Authorization': Global.saveData.token
+    //   }
+    // }).then((response) => response.json())
+    // .then((responseJSON) => {
+    //   if (!responseJSON.error) {
+    //     if (responseJSON.coin_count == '-1') {
+
+    //       this.setState({
+    //         visible: true,
+    //         isLoading: false,
+    //         disabled: false
+    //       })
+
+    //     } else {
+    
+    //       Global.saveData.coin_count = responseJSON.coin_count;
+
+    //       this.setState({
+    //         coinCount: responseJSON.coin_count,
+    //         isLoading: false,
+    //         disabled: false
+    //       });
+    //     }
+    //   }
+    // })
+    // .catch((error) => {
+    //   this.setState({
+    //     isLoading: false,
+    //     disabled: false
+    //   });
+    //   return
+    // });
+
     var details = {
       'otherId': this.state.otherData.detail.id
     };
@@ -280,7 +326,27 @@ class Browse extends Component {
           // this.setState({
           //     operatedIDArr: operateArr
           // });
-          this.getFilterVideos();
+          if (responseJson.coin_count == '-1') {
+    
+            Global.saveData.coin_count = 0;
+
+            this.setState({
+              visible: true,
+              isLoading: false,
+              disabled: false
+            })
+          } else {
+    
+            Global.saveData.coin_count = responseJson.data.coin_count;
+            
+            this.getFilterVideos();
+  
+            this.setState({
+              coinCount: responseJson.data.coin_count,
+              isLoading: false,
+              disabled: false
+            });
+          }
         }
         this.setState({
           isLoading: false,
@@ -322,6 +388,86 @@ class Browse extends Component {
       { id: this.state.otherData.detail.id, name: this.state.otherData.detail.name }
     );
   }
+  gotoShop = () => {
+    this.setState({
+      visible: false
+    })
+    this.props.navigation.navigate('screenGpay01');
+  }
+  instantChat = () => {
+    Alert.alert(
+      'Attension',
+      "You can click OK to start instant chatting. And you will take 50 diamonds for this.",
+      [
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+        {text: 'OK', onPress: () => this.gotoInstantChat()},
+      ],
+      {cancelable: false},
+    );
+  }
+  gotoInstantChat = () => {
+    var details = {
+      'otherId': this.state.otherData.detail.id
+    };
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    fetch(`${SERVER_URL}/api/match/requestInstantMatch`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      },
+      body: formBody,
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+
+          if (!responseJson.data.ability) {
+            Alert.alert(
+              'Warning',
+              "You have no enough diamonds to start instant chatting. You can click OK to buy more diamonds at shop.",
+              [
+                {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+                {text: 'OK', onPress: () => this.gotoShop()},
+              ],
+              {cancelable: false},
+            );
+          } else {
+            this.setState({
+              matchId: responseJson.data.match_id,
+              coinCount: responseJson.data.coin_count
+            });
+  
+            this.gotoChat();
+          }
+        }
+      }).catch((error) => {
+        alert(JSON.stringify(error));
+        return
+      });
+  }
+  
+  gotoChat() {
+    if (this.state.matchId == -1) {
+      return;
+    }
+    var otherData = {
+      imageUrl: this.state.otherData.imageUrl,
+      data: {
+        name: this.state.otherData.detail.name,
+        other_user_id: this.state.otherData.detail.id,
+        match_id: this.state.matchId
+      }
+    }
+    Global.saveData.prevpage = "Browser"
+    this.props.navigation.navigate("ChatDetail", { data: otherData })
+  }
+
   gotoReport() {
     this.props.navigation.navigate("Report", { otherId: this.state.otherData.detail.id })
   }
@@ -391,10 +537,41 @@ class Browse extends Component {
                 </TouchableOpacity>
               </View>
               <View style={{ position: 'absolute', left: 20, top: 40, }}>
+                <Dialog
+                  visible={this.state.visible}
+                  dialogAnimation={new SlideAnimation({
+                    slideFrom: 'bottom',
+                  })}
+                  footer={
+                    <DialogFooter>
+                      <DialogButton
+                        text="Cancel"
+                        onPress={() => {this.setState({visible: false})}}
+                        textStyle={{color: '#000', fontSize: 14, fontWeight: 'thin'}}
+                      />
+                      <DialogButton
+                        text="Buy Diamonds"
+                        onPress={() => this.gotoShop()}
+                        textStyle={{color: '#000', fontSize: 14, fontWeight: 'thin'}}
+                      />
+                    </DialogFooter>
+                  }
+                >
+                  <DialogContent>
+                    <Text style={{ color: '#000', fontSize: 18, marginTop: 20}}>{'You need 1 diamond to send a heart'}</Text>
+                  </DialogContent>
+                </Dialog>
                 <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.gotoReport()}>
                     <Image source={b_notification} style={{ width: 25, height: 25 }} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ width: 40, height: 40}}
+                    onPress={() => this.gotoShop()}>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Image source={diamond} style={{ width: 25, height: 25, marginLeft: -15, marginTop: 10 }} />
+                      <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
+                    </View>
                   </TouchableOpacity>
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.gotoFilter()}>
@@ -429,7 +606,7 @@ class Browse extends Component {
                     </ScrollView>
                   </View>
                 </View>
-                <View style={{ width: DEVICE_WIDTH * 0.5, marginLeft: DEVICE_WIDTH * 0.25, flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>
                   {/* <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.onReject()}>
                     <Icon type="FontAwesome" name={this.state.hateIcon} style={{ color: '#B64F54' }} />
@@ -443,10 +620,12 @@ class Browse extends Component {
                     onPress={() => this.onReject()}
                   // disabled={this.state.disabled}
                   />
-                  {/* <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
-                    onPress={() => this.onHeart()}>
-                    <Icon type="FontAwesome" name={this.state.heartIcon} style={{ color: '#fff' }} />
-                  </TouchableOpacity> */}
+                  <TouchableOpacity 
+                    style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#30d6f2', alignItems: 'center', justifyContent: 'center' }}
+                    onPress={() => this.instantChat()}
+                    >
+                    <Image source={b_chat} style={{width : 30, height: 30 }} />
+                  </TouchableOpacity>
                   <Button
                     icon={
                       <Icon type="FontAwesome" name={this.state.heartIcon} style={{ color: '#fff' }} />

@@ -23,6 +23,7 @@ import Global from '../Global';
 import firebase from 'firebase';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import { SERVER_URL } from '../../config/constants';
+import diamond from '../../assets/images/diamond_trans.png';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
@@ -41,7 +42,9 @@ export default class ChatScreen extends React.Component {
             },
             matchId: props.navigation.state.params.data.data.match_id,
             textMessage: '',
-            messageList: []
+            messageList: [],
+            coinCount: Global.saveData.coin_count,
+            visible: false,
         }
     }
 
@@ -294,6 +297,12 @@ export default class ChatScreen extends React.Component {
         Global.saveData.prevpage = "ChatDetail";
         this.props.navigation.navigate("Profile", { id: this.state.other.userId, name: this.state.other.name });
     }
+    gotoShop = () => {
+      this.setState({
+        visible: false
+      })
+      this.props.navigation.navigate('screenGpay01');
+    }
 
     renderRow = ({ item }) => {
         return (
@@ -376,6 +385,15 @@ export default class ChatScreen extends React.Component {
                             <MenuItem onPress={this.setReport}>{'Report & Leave Chat Room'}</MenuItem>
                         </Menu>
                     </View>
+                </View>                
+                <View style={{ width: DEVICE_WIDTH * 0.8, height: 40, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <TouchableOpacity style={{ width: 40, height: 40, marginLeft: DEVICE_WIDTH * 0.32}}
+                    onPress={() => this.gotoShop()}>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Image source={diamond} style={{ width: 25, height: 25, marginTop: 10 }} />
+                      <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
+                    </View>
+                  </TouchableOpacity>
                 </View>
                 <ScrollView style={{ marginTop: 15 }} ref={(ref) => { this.scrollView = ref }}
                     onContentSizeChange={(contentWidth, contentHeight) => {

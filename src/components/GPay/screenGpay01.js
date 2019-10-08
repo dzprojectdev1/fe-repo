@@ -23,18 +23,30 @@ import RNIap, {
   
 const itemSkus = Platform.select({
   android: [
-    'android.test.purchased',
-    'android.test.canceled',
-    'android.test.item_unavailable'
+    '100_diamonds',
+    '300_diamonds',
+    '500_diamonds'
   ],
+  // android: [
+  //   'android.test.purchased',
+  //   'android.test.canceled',
+  //   'android.test.item_unavailable'
+  // ],
 });
+
+const valProductId = ['100_diamonds', '300_diamonds', '500_diamonds'];
+// const valProductId = ['android.test.purchased', 'android.test.canceled', 'android.test.item_unavailable'];
+const GempriceListVal = [200, 700, 1200, 2500, 8000, 15000];
+const PaypriceListVal = [0.99, 2.49, 4.49, 8.49, 25.99, 42.99];
 
 let purchaseUpdateSubscription;
 let purchaseErrorSubscription;
 
 import goback from '../../assets/images/BackOther.png';
 import diamond from '../../assets/images/diamond.png';
+import diamond_trans from '../../assets/images/diamond_trans.png';
 import Global from '../Global';
+import { SERVER_URL } from '../../config/constants'
 
 class screenGpay01 extends Component {
 
@@ -44,6 +56,8 @@ class screenGpay01 extends Component {
       productList: [],
       receipt: '',
       availableItemsMessage: '',
+      gemNumber: Global.saveData.coin_count,
+      free_button_condition: true
     };
 
     this.getItems();
@@ -110,7 +124,56 @@ class screenGpay01 extends Component {
   }
   
   goNext = () => {
-    Alert.alert('Receipt', this.state.receipt);
+
+    var responseReceipt = this.state.receipt;
+
+    var productIdIndex = 0;
+    valProductId.forEach(function (productId, index) {
+      if (productId == JSON.parse(responseReceipt).productId) {
+        productIdIndex = index;
+      }
+    });
+
+    var formBody = [];
+    formBody.push('user_id' +     "=" + Global.saveData.u_id);
+    formBody.push('coin_number' + "=" + GempriceListVal[productIdIndex]);
+    formBody.push('coin_price' +  "=" + PaypriceListVal[productIdIndex]);
+    formBody.push('currency=USD');
+
+    formBody.push('package_name' +      "=" + JSON.parse(responseReceipt).packageName);
+    formBody.push('acknowledge' +       "=" + JSON.parse(responseReceipt).acknowledge);
+    formBody.push('order_id' +          "=" + JSON.parse(responseReceipt).orderId);
+    formBody.push('product_id' +        "=" + JSON.parse(responseReceipt).productId);
+    formBody.push('developer_payload' + "=" + JSON.parse(responseReceipt).developerPayload);
+    formBody.push('purchase_time' +     "=" + JSON.parse(responseReceipt).purchaseTime);
+    formBody.push('purchase_state' +    "=" + JSON.parse(responseReceipt).purchaseState);
+    formBody.push('purchase_token' +    "=" + JSON.parse(responseReceipt).purchaseToken);
+    
+    formBody = formBody.join("&");
+    
+    fetch(`${SERVER_URL}/api/transaction/putCoin`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded'
+      },
+      body: formBody
+    }).then((response) => response.json())
+    .then((responseJSON) => {
+      
+      if (responseJSON.error === false) {
+
+        if (responseJSON.coin_count) {
+
+          Global.saveData.coin_count = responseJSON.coin_count;
+
+          this.setState({
+            gemNumber: responseJSON.coin_count
+          })
+        }
+      }
+    }).catch((error) => {
+      alert(error);
+    })
   };
   
   getItems = async () => {
@@ -145,7 +208,7 @@ class screenGpay01 extends Component {
   // Version 3 apis
   requestPurchase = async (sku) => {
     try {
-      RNIap.requestPurchase(sku);
+      RNIap.requestPurchase(sku, false);
     } catch (err) {
       console.warn(err.code, err.message);
     }
@@ -209,6 +272,60 @@ class screenGpay01 extends Component {
     this.props.navigation.navigate("MyVideo");
   }
 
+  gotoFreeDiamonds = () => {
+    var user_id = Global.saveData.u_id;
+    
+    fetch(`${SERVER_URL}/api/transaction/freeDiamonds/${user_id}`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      }
+    }).then((response) => response.json())
+    .then((responseJSON) => {
+      
+      if (responseJSON.error === false) {
+
+        if (responseJSON.data) {
+
+          var responseData = responseJSON.data;
+
+          if (responseData.success == false) {
+            Alert.alert(
+              'Warning',
+              "You've already claimed your diamonds for the day. Next 25 diamonds will unlock in "+responseData.hours+" hours "+responseData.minutes+" minutes and "+responseData.seconds+" secons.",
+              [
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+              ],
+              {cancelable: false},
+            );
+
+            this.setState({
+              free_button_condition: false
+            })
+          } else {
+            Alert.alert(
+              'Success',
+              "You've already claimed 25 diamonds for the day successfully.",
+              [
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+              ],
+              {cancelable: false},
+            );
+          }
+
+          Global.saveData.coin_count = responseData.coin_count;
+
+          this.setState({
+            gemNumber: responseData.coin_count
+          })
+        }
+      }
+    }).catch((error) => {
+      alert(error);
+    })
+  }
+
   render() {
     const { productList, receipt, availableItemsMessage } = this.state;
     const receipt100 = receipt.substring(0, 100);
@@ -224,9 +341,11 @@ class screenGpay01 extends Component {
         </View>
         <Content>
           <View style={{justifyContent:'center', alignItems: 'center'}}>
-            <View style={styles.list_item_spread} >
-              <Text style={{ color: '#000', fontSize: 17, justifyContent: 'center', alignItems: 'center' }}>{"My gem"}</Text>
-              <Text style={{ color: '#45b8d6', fontSize: 14, justifyContent:'center', alignItems: 'center' }}>{ Global.saveData.coin_count }</Text>
+            {/* <View style={styles.list_item_spread} > */}
+            <View style={{ width: DEVICE_WIDTH * 0.8, height:60, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row' }}>
+              <Text style={{ color: '#45b8d6', fontSize: 17, marginTop: 20, marginLeft: DEVICE_WIDTH * 0.2 }}>{"My gem"}</Text>              
+              <Image source={diamond_trans} style={{ width: 20, height: 20, marginTop: 25, marginLeft: 10 }} />
+              <Text style={{ color: '#45b8d6', fontSize: 17, justifyContent:'center', alignItems: 'center', marginTop: 22, marginLeft: 10 }}>{ this.state.gemNumber }</Text>
             </View>
               
             {productList.map((product, i) => {
@@ -239,7 +358,7 @@ class screenGpay01 extends Component {
                 >
                   <View style={{flexDirection: 'row', paddingTop: 18}}>
                     <Image source={diamond} style={{ width: 17, height: 15}} />
-                    <Text style={{ color: '#000', fontSize: 12, marginLeft: 10 }}>{product.title + "(" + product.productId + ")"}</Text>
+                    <Text style={{ color: '#000', fontSize: 12, marginLeft: 10 }}>{product.productId}</Text>
                     <View style={{flex:1, alignItems:"flex-end"}}>
                       <Text style={{color: '#000', fontSize: 12, textAlign:'right', paddingRight:10}}>{product.localizedPrice}</Text>
                     </View>
@@ -248,6 +367,13 @@ class screenGpay01 extends Component {
                 );
               })}
           </View>
+          <View style={{justifyContent:'center', alignItems: 'center', marginTop: 30 }} pointerEvents={this.state.free_button_condition ? 'auto': 'none'}>
+            <TouchableOpacity onPress={() =>this.gotoFreeDiamonds()}>
+                <View style={this.state.free_button_condition? styles.free_diamond_button: styles.free_diamond_button_disabled}>
+                  <Text style={{color:'white', fontSize:18, marginLeft: 15}}>{"GET FREE DIAMONDS"}</Text>
+                </View>           
+            </TouchableOpacity>   
+          </View>
         </Content>
       </View>
     );
@@ -255,6 +381,7 @@ class screenGpay01 extends Component {
 }
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
+const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({
 
   contentContainer: {
@@ -291,6 +418,28 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     backgroundColor: '#fff',
     borderRadius: 5,
+  },
+
+  free_diamond_button: {
+    height: 70,
+    width: DEVICE_WIDTH * 0.65,
+    backgroundColor: '#dd5858',
+    color: '#fff',
+    borderRadius: 35,
+    justifyContent: 'center',
+    alignItems:'center',
+    flexDirection:'row'
+  },
+
+  free_diamond_button_disabled: {
+    height: 70,
+    width: DEVICE_WIDTH * 0.65,
+    backgroundColor: '#daa3a3',
+    color: '#fff',
+    borderRadius: 35,
+    justifyContent: 'center',
+    alignItems:'center',
+    flexDirection:'row'
   }
 });
 export default screenGpay01;

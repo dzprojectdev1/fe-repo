@@ -15,6 +15,7 @@ import {
   ScrollView,
   // ActivityIndicator
 } from "react-native";
+import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
 
 // import Video from 'react-native-video';
 import b_notification from '../../assets/images/notification.png';
@@ -24,6 +25,7 @@ import b_age from '../../assets/images/age.png';
 import b_distance from '../../assets/images/distance.png';
 import b_profile from '../../assets/images/profile.png';
 import no_photo from '../../assets/images/no_photo.png';
+import diamond from '../../assets/images/diamond_trans.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -43,7 +45,9 @@ class IncomeDetail extends Component {
       otherId: -1,
       isMatchVideo: false,
       privatedPaused: false,
-      isOperating: false
+      isOperating: false,
+      coinCount: Global.saveData.coin_count,
+      visible: false,
     };
   }
 
@@ -270,6 +274,12 @@ class IncomeDetail extends Component {
       this.props.navigation.replace("Income");
     }
   }
+  gotoShop = () => {
+    this.setState({
+      visible: false
+    })
+    this.props.navigation.navigate('screenGpay01');
+  }
   gotoReport() {
     if (this.state.otherId != -1) {
       this.props.navigation.navigate("Report", { otherId: this.state.otherId });
@@ -341,6 +351,30 @@ class IncomeDetail extends Component {
           </TouchableOpacity>
         </View>
         <View style={{ position: 'absolute', left: 20, top: 40 }}>
+          <Dialog
+            visible={this.state.visible}
+            dialogAnimation={new SlideAnimation({
+              slideFrom: 'bottom',
+            })}
+            footer={
+              <DialogFooter>
+                <DialogButton
+                  text="Cancel"
+                  onPress={() => {this.setState({visible: false})}}
+                  textStyle={{color: '#000', fontSize: 14, fontWeight: 'thin'}}
+                />
+                <DialogButton
+                  text="Buy Diamonds"
+                  onPress={() => this.gotoShop()}
+                  textStyle={{color: '#000', fontSize: 14, fontWeight: 'thin'}}
+                />
+              </DialogFooter>
+            }
+          >
+            <DialogContent>
+              <Text style={{ color: '#000', fontSize: 18, marginTop: 20}}>{'You need 1 diamond to send a heart'}</Text>
+            </DialogContent>
+          </Dialog>
           {/* <TouchableOpacity style={{ width: 60, height: 60, marginBottom: 20, alignItems: 'center', justifyContent: 'center' }}
             onPress={() => this.back()}>
             <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
@@ -349,6 +383,13 @@ class IncomeDetail extends Component {
             <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
               onPress={() => this.gotoReport()}>
               <Image source={b_notification} style={{ width: 25, height: 25 }} />
+            </TouchableOpacity>
+            <TouchableOpacity style={{ width: 40, height: 40}}
+              onPress={() => this.gotoShop()}>
+              <View style={{ flexDirection: 'row' }}>
+                <Image source={diamond} style={{ width: 25, height: 25, marginLeft: -15, marginTop: 10 }} />
+                <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
+              </View>
             </TouchableOpacity>
             <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
               onPress={() => this.gotoProfile()}>
