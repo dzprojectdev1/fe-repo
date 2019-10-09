@@ -35,7 +35,7 @@ import b_distance from '../../assets/images/distance.png';
 import b_profile from '../../assets/images/profile.png';
 // import no_image from '../../assets/images/no-image.png';
 import no_photo from '../../assets/images/no_photo.png';
-import diamond from '../../assets/images/diamond_trans.png';
+import diamond from '../../assets/images/red_diamond_trans.png';
 import instant_chat from '../../assets/images/instant_chat.png';
 import Global from '../Global';
 
@@ -429,11 +429,11 @@ class Browse extends Component {
 
           if (!responseJson.data.ability) {
             Alert.alert(
-              'Warning',
-              "You have no enough diamonds to start instant chatting. You can click OK to buy more diamonds at shop.",
+              '',
+              "You need 50 diamonds to start chat with " + this.state.otherData.detail.name + " immediately",
               [
                 {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
-                {text: 'OK', onPress: () => this.gotoShop()},
+                {text: 'Buy Diamonds', onPress: () => this.gotoShop()},
               ],
               {cancelable: false},
             );
@@ -442,6 +442,8 @@ class Browse extends Component {
               matchId: responseJson.data.match_id,
               coinCount: responseJson.data.coin_count
             });
+
+            Global.saveData.coin_count = responseJson.data.coin_count;
   
             this.gotoChat();
           }
@@ -621,7 +623,7 @@ class Browse extends Component {
                   // disabled={this.state.disabled}
                   />
                   <TouchableOpacity 
-                    style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#30d6f2', alignItems: 'center', justifyContent: 'center' }}
+                    style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#cc2e48', alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.instantChat()}
                     >
                     <Image source={b_chat} style={{width : 30, height: 30 }} />

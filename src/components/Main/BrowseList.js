@@ -32,7 +32,7 @@ import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';
 import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
-import diamond from '../../assets/images/diamond_trans.png';
+import diamond from '../../assets/images/red_diamond_trans.png';
 import Global from '../Global';
 
 class Chat extends Component {
@@ -503,10 +503,10 @@ class Chat extends Component {
                             <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
                             <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
                         </Button>
-                        <Button style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.props.navigation.replace("screenGpay01")}>
+                        {/* <Button style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.props.navigation.replace("screenGpay01")}>
                             <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
                             <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
-                        </Button>
+                        </Button> */}
                     </FooterTab>
                 </Footer>
             </View>

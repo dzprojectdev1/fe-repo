@@ -25,7 +25,7 @@ import b_age from '../../assets/images/age.png';
 import b_distance from '../../assets/images/distance.png';
 import b_profile from '../../assets/images/profile.png';
 import no_photo from '../../assets/images/no_photo.png';
-import diamond from '../../assets/images/diamond_trans.png';
+import diamond from '../../assets/images/red_diamond_trans.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
