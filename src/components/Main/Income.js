@@ -26,7 +26,7 @@ import b_myvideo from '../../assets/images/myvideo.png';
 import b_name from '../../assets/images/name.png';
 import b_age from '../../assets/images/age.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
-import diamond from '../../assets/images/diamond_trans.png';
+import diamond from '../../assets/images/red_diamond_trans.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -254,10 +254,10 @@ class Income extends Component {
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
+            {/* <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
               <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
-            </Button>
+            </Button> */}
           </FooterTab>
         </Footer>
       </View>

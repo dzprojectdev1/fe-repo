@@ -31,7 +31,7 @@ import b_match from '../../assets/images/match.png';
 import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
 import b_delete from '../../assets/images/delete.png';
-import diamond from '../../assets/images/diamond_trans.png';
+import diamond from '../../assets/images/red_diamond_trans.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -328,10 +328,10 @@ class MyVideo extends Component {
               <Image source={b_myvideo} style={{ width: 25, height: 25, tintColor: '#B64F54' }} />
               <Text style={{ color: '#B64F54', fontSize: 8, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
+            {/* <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
               <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
-            </Button>
+            </Button> */}
           </FooterTab>
         </Footer>
       </View>

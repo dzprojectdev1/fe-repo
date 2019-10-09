@@ -44,9 +44,10 @@ let purchaseErrorSubscription;
 
 import goback from '../../assets/images/BackOther.png';
 import diamond from '../../assets/images/diamond.png';
-import diamond_trans from '../../assets/images/diamond_trans.png';
+import diamond_trans from '../../assets/images/red_diamond_trans.png';
 import Global from '../Global';
 import { SERVER_URL } from '../../config/constants'
+import { GooglePay } from "react-native-google-pay";
 
 class screenGpay01 extends Component {
 
@@ -66,6 +67,11 @@ class screenGpay01 extends Component {
   static navigationOptions = {
     header: null
   };
+
+  componentWillMount() {
+    Global.saveData.nowPage = 'screenGapy01';
+    BackHandler.addEventListener('hardwareBackPress', this.backPressed);
+  }
   
   async componentDidMount() {
     try {
@@ -263,13 +269,12 @@ class screenGpay01 extends Component {
   };
 
   backPressed = () => {
-    this.props.navigation.navigate("MyVideo");
+    this.props.navigation.navigate(Global.saveData.nowPage);
     return true;
-  }
-  
+  }  
  
   goBack() {
-    this.props.navigation.navigate("MyVideo");
+    this.props.navigation.navigate(Global.saveData.nowPage);
   }
 
   gotoFreeDiamonds = () => {
@@ -292,21 +297,21 @@ class screenGpay01 extends Component {
 
           if (responseData.success == false) {
             Alert.alert(
-              'Warning',
-              "You've already claimed your diamonds for the day. Next 25 diamonds will unlock in "+responseData.hours+" hours "+responseData.minutes+" minutes and "+responseData.seconds+" secons.",
+              '',
+              "Please wait " + responseData.hours+" hours "+responseData.minutes+" minutes and "+responseData.seconds+" seconds to unlock 50 free diamonds",
               [
                 {text: 'OK', onPress: () => console.log('OK Pressed')},
               ],
               {cancelable: false},
             );
 
-            this.setState({
-              free_button_condition: false
-            })
+            // this.setState({
+            //   free_button_condition: false
+            // })
           } else {
             Alert.alert(
               'Success',
-              "You've already claimed 25 diamonds for the day successfully.",
+              "50 diamonds were added to your account successfully. Next 50 diamonds will unlock in 24 hours",
               [
                 {text: 'OK', onPress: () => console.log('OK Pressed')},
               ],
@@ -343,9 +348,9 @@ class screenGpay01 extends Component {
           <View style={{justifyContent:'center', alignItems: 'center'}}>
             {/* <View style={styles.list_item_spread} > */}
             <View style={{ width: DEVICE_WIDTH * 0.8, height:60, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row' }}>
-              <Text style={{ color: '#45b8d6', fontSize: 17, marginTop: 20, marginLeft: DEVICE_WIDTH * 0.2 }}>{"My gem"}</Text>              
-              <Image source={diamond_trans} style={{ width: 20, height: 20, marginTop: 25, marginLeft: 10 }} />
-              <Text style={{ color: '#45b8d6', fontSize: 17, justifyContent:'center', alignItems: 'center', marginTop: 22, marginLeft: 10 }}>{ this.state.gemNumber }</Text>
+              <Text style={{ color: '#cc2e48', fontSize: 17, marginTop: 20, marginLeft: DEVICE_WIDTH * 0.2 }}>{"My gem"}</Text>              
+              <Image source={diamond_trans} style={{ width: 25, height: 25, marginTop: 22, marginLeft: 10 }} />
+              <Text style={{ color: '#cc2e48', fontSize: 17, justifyContent:'center', alignItems: 'center', marginTop: 22, marginLeft: 10 }}>{ this.state.gemNumber }</Text>
             </View>
               
             {productList.map((product, i) => {
