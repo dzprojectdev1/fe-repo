@@ -147,6 +147,20 @@ class Profile extends Component {
             <Text style={{ fontSize: 16 }}>{this.state.name}</Text>
           </View>
         </View>
+        {this.state.description && (
+          <View style={{
+            justifyContent: 'center',
+            alignSelf: "center",
+            alignItems: 'center',
+            marginTop: 10,
+            marginBottom: 10,
+            padding: 10
+          }}>
+            <Text style={{ fontSize: 16, alignContent: 'center' }}>
+              {this.state.description}
+            </Text>
+          </View>
+        )}
         {this.state.isLoading && (
           <View style={{
             flex: 1, justifyContent: 'center', alignSelf: 'center', margin: 40
@@ -163,21 +177,7 @@ class Profile extends Component {
               fontSize: 20,
               textAlign: "center",
               alignContent: 'center'
-            }}>You dont have any photo. {'\n'} Please upload more than one so that others can find you more easily.</Text>
-          </View>
-        )}
-        {this.state.isMatched && (
-          <View style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignSelf: "center",
-            alignItems: 'center',
-            marginTop: 20,
-            marginBottom: 20
-          }}>
-            <Text style={{ fontSize: 16, alignContent: 'center' }}>
-              {this.state.description}
-            </Text>
+            }}>{'This user does not have any profile pictures.'}</Text>
           </View>
         )}
         <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>

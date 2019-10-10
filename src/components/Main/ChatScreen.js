@@ -37,7 +37,8 @@ export default class ChatScreen extends React.Component {
             other: {
                 userId: props.navigation.state.params.data.data.other_user_id,
                 name: props.navigation.state.params.data.data.name,
-                imgUrl: props.navigation.state.params.data.imageUrl
+                imgUrl: props.navigation.state.params.data.imageUrl,
+                description: props.navigation.state.params.data.data.description
             },
             matchId: props.navigation.state.params.data.data.match_id,
             textMessage: '',
@@ -50,7 +51,7 @@ export default class ChatScreen extends React.Component {
     componentWillMount() {
         Global.saveData.nowPage = 'ChatDetail';
         firebase.database().ref().child(Global.saveData.u_id).child(this.state.other.userId)
-            .on('child_added', (value) => {                
+            .on('child_added', (value) => {
                 this.setState((prevState) => {
                     return {
                         messageList: [...prevState.messageList, value.val()]
@@ -245,13 +246,20 @@ export default class ChatScreen extends React.Component {
         if (this.state.textMessage.length > 0) {
             let msgId = firebase.database().ref('dz-chat-app').child(Global.saveData.u_id).child(this.state.other.userId).push().key;
             let updates = {};
-            let message = {
+            let senderMessage = {
                 message: this.state.textMessage,
                 time: firebase.database.ServerValue.TIMESTAMP,
-                from: Global.saveData.u_id
+                from: Global.saveData.u_id,
+                read: true
             };
-            updates[Global.saveData.u_id + '/' + this.state.other.userId + '/' + msgId] = message;
-            updates[this.state.other.userId + '/' + Global.saveData.u_id + '/' + msgId] = message;
+            updates[Global.saveData.u_id + '/' + this.state.other.userId + '/' + msgId] = senderMessage;
+            let receiverMessage = {
+                message: this.state.textMessage,
+                time: firebase.database.ServerValue.TIMESTAMP,
+                from: Global.saveData.u_id,
+                read: false
+            };
+            updates[this.state.other.userId + '/' + Global.saveData.u_id + '/' + msgId] = receiverMessage;
             firebase.database().ref().update(updates);
             if (this.scrollView) {
                 this.scrollView.scrollToEnd({ animated: true });
@@ -292,7 +300,7 @@ export default class ChatScreen extends React.Component {
 
     gotoProfilePage = () => {
         Global.saveData.prevpage = "ChatDetail";
-        this.props.navigation.navigate("Profile", { id: this.state.other.userId, name: this.state.other.name });
+        this.props.navigation.navigate("Profile", { id: this.state.other.userId, name: this.state.other.name, description: this.state.other.description });
     }
 
     renderRow = ({ item }) => {

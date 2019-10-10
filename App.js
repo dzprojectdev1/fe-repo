@@ -2,14 +2,20 @@ if (__DEV__) {
   import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
 }
 import React from 'react';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import storeReducer from './Reducer';
 import { AsyncStorage, View, PermissionsAndroid } from 'react-native';
+// import { connect } from 'react-redux';
 import firebase from 'firebase';
 import nativeFirebase from 'react-native-firebase';
-import FlashMessage, { showMessage } from 'react-native-flash-message';
+// import FlashMessage, { showMessage } from 'react-native-flash-message';
 import AppView from './AppView';
-import Global from './src/components/Global';
+// import Global from './src/components/Global';
 
-export default class App extends React.Component {
+const store = createStore(storeReducer);
+
+class App extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -32,7 +38,7 @@ export default class App extends React.Component {
   componentDidMount() {
     this.checkDefaultPermissions();
     this.checkFirebasePermission();
-    this.createNotificationListeners();
+    // this.createNotificationListeners();
   }
 
   componentWillUnmount() {
@@ -102,8 +108,8 @@ export default class App extends React.Component {
         },
       );
 
-      if (granted['android.permission.WRITE_EXTERNAL_STORAGE'] 
-      && granted['android.permission.ACCESS_FINE_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED) {
+      if (granted['android.permission.WRITE_EXTERNAL_STORAGE']
+        && granted['android.permission.ACCESS_FINE_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('You can use the all');
       } else {
         console.log('all permission denied');
@@ -147,56 +153,17 @@ export default class App extends React.Component {
     }
   }
 
-  async createNotificationListeners() {
-    this.notificationListener = nativeFirebase.notifications().onNotification((notification) => {
-      const { title, body, data } = notification;
-      if (data) {
-        const type = data.type;
-        this.checkNotification(title, body, type);
-      }
-    });
-
-    this.notificationOpenedListener = nativeFirebase.notifications().onNotificationOpened((notificationOpen) => {
-      const { title, body, data } = notificationOpen.notification;
-      if (data) {
-        const type = data.type;
-        this.checkNotification(title, body, type);
-      }
-    });
-
-    const notificationOpen = await nativeFirebase.notifications().getInitialNotification();
-    if (notificationOpen) {
-      const { title, body, data } = notificationOpen.notification;
-      if (data) {
-        const type = data.type;
-        this.checkNotification(title, body, type);
-      }
-    }
-
-    this.messageListener = nativeFirebase.messaging().onMessage((message) => {
-      //process data message
-      alert(JSON.stringify(message));
-    });
-  }
-
-  checkNotification = (title, body, type) => {
-    const { nowPage } = Global.saveData;
-    if (nowPage !== type) {
-      showMessage({
-        message: title,
-        description: body,
-        type: "default",
-        icon: "info"
-      });
-    }
-  }
-
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <Provider store={store}>
         <AppView />
-        <FlashMessage position="top" />
-      </View>
+        {/* <View style={{ flex: 1 }}>
+         
+          <FlashMessage position="top" />
+        </View> */}
+      </Provider>
     );
   }
 }
+
+export default App;

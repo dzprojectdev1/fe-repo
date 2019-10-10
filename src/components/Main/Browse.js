@@ -48,6 +48,7 @@ class Browse extends Component {
       isLoading: false,
       disabled: false,
       noMoreUsers: false,
+      isReplace: false
       // operatedIDArr: [],
     };
   }
@@ -106,14 +107,15 @@ class Browse extends Component {
     AsyncStorage.getItem('filterData', (err, result) => {
       var details = {};
       if (result !== null) {
-        alert(result);
         let filterStore = JSON.parse(result);
         details = {
           gender: filterStore.gender,
           lessAge: filterStore.toAge,
-          greaterAge: filterStore.fromAge,
-          distance: filterStore.distance
+          greaterAge: filterStore.fromAge
         };
+        if (filterStore.distance) {
+          details.distance = filterStore.distance;
+        }
         if (filterStore.city_index) {
           details.ethnicityId = filterStore.city_index;
         }
@@ -149,7 +151,7 @@ class Browse extends Component {
             } else {
               this.setState({
                 noMoreUsers: true
-              })
+              });
             }
           }
         }).catch((error) => {
@@ -179,7 +181,7 @@ class Browse extends Component {
             otherData = {
               imageUrl: null,
               detail: data
-            };           
+            };
           }
           this.setState({
             otherData
@@ -223,7 +225,7 @@ class Browse extends Component {
       },
       body: formBody,
     }).then((response) => response.json())
-      .then((responseJson) => {       
+      .then((responseJson) => {
         if (!responseJson.error) {
           // let operateArr = this.state.operatedIDArr;
           // let newIdArr = [];
@@ -236,7 +238,8 @@ class Browse extends Component {
         }
         this.setState({
           isLoading: false,
-          disabled: false
+          disabled: false,
+          isReplace: true
         });
       })
       .catch((error) => {
@@ -270,8 +273,7 @@ class Browse extends Component {
       },
       body: formBody,
     }).then((response) => response.json())
-      .then((responseJson) => {       
-        // alert(JSON.stringify(responseJson));
+      .then((responseJson) => {
         if (!responseJson.error) {
           // let operateArr = this.state.operatedIDArr;
           // let newIdArr = [];
@@ -284,7 +286,8 @@ class Browse extends Component {
         }
         this.setState({
           isLoading: false,
-          disabled: false
+          disabled: false,
+          isReplace: true
         });
       })
       .catch((error) => {
@@ -297,8 +300,13 @@ class Browse extends Component {
   }
 
   backPressed = () => {
-    // this.props.navigation.navigate("BrowseList", {ids: this.state.operatedIDArr});
-    this.props.navigation.replace("BrowseList");
+    const { isReplace } = this.state;
+    if (isReplace) {
+      this.props.navigation.replace("BrowseList", { ids: this.state.operatedIDArr });
+    } else {
+      this.props.navigation.pop();
+    }
+    // this.props.navigation.navigate("BrowseList", {ids: this.state.operatedIDArr});    
     return true;
   }
   gotoFilter() {
@@ -319,7 +327,7 @@ class Browse extends Component {
   gotoProfile = () => {
     Global.saveData.prevpage = "Browse";
     this.props.navigation.replace("Profile",
-      { id: this.state.otherData.detail.id, name: this.state.otherData.detail.name }
+      { id: this.state.otherData.detail.id, name: this.state.otherData.detail.name, isMatched: false, description: this.state.otherData.detail.description }
     );
   }
   gotoReport() {
@@ -410,7 +418,7 @@ class Browse extends Component {
                 </View>
               </View>
               <View style={{ position: 'absolute', left: 0, bottom: 40 }}>
-                <View style={{marginLeft: DEVICE_WIDTH * 0.1, marginBottom: 20}}>
+                <View style={{ marginLeft: DEVICE_WIDTH * 0.1, marginBottom: 20 }}>
                   <View style={{ flexDirection: 'row' }}>
                     <Image source={b_name} style={{ width: 15, height: 15 }} />
                     <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.name}</Text>
@@ -423,9 +431,13 @@ class Browse extends Component {
                     <Image source={b_distance} style={{ width: 15, height: 15 }} />
                     <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{parseInt(this.state.otherData.detail.distance) + ' mile'}</Text>
                   </View>
-                  <View style={{marginTop: 10, marginRight: 20}}>
-                    <ScrollView contentContainerStyle={{paddingVertical: 20}} style={{ maxHeight: DEVICE_HEIGHT * 0.3}}>
-                      <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff'}}>{this.state.otherData.detail.description}</Text>
+                  <View style={{ flexDirection: 'column', marginTop: 5 }}>
+                    <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.gender === 1 ? 'Male' : 'Female'}</Text>
+                    <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.last_loggedin_date}</Text>
+                  </View>
+                  <View style={{ marginTop: 10, marginRight: 20 }}>
+                    <ScrollView contentContainerStyle={{ paddingVertical: 20 }} style={{ maxHeight: DEVICE_HEIGHT * 0.3 }}>
+                      <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#fff' }}>{this.state.otherData.detail.description}</Text>
                     </ScrollView>
                   </View>
                 </View>

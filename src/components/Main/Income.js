@@ -185,10 +185,10 @@ class Income extends Component {
           <Text>{"Incoming Hearts"}</Text>
         </View>
         {(this.state.datas.length === 0 ?
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 20, }}>{this.state.alertMsg}</Text>
-            </View> : <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
-           <FlatList
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 20, }}>{this.state.alertMsg}</Text>
+          </View> : <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
+            <FlatList
               numColumns={2}
               style={{ flex: 0 }}
               data={this.state.datas}
@@ -199,14 +199,12 @@ class Income extends Component {
                   <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData)}>
                     <Image source={rowData.imageUrl !== null ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
                     <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
-                        <Image source={b_name} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
-                        <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.name}</Text>
-                      </View>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
+                      <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', marginLeft: 5 }}>
                         {/* <Image source={b_age} style={{ width: 10, height: 10, tintColor: '#B64F54' }} /> */}
-                        <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#B64F54' }}>{rowData.gender === 1 ? 'Male' :  'Female'}</Text>
-                        <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{"" + rowData.age + ' years old'}</Text>
+                        <Image source={b_name} style={{ width: 10, height: 10, marginTop: 4, tintColor: '#B64F54' }} />
+                        <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.age + ""}</Text>
+                        <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.gender === 1 ? 'M' : 'F'}</Text>
+                        <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.name}</Text>
                       </View>
                     </View>
                   </TouchableOpacity>
@@ -214,8 +212,8 @@ class Income extends Component {
               }}
               keyExtractor={(item, index) => index}
             />
-          <View style={{ height: 50 }} />
-        </ScrollView>)}
+            <View style={{ height: 50 }} />
+          </ScrollView>)}
         <Footer style={{ backgroundColor: '#222F3F', borderTopColor: '#222F3F', height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
           <FooterTab>
             <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("BrowseList")}>
