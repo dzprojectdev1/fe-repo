@@ -42,7 +42,9 @@ export default class ChatScreen extends React.Component {
             },
             matchId: props.navigation.state.params.data.data.match_id,
             textMessage: '',
-            messageList: []
+            messageList: [],
+            coinCount: Global.saveData.coin_count,
+            visible: false,
         }
     }
 
@@ -301,6 +303,12 @@ export default class ChatScreen extends React.Component {
     gotoProfilePage = () => {
         Global.saveData.prevpage = "ChatDetail";
         this.props.navigation.navigate("Profile", { id: this.state.other.userId, name: this.state.other.name, description: this.state.other.description });
+    }
+    gotoShop = () => {
+      this.setState({
+        visible: false
+      })
+      this.props.navigation.navigate('screenGpay01');
     }
 
     renderRow = ({ item }) => {

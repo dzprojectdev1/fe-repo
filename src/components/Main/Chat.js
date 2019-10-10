@@ -29,6 +29,7 @@ import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';
 import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
+import diamond from '../../assets/images/red_diamond_trans.png';
 import Global from '../Global';
 
 class Chat extends Component {
@@ -37,7 +38,9 @@ class Chat extends Component {
     this.state = {
       datas: [],
       tmpData: [],
-      searchText: ''
+      searchText: '',      
+      coinCount: Global.saveData.coin_count,
+      visible: false,
     };
   }
 
@@ -143,20 +146,44 @@ class Chat extends Component {
   }
   gotoChat(data) {
     Global.saveData.prevpage = "Chat";
-    this.props.navigation.navigate("ChatDetail", { data: data })
+    if (data.data.publish == 2) {
+      Alert.alert(
+        '',
+        "You have been blocked by the user",
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        {cancelable: false},
+      );
+    } else {
+      this.props.navigation.navigate("ChatDetail", { data: data })
+    }
   }
   //////////////////////////////////////////////////
   gotoGpay() {
     this.props.navigation.replace("screenGpay01");
   }
   //////////////////////////////////////////////////
+  gotoShop = () => {
+    this.setState({
+      visible: false
+    })
+    this.props.navigation.navigate('screenGpay01');
+  }
   render() {
     return (
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-        <View style={{ marginTop: 40, alignItems: 'center', justifyContent: 'center' }}>
-          <Text>{"CHAT"}</Text>
-        </View>
+        <View style={{ marginTop: 40, alignItems: 'center', flexDirection: 'row' }}>
+          <TouchableOpacity style={{ width: 60, height: 40}}
+              onPress={() => this.gotoShop()}>
+              <View style={{ flexDirection: 'row' }}>
+                  <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
+                  <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
+              </View>
+          </TouchableOpacity>
+          <Text style={{ justifyContent: 'center', marginLeft: DEVICE_WIDTH * 0.3 }}>{"CHAT"}</Text>
+        </View>  
         <View style={styles.inputwrapper}>
           {/* <Icon type="Ionicons" name="ios-search" style={{color:"#808080", marginTop:5}}/> */}
           <TextInput
@@ -180,7 +207,7 @@ class Chat extends Component {
                 return (
                   <TouchableOpacity style={{ width: DEVICE_WIDTH - 10, flexDirection: 'row', marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.gotoChat(rowData)}>
                     <View style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
-                      <Image source={rowData.imageUrl ? { uri: rowData.imageUrl } : hiddenMan} resizeMode="cover" style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#5A5A5A' }} />
+                      <Image source={rowData.imageUrl && (rowData.data.publish == 1) ? { uri: rowData.imageUrl } : hiddenMan} resizeMode="cover" style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#5A5A5A' }} />
                     </View>
                     <View style={{ width: DEVICE_WIDTH - 170, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
                       <View style={{ width: DEVICE_WIDTH - 170 }}>
@@ -220,10 +247,10 @@ class Chat extends Component {
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
+            {/* <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
               <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
-            </Button>
+            </Button> */}
           </FooterTab>
         </Footer>
       </View>

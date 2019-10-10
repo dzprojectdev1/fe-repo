@@ -26,6 +26,7 @@ import b_myvideo from '../../assets/images/myvideo.png';
 import b_name from '../../assets/images/name.png';
 import b_age from '../../assets/images/age.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
+import diamond from '../../assets/images/red_diamond_trans.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -35,7 +36,9 @@ class Income extends Component {
     super(props);
     this.state = {
       datas: [],
-      alertMsg: ''
+      alertMsg: '',      
+      coinCount: Global.saveData.coin_count,
+      visible: false,
     };
   }
 
@@ -177,12 +180,25 @@ class Income extends Component {
     this.props.navigation.replace("screenGpay01");
   }
   //////////////////////////////////////////////////
+  gotoShop = () => {
+    this.setState({
+      visible: false
+    })
+    this.props.navigation.navigate('screenGpay01');
+  }
   render() {
     return (
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-        <View style={{ marginTop: 40, alignItems: 'center', justifyContent: 'center' }}>
-          <Text>{"Incoming Hearts"}</Text>
+        <View style={{ marginTop: 40, alignItems: 'center', flexDirection: 'row' }}>
+          <TouchableOpacity style={{ width: 60, height: 40}}
+            onPress={() => this.gotoShop()}>
+            <View style={{ flexDirection: 'row' }}>
+              <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
+              <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
+            </View>
+          </TouchableOpacity>
+          <Text style={{ justifyContent: 'center', marginLeft: DEVICE_WIDTH * 0.22 }}>{"Incoming Hearts"}</Text>
         </View>
         {(this.state.datas.length === 0 ?
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -236,10 +252,10 @@ class Income extends Component {
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
+            {/* <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
               <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
-            </Button>
+            </Button> */}
           </FooterTab>
         </Footer>
       </View>

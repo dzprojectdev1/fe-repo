@@ -32,6 +32,7 @@ import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';
 import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
+import diamond from '../../assets/images/red_diamond_trans.png';
 import Global from '../Global';
 
 class Chat extends Component {
@@ -43,7 +44,9 @@ class Chat extends Component {
             countPerPage: 10,
             isLoading: true,
             isRefreshing: false,
-            noUser: false
+            noUser: false,
+            coinCount: Global.saveData.coin_count,
+            visible: false,
         };
     }
 
@@ -334,18 +337,31 @@ class Chat extends Component {
         this.props.navigation.navigate("Browse", { data: item });
     }
 
+    gotoShop = () => {
+      this.setState({
+        visible: false
+      })
+      this.props.navigation.navigate('screenGpay01');
+    }
+
     render() {
         return (
             <View style={styles.contentContainer}>
                 <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-                <View style={{ flexDirection: 'row', marginTop: 35, alignItems: 'center', justifyContent: 'space-between' }}>
-                    <View></View>
+                <View style={{ flexDirection: 'row', marginTop: 40, alignItems: 'center', justifyContent: 'space-between' }}>                    
+                    <TouchableOpacity style={{ width: 40, height: 40 }}
+                        onPress={() => this.gotoShop()}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
+                            <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
+                        </View>
+                    </TouchableOpacity>
                     <Text style={{ justifyContent: 'center' }}>{"BROWSE"}</Text>
                     <TouchableOpacity style={{ width: 25, height: 25, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: "flex-end", marginRight: 15 }}
                         onPress={() => this.props.navigation.navigate("Filter")}>
                         <Image source={b_filters} style={{ width: 20, height: 20 }} />
                     </TouchableOpacity>
-                </View>
+                </View> 
                 {this.state.discoveredList.length === 0 && !this.state.isLoading && !this.state.isRefreshing && (
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                         <Text> Sorry, we cannot find anyone you want!</Text>
@@ -487,10 +503,10 @@ class Chat extends Component {
                             <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
                             <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
                         </Button>
-                        <Button style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.props.navigation.replace("screenGpay01")}>
+                        {/* <Button style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.props.navigation.replace("screenGpay01")}>
                             <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
                             <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
-                        </Button>
+                        </Button> */}
                     </FooterTab>
                 </Footer>
             </View>
