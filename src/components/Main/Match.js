@@ -201,14 +201,10 @@ class Match extends Component {
                 <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.videoUrl, rowData.mid, rowData.otherId, rowData.name, rowData.imageUrl, rowData.age, rowData.distance, rowData.gender, rowData.description)}>
                   <Image source={rowData.imageUrl ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
                   <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5, flex: 2 }}>
-                      <Image source={b_name} style={{ width: 10, height: 10, tintColor: '#B64F54' }} />
-                      <Text style={{ fontSize: 10, marginLeft: 5, fontWeight: 'bold', color: '#B64F54', width: '80%', flexWrap: 'nowrap', }} ellipsizeMode={"tail"} numberOfLines={1}>{rowData.name}</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                      <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#B64F54', width: '100%', flexWrap: 'nowrap', }} ellipsizeMode={"tail"} numberOfLines={1}>{rowData.gender === 1 ? 'Male' : 'Female'}</Text>
-                      <Text style={{ fontSize: 10, fontWeight: 'bold', color: '#B64F54', width: '150%', flexWrap: 'nowrap', }} numberOfLines={1}>{"" + rowData.age + ' years old'}</Text>
-                    </View>
+                    <Image source={b_name} style={{ width: 10, marginTop: 4, marginLeft: 2, height: 10, tintColor: '#B64F54' }} />
+                    <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.age + ""}</Text>
+                    <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.gender === 1 ? 'M' : 'F'}</Text>
+                    <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.name}</Text>
                   </View>
                 </TouchableOpacity>
               );

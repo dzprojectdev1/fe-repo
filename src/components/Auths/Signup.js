@@ -35,7 +35,7 @@ class Signup extends Component {
       selected_dItem: 6,
       selected_yItem: 30,
       selected_mItem: 6,
-      mitemList: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Spe', 'Oct', 'Nov', 'Dec'],
+      mitemList: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
       yitemList: ['2019'],
       ditemList: ['1'],
     };

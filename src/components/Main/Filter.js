@@ -68,32 +68,78 @@ class Filter extends Component {
           multiSliderValue,
           sliderOneValue
         });
-        this.get_ethnicity().then(() => {
+        this.getAllAssetData().then(() => {
           this.setState({
-            city: this.state.cityData[filterStore.city_index].value,
-          })
-        });
-        this.get_country().then(() => {
-          this.setState({
-            country: this.state.countryData[filterStore.country_index].value
-          })
-        });
-        this.get_language().then(() => {
-          this.setState({
-            language: this.state.languageData[filterStore.language_index].value,
+            city: this.state.cityData[filterStore.city_arr].value,
+            country: this.state.countryData[filterStore.country_arr].value,
+            language: this.state.languageData[filterStore.language_arr].value,
           });
         });
+        // this.get_ethnicity().then(() => {
+        //   this.setState({
+        //     city: this.state.cityData[filterStore.city_index].value,
+        //   })
+        // });
+        // this.get_country().then(() => {
+        //   this.setState({
+        //     country: this.state.countryData[filterStore.country_index].value
+        //   })
+        // });
+        // this.get_language().then(() => {
+        //   this.setState({
+        //     language: this.state.languageData[filterStore.language_index].value,
+        //   });
+        // });
+      } else {
+        this.getAllAssetData();
+        // this.get_ethnicity();
+        // this.get_country();
+        // this.get_language();
       };
     });
     this.setState({
       disable: false
     })
   }
-  componentDidMount() {
-
-  }
   componentWillUnmount() {
     this.backHandler.remove();
+  }
+
+  getAllAssetData = async () => {
+    await fetch(`${SERVER_URL}/api/user/getAllAssetData`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+          let data = responseJson.data;
+          
+          let countries = data.country;
+          let ethnicities = data.ethnicity;
+          let languagies = data.language;
+
+          let ethnicityData = [{ value: 'All' }];
+          let countryData = [{ value: 'All' }];
+          let languageData = [{ value: 'All' }];
+          for (var i = 0; i < ethnicities.length; i++) {
+            ethnicityData.push({ value: ethnicities[i].ethnicity_name, id: ethnicities[i].id });
+          }
+          this.setState({ cityData: ethnicityData,  });
+          for (var i = 0; i < countries.length; i++) {
+            countryData.push({ value: countries[i].country_name, id: countries[i].id });
+          }
+          this.setState({ countryData: countryData });
+          for (var i = 0; i < languagies.length; i++) {
+            languageData.push({ value: languagies[i].language_name, id: languagies[i].id });
+          }
+          this.setState({ languageData: languageData })
+        }
+      })
+      .catch((error) => {
+        return
+      }); 
   }
   get_ethnicity = async () => {
     await fetch(`${SERVER_URL}/api/ethnicity/all`, {
@@ -104,7 +150,6 @@ class Filter extends Component {
       }
     }).then((response) => response.json())
       .then((responseJson) => {
-        //alert(JSON.stringify(responseJson))
         if (!responseJson.error) {
           var data = responseJson.data;
           var itmes = [{ value: 'All' }];
@@ -205,29 +250,35 @@ class Filter extends Component {
     });
   };
   onApply() {
-    var lanD = this.state.languageData
-    var lanindex = 0;
+    let lanD = this.state.languageData
+    let lanindex = 0;
+    let lanArrIdx = 0;
     for (var i = 0; i < lanD.length; i++) {
       if (lanD[i].value === this.state.language && lanD[i].id) {
-        lanindex = lanD[i].id
+        lanindex = lanD[i].id;
+        lanArrIdx = i;
         break;
       }
     }
 
-    var cityD = this.state.cityData
-    var cityindex = 0;
+    let cityD = this.state.cityData
+    let cityindex = 0;
+    let cityArrIdx = 0;
     for (var i = 0; i < cityD.length; i++) {
       if (cityD[i].value === this.state.city && cityD[i].id) {
-        cityindex = cityD[i].id
+        cityindex = cityD[i].id;
+        cityArrIdx = i;
         break;
       }
     }
 
-    var countryD = this.state.countryData
-    var countryIndex = 0;
+    let countryD = this.state.countryData
+    let countryIndex = 0;
+    let countryArrIdx = 0;
     for (var i = 0; i < countryD.length; i++) {
       if (countryD[i].value === this.state.country && countryD[i].id) {
-        countryIndex = countryD[i].id
+        countryIndex = countryD[i].id,
+        countryArrIdx = i;
         break;
       }
     }
@@ -239,7 +290,10 @@ class Filter extends Component {
       distance: this.state.sliderOneValue[0] === 2000 ? null : this.state.sliderOneValue[0],
       language_index: lanindex,
       city_index: cityindex,
-      country_index: countryIndex
+      country_index: countryIndex,
+      language_arr: lanArrIdx,
+      city_arr: cityArrIdx,
+      country_arr: countryArrIdx
     };
     let that = this;
     this._storeData(filterData).then(() => {
