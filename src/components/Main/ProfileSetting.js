@@ -32,8 +32,23 @@ class ProfileSetting extends Component {
       country: '',
       countryData: [],
       isLoading: false,
-      disabled: true
+      disabled: true,
+      account_status: true,
     };
+
+    this.changeAccountStatus();
+  }
+
+  changeAccountStatus() {
+    if (Global.saveData.account_status == 1) {
+      this.setState({
+        account_status: true
+      })
+    } else if (Global.saveData.account_status == 2) {
+      this.setState({
+        account_status: false
+      })
+    }
   }
 
   static navigationOptions = {
@@ -234,19 +249,19 @@ class ProfileSetting extends Component {
         return
       });
   }
-  onCloseAccout() {
+
+  onDeactivateAccount() {
     Alert.alert(
       '',
-      'Are you sure you want to close your account?Once it is closed, you cannot login to this account  again',
+      'Are you sure you want to deactivate your account? You can activate your account later',
       [
-        { text: 'Confirm', backgroundColor: '#FCDD80', onPress: () => this.closeAccout() },
         { text: 'Cancel', backgroundColor: '#FCDD80', onPress: () => () => console.log('Cancel Pressed'), style: 'cancel' },
+        { text: 'Confirm', backgroundColor: '#FCDD80', onPress: () => this.deactivateAccount() },
       ],
       { cancelable: false });
   }
-  closeAccout() {
-    this.clearGlobal();
-    fetch(`${SERVER_URL}/api/user/removeAccount`, {
+  deactivateAccount() {
+    fetch(`${SERVER_URL}/api/user/deactivateAccount`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -255,8 +270,80 @@ class ProfileSetting extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-          //Alert.alert(responseJson.message)
-          this.props.navigation.navigate("FirstScreen")
+          Alert.alert(
+            '',
+            'Your account is deactivated',
+            [
+              { text: 'Activate', backgroundColor: '#FCDD80', onPress: () => this.activateAccount() },
+            ],
+            { cancelable: false });
+          this.setState({
+            account_status: false
+          })
+          Global.saveData.account_status = 2;
+        }
+      })
+      .catch((error) => {
+        alert(JSON.stringify(error))
+        return
+      });
+  }
+
+  activateAccount() {
+    fetch(`${SERVER_URL}/api/user/activateAccount`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      }
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+          Alert.alert('Your account is activated');
+          this.setState({
+            account_status: true
+          })
+          Global.saveData.account_status = 1;
+        }
+      })
+      .catch((error) => {
+        alert(JSON.stringify(error))
+        return
+      });
+  }
+
+  onCloseAccout() {
+    Alert.alert(
+      '',
+      'Are you sure you want to close your account permanently? You cannot activate your account again',
+      [
+        { text: 'Cancel', backgroundColor: '#FCDD80', onPress: () => () => console.log('Cancel Pressed'), style: 'cancel' },
+        { text: 'Confirm', backgroundColor: '#FCDD80', onPress: () => this.closeAccout() },
+      ],
+      { cancelable: false });
+  }
+  closeAccout() {
+    fetch(`${SERVER_URL}/api/user/closeAccount`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      }
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+
+          var resultData = responseJson.data;
+
+          let alert_str = 'Your account is closed. Please send an email to admin@dazzleddate.com if this was done in error. Please include the following information in your email ';
+          alert_str += 'User ID : ' + resultData.user_id +' Confirmation Code ' + resultData.confirmation_code;
+          alert_str += ' In your email, please describe in details why this was done in error';
+
+          Alert.alert(
+            '',
+            alert_str,
+            [],
+            { cancelable: false });
         }
         else {
           Alert.alert(responseJson.message)
@@ -267,6 +354,12 @@ class ProfileSetting extends Component {
         return
       });
   }
+
+  goOut() {
+    this.clearGlobal();
+    this.props.navigation.navigate("FirstScreen");
+  }
+
   removeItemValue = async () => {
     try {
       await AsyncStorage.removeItem('globalData');
@@ -446,8 +539,12 @@ class ProfileSetting extends Component {
             <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{"Term and Conditions / Privacy Policy"}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 15, }}
+            onPress={() =>  this.onDeactivateAccount() }>
+            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{ "Deactivate My Account" }</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 15, }}
             onPress={() => this.onCloseAccout()}>
-            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{"Deactivate My Account"}</Text>
+            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{"Close My Account"}</Text>
           </TouchableOpacity>
           {/* <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 15, }}
             onPress={() => this.onLogout()}>
