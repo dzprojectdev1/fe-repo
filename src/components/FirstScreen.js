@@ -79,13 +79,40 @@ class FirstScreen extends Component {
                     Global.saveData.u_country = responseJson.user.country;
                     Global.saveData.u_description = responseJson.user.description;
                     Global.saveData.newUser = false;
-                    Global.saveData.coin_count = responseJson.user.coin_count;
-                    this.checkUnreadMessage();
-                    this.setState({
-                      isLoaded: false
-                    }, function () {
-                      this.props.navigation.replace("BrowseList");
-                    });
+                    Global.saveData.coin_count = responseJson.user.coin_count;      
+                    Global.saveData.account_status = responseJson.user.account_status; 
+                    Global.saveData.confirmation_code = responseJson.user.confirmation_code;                    
+
+                    if (responseJson.user.account_status == 3) {
+
+                      let alert_str = 'Your account is closed. Please send an email to admin@dazzleddate.com if this was done in error. Please include the following information in your email ';
+                      alert_str += 'User ID : ' + responseJson.user.id +' Confirmation Code ' + responseJson.user.confirmation_code;
+                      alert_str += ' In your email, please describe in details why this was done in error';
+
+                      Alert.alert(
+                        '',
+                        alert_str,
+                        [],
+                        {cancelable: false},
+                      );
+                    } else if (responseJson.user.account_status == 2) {
+                      Alert.alert(
+                        '',
+                        "You have to activate your account",
+                        [
+                          {text: 'Activate', onPress: () => this.activateAccount()},
+                        ],
+                        {cancelable: false},
+                      );
+                    } else {
+                      this.checkUnreadMessage();
+
+                      this.setState({
+                        isLoaded: false
+                      }, function() {
+                        this.props.navigation.replace("BrowseList");
+                      });                
+                    }
                   } else {
                     this.setState({
                       isLoaded: false
@@ -177,6 +204,27 @@ class FirstScreen extends Component {
           }
         }
         this.props.changeReadFlag(newPayload);
+      });
+  }
+
+  activateAccount() {
+    fetch(`${SERVER_URL}/api/user/activateAccount`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      }
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+          Alert.alert('Your account is activated');
+          this.props.navigation.replace("BrowseList");
+          Global.saveData.account_status = 1;
+        }
+      })
+      .catch((error) => {
+        alert(JSON.stringify(error))
+        return
       });
   }
 

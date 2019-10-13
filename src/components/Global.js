@@ -43,4 +43,5 @@ module.exports.saveData =
         gem_price: '',
         gem_number: 0,
         coin_count: 0,
+        account_status: 0,
     };
