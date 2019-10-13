@@ -13,9 +13,11 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  StatusBar
+  StatusBar, 
+  Image
 } from "react-native";
 
+import heart from '../../assets/images/heart.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -131,7 +133,22 @@ class Profile extends Component {
     //   Global.saveData.prePage = "Profile"
     //   this.props.navigation.replace(Global.saveData.prevpage);
     // }
-    this.props.navigation.pop();
+    // this.props.navigation.pop();
+    this.props.navigation.replace(Global.saveData.prevpage, {
+      data: {
+        imageUrl: this.props.navigation.state.params.imageUrl,
+        isMatched: this.props.navigation.state.params.isMatched, 
+        detail: { 
+          id: this.props.navigation.state.params.id, 
+          name: this.props.navigation.state.params.name, 
+          description: this.props.navigation.state.params.description,
+          age: this.props.navigation.state.params.age,
+          distance: this.props.navigation.state.params.distance,
+          gender: this.props.navigation.state.params.gender,
+          last_loggedin_date: this.props.navigation.state.params.detail,
+        }
+      }
+    });
   }
 
   render() {
@@ -147,40 +164,39 @@ class Profile extends Component {
             <Text style={{ fontSize: 16 }}>{this.state.name}</Text>
           </View>
         </View>
-        {this.state.description && (
-          <View style={{
-            justifyContent: 'center',
-            alignSelf: "center",
-            alignItems: 'center',
-            marginTop: 10,
-            marginBottom: 10,
-            padding: 10
-          }}>
-            <Text style={{ fontSize: 16, alignContent: 'center' }}>
-              {this.state.description}
-            </Text>
-          </View>
-        )}
-        {this.state.isLoading && (
-          <View style={{
-            flex: 1, justifyContent: 'center', alignSelf: 'center', margin: 40
-          }}>
-            <ActivityIndicator style={{ color: '#DE5859' }} />
-          </View>
-        )}
-        {this.state.noData && !this.state.isLoading && (
-          <View style={{
-            flex: 1, justifyContent: 'center', alignSelf: 'center', margin: 35
-          }}>
-            <Text style={{
-              color: '#000',
-              fontSize: 20,
-              textAlign: "center",
-              alignContent: 'center'
-            }}>{'This user does not have any profile pictures.'}</Text>
-          </View>
-        )}
         <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
+          {this.state.description && (
+            <View style={{
+              justifyContent: 'center',
+              alignSelf: "center",
+              alignItems: 'center',
+              marginTop: 10,
+              marginBottom: 10,
+              padding: 10
+            }}>
+              <Text style={{ fontSize: 16, alignContent: 'center' }}>
+                {this.state.description}
+              </Text>
+            </View>
+          )}
+          {this.state.isLoading && (
+            <View style={{
+              flex: 1, justifyContent: 'center', alignSelf: 'center', margin: 40
+            }}>
+              <ActivityIndicator style={{ color: '#DE5859' }} />
+            </View>
+          )}
+          {this.state.noData && !this.state.isLoading && (
+            <View style={{
+              flex: 1, alignItems: 'center', alignSelf: "center",
+            }}>
+              <Text style={{
+                fontSize: 20,
+                marginTop: 70 
+              }}>{'This user does not have any profile pictures.'}</Text>
+              <Image source={heart} style={{width: 150, height: 150, marginTop: 100}}></Image>
+            </View>
+          )}
           {(this.state.datas.length != 0) && (
             <FlatList
               numColumns={2}

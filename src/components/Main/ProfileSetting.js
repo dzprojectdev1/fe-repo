@@ -204,6 +204,7 @@ class ProfileSetting extends Component {
       'ethnicityId': cityindex,
       'countryId': coutryindex
     };
+    alert(details.description);
     var formBody = [];
     for (var property in details) {
       var encodedKey = encodeURIComponent(property);

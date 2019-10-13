@@ -30,6 +30,7 @@ import b_match from '../../assets/images/match.png';
 import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
+import heart from '../../assets/images/heart.png';
 import Global from '../Global';
 
 class Chat extends Component {
@@ -182,7 +183,7 @@ class Chat extends Component {
                   <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
               </View>
           </TouchableOpacity>
-          <Text style={{ justifyContent: 'center', marginLeft: DEVICE_WIDTH * 0.3 }}>{"CHAT"}</Text>
+          <Text style={{ justifyContent: 'center', marginLeft: DEVICE_WIDTH * 0.28 }}>{"CHAT"}</Text>
         </View>  
         <View style={styles.inputwrapper}>
           {/* <Icon type="Ionicons" name="ios-search" style={{color:"#808080", marginTop:5}}/> */}
@@ -195,7 +196,13 @@ class Chat extends Component {
             underlineColorAndroid="transparent"
           />
         </View>
-        <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
+        {this.state.datas.length === 0 ? (<View style={{
+            flex: 1,
+            alignItems: 'center'
+        }}>
+            <Text style={{ fontSize: 20, marginTop: 40 }}> {'There is no chat list.'} </Text>
+            <Image source={heart} style={{width: 150, height: 150, marginTop: 80}}></Image>
+        </View>) : (<ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
           {(this.state.datas.length != 0) && (
             <FlatList
               numColumns={1}
@@ -211,8 +218,8 @@ class Chat extends Component {
                     </View>
                     <View style={{ width: DEVICE_WIDTH - 170, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
                       <View style={{ width: DEVICE_WIDTH - 170 }}>
-                        <Text numberOfLines={1} style={{ color: '#808080' }}>{rowData.data.name}</Text>
-                        <Text numberOfLines={1} style={{ fontSize: 12, color: '#808080' }}>{rowData.data.message_text}</Text>
+                        <Text numberOfLines={1} style={{ color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.name: 'Unavailable user'}</Text>
+                        <Text numberOfLines={1} style={{ fontSize: 12, color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.message_text: ''}</Text>
                       </View>
                     </View>
                     <View style={{ width: 100, height: 40, marginLeft: 5, alignItems: 'center', justifyContent: 'center' }}>
@@ -224,7 +231,7 @@ class Chat extends Component {
               keyExtractor={(item, index) => index}
             />)}
           <View style={{ height: 50 }} />
-        </ScrollView>
+        </ScrollView>)}
         <Footer style={{ height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
           <FooterTab>
             <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("BrowseList")}>

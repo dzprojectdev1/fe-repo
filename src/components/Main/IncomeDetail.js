@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   StatusBar,
   ScrollView,
+  Alert,
   // ActivityIndicator
 } from "react-native";
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
@@ -187,11 +188,22 @@ class IncomeDetail extends Component {
           //     privatedPaused: false
           //   });
           // }
-          this.setState({
-            matchId: responseJson.data.match_id,
-            isMatchVideo: true,
-            privatedPaused: false
-          });
+          if (responseJson.data.account_status == 1) {
+            this.setState({
+              matchId: responseJson.data.match_id,
+              isMatchVideo: true,
+              privatedPaused: false
+            });
+          } else {
+            Alert.alert(
+              '',
+              responseJson.message,
+              [
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+              ],
+              {cancelable: false},
+            );
+          }
         }
       }).catch((error) => {
         alert(JSON.stringify(error));
@@ -278,6 +290,11 @@ class IncomeDetail extends Component {
     this.setState({
       visible: false
     })
+    if (this.state.isMatchVideo === true) {
+      Global.saveData.nowPage = "Match";
+    } else {
+      Global.saveData.nowPage = "Income";
+    }
     this.props.navigation.navigate('screenGpay01');
   }
   gotoReport() {
