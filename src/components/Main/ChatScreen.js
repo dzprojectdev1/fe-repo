@@ -21,13 +21,16 @@ import {
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 import Global from '../Global';
 import firebase from 'firebase';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { changeReadFlag } from '../../../Action';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import { SERVER_URL } from '../../config/constants';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
 
-export default class ChatScreen extends React.Component {
+class ChatScreen extends React.Component {
     static navigationOptions = {
         header: null
     };
@@ -52,7 +55,7 @@ export default class ChatScreen extends React.Component {
 
     componentWillMount() {
         Global.saveData.nowPage = 'ChatDetail';
-        firebase.database().ref().child(Global.saveData.u_id).child(this.state.other.userId)
+        firebase.database().ref().child('dz-chat-data').child(Global.saveData.u_id).child(this.state.other.userId)
             .on('child_added', (value) => {
                 this.setState((prevState) => {
                     return {
@@ -74,6 +77,38 @@ export default class ChatScreen extends React.Component {
         setTimeout(function () {
             this.scrollView.scrollToEnd({ animated: true });
         }.bind(this), 1000);
+        this.checkUnReadMessage();
+    }
+
+    checkUnReadMessage = () => {
+        firebase.database().ref().child('dz-chat-unread').child(Global.saveData.u_id + '/')
+            .once('value', (value) => {
+                let senderIdArr = value.toJSON();
+                let newPayload = {};
+                let updates = {};
+                if (senderIdArr) {
+                    senderIdArr = senderIdArr.split(',');
+                    let index = senderIdArr.indexOf(this.state.other.userId.toString());
+                    if (index !== -1) {
+                        senderIdArr.splice(index, 1)
+                    }
+                    if (senderIdArr.length) {
+                        newPayload = {
+                            unreadFlag: true,
+                            senders: senderIdArr
+                        }
+                        updates[Global.saveData.u_id] = senderIdArr.toString();
+                        firebase.database().ref().child('dz-chat-unread').update(updates);
+                    } else {
+                        newPayload = {
+                            unreadFlag: false,
+                            senders: []
+                        }
+                        firebase.database().ref().child('dz-chat-unread').child(Global.saveData.u_id + '/').remove();
+                    }
+                    this.props.changeReadFlag(newPayload);
+                }
+            });
     }
 
     // componentDidUpdate(prevProps, prevState) {
@@ -167,8 +202,8 @@ export default class ChatScreen extends React.Component {
         }).then((response) => response.json())
             .then((responseJson) => {
                 if (responseJson.error === false) {
-                    firebase.database().ref().child(Global.saveData.u_id).child(this.state.other.userId).remove();
-                    firebase.database().ref().child(this.state.other.userId).child(Global.saveData.u_id).remove();
+                    firebase.database().ref().child('dz-chat-data').child(Global.saveData.u_id).child(this.state.other.userId).remove();
+                    firebase.database().ref().child('dz-chat-data').child(this.state.other.userId).child(Global.saveData.u_id).remove();
                     this.props.navigation.replace("Chat");
                 }
             }).catch((error) => {
@@ -246,7 +281,7 @@ export default class ChatScreen extends React.Component {
 
     sendMessage = async () => {
         if (this.state.textMessage.length > 0) {
-            let msgId = firebase.database().ref('dz-chat-app').child(Global.saveData.u_id).child(this.state.other.userId).push().key;
+            let msgId = firebase.database().ref().child('dz-chat-data').child(Global.saveData.u_id).child(this.state.other.userId).push().key;
             let updates = {};
             let senderMessage = {
                 message: this.state.textMessage,
@@ -262,7 +297,7 @@ export default class ChatScreen extends React.Component {
                 read: false
             };
             updates[this.state.other.userId + '/' + Global.saveData.u_id + '/' + msgId] = receiverMessage;
-            firebase.database().ref().update(updates);
+            firebase.database().ref().child('dz-chat-data').update(updates);
             if (this.scrollView) {
                 this.scrollView.scrollToEnd({ animated: true });
             }
@@ -305,10 +340,10 @@ export default class ChatScreen extends React.Component {
         this.props.navigation.navigate("Profile", { id: this.state.other.userId, name: this.state.other.name, description: this.state.other.description });
     }
     gotoShop = () => {
-      this.setState({
-        visible: false
-      })
-      this.props.navigation.navigate('screenGpay01');
+        this.setState({
+            visible: false
+        })
+        this.props.navigation.navigate('screenGpay01');
     }
 
     renderRow = ({ item }) => {
@@ -355,7 +390,7 @@ export default class ChatScreen extends React.Component {
                             <TouchableHighlight style={styles.avatarBtn} onPress={() => this.gotoProfilePage()}>
                                 <Image
                                     style={styles.avatar}
-                                    source={this.state.other.imgUrl ? { uri: this.state.other.imgUrl } : hiddenMan }
+                                    source={this.state.other.imgUrl ? { uri: this.state.other.imgUrl } : hiddenMan}
                                 />
                             </TouchableHighlight>
                         )}
@@ -406,7 +441,7 @@ export default class ChatScreen extends React.Component {
                 </ScrollView>
                 <View style={styles.inputBar}>
                     <TextInput
-                        multiline 
+                        multiline
                         style={styles.textBox}
                         value={this.state.textMessage}
                         onChangeText={this.handleChange('textMessage')}
@@ -494,3 +529,16 @@ const styles = StyleSheet.create({
         borderRadius: 400
     }
 });
+
+const mapStateToProps = (state) => {
+    const { unreadFlag, senders } = state.reducer
+    return { unreadFlag, senders }
+};
+
+const mapDispatchToProps = dispatch => (
+    bindActionCreators({
+        changeReadFlag,
+    }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatScreen);

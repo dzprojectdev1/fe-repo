@@ -8,13 +8,15 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  BackHandler,
   StatusBar,
   AsyncStorage,
   ActivityIndicator,
-  Alert
 } from "react-native";
 import nativeFirebase from 'react-native-firebase';
+import firebase from 'firebase';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { changeReadFlag } from '../../Action';
 import DeviceInfo from 'react-native-device-info';
 // import store from 'react-native-simple-store';
 // import logo from '../assets/images/logo.png';
@@ -77,16 +79,17 @@ class FirstScreen extends Component {
                     Global.saveData.u_country = responseJson.user.country;
                     Global.saveData.u_description = responseJson.user.description;
                     Global.saveData.newUser = false;
-                    Global.saveData.coin_count = responseJson.user.coin_count;                    
+                    Global.saveData.coin_count = responseJson.user.coin_count;
+                    this.checkUnreadMessage();
                     this.setState({
                       isLoaded: false
-                    }, function() {
+                    }, function () {
                       this.props.navigation.replace("BrowseList");
-                    });                
+                    });
                   } else {
                     this.setState({
                       isLoaded: false
-                    }, function() { 
+                    }, function () {
                       this.props.navigation.navigate("Signup");
                     });
                   }
@@ -100,9 +103,9 @@ class FirstScreen extends Component {
             })
           }
         });
-      } 
+      }
     });
-    
+
     // this.retrieveData().then((userToken) => {
     //   if (userToken) {
     //     fetch(`${SERVER_URL}/api/user/checkLoginStatus`, {
@@ -155,6 +158,28 @@ class FirstScreen extends Component {
     //   }
     // });
   }
+
+  checkUnreadMessage = () => {
+    firebase.database().ref().child('dz-chat-unread').child(Global.saveData.u_id + '/')
+      .on('value', (value) => {
+        let newPayload = {};
+        let senderIdArr = value.toJSON();
+        if (senderIdArr) {
+          senderIdArr = senderIdArr.split(',');
+          newPayload = {
+            unreadFlag: true,
+            senders: senderIdArr
+          }
+        } else {
+          newPayload = {
+            unreadFlag: false,
+            senders: senderIdArr
+          }
+        }
+        this.props.changeReadFlag(newPayload);
+      });
+  }
+
   retrieveData = async () => {
     try {
       const value = await AsyncStorage.getItem('globalData');      // We have data!!
@@ -189,8 +214,8 @@ class FirstScreen extends Component {
             </View>
           )}
           {(this.state.isLoaded === true) && (
-            <View style={{flex: 1, alignSelf: 'center', justifyContent: 'center', justifyContent: 'space-around', padding: 10}}>
-              <ActivityIndicator size="large" color="#FFFFFF"/>
+            <View style={{ flex: 1, alignSelf: 'center', justifyContent: 'center', justifyContent: 'space-around', padding: 10 }}>
+              <ActivityIndicator size="large" color="#FFFFFF" />
             </View>
           )}
         </ImageBackground>
@@ -209,4 +234,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
 });
-export default FirstScreen;
+
+const mapStateToProps = (state) => {
+  const { unreadFlag, senders } = state.reducer
+  return { unreadFlag, senders }
+};
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    changeReadFlag,
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(FirstScreen);

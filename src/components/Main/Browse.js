@@ -36,7 +36,7 @@ import b_profile from '../../assets/images/profile.png';
 // import no_image from '../../assets/images/no-image.png';
 import no_photo from '../../assets/images/no_photo.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
-import instant_chat from '../../assets/images/instant_chat.png';
+// import instant_chat from '../../assets/images/instant_chat.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
