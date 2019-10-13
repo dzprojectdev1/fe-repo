@@ -13,7 +13,7 @@ import {
     ScrollView,
     Platform,
     Dimensions,
-    TextInput,
+    // TextInput,
     View,
     StyleSheet,
     FlatList,
@@ -22,9 +22,10 @@ import {
     StatusBar,
     Alert
 } from "react-native";
-
+import { Badge } from 'react-native-elements'
+import { connect } from 'react-redux';
 import { SERVER_URL } from '../../config/constants';
-import OnlyGImage from '../../assets/images/OnlyGImage.png';
+// import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import b_browse from '../../assets/images/browse.png';
 import b_filters from '../../assets/images/filters.png';
@@ -35,7 +36,7 @@ import b_myvideo from '../../assets/images/myvideo.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 import Global from '../Global';
 
-class Chat extends Component {
+class BrowserList extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -56,10 +57,10 @@ class Chat extends Component {
 
     componentWillMount() {
         Global.saveData.nowPage = 'BrowseList';
-        BackHandler.addEventListener('hardwareBackPress', this.backPressed);        
+        BackHandler.addEventListener('hardwareBackPress', this.backPressed);
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.fetchUsers();
     }
 
@@ -108,7 +109,7 @@ class Chat extends Component {
     }
 
     onSearch = (searchKey) => {
-        
+
     }
 
     fetchUsers = () => {
@@ -158,7 +159,7 @@ class Chat extends Component {
                 .then((responseJson) => {
                     if (!responseJson.error) {
                         if (responseJson.data) {
-                            let newData = responseJson.data;                           
+                            let newData = responseJson.data;
                             this.getUserAvatar(newData);
                         } else {
                             this.setState({
@@ -225,7 +226,7 @@ class Chat extends Component {
                         if (responseJson.data) {
                             let newData = responseJson.data;
                             let that = this;
-                            this.setState({discoveredList : [], isRefreshing: true}, function() {
+                            this.setState({ discoveredList: [], isRefreshing: true }, function () {
                                 that.getUserAvatar(newData);
                             });
                         } else {
@@ -234,7 +235,7 @@ class Chat extends Component {
                                 isLoading: false,
                                 isRefreshing: false
                             });
-                        }                       
+                        }
                     }
                 })
                 .catch((error) => {
@@ -338,17 +339,17 @@ class Chat extends Component {
     }
 
     gotoShop = () => {
-      this.setState({
-        visible: false
-      })
-      this.props.navigation.navigate('screenGpay01');
+        this.setState({
+            visible: false
+        })
+        this.props.navigation.navigate('screenGpay01');
     }
 
     render() {
         return (
             <View style={styles.contentContainer}>
                 <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-                <View style={{ flexDirection: 'row', marginTop: 40, alignItems: 'center', justifyContent: 'space-between' }}>                    
+                <View style={{ flexDirection: 'row', marginTop: 40, alignItems: 'center', justifyContent: 'space-between' }}>
                     <TouchableOpacity style={{ width: 40, height: 40 }}
                         onPress={() => this.gotoShop()}>
                         <View style={{ flexDirection: 'row' }}>
@@ -361,7 +362,7 @@ class Chat extends Component {
                         onPress={() => this.props.navigation.navigate("Filter")}>
                         <Image source={b_filters} style={{ width: 20, height: 20 }} />
                     </TouchableOpacity>
-                </View> 
+                </View>
                 {this.state.discoveredList.length === 0 && !this.state.isLoading && !this.state.isRefreshing && (
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                         <Text> Sorry, we cannot find anyone you want!</Text>
@@ -423,7 +424,7 @@ class Chat extends Component {
                                                 fontSize: 12,
                                                 color: '#7d7d7d',
                                             }}>
-                                                {( item.detail.language_name + ', ' + item.detail.country_name + ', ' + item.detail.ethnicity_name)}
+                                                {(item.detail.language_name + ', ' + item.detail.country_name + ', ' + item.detail.ethnicity_name)}
                                             </Text>
                                             <View style={{
                                                 flex: 1,
@@ -481,25 +482,26 @@ class Chat extends Component {
                         <Image source={b_filters} style={{ width: 25, height: 25 }} />
                     </TouchableOpacity> */}
                 {/* </View> */}
-                <Footer style={{ borderTopColor: '#222F3F', height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
-                    <FooterTab style={{ backgroundColor: '#222F3F', alignSelf: 'stretch', alignItems: 'center', alignContent: 'space-around', flex: 1, flexDirection: 'row' }}>
-                        <Button style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent >
+                <Footer style={{height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
+                    <FooterTab>
+                        <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent >
                             <Image source={b_browse} style={{ width: 25, height: 25, tintColor: '#B64F54' }} />
-                            <Text style={{ color: '#B64F54', fontSize: 6, fontWeight: 'bold', marginTop: 3, width: '100%' }}>{"BROWSE"}</Text>
+                            <Text style={{ color: '#B64F54', fontSize: 6, fontWeight: 'bold', marginTop: 3}}>{"BROWSE"}</Text>
                         </Button>
-                        <Button style={{ backgroundColor: '#222F3F', borderRadius: 0, margin: 0, padding: 0 }} transparent onPress={() => this.props.navigation.replace("Income")}>
+                        <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0, margin: 0, padding: 0 }} transparent onPress={() => this.props.navigation.replace("Income")}>
                             <Image source={b_incoming} style={{ width: 25, height: 25 }} />
-                            <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3, width: '100%' }}>{"INCOMING"}</Text>
+                            <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3}}>{"INCOMING"}</Text>
                         </Button>
-                        <Button style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.props.navigation.replace("Match")}>
+                        <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.props.navigation.replace("Match")}>
                             <Image source={b_match} style={{ width: 25, height: 25 }} />
-                            <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3, width: '100%' }}>{"MATCH"}</Text>
+                            <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop:3 }}>{"MATCH"}</Text>
                         </Button>
-                        <Button style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.props.navigation.replace("Chat")}>
+                        <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.props.navigation.replace("Chat")}>
+                            {this.props.unreadFlag && (<View style={styles.badgeIcon}><Text style={{color: '#fff', textAlign: 'center', fontSize: 10, }}>{'N'}</Text></View>)}
                             <Image source={b_chat} style={{ width: 25, height: 25 }} />
                             <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"CHAT"}</Text>
                         </Button>
-                        <Button style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.props.navigation.replace("MyVideo")}>
+                        <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.props.navigation.replace("MyVideo")}>
                             <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
                             <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
                         </Button>
@@ -539,5 +541,23 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#000',
     },
+    badgeIcon: {
+        position: 'absolute',
+        zIndex: 1000,
+        top: -5,
+        right: 15,
+        width: 20,
+        height: 20,
+        borderRadius: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#B64F54'
+    }
 });
-export default Chat;
+
+const mapStateToProps = (state) => {
+    const { unreadFlag } = state.reducer
+    return { unreadFlag }
+};
+
+export default connect(mapStateToProps)(BrowserList);

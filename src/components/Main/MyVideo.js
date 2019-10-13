@@ -4,7 +4,7 @@ import {
   Button,
   FooterTab,
   Icon,
-  Text,
+  Text
 } from "native-base";
 import {
   ActivityIndicator,
@@ -21,10 +21,10 @@ import {
   StatusBar,
   Alert
 } from "react-native";
+import { connect } from 'react-redux';
+import { Badge } from 'react-native-elements'
 import ImagePicker from 'react-native-image-picker';
-
-import OnlyGImage from '../../assets/images/OnlyGImage.png';
-
+// import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';
@@ -43,7 +43,7 @@ class MyVideo extends Component {
     this.state = {
       datas: [],
       isLoading: true,
-      noData: false,      
+      noData: false,
       coinCount: Global.saveData.coin_count,
       visible: false,
     };
@@ -155,7 +155,7 @@ class MyVideo extends Component {
   }
   addVideo() {
     // this.props.navigation.navigate("Record")
-    
+
     // More info on all the options is below in the API Reference... just some common use cases shown here
     const options = {
       title: 'Select Picture',
@@ -227,12 +227,12 @@ class MyVideo extends Component {
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <View style={{ marginTop: 40, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
-          <TouchableOpacity style={{ width: 60, height: 40}}
-              onPress={() => this.gotoShop()}>
-              <View style={{ flexDirection: 'row' }}>
-                  <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
-                  <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
-              </View>
+          <TouchableOpacity style={{ width: 60, height: 40 }}
+            onPress={() => this.gotoShop()}>
+            <View style={{ flexDirection: 'row' }}>
+              <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
+              <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
+            </View>
           </TouchableOpacity>
           <Text style={{ justifyContent: 'center' }}>{"PROFILE"}</Text>
           <TouchableOpacity style={{ width: 30, height: 40, alignItems: 'center', justifyContent: 'center', marginRight: 10 }}
@@ -259,7 +259,7 @@ class MyVideo extends Component {
             }}>You dont have any photo. {'\n'} Please upload more than one so that others can find you more easily.</Text>
           </View>
         )}
-        
+
         <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
           {(this.state.datas.length !== 0) && (
             <FlatList
@@ -308,23 +308,24 @@ class MyVideo extends Component {
         </TouchableOpacity>
         <Footer style={{ height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
           <FooterTab>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("BrowseList")}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("BrowseList")}>
               <Image source={b_browse} style={{ width: 25, height: 25, }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"BROWSE"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Income")}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Income")}>
               <Image source={b_incoming} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"INCOMING"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Match")}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Match")}>
               <Image source={b_match} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MATCH"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Chat")}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Chat")}>
+              {this.props.unreadFlag && (<View style={styles.badgeIcon}><Text style={{ color: '#FFF', textAlign: 'center', fontSize: 10, }}>{'N'}</Text></View>)}
               <Image source={b_chat} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"CHAT"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => { }}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => { }}>
               <Image source={b_myvideo} style={{ width: 25, height: 25, tintColor: '#B64F54' }} />
               <Text style={{ color: '#B64F54', fontSize: 8, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
             </Button>
@@ -351,5 +352,23 @@ const styles = StyleSheet.create({
     color: '#3333ff',
     marginBottom: 5,
   },
+  badgeIcon: {
+    position: 'absolute',
+    zIndex: 1000,
+    top: -5,
+    right: 15,
+    width: 20,
+    height: 20,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#B64F54'
+  }
 });
-export default MyVideo;
+
+const mapStateToProps = (state) => {
+  const { unreadFlag } = state.reducer
+  return { unreadFlag }
+};
+
+export default connect(mapStateToProps)(MyVideo);

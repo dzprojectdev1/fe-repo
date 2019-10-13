@@ -3,7 +3,7 @@ import {
   Footer,
   Button,
   FooterTab,
-  Text,
+  Text
 } from "native-base";
 import {
   BackHandler,
@@ -17,13 +17,15 @@ import {
   TouchableOpacity,
   StatusBar
 } from "react-native";
-import OnlyGImage from '../../assets/images/OnlyGImage.png';
+import { connect } from 'react-redux';
+import { Badge } from 'react-native-elements'
+// import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';
 import b_chat from '../../assets/images/chat.png';
-import b_age from '../../assets/images/age.png';
+// import b_age from '../../assets/images/age.png';
 import b_myvideo from '../../assets/images/myvideo.png';
 import b_name from '../../assets/images/name.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
@@ -36,7 +38,7 @@ class Match extends Component {
     super(props);
     this.state = {
       datas: [],
-      alertMsg: '',      
+      alertMsg: '',
       coinCount: Global.saveData.coin_count,
       visible: false,
     };
@@ -174,12 +176,12 @@ class Match extends Component {
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <View style={{ marginTop: 40, alignItems: 'center', flexDirection: 'row' }}>
-          <TouchableOpacity style={{ width: 60, height: 40}}
-              onPress={() => this.gotoShop()}>
-              <View style={{ flexDirection: 'row' }}>
-                  <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
-                  <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
-              </View>
+          <TouchableOpacity style={{ width: 60, height: 40 }}
+            onPress={() => this.gotoShop()}>
+            <View style={{ flexDirection: 'row' }}>
+              <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
+              <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
+            </View>
           </TouchableOpacity>
           <Text style={{ justifyContent: 'center', marginLeft: DEVICE_WIDTH * 0.3 }}>{"MATCH"}</Text>
         </View>
@@ -215,23 +217,24 @@ class Match extends Component {
         </ScrollView>)}
         <Footer style={{ backgroundColor: '#222F3F', borderTopColor: '#222F3F', height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
           <FooterTab>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("BrowseList")}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("BrowseList")}>
               <Image source={b_browse} style={{ width: 25, height: 25, }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"BROWSE"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("Income")}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("Income")}>
               <Image source={b_incoming} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"INCOMING"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => { }}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => { }}>
               <Image source={b_match} style={{ width: 25, height: 25, tintColor: '#B64F54' }} />
               <Text style={{ color: '#B64F54', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MATCH"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("Chat")}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("Chat")}>
+              {this.props.unreadFlag && (<View style={styles.badgeIcon}><Text style={{ color: '#FFF', textAlign: 'center', fontSize: 10, }}>{'N'}</Text></View>)}
               <Image source={b_chat} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"CHAT"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("MyVideo")}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("MyVideo")}>
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
             </Button>
@@ -258,5 +261,23 @@ const styles = StyleSheet.create({
     color: '#3333ff',
     marginBottom: 5,
   },
+  badgeIcon: {
+    position: 'absolute',
+    zIndex: 1000,
+    top: -5,
+    right: 15,
+    width: 20,
+    height: 20,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#B64F54'
+  }
 });
-export default Match;
+
+const mapStateToProps = (state) => {
+  const { unreadFlag } = state.reducer
+  return { unreadFlag }
+};
+
+export default connect(mapStateToProps)(Match);

@@ -19,10 +19,11 @@ import {
   StatusBar,
   Alert
 } from "react-native";
+import { Badge } from 'react-native-elements'
 import firebase from 'firebase';
-
+import { connect } from 'react-redux';
 import { SERVER_URL } from '../../config/constants';
-import OnlyGImage from '../../assets/images/OnlyGImage.png';
+// import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
@@ -38,7 +39,7 @@ class Chat extends Component {
     this.state = {
       datas: [],
       tmpData: [],
-      searchText: '',      
+      searchText: '',
       coinCount: Global.saveData.coin_count,
       visible: false,
     };
@@ -56,8 +57,8 @@ class Chat extends Component {
   }
 
   componentDidMount() {
-    firebase.database().ref().child(Global.saveData.u_id)
-      .on('child_added', (value) => {
+    firebase.database().ref().child('dz-chat-data').child(Global.saveData.u_id + '/')
+      .on('value', (value) => {
         this.getChatData();
       });
   }
@@ -90,6 +91,7 @@ class Chat extends Component {
   getTumbnails = async (data) => {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
+      let senderId = data[i].other_user_id;
       if (data[i].cdn_id) {
         var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
         // var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
@@ -105,6 +107,7 @@ class Chat extends Component {
               index: i,
               imageUrl: responseJson.url,
               // videoUrl: vurl,
+              sent: this.props.senders !== null ? ( this.props.senders.indexOf(JSON.stringify(senderId)) === -1 ? false : true) : false,
               data: data[i]
             });
           })
@@ -116,6 +119,7 @@ class Chat extends Component {
         list_items.push({
           index: i,
           imageUrl: null,
+          sent: this.props.senders !== null ? ( this.props.senders.indexOf(JSON.stringify(senderId)) === -1 ? false : true) : false,
           // videoUrl: vurl,
           data: data[i]
         });
@@ -146,14 +150,14 @@ class Chat extends Component {
   }
   gotoChat(data) {
     Global.saveData.prevpage = "Chat";
-    if (data.data.publish == 2) {
+    if (data.data.publish === 2) {
       Alert.alert(
         '',
         "You have been blocked by the user",
         [
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
         ],
-        {cancelable: false},
+        { cancelable: false },
       );
     } else {
       this.props.navigation.navigate("ChatDetail", { data: data })
@@ -175,15 +179,15 @@ class Chat extends Component {
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <View style={{ marginTop: 40, alignItems: 'center', flexDirection: 'row' }}>
-          <TouchableOpacity style={{ width: 60, height: 40}}
-              onPress={() => this.gotoShop()}>
-              <View style={{ flexDirection: 'row' }}>
-                  <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
-                  <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
-              </View>
+          <TouchableOpacity style={{ width: 60, height: 40 }}
+            onPress={() => this.gotoShop()}>
+            <View style={{ flexDirection: 'row' }}>
+              <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
+              <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
+            </View>
           </TouchableOpacity>
           <Text style={{ justifyContent: 'center', marginLeft: DEVICE_WIDTH * 0.3 }}>{"CHAT"}</Text>
-        </View>  
+        </View>
         <View style={styles.inputwrapper}>
           {/* <Icon type="Ionicons" name="ios-search" style={{color:"#808080", marginTop:5}}/> */}
           <TextInput
@@ -215,7 +219,8 @@ class Chat extends Component {
                         <Text numberOfLines={1} style={{ fontSize: 12, color: '#808080' }}>{rowData.data.message_text}</Text>
                       </View>
                     </View>
-                    <View style={{ width: 100, height: 40, marginLeft: 5, alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={{ flexDirection: 'column', width: 100, height: 40, marginLeft: 5, alignItems: 'center', justifyContent: 'center' }}>
+                      {rowData.sent && (<View style={{ backgroundColor: '#B64F54', borderRadius: 15, width: 20, height: 20,  alignItems: 'center', justifyContent: 'center', }}><Text style={{color: '#FFF', fontSize: 10}}>{'N'}</Text></View>)}
                       <Text numberOfLines={1} style={{ fontSize: 12, color: '#808080' }}>{rowData.data.time_ago}</Text>
                     </View>
                   </TouchableOpacity>
@@ -240,6 +245,7 @@ class Chat extends Component {
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MATCH"}</Text>
             </Button>
             <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent >
+              {this.props.unreadFlag && (<View style={styles.badgeIcon}><Text style={{color: '#FFF', textAlign: 'center', fontSize: 10, }}>{'N'}</Text></View>)}
               <Image source={b_chat} style={{ width: 25, height: 25, tintColor: '#B64F54' }} />
               <Text style={{ color: '#B64F54', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"CHAT"}</Text>
             </Button>
@@ -284,5 +290,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#000',
   },
+  badgeIcon: {
+    position:'absolute',
+    zIndex: 1000,
+    top:-5,
+    right:15,
+    width:20,
+    height:20,
+    borderRadius:15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#B64F54'
+  }
 });
-export default Chat;
+
+const mapStateToProps = (state) => {
+  const { unreadFlag, senders } = state.reducer
+  return { unreadFlag, senders }
+};
+
+export default connect(mapStateToProps)(Chat);

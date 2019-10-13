@@ -35,6 +35,7 @@ import screenGpay02 from './components/GPay/screenGpay02';
 import screenGpay03 from './components/GPay/screenGpay03';
 import screenGpay04 from './components/GPay/screenGpay04';
 
+
 export default Router = createStackNavigator({
     // AppView: {screen: AppView},
     FirstScreen: { screen: FirstScreen },
