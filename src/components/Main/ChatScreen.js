@@ -129,8 +129,12 @@ class ChatScreen extends React.Component {
     }
 
     backPressed = () => {
-        if (Global.saveData.prevpage === "Chat") {
+        if (Global.saveData.prevpage == "Chat") {
             this.props.navigation.replace("Chat");
+        } else if (Global.saveData.prevpage == "BrowseList") {
+            this.props.navigation.replace("BrowseList");
+        } else if (Global.saveData.prevpage == "Browse") {
+            this.props.navigation.replace("BrowseList");
         } else {
             this.props.navigation.pop();
         }
@@ -281,26 +285,6 @@ class ChatScreen extends React.Component {
 
     sendMessage = async () => {
         if (this.state.textMessage.length > 0) {
-            let msgId = firebase.database().ref().child('dz-chat-data').child(Global.saveData.u_id).child(this.state.other.userId).push().key;
-            let updates = {};
-            let senderMessage = {
-                message: this.state.textMessage,
-                time: firebase.database.ServerValue.TIMESTAMP,
-                from: Global.saveData.u_id,
-                read: true
-            };
-            updates[Global.saveData.u_id + '/' + this.state.other.userId + '/' + msgId] = senderMessage;
-            let receiverMessage = {
-                message: this.state.textMessage,
-                time: firebase.database.ServerValue.TIMESTAMP,
-                from: Global.saveData.u_id,
-                read: false
-            };
-            updates[this.state.other.userId + '/' + Global.saveData.u_id + '/' + msgId] = receiverMessage;
-            firebase.database().ref().child('dz-chat-data').update(updates);
-            if (this.scrollView) {
-                this.scrollView.scrollToEnd({ animated: true });
-            }
             this.createNewMessage();
         }
     }
@@ -327,7 +311,49 @@ class ChatScreen extends React.Component {
             body: formBody,
         }).then((response) => response.json())
             .then((responseJson) => {
-                this.setState({ textMessage: '' });
+
+                if (responseJson.data.account_status == 1) {
+
+                    if (responseJson.data.sending_available) {
+                    
+                        let msgId = firebase.database().ref('dz-chat-app').child(Global.saveData.u_id).child(this.state.other.userId).push().key;
+                        let updates = {};
+                        let senderMessage = {
+                            message: this.state.textMessage,
+                            time: firebase.database.ServerValue.TIMESTAMP,
+                            from: Global.saveData.u_id,
+                            read: true
+                        };
+                        updates[Global.saveData.u_id + '/' + this.state.other.userId + '/' + msgId] = senderMessage;
+                        let receiverMessage = {
+                            message: this.state.textMessage,
+                            time: firebase.database.ServerValue.TIMESTAMP,
+                            from: Global.saveData.u_id,
+                            read: false
+                        };
+                        updates[this.state.other.userId + '/' + Global.saveData.u_id + '/' + msgId] = receiverMessage;
+                        firebase.database().ref().update(updates);
+                        if (this.scrollView) {
+                            this.scrollView.scrollToEnd({ animated: true });
+                        }
+    
+                        this.setState({ textMessage: '' });
+                    } else {
+                        Alert.alert(
+                          '',
+                          'You cannot send message.',
+                          [],
+                          {cancelable: false},
+                        );
+                    }
+                } else {
+                    Alert.alert(
+                      '',
+                      responseJson.message,
+                      [],
+                      {cancelable: false},
+                    );
+                }
             })
             .catch((error) => {
                 alert(JSON.stringify(error))

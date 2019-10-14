@@ -104,6 +104,18 @@ class FirstScreen extends Component {
                         ],
                         {cancelable: false},
                       );
+                    } else if (responseJson.user.account_status == 0) {
+
+                      let alert_str = 'Your account was banned for violating terms of use. Please send an email to admin@dazzleddate.com if this was done in error. Please include the following information in your email ';
+                      alert_str += 'User ID : ' + responseJson.user.id +' Confirmation Code ' + responseJson.user.confirmation_code;
+                      alert_str += ' In your email, please describe in details why this was done in error';
+
+                      Alert.alert(
+                        '',
+                        alert_str,
+                        [],
+                        {cancelable: false},
+                      );
                     } else {
                       this.checkUnreadMessage();
 

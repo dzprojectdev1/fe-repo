@@ -143,7 +143,6 @@ android {
 
 dependencies {
     implementation project(':react-native-iap')
-    implementation project(':react-native-google-pay')
     implementation project(':react-native-firebase')
     implementation project(':react-native-geolocation-service')
     implementation project(':react-native-gesture-handler')

@@ -29,6 +29,7 @@ import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
 import b_name from '../../assets/images/name.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
+import heart from '../../assets/images/heart.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -183,14 +184,14 @@ class Match extends Component {
               <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
             </View>
           </TouchableOpacity>
-          <Text style={{ justifyContent: 'center', marginLeft: DEVICE_WIDTH * 0.3 }}>{"MATCH"}</Text>
+          <Text style={{ justifyContent: 'center', marginLeft: DEVICE_WIDTH * 0.26 }}>{"MATCH"}</Text>
         </View>
         {this.state.datas.length === 0 ? (<View style={{
           flex: 1,
-          justifyContent: 'center',
           alignItems: 'center'
         }}>
-          <Text style={{ fontSize: 20, textAlignVertical: 'center' }}> {this.state.alertMsg} </Text>
+          <Text style={{ fontSize: 20, marginTop: 70 }}> {this.state.alertMsg} </Text>
+          <Image source={heart} style={{width: 150, height: 150, marginTop: 100}}></Image>
         </View>) : (<ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
           <FlatList
             numColumns={2}

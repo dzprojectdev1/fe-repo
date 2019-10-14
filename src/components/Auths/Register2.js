@@ -10,10 +10,11 @@ import {
   Dimensions,
   View,
   StyleSheet,
-  // TouchableOpacity,
+  TouchableOpacity,
   StatusBar,
   Alert,
-  PermissionsAndroid
+  PermissionsAndroid,
+  Linking
 } from "react-native";
 import DeviceInfo from 'react-native-device-info';
 import AnimateLoadingButton from 'react-native-animate-loading-button';
@@ -262,6 +263,7 @@ class Register2 extends Component {
                     Global.saveData.u_city = responseJson.user.ethnicity
                     Global.saveData.u_country = responseJson.user.country
                     Global.saveData.u_description = responseJson.user.description;
+                    Global.saveData.coin_count = responseJson.user.coin_count;
                     Global.saveData.newUser = true;
                     this.registerLoadingBtn.showLoading(false);
                     this.props.navigation.navigate("BrowseList");
@@ -396,7 +398,12 @@ class Register2 extends Component {
           </View>
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, alignItems: 'center', justifyContent: 'center', marginTop: 30 }}>
             <Text style={{ color: '#808080', fontSize: 12, textAlign: 'center' }}>{"BY GETTING SIGNING UP YOU ARE AFREE TO"}</Text>
-            <Text style={{ color: '#808080', fontSize: 12, textAlign: 'center', marginTop: 10 }}>{"OUR TERMS OF SERVICE AND PRIVACY POLICY"}</Text>
+            <Text style={{marginTop: 10}}>
+              <Text style={{ color: '#808080', fontSize: 12, textAlign: 'center' }}>{" OUR "}</Text>
+              <Text style={{ color: '#808080', fontSize: 12, textAlign: 'center', textDecorationLine: 'underline' }} onPress={ ()=>{ Linking.openURL('https://dazzleddate.com/terms_and_conditions.html')}}>{" TERMS OF SERVICE "}</Text>
+              <Text style={{ color: '#808080', fontSize: 12, textAlign: 'center' }}>{" AND "}</Text>
+              <Text style={{ color: '#808080', fontSize: 12, textAlign: 'center', textDecorationLine: 'underline' }} onPress={ ()=>{ Linking.openURL('https://dazzleddate.com/privacy_policy.html')}}>{" PRIVACY POLICY "}</Text>
+            </Text>
           </View>
           <View style={{ width: DEVICE_WIDTH, height: 50, alignItems: 'center', justifyContent: 'center', marginTop: 30 }}>
             {/* <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, height: 40, borderRadius: 20, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center' }}

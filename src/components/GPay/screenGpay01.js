@@ -47,7 +47,6 @@ import diamond from '../../assets/images/diamond.png';
 import diamond_trans from '../../assets/images/red_diamond_trans.png';
 import Global from '../Global';
 import { SERVER_URL } from '../../config/constants'
-import { GooglePay } from "react-native-google-pay";
 
 class screenGpay01 extends Component {
 
@@ -58,10 +57,9 @@ class screenGpay01 extends Component {
       receipt: '',
       availableItemsMessage: '',
       gemNumber: Global.saveData.coin_count,
-      free_button_condition: true
+      free_button_condition: true, 
+      isLoading: true,
     };
-
-    this.getItems();
   }
 
   static navigationOptions = {
@@ -81,6 +79,8 @@ class screenGpay01 extends Component {
     } catch (err) {
       console.warn(err.code, err.message);
     }
+
+    this.getItems();
 
     purchaseUpdateSubscription = purchaseUpdatedListener(async (purchase) => {
       console.log('purchaseUpdatedListener', purchase);
@@ -186,7 +186,12 @@ class screenGpay01 extends Component {
     try {
       const products = await RNIap.getProducts(itemSkus);
       console.log('Products', products);
-      this.setState({ productList: products });
+      if (products.length > 0) {
+        this.setState({ 
+          productList: products,
+          isLoading: false,
+        });
+      }
     } catch (err) {
       console.warn(err.code, err.message);
     }
@@ -271,10 +276,22 @@ class screenGpay01 extends Component {
   backPressed = () => {
     this.props.navigation.navigate(Global.saveData.nowPage);
     return true;
-  }  
+  }   
  
   goBack() {
-    this.props.navigation.navigate(Global.saveData.nowPage);
+    if (Global.saveData.nowPage == 'Browse' || Global.saveData.nowPage == 'BrowseList') {
+      this.props.navigation.replace("BrowseList");
+    } else if (Global.saveData.nowPage == 'Match') {
+      this.props.navigation.replace("Match");
+    } else if (Global.saveData.nowPage == 'Chat') {
+      this.props.navigation.replace("Chat");
+    } else if (Global.saveData.nowPage == 'MyVideo') {
+      this.props.navigation.replace("MyVideo");
+    } else if (Global.saveData.nowPage == 'Income') {
+      this.props.navigation.replace("Income");
+    } else {
+      this.props.navigation.navigate(Global.saveData.nowPage);
+    }
   }
 
   gotoFreeDiamonds = () => {
@@ -342,35 +359,31 @@ class screenGpay01 extends Component {
           <TouchableOpacity onPress={() => this.goBack()}>
             <Image source={goback} style={{ width: 20, height: 20, tintColor: '#000', marginLeft: 25}} />
           </TouchableOpacity>
-          <Text style={{ color: '#000', fontSize: 15, fontWeight: 'bold', marginLeft: 20, textAlign:'left', justifyContent:'center' }}>{"Gem shop"}</Text>
+          <Text style={{ color: '#000', fontSize: 15, fontWeight: 'bold', marginLeft: 20, textAlign:'left', justifyContent:'center' }}>{"Diamond shop"}</Text>
         </View>
         <Content>
           <View style={{justifyContent:'center', alignItems: 'center'}}>
             {/* <View style={styles.list_item_spread} > */}
             <View style={{ width: DEVICE_WIDTH * 0.8, height:60, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row' }}>
-              <Text style={{ color: '#cc2e48', fontSize: 17, marginTop: 20, marginLeft: DEVICE_WIDTH * 0.2 }}>{"My gem"}</Text>              
+              <Text style={{ color: '#cc2e48', fontSize: 17, marginTop: 20, marginLeft: DEVICE_WIDTH * 0.1 }}>{"My Diamonds"}</Text>              
               <Image source={diamond_trans} style={{ width: 25, height: 25, marginTop: 22, marginLeft: 10 }} />
               <Text style={{ color: '#cc2e48', fontSize: 17, justifyContent:'center', alignItems: 'center', marginTop: 22, marginLeft: 10 }}>{ this.state.gemNumber }</Text>
             </View>
-              
-            {productList.map((product, i) => {
+            {(productList.length > 0)? productList.map((product, i) => {
               return (
                 <TouchableOpacity style={styles.list_item_normal} 
                   onPress={() => this.requestPurchase(product.productId)}
-                  // onPress={() => this.requestSubscription(product.productId)}
-                  // onPress={() => this.buyItem(product.productId)}
-                  // onPress={() => this.buySubscribeItem(product.productId)}
                 >
                   <View style={{flexDirection: 'row', paddingTop: 18}}>
-                    <Image source={diamond} style={{ width: 17, height: 15}} />
-                    <Text style={{ color: '#000', fontSize: 12, marginLeft: 10 }}>{product.productId}</Text>
+                    <Image source={diamond_trans} style={{ width: 17, height: 15}} />
+                    <Text style={{ color: '#000', fontSize: 12, marginLeft: 10 }}>{product.description}</Text>
                     <View style={{flex:1, alignItems:"flex-end"}}>
                       <Text style={{color: '#000', fontSize: 12, textAlign:'right', paddingRight:10}}>{product.localizedPrice}</Text>
                     </View>
                   </View>
                 </TouchableOpacity>
                 );
-              })}
+              }): <Text></Text>}
           </View>
           <View style={{justifyContent:'center', alignItems: 'center', marginTop: 30 }} pointerEvents={this.state.free_button_condition ? 'auto': 'none'}>
             <TouchableOpacity onPress={() =>this.gotoFreeDiamonds()}>

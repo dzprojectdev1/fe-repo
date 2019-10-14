@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.dooboolab.RNIap.RNIapPackage;
-import com.busfor.RNGooglePayPackage;
 import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.evollu.react.fcm.FIRMessagingPackage;
@@ -38,7 +37,6 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new RNIapPackage(),
-            new RNGooglePayPackage(),
             new RNFusedLocationPackage(),
             new RNGestureHandlerPackage(),
             new FIRMessagingPackage(),

@@ -262,45 +262,6 @@ class Browse extends Component {
       disabled: true
     });
 
-    // var user_id = Global.saveData.u_id;
-
-    // fetch(`${SERVER_URL}/api/transaction/gemRemove/${user_id}`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/x-www-form-urlencoded',
-    //     'Authorization': Global.saveData.token
-    //   }
-    // }).then((response) => response.json())
-    // .then((responseJSON) => {
-    //   if (!responseJSON.error) {
-    //     if (responseJSON.coin_count == '-1') {
-
-    //       this.setState({
-    //         visible: true,
-    //         isLoading: false,
-    //         disabled: false
-    //       })
-
-    //     } else {
-    
-    //       Global.saveData.coin_count = responseJSON.coin_count;
-
-    //       this.setState({
-    //         coinCount: responseJSON.coin_count,
-    //         isLoading: false,
-    //         disabled: false
-    //       });
-    //     }
-    //   }
-    // })
-    // .catch((error) => {
-    //   this.setState({
-    //     isLoading: false,
-    //     disabled: false
-    //   });
-    //   return
-    // });
-
     var details = {
       'otherId': this.state.otherData.detail.id
     };
@@ -328,26 +289,37 @@ class Browse extends Component {
           // this.setState({
           //     operatedIDArr: operateArr
           // });
-          if (responseJson.coin_count == '-1') {
-    
-            Global.saveData.coin_count = 0;
+          if (responseJson.data.account_status == 1) {
+            if (responseJson.data.coin_count == '-1') {
+      
+              Global.saveData.coin_count = responseJson.data.coin_count;
 
-            this.setState({
-              visible: true,
-              isLoading: false,
-              disabled: false
-            })
-          } else {
+              this.setState({
+                visible: true,
+                isLoading: false,
+                disabled: false
+              })
+            } else {
+      
+              Global.saveData.coin_count = responseJson.data.coin_count;
+              
+              this.getFilterVideos();
     
-            Global.saveData.coin_count = responseJson.data.coin_count;
-            
-            this.getFilterVideos();
-  
-            this.setState({
-              coinCount: responseJson.data.coin_count,
-              isLoading: false,
-              disabled: false
-            });
+              this.setState({
+                coinCount: responseJson.data.coin_count,
+                isLoading: false,
+                disabled: false
+              });
+            }
+          } else {
+            Alert.alert(
+              '',
+              responseJson.message,
+              [
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+              ],
+              {cancelable: false},
+            );
           }
         }
         this.setState({
@@ -370,7 +342,7 @@ class Browse extends Component {
     if (isReplace) {
       this.props.navigation.replace("BrowseList", { ids: this.state.operatedIDArr });
     } else {
-      this.props.navigation.pop();
+      this.props.navigation.replace(Global.saveData.prePage);
     }
     // this.props.navigation.navigate("BrowseList", {ids: this.state.operatedIDArr});    
     return true;
@@ -393,7 +365,17 @@ class Browse extends Component {
   gotoProfile = () => {
     Global.saveData.prevpage = "Browse";
     this.props.navigation.replace("Profile",
-      { id: this.state.otherData.detail.id, name: this.state.otherData.detail.name, isMatched: false, description: this.state.otherData.detail.description }
+      { 
+        id: this.state.otherData.detail.id, 
+        name: this.state.otherData.detail.name, 
+        isMatched: false, 
+        description: this.state.otherData.detail.description,
+        imageUrl: this.state.otherData.imageUrl,
+        age: this.state.otherData.detail.age,
+        distance: this.state.otherData.detail.distance,
+        gender: this.state.otherData.detail.gender,
+        last_loggedin_date: this.state.otherData.detail,
+      }
     );
   }
   gotoShop = () => {
@@ -404,8 +386,8 @@ class Browse extends Component {
   }
   instantChat = () => {
     Alert.alert(
-      'Attension',
-      "You can click OK to start instant chatting. And you will take 50 diamonds for this.",
+      '',
+      "Send instant messages to "+this.state.otherData.detail.name+" for 50 diamonds. Continue?",
       [
         {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
         {text: 'OK', onPress: () => this.gotoInstantChat()},
@@ -435,25 +417,34 @@ class Browse extends Component {
       .then((responseJson) => {
         if (!responseJson.error) {
 
-          if (!responseJson.data.ability) {
+          if (responseJson.data.account_status == 1) {
+            if (!responseJson.data.ability) {
+              Alert.alert(
+                '',
+                "You need 50 diamonds to start chat with " + this.state.otherData.detail.name + " immediately",
+                [
+                  {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+                  {text: 'Buy Diamonds', onPress: () => this.gotoShop()},
+                ],
+                {cancelable: false},
+              );
+            } else {
+              this.setState({
+                matchId: responseJson.data.match_id,
+                coinCount: responseJson.data.coin_count
+              });
+
+              Global.saveData.coin_count = responseJson.data.coin_count;
+    
+              this.gotoChat();
+            }
+          } else {
             Alert.alert(
               '',
-              "You need 50 diamonds to start chat with " + this.state.otherData.detail.name + " immediately",
-              [
-                {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
-                {text: 'Buy Diamonds', onPress: () => this.gotoShop()},
-              ],
+              responseJson.message,
+              [],
               {cancelable: false},
             );
-          } else {
-            this.setState({
-              matchId: responseJson.data.match_id,
-              coinCount: responseJson.data.coin_count
-            });
-
-            Global.saveData.coin_count = responseJson.data.coin_count;
-  
-            this.gotoChat();
           }
         }
       }).catch((error) => {
@@ -474,7 +465,7 @@ class Browse extends Component {
         match_id: this.state.matchId
       }
     }
-    Global.saveData.prevpage = "Browser"
+    Global.saveData.prevpage = "BrowseList"
     this.props.navigation.navigate("ChatDetail", { data: otherData })
   }
 
