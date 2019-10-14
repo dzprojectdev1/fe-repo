@@ -57,6 +57,7 @@ class BrowserList extends Component {
 
     componentWillMount() {
         Global.saveData.nowPage = 'BrowseList';
+        Global.saveData.prePage = 'BrowseList';
         BackHandler.addEventListener('hardwareBackPress', this.backPressed);
     }
 
@@ -335,7 +336,7 @@ class BrowserList extends Component {
     }
 
     gotoDetail = (item) => {
-        this.props.navigation.navigate("Browse", { data: item });
+        this.props.navigation.replace("Browse", { data: item });
     }
 
     gotoShop = () => {

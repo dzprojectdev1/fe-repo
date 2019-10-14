@@ -234,7 +234,7 @@ class MyVideo extends Component {
               <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
             </View>
           </TouchableOpacity>
-          <Text style={{ justifyContent: 'center' }}>{"PROFILE"}</Text>
+          <Text style={{ justifyContent: 'center', marginLeft: -15 }}>{"PROFILE"}</Text>
           <TouchableOpacity style={{ width: 30, height: 40, alignItems: 'center', justifyContent: 'center', marginRight: 10 }}
             onPress={() => this.gotoProfileSetting()}>
             <Icon type="MaterialCommunityIcons" name="menu" style={{ color: "#000", marginTop: 5 }} />
