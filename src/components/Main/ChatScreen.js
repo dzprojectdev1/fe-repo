@@ -342,7 +342,9 @@ class ChatScreen extends React.Component {
                         Alert.alert(
                           '',
                           'You cannot send message.',
-                          [],
+                          [
+                            {text: 'OK', onPress: () => this.props.navigation.replace("Chat")},
+                          ],
                           {cancelable: false},
                         );
                     }
