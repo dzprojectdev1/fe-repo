@@ -316,7 +316,7 @@ class ChatScreen extends React.Component {
 
                     if (responseJson.data.sending_available) {
                     
-                        let msgId = firebase.database().ref('dz-chat-app').child(Global.saveData.u_id).child(this.state.other.userId).push().key;
+                        let msgId = firebase.database().ref().child("dz-chat-data").child(Global.saveData.u_id).child(this.state.other.userId).push().key;
                         let updates = {};
                         let senderMessage = {
                             message: this.state.textMessage,
@@ -332,7 +332,7 @@ class ChatScreen extends React.Component {
                             read: false
                         };
                         updates[this.state.other.userId + '/' + Global.saveData.u_id + '/' + msgId] = receiverMessage;
-                        firebase.database().ref().update(updates);
+                        firebase.database().ref().child('dz-chat-data').update(updates);
                         if (this.scrollView) {
                             this.scrollView.scrollToEnd({ animated: true });
                         }
