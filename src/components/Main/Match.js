@@ -177,14 +177,14 @@ class Match extends Component {
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <View style={{ marginTop: 40, alignItems: 'center', flexDirection: 'row' }}>
-          <TouchableOpacity style={{ width: 60, height: 40 }}
+          <TouchableOpacity style={{ width: 80, height: 40 }}
             onPress={() => this.gotoShop()}>
             <View style={{ flexDirection: 'row' }}>
               <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
               <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
             </View>
           </TouchableOpacity>
-          <Text style={{ justifyContent: 'center', marginLeft: DEVICE_WIDTH * 0.26 }}>{"MATCH"}</Text>
+          <Text style={{ justifyContent: 'center', marginLeft: DEVICE_WIDTH * 0.2 }}>{"MATCH"}</Text>
         </View>
         {this.state.datas.length === 0 ? (<View style={{
           flex: 1,

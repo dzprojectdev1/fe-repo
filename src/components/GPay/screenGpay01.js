@@ -25,19 +25,16 @@ const itemSkus = Platform.select({
   android: [
     '100_diamonds',
     '300_diamonds',
-    '500_diamonds'
+    '500_diamonds',
+    '1_day_pass',
+    '3_day_pass',
+    '7_day_pass'
   ],
-  // android: [
-  //   'android.test.purchased',
-  //   'android.test.canceled',
-  //   'android.test.item_unavailable'
-  // ],
 });
 
-const valProductId = ['100_diamonds', '300_diamonds', '500_diamonds'];
-// const valProductId = ['android.test.purchased', 'android.test.canceled', 'android.test.item_unavailable'];
-const GempriceListVal = [200, 700, 1200, 2500, 8000, 15000];
-const PaypriceListVal = [0.99, 2.49, 4.49, 8.49, 25.99, 42.99];
+const valProductId = ['100_diamonds', '300_diamonds', '500_diamonds', '1_day_pass', '3_day_pass', '7_day_pass'];
+const diamondCount = [100, 300, 500, 1, 3, 7];
+const diamondPrice = [0.99, 1.49, 4.49, 4.49, 11.99, 14.99];
 
 let purchaseUpdateSubscription;
 let purchaseErrorSubscription;
@@ -108,11 +105,6 @@ class screenGpay01 extends Component {
     });
   }
 
-  gotoScreen02(Num) {
-    this.state.number = Num;
-    this.props.navigation.navigate("screenGpay02", {CLICK_NUMBER: this.state.number} );
-  }
-
   componentWillMount() {
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
   }
@@ -142,8 +134,8 @@ class screenGpay01 extends Component {
 
     var formBody = [];
     formBody.push('user_id' +     "=" + Global.saveData.u_id);
-    formBody.push('coin_number' + "=" + GempriceListVal[productIdIndex]);
-    formBody.push('coin_price' +  "=" + PaypriceListVal[productIdIndex]);
+    formBody.push('coin_number' + "=" + diamondCount[productIdIndex]);
+    formBody.push('coin_price' +  "=" + diamondPrice[productIdIndex]);
     formBody.push('currency=USD');
 
     formBody.push('package_name' +      "=" + JSON.parse(responseReceipt).packageName);
@@ -232,51 +224,16 @@ class screenGpay01 extends Component {
       Alert.alert(err.message);
     }
   };
-  
-  // Deprecated apis
-  buyItem = async (sku) => {
-    console.info('buyItem', sku);
-    // const purchase = await RNIap.buyProduct(sku);
-    // const products = await RNIap.buySubscription(sku);
-    // const purchase = await RNIap.buyProductWithoutFinishTransaction(sku);
-    try {
-      const purchase = await RNIap.buyProduct(sku);
-      // console.log('purchase', purchase);
-      // await RNIap.consumePurchaseAndroid(purchase.purchaseToken);
-      this.setState({ receipt: purchase.transactionReceipt }, () =>
-        this.goNext(),
-      );
-    } catch (err) {
-      console.warn(err.code, err.message);
-      const subscription = RNIap.addAdditionalSuccessPurchaseListenerIOS(
-        async (purchase) => {
-          this.setState({ receipt: purchase.transactionReceipt }, () =>
-            this.goNext(),
-          );
-          subscription.remove();
-        },
-      );
-    }
-  };
-  
-  buySubscribeItem = async (sku) => {
-    try {
-      console.log('buySubscribeItem: ' + sku);
-      const purchase = await RNIap.buySubscription(sku);
-      console.info(purchase);
-      this.setState({ receipt: purchase.transactionReceipt }, () =>
-        this.goNext(),
-      );
-    } catch (err) {
-      console.warn(err.code, err.message);
-      Alert.alert(err.message);
-    }
-  };
 
   backPressed = () => {
     this.props.navigation.navigate(Global.saveData.nowPage);
     return true;
-  }   
+  }
+  
+  treatProductTitle = title => {
+    let split_title = title.split(' (Dazzled');
+    return split_title[0];
+  }
  
   goBack() {
     if (Global.saveData.nowPage == 'Browse' || Global.saveData.nowPage == 'BrowseList') {
@@ -321,10 +278,6 @@ class screenGpay01 extends Component {
               ],
               {cancelable: false},
             );
-
-            // this.setState({
-            //   free_button_condition: false
-            // })
           } else {
             Alert.alert(
               'Success',
@@ -363,7 +316,6 @@ class screenGpay01 extends Component {
         </View>
         <Content>
           <View style={{justifyContent:'center', alignItems: 'center'}}>
-            {/* <View style={styles.list_item_spread} > */}
             <View style={{ width: DEVICE_WIDTH * 0.8, height:60, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row' }}>
               <Text style={{ color: '#cc2e48', fontSize: 17, marginTop: 20, marginLeft: DEVICE_WIDTH * 0.1 }}>{"My Diamonds"}</Text>              
               <Image source={diamond_trans} style={{ width: 25, height: 25, marginTop: 22, marginLeft: 10 }} />
@@ -376,7 +328,7 @@ class screenGpay01 extends Component {
                 >
                   <View style={{flexDirection: 'row', paddingTop: 18}}>
                     <Image source={diamond_trans} style={{ width: 17, height: 15}} />
-                    <Text style={{ color: '#000', fontSize: 12, marginLeft: 10 }}>{product.description}</Text>
+                    <Text style={{ color: '#000', fontSize: 12, marginLeft: 10 }}>{this.treatProductTitle(product.title)}</Text>
                     <View style={{flex:1, alignItems:"flex-end"}}>
                       <Text style={{color: '#000', fontSize: 12, textAlign:'right', paddingRight:10}}>{product.localizedPrice}</Text>
                     </View>
