@@ -74,9 +74,9 @@ class ChatScreen extends React.Component {
 
     componentDidMount() {
         this._mounted = true;
-        setTimeout(function () {
+        if (this._mounted && this.scrollView) {
             this.scrollView.scrollToEnd({ animated: true });
-        }.bind(this), 1000);
+        }        
         this.checkUnReadMessage();
     }
 
@@ -92,20 +92,27 @@ class ChatScreen extends React.Component {
                     if (index !== -1) {
                         senderIdArr.splice(index, 1)
                     }
+                    newPayload = {
+                        unreadFlag: true,
+                        senders: senderIdArr
+                    }
                     if (senderIdArr.length) {
-                        newPayload = {
-                            unreadFlag: true,
-                            senders: senderIdArr
-                        }
+                        // newPayload = {
+                        //     unreadFlag: true,
+                        //     senders: senderIdArr
+                        // }
+                        newPayload.unreadFlag = true;
                         updates[Global.saveData.u_id] = senderIdArr.toString();
                         firebase.database().ref().child('dz-chat-unread').update(updates);
                     } else {
-                        newPayload = {
-                            unreadFlag: false,
-                            senders: []
-                        }
+                        // newPayload = {
+                        //     unreadFlag: false,
+                        //     senders: []
+                        // }
+                        newPayload.unreadFlag = false;
                         firebase.database().ref().child('dz-chat-unread').child(Global.saveData.u_id + '/').remove();
                     }
+
                     this.props.changeReadFlag(newPayload);
                 }
             });
@@ -142,13 +149,13 @@ class ChatScreen extends React.Component {
     }
 
     keyboardDidShow(e) {
-        if (this.scrollView) {
+        if (this._mounted && this.scrollView) {
             this.scrollView.scrollToEnd({ animated: true });
         }
     }
 
     keyboardDidHide(e) {
-        if (this.scrollView) {
+        if (this._mounted && this.scrollView) {
             this.scrollView.scrollToEnd({ animated: true });
         }
     }
@@ -315,7 +322,7 @@ class ChatScreen extends React.Component {
                 if (responseJson.data.account_status == 1) {
 
                     if (responseJson.data.sending_available) {
-                    
+
                         let msgId = firebase.database().ref().child("dz-chat-data").child(Global.saveData.u_id).child(this.state.other.userId).push().key;
                         let updates = {};
                         let senderMessage = {
@@ -336,24 +343,24 @@ class ChatScreen extends React.Component {
                         if (this.scrollView) {
                             this.scrollView.scrollToEnd({ animated: true });
                         }
-    
+
                         this.setState({ textMessage: '' });
                     } else {
                         Alert.alert(
-                          '',
-                          'You cannot send message.',
-                          [
-                            {text: 'OK', onPress: () => this.props.navigation.replace("Chat")},
-                          ],
-                          {cancelable: false},
+                            '',
+                            'You cannot send message.',
+                            [
+                                { text: 'OK', onPress: () => this.props.navigation.replace("Chat") },
+                            ],
+                            { cancelable: false },
                         );
                     }
                 } else {
                     Alert.alert(
-                      '',
-                      responseJson.message,
-                      [],
-                      {cancelable: false},
+                        '',
+                        responseJson.message,
+                        [],
+                        { cancelable: false },
                     );
                 }
             })

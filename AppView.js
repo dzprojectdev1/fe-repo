@@ -56,7 +56,7 @@ class AppView extends React.Component {
       if (data.type === 'ChatDetail') {
         let senders = [];
         let senderId = data.sender;
-        if (this.props.senders !== null) {
+        if (this.props.senders && this.props.senders.length) {
           senders = this.props.senders;
           let isExist = this.props.senders.filter(item => item === senderId);
           if (!isExist) {
@@ -75,7 +75,7 @@ class AppView extends React.Component {
       showMessage({
         message: title,
         description: body,
-        type: "default",
+        type: "success",
         icon: "info"
       });
     }
