@@ -192,6 +192,8 @@ class screenGpay01 extends Component {
     var responseReceipt = this.state.receipt;
     var responseProductId = JSON.parse(responseReceipt).productId;
 
+    alert(responseProductId);
+
     var productIdIndex = 0;
 
     valProductId.forEach(function (productId, index) {
@@ -199,6 +201,8 @@ class screenGpay01 extends Component {
         productIdIndex = index;
       }
     });
+
+    var days = 0;
 
     var formBody = [];
     formBody.push('user_id' +     "=" + Global.saveData.u_id);
@@ -212,7 +216,7 @@ class screenGpay01 extends Component {
     } else if (responseProductId.indexOf('_pass') != -1 ) {
       formBody.push('dist=pass');
 
-      let days = responseProductId.slice(0, 1);
+      days = responseProductId.slice(0, 1);
       formBody.push('days=' + days);
     }
 
@@ -240,15 +244,33 @@ class screenGpay01 extends Component {
 
         // display remain time for unlimited instant chat
         if (responseJSON.data.validation) {
+          Alert.alert(
+            'Success!',
+            " You have " + days + " days for unlimited instant chat.",
+            [
+              {text: 'OK', onPress: () => console.log('OK Pressed')},
+            ],
+            {cancelable: false},
+          );
+
           this.setState({
             remainTimeStamp: responseJSON.data.remain_timestamp,
-          });
+            gemNumber: responseJSON.data.coin_count,
+          });          
+
+          Global.saveData.coin_count = responseJSON.data.coin_count;
 
           clearInterval(this.state.intervalId);
           this.timeCounter();
-        }
-
-        if (responseJSON.data.coin_count) {
+        } else {
+          Alert.alert(
+            'Success!',
+            " " + diamondCount[productIdIndex] + " diamonds are added to your account",
+            [
+              {text: 'OK', onPress: () => console.log('OK Pressed')},
+            ],
+            {cancelable: false},
+          );
 
           Global.saveData.coin_count = responseJSON.data.coin_count;
 

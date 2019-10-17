@@ -555,7 +555,7 @@ class ProfileSetting extends Component {
             <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{"Log Out"}</Text>
           </TouchableOpacity> */}
           <View style={{  width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 15, marginBottom: 20, }}>            
-            <Text>For support please contact admin@dazzeleddate.com ...</Text>
+            <Text>For support, please contact us  at admin@dazzleddate.com for any issues, questions or feedback.</Text>
           </View>
         </ScrollView>
       </View>
