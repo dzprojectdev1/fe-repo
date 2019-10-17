@@ -81,7 +81,7 @@ class AppView extends React.Component {
         }
       }
       let notiObj = {
-        title: title,
+        title: data.senderName ? data.senderName : title,
         message: body,
         image: senderImg
       }
