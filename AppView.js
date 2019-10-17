@@ -53,7 +53,6 @@ class AppView extends React.Component {
   }
 
   checkNotification = (title, body, data) => {
-    alert(JSON.stringify(data));
 
     const { nowPage } = Global.saveData;
     let senderImg;
