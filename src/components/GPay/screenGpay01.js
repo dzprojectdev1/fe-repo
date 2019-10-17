@@ -33,15 +33,16 @@ const itemSkus = Platform.select({
 });
 
 const valProductId = ['100_diamonds', '300_diamonds', '500_diamonds', '1_day_pass', '3_day_pass', '7_day_pass'];
-const diamondCount = [100, 300, 500, 1, 3, 7];
+const diamondCount = [100, 300, 500, 0, 0, 0];
 const diamondPrice = [0.99, 1.49, 4.49, 4.49, 11.99, 14.99];
 
 let purchaseUpdateSubscription;
 let purchaseErrorSubscription;
 
 import goback from '../../assets/images/BackOther.png';
-import diamond from '../../assets/images/diamond.png';
 import diamond_trans from '../../assets/images/red_diamond_trans.png';
+import vip_diamond_trans from '../../assets/images/vip_diamond_trans.png';
+import pass_day from '../../assets/images/pass_day.png';
 import Global from '../Global';
 import { SERVER_URL } from '../../config/constants'
 
@@ -51,11 +52,19 @@ class screenGpay01 extends Component {
     super(props);
     this.state = {
       productList: [],
+      productListPass: [],
       receipt: '',
       availableItemsMessage: '',
       gemNumber: Global.saveData.coin_count,
       free_button_condition: true, 
       isLoading: true,
+      remainTimeStamp: 0,
+      displayRemainTime: false,
+      intervalId: 0,
+      remainDays: 0,
+      remainHours: 0,
+      remainMinutes: 0,
+      remainSeconds: 0,
     };
   }
 
@@ -103,7 +112,62 @@ class screenGpay01 extends Component {
       console.log('purchaseErrorListener', error);
       Alert.alert('purchase error', JSON.stringify(error));
     });
+
+    // Verify validation for unlimited instant chat permission
+    var userId = Global.saveData.u_id;
+    fetch(`${SERVER_URL}/api/transaction/validatePass/${userId}`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      }
+    }).then((response) => response.json())
+    .then((responseJSON) => {      
+      if (responseJSON.error === false) {
+
+        // display remain time for unlimited instant chat
+        if (responseJSON.data.validation) {
+          this.setState({
+            remainTimeStamp: responseJSON.data.remain_timestamp,
+          })
+          this.timeCounter();
+        }
+      }
+    }).catch((error) => {
+      alert(error);
+    })
   }
+
+  timer = () => {
+    var newCount = this.state.remainTimeStamp - 1;
+    if(newCount >= 0) { 
+
+        let days    = Math.floor(newCount / 86400);
+        let hours   = Math.floor((newCount - (days * 86400)) / 3600);
+        let minutes = Math.floor((newCount - (days * 86400) - (hours * 3600)) / 60);
+        let seconds = newCount - (days * 86400) - (hours * 3600) - (minutes * 60);
+        
+        this.setState({ 
+          remainTimeStamp: newCount,
+          displayRemainTime: true,
+          remainDays: days,
+          remainHours: hours,
+          remainMinutes: minutes,
+          remainSeconds: seconds,
+        });
+    } else {
+        clearInterval(this.state.intervalId);
+        this.setState({
+          displayRemainTime: false
+        })
+    }
+ }
+
+ timeCounter = () => {
+  var intervalId = setInterval(this.timer, 1000);
+  // store intervalId in the state so it can be accessed later:
+  this.setState({intervalId: intervalId});
+ }
 
   componentWillMount() {
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
@@ -119,15 +183,19 @@ class screenGpay01 extends Component {
       purchaseErrorSubscription = null;
     }
     BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
+
+    clearInterval(this.state.intervalId);
   }
   
   goNext = () => {
 
     var responseReceipt = this.state.receipt;
+    var responseProductId = JSON.parse(responseReceipt).productId;
 
     var productIdIndex = 0;
+
     valProductId.forEach(function (productId, index) {
-      if (productId == JSON.parse(responseReceipt).productId) {
+      if (productId == responseProductId) {
         productIdIndex = index;
       }
     });
@@ -137,6 +205,16 @@ class screenGpay01 extends Component {
     formBody.push('coin_number' + "=" + diamondCount[productIdIndex]);
     formBody.push('coin_price' +  "=" + diamondPrice[productIdIndex]);
     formBody.push('currency=USD');
+
+    if (responseProductId.indexOf('_diamonds') != -1 ) {
+      formBody.push('dist=diamond');
+      formBody.push('days=0');
+    } else if (responseProductId.indexOf('_pass') != -1 ) {
+      formBody.push('dist=pass');
+
+      let days = responseProductId.slice(0, 1);
+      formBody.push('days=' + days);
+    }
 
     formBody.push('package_name' +      "=" + JSON.parse(responseReceipt).packageName);
     formBody.push('acknowledge' +       "=" + JSON.parse(responseReceipt).acknowledge);
@@ -160,12 +238,22 @@ class screenGpay01 extends Component {
       
       if (responseJSON.error === false) {
 
-        if (responseJSON.coin_count) {
+        // display remain time for unlimited instant chat
+        if (responseJSON.data.validation) {
+          this.setState({
+            remainTimeStamp: responseJSON.data.remain_timestamp,
+          });
 
-          Global.saveData.coin_count = responseJSON.coin_count;
+          clearInterval(this.state.intervalId);
+          this.timeCounter();
+        }
+
+        if (responseJSON.data.coin_count) {
+
+          Global.saveData.coin_count = responseJSON.data.coin_count;
 
           this.setState({
-            gemNumber: responseJSON.coin_count
+            gemNumber: responseJSON.data.coin_count
           })
         }
       }
@@ -178,11 +266,23 @@ class screenGpay01 extends Component {
     try {
       const products = await RNIap.getProducts(itemSkus);
       console.log('Products', products);
+
+      let diamondProducts = [];
+      let passProducts = [];
       if (products.length > 0) {
-        this.setState({ 
-          productList: products,
-          isLoading: false,
-        });
+
+        products.map((product, index) => {
+          if (product.productId.indexOf('_diamonds') != -1) {
+            diamondProducts.push(product);
+          } else if (product.productId.indexOf('_pass') != -1) {
+            passProducts.push(product);
+          }
+        })
+
+        this.setState({
+          productList: diamondProducts,
+          productListPass: passProducts
+        })
       }
     } catch (err) {
       console.warn(err.code, err.message);
@@ -302,7 +402,7 @@ class screenGpay01 extends Component {
   }
 
   render() {
-    const { productList, receipt, availableItemsMessage } = this.state;
+    const { productList, productListPass, receipt, availableItemsMessage } = this.state;
     const receipt100 = receipt.substring(0, 100);
 
     return (
@@ -336,8 +436,44 @@ class screenGpay01 extends Component {
                 </TouchableOpacity>
                 );
               }): <Text></Text>}
+
+            <Text></Text>
+              
+            {(productListPass.length > 0)? productListPass.map((product, i) => {
+              return (
+                <TouchableOpacity style={styles.list_item_normal} 
+                  onPress={() => this.requestPurchase(product.productId)}
+                >
+                  <View style={{flexDirection: 'row', paddingTop: 18}}>
+                    <Image source={pass_day} style={{ width: 13, height: 13}} />
+                    <Text style={{ color: '#000', fontSize: 12, marginLeft: 10 }}>{this.treatProductTitle(product.title)}</Text>
+                    <View style={{flex:1, alignItems:"flex-end"}}>
+                      <Text style={{color: '#000', fontSize: 12, textAlign:'right', paddingRight:10}}>{product.localizedPrice}</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+                );
+              }): <Text></Text>}
+
+            <Text></Text>
+
+            {this.state.displayRemainTime == true?
+            (<View style={styles.list_item_normal_last}>
+              <View style={{flexDirection: 'row', paddingTop: 10}}>
+                <Image source={vip_diamond_trans} style={{ width: 40, height: 35}} />
+                <Text style={{ color: '#000', fontSize: 12, marginLeft: 25, marginTop: 10 }}>{'Unlimited Instant Chat ends in'}</Text>
+              </View>
+              <View style={{flexDirection: 'row', paddingTop: 18}}>
+                <Text style={{ color: '#000', fontSize: 12, marginLeft: 35 }}>
+                  <Text style={{ color: '#000', fontSize: 12, marginLeft: 35 }}>{this.state.remainDays != 0? this.state.remainDays + ' days ': ''}</Text>
+                  <Text style={{ color: '#000', fontSize: 12, marginLeft: 35 }}>{this.state.remainHours != 0? this.state.remainHours + ' hours ': ''}</Text>
+                  <Text style={{ color: '#000', fontSize: 12, marginLeft: 35 }}>{this.state.remainMinutes != 0? this.state.remainMinutes + ' minutes ': ''}</Text>
+                  <Text style={{ color: '#000', fontSize: 12, marginLeft: 35 }}>{this.state.remainSeconds != 0? this.state.remainSeconds + ' seconds ': ''}</Text>
+                </Text>
+              </View>
+            </View>): (<View></View>)}
           </View>
-          <View style={{justifyContent:'center', alignItems: 'center', marginTop: 30 }} pointerEvents={this.state.free_button_condition ? 'auto': 'none'}>
+          <View style={{justifyContent:'center', alignItems: 'center', marginTop: 20 }} pointerEvents={this.state.free_button_condition ? 'auto': 'none'}>
             <TouchableOpacity onPress={() =>this.gotoFreeDiamonds()}>
                 <View style={this.state.free_button_condition? styles.free_diamond_button: styles.free_diamond_button_disabled}>
                   <Text style={{color:'white', fontSize:18, marginLeft: 15}}>{"GET FREE DIAMONDS"}</Text>
@@ -383,6 +519,16 @@ const styles = StyleSheet.create({
     flexDirection : 'row',
     width: DEVICE_WIDTH - 30,
     height: 50,
+    alignItems: 'flex-start',
+    marginTop: 2,
+    paddingLeft: 10,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+  },
+
+  list_item_normal_last: {
+    width: DEVICE_WIDTH - 30,
+    height: 100,
     alignItems: 'flex-start',
     marginTop: 2,
     paddingLeft: 10,

@@ -280,7 +280,8 @@ class Register2 extends Component {
             alert(error.message);
             return null;
           },
-          { enableHighAccuracy: Platform.OS != 'android', timeout: 5000, }
+          // { enableHighAccuracy: Platform.OS != 'android', timeout: 5000, }
+          { enableHighAccuracy: true, timeout: 5000, maximumAge: 10000 }
         );
       }
     });

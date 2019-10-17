@@ -54,7 +54,8 @@ class Browse extends Component {
       isReplace: false,
       coinCount: Global.saveData.coin_count,
       visible: false,
-      matchId: -1
+      matchId: -1,
+      unlimitedInstant: false,
       // operatedIDArr: [],
     };
   }
@@ -68,7 +69,7 @@ class Browse extends Component {
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
   }
 
-  // componentDidMount() {
+  componentDidMount() {
   //   this.props.navigation.addListener('didFocus', (playload) => {
   //     if (Global.saveData.isFilter) {
   //       this.getFilterVideos();
@@ -77,7 +78,29 @@ class Browse extends Component {
   //       this.getVideos();
   //     }
   //   });
-  // }
+    // Verify validation for unlimited instant chat permission
+    var userId = Global.saveData.u_id;
+    fetch(`${SERVER_URL}/api/transaction/validatePass/${userId}`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      }
+    }).then((response) => response.json())
+    .then((responseJSON) => {      
+      if (responseJSON.error === false) {
+
+        // display remain time for unlimited instant chat
+        if (responseJSON.data.validation) {
+          this.setState({
+            unlimitedInstant: true,
+          })
+        }
+      }
+    }).catch((error) => {
+      alert(error);
+    })
+  }
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
@@ -385,15 +408,19 @@ class Browse extends Component {
     this.props.navigation.navigate('screenGpay01');
   }
   instantChat = () => {
-    Alert.alert(
-      '',
-      "Send instant messages to "+this.state.otherData.detail.name+" for 50 diamonds. Continue?",
-      [
-        {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
-        {text: 'OK', onPress: () => this.gotoInstantChat()},
-      ],
-      {cancelable: false},
-    );
+    if (this.state.unlimitedInstant) {
+      this.gotoInstantChat();
+    } else {
+      Alert.alert(
+        '',
+        "Send instant messages to "+this.state.otherData.detail.name+" for 50 diamonds. Continue?",
+        [
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+          {text: 'OK', onPress: () => this.gotoInstantChat()},
+        ],
+        {cancelable: false},
+      );
+    }
   }
   gotoInstantChat = () => {
     var details = {
