@@ -216,19 +216,21 @@ class Chat extends Component {
               initialNumToRender={this.state.datas.length}
               renderItem={({ item: rowData }) => {
                 return (
-                  <TouchableOpacity style={{ width: DEVICE_WIDTH - 10, flexDirection: 'row', marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.gotoChat(rowData)}>
-                    <View style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
-                      <Image source={rowData.imageUrl && (rowData.data.publish == 1) ? { uri: rowData.imageUrl } : hiddenMan} resizeMode="cover" style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#5A5A5A' }} />
+                  <TouchableOpacity style={styles.listItem} onPress={() => this.gotoChat(rowData)}>
+                    <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center' }}>
+                      <Image source={rowData.imageUrl && (rowData.data.publish == 1) ? { uri: rowData.imageUrl } : hiddenMan} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} />
                     </View>
-                    <View style={{ width: DEVICE_WIDTH - 170, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
-                      <View style={{ width: DEVICE_WIDTH - 170 }}>
-                        <Text numberOfLines={1} style={{ color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.name: 'Unavailable user'}</Text>
-                        <Text numberOfLines={1} style={{ fontSize: 12, color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.message_text: ''}</Text>
+                    <View style={styles.listItemName}>
+                      <View style={{ width: DEVICE_WIDTH - 200, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ width: DEVICE_WIDTH - 200 }}>
+                          <Text numberOfLines={1} style={{ color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.name: 'Unavailable user'}</Text>
+                          <Text numberOfLines={1} style={{ fontSize: 12, color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.message_text: ''}</Text>
+                        </View>
                       </View>
-                    </View>
-                    <View style={{ flexDirection: 'column', width: 100, height: 40, marginLeft: 5, alignItems: 'center', justifyContent: 'center' }}>
-                      {rowData.sent && (<View style={{ backgroundColor: '#B64F54', borderRadius: 15, width: 20, height: 20,  alignItems: 'center', justifyContent: 'center', }}><Text style={{color: '#FFF', fontSize: 10}}>{'N'}</Text></View>)}
-                      <Text numberOfLines={1} style={{ fontSize: 12, color: '#808080' }}>{rowData.data.time_ago}</Text>
+                      <View style={{ flexDirection: 'column', width: 100, height: 40, marginLeft: 5, alignItems: 'center', justifyContent: 'center' }}>
+                        {rowData.sent && (<View style={{ backgroundColor: '#B64F54', borderRadius: 15, width: 20, height: 20,  alignItems: 'center', justifyContent: 'center', }}><Text style={{color: '#FFF', fontSize: 10}}>{'N'}</Text></View>)}
+                        <Text numberOfLines={1} style={{ fontSize: 12, color: '#808080' }}>{rowData.data.time_ago}</Text>
+                      </View>
                     </View>
                   </TouchableOpacity>
                 );
@@ -308,6 +310,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#B64F54'
+  },
+  listItem: {
+    width: DEVICE_WIDTH - 25, 
+    flexDirection: 'row', 
+    marginTop: 7, 
+    marginBottom: 7, 
+    marginLeft: 5, 
+    marginRight: 5,
+    paddingLeft: 10,
+  },
+  listItemName: {    
+    marginLeft: 10,
+    paddingBottom: 20,
+    flexDirection: 'row', 
+    borderBottomColor: '#d0d0d0',
+    borderBottomWidth: 1,
   }
 });
 

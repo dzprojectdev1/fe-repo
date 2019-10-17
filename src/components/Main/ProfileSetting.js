@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   StatusBar,
   Alert,
-  AsyncStorage
+  AsyncStorage,
+  Linking
 } from "react-native";
 import { Dropdown } from 'react-native-material-dropdown';
 import { Button } from 'react-native-elements';
@@ -536,7 +537,10 @@ class ProfileSetting extends Component {
           </View>
           <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 30, }}
             onPress={() => this.gotoTermofService()}>
-            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{"Term and Conditions / Privacy Policy"}</Text>
+            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+              <Text style={{ fontSize: 16, fontWeight: 'bold' }} onPress={ ()=>{ Linking.openURL('https://dazzleddate.com/terms_and_conditions.html')}}>{"Term and Conditions / "}</Text>
+              <Text style={{ fontSize: 16, fontWeight: 'bold' }} onPress={ ()=>{ Linking.openURL('https://dazzleddate.com/privacy_policy.html')}}>{"Privacy Policy"}</Text>
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 15, }}
             onPress={() =>  this.onDeactivateAccount() }>
@@ -550,7 +554,9 @@ class ProfileSetting extends Component {
             onPress={() => this.onLogout()}>
             <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{"Log Out"}</Text>
           </TouchableOpacity> */}
-          <View style={{ height: 100 }} />
+          <View style={{  width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 15, marginBottom: 20, }}>            
+            <Text>For support please contact admin@dazzeleddate.com ...</Text>
+          </View>
         </ScrollView>
       </View>
     );

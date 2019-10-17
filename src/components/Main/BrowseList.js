@@ -294,11 +294,11 @@ class BrowserList extends Component {
         return (
             <View
                 style={{
-                    justifyContent: 'center',
-                    alignSelf: 'center',
-                    height: 1,
-                    width: '90%',
-                    backgroundColor: '#CED0CE',
+                    // justifyContent: 'center',
+                    // alignSelf: 'center',
+                    // height: 1,
+                    // width: '90%',
+                    // backgroundColor: '#CED0CE',
                 }}
             />
         );
@@ -392,19 +392,22 @@ class BrowserList extends Component {
                                     <View style={{
                                         flex: 1,
                                         flexDirection: 'row',
-                                        padding: 10,
+                                        paddingLeft: 15,
+                                        paddingRight: 15,
                                         alignItems: 'center'
                                     }}>
                                         <Image source={item.imageUrl ? { uri: item.imageUrl } : hiddenMan}
                                             style={{
-                                                height: 50,
-                                                width: 50,
+                                                height: 60,
+                                                width: 60,
                                                 borderRadius: 30,
-                                                marginRight: 10
                                             }} />
                                         <View style={{
                                             flex: 1,
-                                            flexDirection: 'column'
+                                            flexDirection: 'column',
+                                            borderBottomWidth: 1,
+                                            borderBottomColor: '#d0d0d0',
+                                            padding: 15,
                                         }}>
                                             <Text style={{
                                                 fontSize: 16,

@@ -187,7 +187,8 @@ class Register2 extends Component {
           alert(error.message);
           return null;
         },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        // { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        { enableHighAccuracy: true, timeout: 15000 }
       );
     } else {
       await this.requestLocationPermission();
@@ -281,7 +282,7 @@ class Register2 extends Component {
             return null;
           },
           // { enableHighAccuracy: Platform.OS != 'android', timeout: 5000, }
-          { enableHighAccuracy: true, timeout: 5000, maximumAge: 10000 }
+          { enableHighAccuracy: true, timeout: 15000 }
         );
       }
     });
