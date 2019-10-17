@@ -318,7 +318,6 @@ class ChatScreen extends React.Component {
             body: formBody,
         }).then((response) => response.json())
             .then((responseJson) => {
-
                 if (responseJson.data.account_status == 1) {
 
                     if (responseJson.data.sending_available) {
@@ -340,6 +339,7 @@ class ChatScreen extends React.Component {
                         };
                         updates[this.state.other.userId + '/' + Global.saveData.u_id + '/' + msgId] = receiverMessage;
                         firebase.database().ref().child('dz-chat-data').update(updates);
+
                         if (this.scrollView) {
                             this.scrollView.scrollToEnd({ animated: true });
                         }
