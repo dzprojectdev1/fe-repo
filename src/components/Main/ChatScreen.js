@@ -372,7 +372,39 @@ class ChatScreen extends React.Component {
 
     gotoProfilePage = () => {
         Global.saveData.prevpage = "ChatDetail";
-        this.props.navigation.navigate("Profile", { id: this.state.other.userId, name: this.state.other.name, description: this.state.other.description });
+        
+        fetch(`${SERVER_URL}/api/match/getOtherUserData/${this.state.other.userId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Authorization': Global.saveData.token
+            }
+          }).then((response) => response.json())
+            .then((responseJson) => {
+              if (!responseJson.error) {
+                let newData = responseJson.data;
+
+                this.props.navigation.navigate("Profile", { 
+                  data: {
+                    id: newData.id, 
+                    name: newData.name, 
+                    description: newData.description,
+                    age: newData.age,
+                    gender: newData.gender,
+                    distance: newData.distance,
+                    country_name: newData.country_name,
+                    ethnicity_name: newData.ethnicity_name,
+                    language_name: newData.language_name,
+                    last_loggedin_date: newData.last_loggedin_date,
+                    matchId: this.state.matchId,
+                    imageUrl: this.state.other.imgUrl,
+                  }
+                });
+              }
+            }).catch((error) => {
+              alert(JSON.stringify(error));
+              return
+            });
     }
     gotoShop = () => {
         this.setState({
@@ -555,6 +587,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: 45,
         height: 45,
+        borderRadius: 22.5,
         left: -15,
         top: 1,
     },

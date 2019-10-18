@@ -405,8 +405,8 @@ class BrowserList extends Component {
                                         <View style={{
                                             flex: 1,
                                             flexDirection: 'column',
-                                            borderBottomWidth: 1,
-                                            borderBottomColor: '#d0d0d0',
+                                            borderBottomColor: '#e8e8e8',
+                                            borderBottomWidth: 0.5,
                                             padding: 15,
                                         }}>
                                             <Text style={{

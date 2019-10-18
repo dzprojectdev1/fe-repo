@@ -39,7 +39,7 @@ class Income extends Component {
     super(props);
     this.state = {
       datas: [],
-      alertMsg: '',
+      alertMsg: 'Loading ...',
       coinCount: Global.saveData.coin_count,
       visible: false,
     };

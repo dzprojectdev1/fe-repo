@@ -388,16 +388,22 @@ class Browse extends Component {
   gotoProfile = () => {
     Global.saveData.prevpage = "Browse";
     this.props.navigation.replace("Profile",
-      { 
-        id: this.state.otherData.detail.id, 
-        name: this.state.otherData.detail.name, 
-        isMatched: false, 
-        description: this.state.otherData.detail.description,
-        imageUrl: this.state.otherData.imageUrl,
-        age: this.state.otherData.detail.age,
-        distance: this.state.otherData.detail.distance,
-        gender: this.state.otherData.detail.gender,
-        last_loggedin_date: this.state.otherData.detail,
+      {
+        data: {
+          id: this.state.otherData.detail.id, 
+          name: this.state.otherData.detail.name, 
+          isMatched: false, 
+          description: this.state.otherData.detail.description,
+          imageUrl: this.state.otherData.imageUrl,
+          age: this.state.otherData.detail.age,
+          distance: this.state.otherData.detail.distance,
+          gender: this.state.otherData.detail.gender,
+          last_loggedin_date: this.state.otherData.detail.last_loggedin_date,
+          ethnicity_name: this.state.otherData.detail.ethnicity_name,
+          language_name: this.state.otherData.detail.language_name,
+          country_name: this.state.otherData.detail.country_name,
+          matchId: 0,
+        } 
       }
     );
   }

@@ -31,8 +31,7 @@ class Profile extends Component {
       datas: [],
       isLoading: true,
       noData: false,
-      isMatched: props.navigation.state.params.isMatched,
-      description: props.navigation.state.params.description
+      otherData: props.navigation.state.params.data,
     };
   }
 
@@ -41,8 +40,8 @@ class Profile extends Component {
   };
   componentDidMount() {
     Global.saveData.nowPage = 'Profile';
-    var otherid = this.props.navigation.state.params.id;
-    var othername = this.props.navigation.state.params.name;
+    var otherid = this.state.otherData.id;
+    var othername = this.state.otherData.name;
 
     this.setState({ id: otherid, name: othername });
     this.getVideos(otherid);
@@ -134,38 +133,86 @@ class Profile extends Component {
     //   this.props.navigation.replace(Global.saveData.prevpage);
     // }
     // this.props.navigation.pop();
-    this.props.navigation.replace(Global.saveData.prevpage, {
-      data: {
-        imageUrl: this.props.navigation.state.params.imageUrl,
-        isMatched: this.props.navigation.state.params.isMatched, 
-        detail: { 
-          id: this.props.navigation.state.params.id, 
-          name: this.props.navigation.state.params.name, 
-          description: this.props.navigation.state.params.description,
-          age: this.props.navigation.state.params.age,
-          distance: this.props.navigation.state.params.distance,
-          gender: this.props.navigation.state.params.gender,
-          last_loggedin_date: this.props.navigation.state.params.detail,
+    if (Global.saveData.prevpage == "ChatDetail") {
+      this.props.navigation.replace(Global.saveData.prevpage, {
+        data: {
+          data: { 
+            other_user_id: this.state.otherData.id, 
+            name: this.state.otherData.name, 
+            imageUrl: this.state.otherData.imageUrl,
+            description: this.state.otherData.description,
+            match_id: this.state.otherData.matchId,
+          }
         }
-      }
-    });
+      });
+    } else if (Global.saveData.prevpage == "Browse") {
+      this.props.navigation.replace(Global.saveData.prevpage, {
+        data: {
+          imageUrl: this.state.otherData.imageUrl,
+          isMatched: this.state.otherData.isMatched, 
+          detail: { 
+            id: this.state.otherData.id, 
+            name: this.state.otherData.name, 
+            description: this.state.otherData.description,
+            age: this.state.otherData.age,
+            distance: this.state.otherData.distance,
+            gender: this.state.otherData.gender,
+            last_loggedin_date: this.state.otherData.last_loggedin_date,
+          }
+        }
+      });
+    } else if (Global.saveData.prevpage == "IncomeDetail") {
+      this.props.navigation.replace(Global.saveData.prevpage, {
+        url: null,
+        imageUrl: this.state.otherData.imageUrl,
+        isMatched: this.state.otherData.isMatched, 
+        otherId: this.state.otherData.id, 
+        name: this.state.otherData.name, 
+        description: this.state.otherData.description,
+        age: this.state.otherData.age,
+        distance: this.state.otherData.distance,
+        gender: this.state.otherData.gender,
+        last_loggedin_date: this.state.otherData.last_loggedin_date,
+        mid: -1,
+      });
+    } else {
+      this.props.navigation.pop();
+    }
   }
 
   render() {
     return (
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-        <View style={{ height: 40, marginTop: Platform.select({ 'ios': '10%', 'android': '10%' }), flexDirection: 'row' }}>
+        <View style={{ height: 40, marginTop: Platform.select({ 'ios': '20%', 'android': '20%' }), flexDirection: 'row' }}>
           <TouchableOpacity style={{ width: 40, height: 40, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}
             onPress={() => this.onBack()} >
             <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
           </TouchableOpacity>
           <View style={{ width: DEVICE_WIDTH - 100, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: 16 }}>{this.state.name}</Text>
+            <Text style={{
+                fontSize: 12,
+                color: '#7d7d7d',
+            }}>
+                {(this.state.otherData.age + ' years old, ') + (this.state.otherData.gender === 1 ? 'Male, ' : 'Female, ') + (parseInt(this.state.otherData.distance) + ' miles away, ')}
+            </Text>
+            <Text style={{
+                fontSize: 12,
+                color: '#7d7d7d',
+            }}>
+                {( this.state.otherData.country_name + ', ' + this.state.otherData.ethnicity_name + ', speaks ' + this.state.otherData.language_name + ', ')}
+            </Text>
+            <Text style={{
+                fontSize: 12,
+                color: '#7d7d7d',
+            }}>
+                {('active ' + this.state.otherData.last_loggedin_date)}
+            </Text>
           </View>
         </View>
         <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
-          {this.state.description && (
+          {this.state.otherData.description && (
             <View style={{
               justifyContent: 'center',
               alignSelf: "center",
@@ -175,7 +222,7 @@ class Profile extends Component {
               padding: 10
             }}>
               <Text style={{ fontSize: 16, alignContent: 'center' }}>
-                {this.state.description}
+                {this.state.otherData.description}
               </Text>
             </View>
           )}
@@ -188,12 +235,16 @@ class Profile extends Component {
           )}
           {this.state.noData && !this.state.isLoading && (
             <View style={{
-              flex: 1, alignItems: 'center', alignSelf: "center",
+              flex: 1, 
+              alignItems: 'center',
             }}>
               <Text style={{
                 fontSize: 20,
-                marginTop: 70
-              }}>{'This user does not have any profile pictures.'}</Text>
+                marginTop: 50
+              }}>{'This user does not have any'}</Text>
+              <Text style={{
+                fontSize: 20,
+              }}>{' profile pictures.'}</Text>
               <Image source={heart} style={{width: 150, height: 150, marginTop: 100}}></Image>
             </View>
           )}

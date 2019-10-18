@@ -49,6 +49,13 @@ class IncomeDetail extends Component {
       isOperating: false,
       coinCount: Global.saveData.coin_count,
       visible: false,
+      age: 0,
+      gender: 0,
+      distance: 0,
+      country_name: '',
+      ethnicity_name: '',
+      language_name: '',
+      last_loggedin_date: '',
     };
   }
 
@@ -276,7 +283,48 @@ class IncomeDetail extends Component {
     if (this.state.otherId != -1) {
       Global.saveData.prevpage = "IncomeDetail";
       Global.saveData.isMatchVideo = this.state.isMatchVideo;
-      this.props.navigation.replace("Profile", { id: this.state.otherId, name: this.state.username, isMatched: this.state.isMatchVideo, description: this.state.description });
+
+      fetch(`${SERVER_URL}/api/match/getOtherUserData/${this.state.otherId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': Global.saveData.token
+        }
+      }).then((response) => response.json())
+        .then((responseJson) => {
+          if (!responseJson.error) {
+            let newData = responseJson.data;
+
+            this.setState({
+              age: newData.age,
+              gender: newData.gender,
+              distance: newData.distance,
+              country_name: newData.country_name,
+              ethnicity_name: newData.ethnicity_name,
+              language_name: newData.language_name,
+              last_loggedin_date: newData.last_loggedin_date,
+            });
+
+            this.props.navigation.replace("Profile", { 
+              data: {
+                id: this.state.otherId, 
+                name: this.state.username, 
+                isMatched: this.state.isMatchVideo, 
+                description: this.state.description,
+                age: this.state.age,
+                gender: this.state.gender,
+                distance: this.state.distance,
+                country_name: this.state.country_name,
+                ethnicity_name: this.state.ethnicity_name,
+                language_name: this.state.language_name,
+                last_loggedin_date: this.state.last_loggedin_date,
+              }
+            });
+          }
+        }).catch((error) => {
+          alert(JSON.stringify(error));
+          return
+        });
     }
   }
   back = () => {

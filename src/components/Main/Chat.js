@@ -41,6 +41,7 @@ class Chat extends Component {
       datas: [],
       tmpData: [],
       searchText: '',
+      alertMsg: 'Loading ...',
       coinCount: Global.saveData.coin_count,
       visible: false,
     };
@@ -128,7 +129,8 @@ class Chat extends Component {
     }
     this.setState({
       datas: list_items,
-      tmpData: list_items
+      tmpData: list_items,
+      alertMsg: "There is no chat list.",
     });
   }
   toggle() {
@@ -204,7 +206,7 @@ class Chat extends Component {
             flex: 1,
             alignItems: 'center'
         }}>
-            <Text style={{ fontSize: 20, marginTop: 40 }}> {'There is no chat list.'} </Text>
+            <Text style={{ fontSize: 20, marginTop: 40 }}> {this.state.alertMsg} </Text>
             <Image source={heart} style={{width: 150, height: 150, marginTop: 80}}></Image>
         </View>) : (<ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
           {(this.state.datas.length != 0) && (
@@ -324,8 +326,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     paddingBottom: 20,
     flexDirection: 'row', 
-    borderBottomColor: '#d0d0d0',
-    borderBottomWidth: 1,
+    borderBottomColor: '#e8e8e8',
+    borderBottomWidth: 0.5,
   }
 });
 

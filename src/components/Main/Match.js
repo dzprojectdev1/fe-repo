@@ -39,7 +39,7 @@ class Match extends Component {
     super(props);
     this.state = {
       datas: [],
-      alertMsg: '',
+      alertMsg: 'Loading ...',
       coinCount: Global.saveData.coin_count,
       visible: false,
     };
@@ -157,7 +157,17 @@ class Match extends Component {
     //   });
     Global.saveData.isMatchVideo = true;
     this.props.navigation.navigate("IncomeDetail",
-      { url: null, mid: mid, otherId: otherId, imageUrl: imgurl, name: name, age: age, distance: distance, gender: gender, description: description }
+      { 
+        url: null, 
+        mid: mid, 
+        otherId: otherId, 
+        imageUrl: imgurl, 
+        name: name, 
+        age: age, 
+        distance: distance, 
+        gender: gender, 
+        description: description 
+      }
     );
   }
 
