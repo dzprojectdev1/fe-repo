@@ -192,8 +192,6 @@ class screenGpay01 extends Component {
     var responseReceipt = this.state.receipt;
     var responseProductId = JSON.parse(responseReceipt).productId;
 
-    alert(responseProductId);
-
     var productIdIndex = 0;
 
     valProductId.forEach(function (productId, index) {
@@ -246,7 +244,7 @@ class screenGpay01 extends Component {
         if (responseJSON.data.validation) {
           Alert.alert(
             'Success!',
-            " You have " + days + " days for unlimited instant chat.",
+            responseJSON.message,
             [
               {text: 'OK', onPress: () => console.log('OK Pressed')},
             ],
@@ -265,7 +263,7 @@ class screenGpay01 extends Component {
         } else {
           Alert.alert(
             'Success!',
-            " " + diamondCount[productIdIndex] + " diamonds are added to your account",
+            " " + diamondCount[productIdIndex] + " diamonds were added to your account",
             [
               {text: 'OK', onPress: () => console.log('OK Pressed')},
             ],
@@ -362,7 +360,7 @@ class screenGpay01 extends Component {
       this.props.navigation.replace("BrowseList");
     } else if (Global.saveData.nowPage == 'Match') {
       this.props.navigation.replace("Match");
-    } else if (Global.saveData.nowPage == 'Chat') {
+    } else if (Global.saveData.nowPage == 'Chat' || Global.saveData.nowPage == 'ChatDetail' || Global.saveData.nowPage == 'ChatScreen') {
       this.props.navigation.replace("Chat");
     } else if (Global.saveData.nowPage == 'MyVideo') {
       this.props.navigation.replace("MyVideo");

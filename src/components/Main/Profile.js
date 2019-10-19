@@ -136,10 +136,10 @@ class Profile extends Component {
     if (Global.saveData.prevpage == "ChatDetail") {
       this.props.navigation.replace(Global.saveData.prevpage, {
         data: {
+          imageUrl: this.state.otherData.imageUrl,
           data: { 
             other_user_id: this.state.otherData.id, 
             name: this.state.otherData.name, 
-            imageUrl: this.state.otherData.imageUrl,
             description: this.state.otherData.description,
             match_id: this.state.otherData.matchId,
           }

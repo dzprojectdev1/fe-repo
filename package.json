@@ -17,6 +17,7 @@
     "react-native-camera": "^2.10.2",
     "react-native-device-info": "^2.3.2",
     "react-native-elements": "^1.1.0",
+    "react-native-fast-image": "^6.1.1",
     "react-native-fcm": "^16.2.4",
     "react-native-firebase": "^5.5.4",
     "react-native-flash-message": "^0.1.13",
@@ -35,7 +36,8 @@
     "react-native-wheel-picker": "^1.2.0",
     "react-navigation": "^2.18.2",
     "react-redux": "^5.1.1",
-    "redux": "^4.0.4"
+    "redux": "^4.0.4",
+    "shorthash": "0.0.2"
   },
   "devDependencies": {
     "@babel/core": "7.4.5",

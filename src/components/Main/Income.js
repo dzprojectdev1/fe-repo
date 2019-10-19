@@ -18,7 +18,9 @@ import {
   StatusBar
 } from "react-native";
 import { connect } from 'react-redux';
-import { Badge } from 'react-native-elements'
+import { Badge } from 'react-native-elements';
+import FastImage from 'react-native-fast-image';
+import shorthash from 'shorthash';
 // import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
@@ -217,7 +219,11 @@ class Income extends Component {
               renderItem={({ item: rowData }) => {
                 return (
                   <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData)}>
-                    <Image source={rowData.imageUrl !== null ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
+                    {/* <Image source={rowData.imageUrl !== null ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} /> */}
+                    <FastImage 
+                      source={rowData.imageUrl !== null ? { uri: rowData.imageUrl, headers: { Authorization: shorthash.unique(rowData.imageUrl) }, priority: FastImage.priority.high, } : hiddenMan} 
+                      resizeMethod={FastImage.resizeMode.contain} 
+                      style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
                     <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
                       <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', marginLeft: 5 }}>
                         {/* <Image source={b_age} style={{ width: 10, height: 10, tintColor: '#B64F54' }} /> */}

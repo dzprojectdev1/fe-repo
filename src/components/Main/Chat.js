@@ -19,7 +19,9 @@ import {
   StatusBar,
   Alert
 } from "react-native";
-import { Badge } from 'react-native-elements'
+import { Badge } from 'react-native-elements';
+import FastImage from 'react-native-fast-image';
+import shorthash from 'shorthash';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { SERVER_URL } from '../../config/constants';
@@ -220,7 +222,11 @@ class Chat extends Component {
                 return (
                   <TouchableOpacity style={styles.listItem} onPress={() => this.gotoChat(rowData)}>
                     <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center' }}>
-                      <Image source={rowData.imageUrl && (rowData.data.publish == 1) ? { uri: rowData.imageUrl } : hiddenMan} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} />
+                      {/* <Image source={rowData.imageUrl && (rowData.data.publish == 1) ? { uri: rowData.imageUrl } : hiddenMan} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} /> */}
+                      <FastImage 
+                        source={rowData.imageUrl && (rowData.data.publish == 1) ? { uri: rowData.imageUrl, headers: { Authorization: shorthash.unique(rowData.imageUrl) }, priority: FastImage.priority.high, } : hiddenMan} 
+                        resizeMode="cover" 
+                        style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} />
                     </View>
                     <View style={styles.listItemName}>
                       <View style={{ width: DEVICE_WIDTH - 200, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
