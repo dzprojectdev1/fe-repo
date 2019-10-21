@@ -34,7 +34,7 @@ import b_delete from '../../assets/images/delete.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 import Global from '../Global';
 
-import { SERVER_URL } from '../../config/constants';
+import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
 import { uploadPhoto } from '../../util/upload';
 
 class MyVideo extends Component {
@@ -70,7 +70,8 @@ class MyVideo extends Component {
       .then(responseJson => {
         if (!responseJson.error) {
           if (responseJson.data.length) {
-            this.getThumbnails(responseJson.data);
+            // this.getThumbnails(responseJson.data);
+            this.setState({ datas: responseJson.data, isLoading: false, noData: false });
           } else {
             this.setState({
               noData: true,
@@ -137,7 +138,7 @@ class MyVideo extends Component {
     this.props.navigation.replace("Chat");
     return true;
   }
-  showUserVideo(url, otherId, id, primary) {
+  showUserVideo(url, user_id, id, primary) {
     // fetch(url, {
     //   method: 'GET',
     //   headers: {
@@ -151,7 +152,7 @@ class MyVideo extends Component {
     //     alert("There is error, please try again!");
     //     return
     //   });
-    this.props.navigation.navigate("MyVideoDetail", { url: url, otherId: otherId, id: id, primary })
+    this.props.navigation.navigate("MyVideoDetail", { url: url, otherId: user_id, id: id, primary })
   }
   addVideo() {
     // this.props.navigation.navigate("Record")
@@ -271,11 +272,12 @@ class MyVideo extends Component {
               renderItem={({ item: rowData }) => {
                 return (
                   <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }}
-                    onPress={() => this.showUserVideo(rowData.imageUrl, rowData.otherId, rowData.id, rowData.primary)}>
-                    <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20) * 1.5, marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }}>
+                    onPress={() => this.showUserVideo(GCS_BUCKET + rowData.cdn_id + '-screenshot', rowData.user_id, rowData.id, rowData.primary)}>
+                    {/* <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20) * 1.5, marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }}> */}
+                    <ImageBackground source={{ uri: GCS_BUCKET +  rowData.cdn_id + '-screenshot'}} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20) * 1.5, marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }}>
                       <View style={{ width: '100%', height: 30, marginTop: (DEVICE_WIDTH / 2 - 20) * 1.5 - 50, flexDirection: 'row' }}>
                         <View style={{ width: DEVICE_WIDTH / 2 - 60, height: 30, alignItems: 'center', justifyContent: 'center' }}>
-                          {(rowData.primary == 1) && (
+                          {(rowData.is_primary == 1) && (
                             <View style={{ width: DEVICE_WIDTH, height: 40, alignItems: 'center', justifyContent: 'center', marginTop: 40, marginBottom: 40 }}>
                               <TouchableOpacity style={{ width: 80, height: 30, borderRadius: 25, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center' }}>
                                 <Text style={{ fontSize: 14, color: '#fff', fontWeight: 'bold' }}>{"Primary"}</Text>

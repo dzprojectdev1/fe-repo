@@ -34,7 +34,7 @@ import diamond from '../../assets/images/red_diamond_trans.png';
 import heart from '../../assets/images/heart.png';
 import Global from '../Global';
 
-import { SERVER_URL } from '../../config/constants';
+import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
 
 class Income extends Component {
   constructor(props) {
@@ -94,32 +94,18 @@ class Income extends Component {
   getTumbnails = async (data) => {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
-      if (data[i].cdn_filtered_id) {
-        var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_filtered_id}-screenshot`;
-        var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_filtered_id}`;
-        await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': Global.saveData.token
-          }
-        }).then((response) => response.json())
-          .then((responseJson) => {
-            list_items.push({
-              index: i,
-              otherId: data[i].other_user_id,
-              imageUrl: responseJson.url,
-              videoUrl: vurl,
-              name: data[i].name,
-              age: data[i].age,
-              gender: data[i].gender,
-              description: data[i].description,
-              distance: data[i].distance
-            });
-          })
-          .catch((error) => {
-            return
-          });
+      if (data[i].cdn_filtered_id) {        
+        list_items.push({
+          index: i,
+          otherId: data[i].other_user_id,
+          imageUrl: GCS_BUCKET + data[i].cdn_filtered_id + '-screenshot',
+          videoUrl: null,
+          name: data[i].name,
+          age: data[i].age,
+          gender: data[i].gender,
+          description: data[i].description,
+          distance: data[i].distance
+        });
       } else {
         list_items.push({
           index: i,
@@ -136,6 +122,52 @@ class Income extends Component {
     }
     this.setState({ datas: list_items })
   }
+
+  // getTumbnails = async (data) => {
+  //   var list_items = [];
+  //   for (var i = 0; i < data.length; i++) {
+  //     if (data[i].cdn_filtered_id) {
+  //       var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_filtered_id}-screenshot`;
+  //       var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_filtered_id}`;
+  //       await fetch(url, {
+  //         method: 'GET',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': Global.saveData.token
+  //         }
+  //       }).then((response) => response.json())
+  //         .then((responseJson) => {
+  //           list_items.push({
+  //             index: i,
+  //             otherId: data[i].other_user_id,
+  //             imageUrl: responseJson.url,
+  //             videoUrl: vurl,
+  //             name: data[i].name,
+  //             age: data[i].age,
+  //             gender: data[i].gender,
+  //             description: data[i].description,
+  //             distance: data[i].distance
+  //           });
+  //         })
+  //         .catch((error) => {
+  //           return
+  //         });
+  //     } else {
+  //       list_items.push({
+  //         index: i,
+  //         otherId: data[i].other_user_id,
+  //         imageUrl: null,
+  //         videoUrl: null,
+  //         name: data[i].name,
+  //         age: data[i].age,
+  //         gender: data[i].gender,
+  //         description: data[i].description,
+  //         distance: data[i].distance,
+  //       });
+  //     }
+  //   }
+  //   this.setState({ datas: list_items })
+  // }
 
   showUserVideo(data) {
     // fetch(url, {
@@ -219,11 +251,11 @@ class Income extends Component {
               renderItem={({ item: rowData }) => {
                 return (
                   <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData)}>
-                    {/* <Image source={rowData.imageUrl !== null ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} /> */}
-                    <FastImage 
+                    <Image source={rowData.imageUrl !== null ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
+                    {/* <FastImage 
                       source={rowData.imageUrl !== null ? { uri: rowData.imageUrl, headers: { Authorization: shorthash.unique(rowData.imageUrl) }, priority: FastImage.priority.high, } : hiddenMan} 
                       resizeMethod={FastImage.resizeMode.contain} 
-                      style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
+                      style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} /> */}
                     <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
                       <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', marginLeft: 5 }}>
                         {/* <Image source={b_age} style={{ width: 10, height: 10, tintColor: '#B64F54' }} /> */}

@@ -318,6 +318,7 @@ class IncomeDetail extends Component {
                 ethnicity_name: this.state.ethnicity_name,
                 language_name: this.state.language_name,
                 last_loggedin_date: this.state.last_loggedin_date,
+                imageUrl: this.state.userimage,
               }
             });
           }

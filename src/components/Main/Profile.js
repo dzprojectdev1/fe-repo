@@ -20,7 +20,7 @@ import {
 import heart from '../../assets/images/heart.png';
 import Global from '../Global';
 
-import { SERVER_URL } from '../../config/constants';
+import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
 
 class Profile extends Component {
   constructor(props) {
@@ -79,27 +79,14 @@ class Profile extends Component {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
       var value = Object.values(data[i]);
-      var url = `${SERVER_URL}/api/storage/videoLink?fileId=${value[0]}-screenshot`;
-      var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${value[0]}`;
-      await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': Global.saveData.token
-        }
-      }).then((response) => response.json())
-        .then((responseJson) => {
-          list_items.push({
-            index: i,
-            otherId: data[i].other_user_id,
-            imageUrl: responseJson.url,
-            videoUrl: vurl,
-            name: 'NAME',
-            time: 'TIME'
-          });
-        }).catch((error) => {
-          return
-        });
+      list_items.push({
+        index: i,
+        otherId: data[i].other_user_id,
+        imageUrl: GCS_BUCKET + value[0] + '-screenshot',
+        videoUrl: null,
+        name: 'NAME',
+        time: 'TIME'
+      });
     }
     this.setState({
       datas: list_items,
@@ -107,6 +94,39 @@ class Profile extends Component {
       isLoading: false
     });
   }
+  // getTumbnails = async (data) => {
+
+  //   var list_items = [];
+  //   for (var i = 0; i < data.length; i++) {
+  //     var value = Object.values(data[i]);
+  //     var url = `${SERVER_URL}/api/storage/videoLink?fileId=${value[0]}-screenshot`;
+  //     var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${value[0]}`;
+  //     await fetch(url, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': Global.saveData.token
+  //       }
+  //     }).then((response) => response.json())
+  //       .then((responseJson) => {
+  //         list_items.push({
+  //           index: i,
+  //           otherId: data[i].other_user_id,
+  //           imageUrl: responseJson.url,
+  //           videoUrl: vurl,
+  //           name: 'NAME',
+  //           time: 'TIME'
+  //         });
+  //       }).catch((error) => {
+  //         return
+  //       });
+  //   }
+  //   this.setState({
+  //     datas: list_items,
+  //     noData: false,
+  //     isLoading: false
+  //   });
+  // }
   showUserVideo(url, otherId) {
     // fetch(url, {
     //   method: 'GET',

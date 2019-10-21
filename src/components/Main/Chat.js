@@ -24,7 +24,7 @@ import FastImage from 'react-native-fast-image';
 import shorthash from 'shorthash';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
-import { SERVER_URL } from '../../config/constants';
+import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
 // import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import b_browse from '../../assets/images/browse.png';
@@ -92,33 +92,18 @@ class Chat extends Component {
         return
       });
   }
-  getTumbnails = async (data) => {
+  getTumbnails = (data) => {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
       let senderId = data[i].other_user_id;
       if (data[i].cdn_id) {
-        var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
-        // var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
-        await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': Global.saveData.token
-          }
-        }).then((response) => response.json())
-          .then((responseJson) => {
-            list_items.push({
-              index: i,
-              imageUrl: responseJson.url,
-              // videoUrl: vurl,
-              sent: this.props.senders !== null ? ( this.props.senders.indexOf(JSON.stringify(senderId)) === -1 ? false : true) : false,
-              data: data[i]
-            });
-          })
-          .catch((error) => {
-            alert(JSON.stringify(error))
-            return
-          });
+        list_items.push({
+          index: i,
+          imageUrl: GCS_BUCKET + 'thumb_64_' + data[i].cdn_id + '-screenshot',
+          // videoUrl: vurl,
+          sent: this.props.senders !== null ? ( this.props.senders.indexOf(JSON.stringify(senderId)) === -1 ? false : true) : false,
+          data: data[i]
+        });
       } else {
         list_items.push({
           index: i,
@@ -134,7 +119,52 @@ class Chat extends Component {
       tmpData: list_items,
       alertMsg: "There is no chat list.",
     });
+
+    console.log(JSON.stringify(this.state.datas));
   }
+  // getTumbnails = async (data) => {
+  //   var list_items = [];
+  //   for (var i = 0; i < data.length; i++) {
+  //     let senderId = data[i].other_user_id;
+  //     if (data[i].cdn_id) {
+  //       var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
+  //       // var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
+  //       await fetch(url, {
+  //         method: 'GET',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': Global.saveData.token
+  //         }
+  //       }).then((response) => response.json())
+  //         .then((responseJson) => {
+  //           list_items.push({
+  //             index: i,
+  //             imageUrl: responseJson.url,
+  //             // videoUrl: vurl,
+  //             sent: this.props.senders !== null ? ( this.props.senders.indexOf(JSON.stringify(senderId)) === -1 ? false : true) : false,
+  //             data: data[i]
+  //           });
+  //         })
+  //         .catch((error) => {
+  //           alert(JSON.stringify(error))
+  //           return
+  //         });
+  //     } else {
+  //       list_items.push({
+  //         index: i,
+  //         imageUrl: null,
+  //         sent: this.props.senders !== null ? ( this.props.senders.indexOf(JSON.stringify(senderId)) === -1 ? false : true) : false,
+  //         // videoUrl: vurl,
+  //         data: data[i]
+  //       });
+  //     }
+  //   }
+  //   this.setState({
+  //     datas: list_items,
+  //     tmpData: list_items,
+  //     alertMsg: "There is no chat list.",
+  //   });
+  // }
   toggle() {
     Alert.alert("The UI is not supported yet")
   }
@@ -208,8 +238,8 @@ class Chat extends Component {
             flex: 1,
             alignItems: 'center'
         }}>
-            <Text style={{ fontSize: 20, marginTop: 40 }}> {this.state.alertMsg} </Text>
-            <Image source={heart} style={{width: 150, height: 150, marginTop: 80}}></Image>
+            <Text style={{ fontSize: 20, marginTop: 120 }}> {this.state.alertMsg} </Text>
+            <Image source={heart} style={{width: 150, height: 150, marginTop: 50}}></Image>
         </View>) : (<ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
           {(this.state.datas.length != 0) && (
             <FlatList
@@ -222,11 +252,11 @@ class Chat extends Component {
                 return (
                   <TouchableOpacity style={styles.listItem} onPress={() => this.gotoChat(rowData)}>
                     <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center' }}>
-                      {/* <Image source={rowData.imageUrl && (rowData.data.publish == 1) ? { uri: rowData.imageUrl } : hiddenMan} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} /> */}
-                      <FastImage 
+                      <Image source={rowData.imageUrl && (rowData.data.publish == 1) ? { uri: rowData.imageUrl } : hiddenMan} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} />
+                      {/* <FastImage 
                         source={rowData.imageUrl && (rowData.data.publish == 1) ? { uri: rowData.imageUrl, headers: { Authorization: shorthash.unique(rowData.imageUrl) }, priority: FastImage.priority.high, } : hiddenMan} 
                         resizeMode="cover" 
-                        style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} />
+                        style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} /> */}
                     </View>
                     <View style={styles.listItemName}>
                       <View style={{ width: DEVICE_WIDTH - 200, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
