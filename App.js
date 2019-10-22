@@ -23,13 +23,13 @@ class App extends React.Component {
   async componentWillMount() {
     console.disableYellowBox = true;
     var firebaseConfig = {
-      apiKey: "AIzaSyBLEM8NoFevrJ0uyvetYKrFUdeDuSVdL1Q",
-      authDomain: "dz-chat-app.firebaseapp.com",
-      databaseURL: "https://dz-chat-app.firebaseio.com",
-      projectId: "dz-chat-app",
+      apiKey: "AIzaSyBuJ1590DczIiuH7JA_Ls8Pido4IJ_GVT4",
+      authDomain: "dazzled-date-dev.firebaseapp.com",
+      databaseURL: "https://dazzled-date-dev.firebaseio.com",
+      projectId: "dazzled-date-dev",
       storageBucket: "",
-      messagingSenderId: "289099129817",
-      appId: "1:289099129817:web:7ffff5d747763479"
+      messagingSenderId: "725302073253",
+      appId: "1:725302073253:android:0aa373b87b7f562c2a3a4c"
     };
     firebase.initializeApp(firebaseConfig);
     this.setState({ loading: false });
