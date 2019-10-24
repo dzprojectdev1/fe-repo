@@ -122,7 +122,7 @@ class AppView extends React.Component {
 const NotificationView = (props) => {
   return (
     <View style={{ flexDirection: 'row', flex: 1, }}>
-      <Image source={props.data.image && props.data.image !== '' ? props.data.image : userIcon} style={{ borderRadius: 15, width: 40, height: 40 }} />
+      <Image source={props.data.image && props.data.image !== '' ? { uri: props.data.image } : userIcon} style={{ borderRadius: 20, width: 40, height: 40 }} />
       <View style={{ flexDirection: 'column', justifyContent: 'flex-start', alignSelf: 'flex-start', alignItems: 'flex-start', marginLeft: 10 }}>
         <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#FFF' }} >{props.data.title}</Text>
         <Text style={{ fontSize: 12, fontWeight: '300', color: '#FFF' }}>{props.data.message}</Text>

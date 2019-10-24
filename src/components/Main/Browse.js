@@ -313,7 +313,7 @@ class Browse extends Component {
           //     operatedIDArr: operateArr
           // });
           if (responseJson.data.account_status == 1) {
-            if (responseJson.data.coin_count == '-1') {
+            if (responseJson.data.coin_count == '0') {
       
               Global.saveData.coin_count = responseJson.data.coin_count;
 

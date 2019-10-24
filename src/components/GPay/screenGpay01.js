@@ -24,17 +24,19 @@ import RNIap, {
 const itemSkus = Platform.select({
   android: [
     '100_diamonds',
-    '300_diamonds',
-    '500_diamonds',
+    '250_diamonds',
+    '750_diamonds',
+    '2500_diamonds',
+    '7500_diamonds',
     '1_day_pass',
     '3_day_pass',
     '7_day_pass'
   ],
 });
 
-const valProductId = ['100_diamonds', '300_diamonds', '500_diamonds', '1_day_pass', '3_day_pass', '7_day_pass'];
-const diamondCount = [100, 300, 500, 0, 0, 0];
-const diamondPrice = [0.99, 1.49, 4.49, 4.49, 11.99, 14.99];
+const valProductId = ['100_diamonds', '250_diamonds', '750_diamonds', '2500_diamonds', '7500_diamonds', '1_day_pass', '3_day_pass', '7_day_pass'];
+const diamondCount = [100, 250, 750, 2500, 7500, 0, 0, 0];
+const diamondPrice = [0.99, 1.99, 4.99, 9.99, 24.99, 4.99, 11.99, 14.99];
 
 let purchaseUpdateSubscription;
 let purchaseErrorSubscription;
@@ -440,14 +442,14 @@ class screenGpay01 extends Component {
               <Text style={{ color: '#cc2e48', fontSize: 17, marginTop: 20, marginLeft: DEVICE_WIDTH * 0.1 }}>{"My Diamonds"}</Text>              
               <Image source={diamond_trans} style={{ width: 25, height: 25, marginTop: 22, marginLeft: 10 }} />
               <Text style={{ color: '#cc2e48', fontSize: 17, justifyContent:'center', alignItems: 'center', marginTop: 22, marginLeft: 10 }}>{ this.state.gemNumber }</Text>
-            </View>
-            {(productList.length > 0)? productList.map((product, i) => {
+            </View>              
+            {(productListPass.length > 0)? productListPass.map((product, i) => {
               return (
                 <TouchableOpacity style={styles.list_item_normal} 
                   onPress={() => this.requestPurchase(product.productId)}
                 >
                   <View style={{flexDirection: 'row', paddingTop: 18}}>
-                    <Image source={diamond_trans} style={{ width: 17, height: 15}} />
+                    <Image source={pass_day} style={{ width: 13, height: 13}} />
                     <Text style={{ color: '#000', fontSize: 12, marginLeft: 10 }}>{this.treatProductTitle(product.title)}</Text>
                     <View style={{flex:1, alignItems:"flex-end"}}>
                       <Text style={{color: '#000', fontSize: 12, textAlign:'right', paddingRight:10}}>{product.localizedPrice}</Text>
@@ -458,14 +460,14 @@ class screenGpay01 extends Component {
               }): <Text></Text>}
 
             <Text></Text>
-              
-            {(productListPass.length > 0)? productListPass.map((product, i) => {
+
+            {(productList.length > 0)? productList.map((product, i) => {
               return (
                 <TouchableOpacity style={styles.list_item_normal} 
                   onPress={() => this.requestPurchase(product.productId)}
                 >
                   <View style={{flexDirection: 'row', paddingTop: 18}}>
-                    <Image source={pass_day} style={{ width: 13, height: 13}} />
+                    <Image source={diamond_trans} style={{ width: 17, height: 15}} />
                     <Text style={{ color: '#000', fontSize: 12, marginLeft: 10 }}>{this.treatProductTitle(product.title)}</Text>
                     <View style={{flex:1, alignItems:"flex-end"}}>
                       <Text style={{color: '#000', fontSize: 12, textAlign:'right', paddingRight:10}}>{product.localizedPrice}</Text>

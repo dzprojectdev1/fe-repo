@@ -481,7 +481,15 @@ class ChatScreen extends React.Component {
                         <Icon type="Ionicons" name="ios-arrow-back" />
                     </TouchableOpacity>
                     <View style={{ alignItems: 'center', justifyContent: 'center', width: DEVICE_WIDTH - 100, flexDirection: 'row' }}>
-                        <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, marginLeft: 5, marginTop: 5 }}>{this.state.other.name}</Text>
+                        <TouchableOpacity style={styles.avatarOtherUserBtn} onPress={() => this.gotoProfilePage()}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Image
+                                    style={styles.avatarOtherUser}
+                                    source={this.state.other.imgUrl ? { uri: this.state.other.imgUrl } : hiddenMan}
+                                />
+                                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginLeft: 5, marginTop: 8 }}>{this.state.other.name}</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
                     <View style={styles.menuIcon}>
                         <Menu
@@ -531,7 +539,9 @@ const styles = StyleSheet.create({
     },
     menuIcon: {
         alignSelf: 'flex-end',
-        marginRight: 10
+        marginRight: 10,
+        height: 45,
+        width: 65,
     },
     input: {
         padding: 10,
@@ -595,7 +605,19 @@ const styles = StyleSheet.create({
         width: 45,
         height: 45,
         borderRadius: 400
-    }
+    },
+    avatarOtherUser: {
+        marginTop: 10,
+        marginRight: 10,
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        flexWrap: 'wrap-reverse',
+    },
+    avatarOtherUserBtn: {
+        maxWidth: DEVICE_WIDTH - 145,
+        height: 45,
+    },
 });
 
 const mapStateToProps = (state) => {

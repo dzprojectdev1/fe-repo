@@ -399,7 +399,7 @@ class Register2 extends Component {
             </View>
           </View>
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, alignItems: 'center', justifyContent: 'center', marginTop: 30 }}>
-            <Text style={{ color: '#808080', fontSize: 12, textAlign: 'center' }}>{"BY GETTING SIGNING UP YOU ARE AFREE TO"}</Text>
+            <Text style={{ color: '#808080', fontSize: 12, textAlign: 'center' }}>{"BY SIGNING UP, YOU AFREE TO"}</Text>
             <Text style={{marginTop: 10}}>
               <Text style={{ color: '#808080', fontSize: 12, textAlign: 'center' }}>{" OUR "}</Text>
               <Text style={{ color: '#808080', fontSize: 12, textAlign: 'center', textDecorationLine: 'underline' }} onPress={ ()=>{ Linking.openURL('https://dazzleddate.com/terms_and_conditions.html')}}>{" TERMS OF SERVICE "}</Text>
