@@ -24,7 +24,7 @@ import {
 } from "react-native";
 import { Badge } from 'react-native-elements'
 import { connect } from 'react-redux';
-import { SERVER_URL } from '../../config/constants';
+import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
 // import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import b_browse from '../../assets/images/browse.png';
@@ -250,27 +250,12 @@ class BrowserList extends Component {
         let listData = [];
         for (var i = 0; i < data.length; i++) {
             if (data[i].cdn_id) {
-                var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
-                // var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
-                await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': Global.saveData.token
-                    }
-                }).then((response) => response.json())
-                    .then((responseJson) => {
-                        listData.push({
-                            index: i,
-                            imageUrl: responseJson.url,
-                            // videoUrl: vurl,
-                            detail: data[i]
-                        });
-                    })
-                    .catch((error) => {
-                        alert(JSON.stringify(error))
-                        return
-                    });
+                listData.push({
+                    index: i,
+                    imageUrl: GCS_BUCKET + data[i].cdn_id + '-screenshot',
+                    // videoUrl: vurl,
+                    detail: data[i]
+                });
             } else {
                 listData.push({
                     index: i,
@@ -289,6 +274,50 @@ class BrowserList extends Component {
             isRefreshing: false
         });
     }
+
+    // getUserAvatar = async (data) => {
+    //     let listData = [];
+    //     for (var i = 0; i < data.length; i++) {
+    //         if (data[i].cdn_id) {
+    //             var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
+    //             // var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
+    //             await fetch(url, {
+    //                 method: 'GET',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                     'Authorization': Global.saveData.token
+    //                 }
+    //             }).then((response) => response.json())
+    //                 .then((responseJson) => {
+    //                     listData.push({
+    //                         index: i,
+    //                         imageUrl: responseJson.url,
+    //                         // videoUrl: vurl,
+    //                         detail: data[i]
+    //                     });
+    //                 })
+    //                 .catch((error) => {
+    //                     alert(JSON.stringify(error))
+    //                     return
+    //                 });
+    //         } else {
+    //             listData.push({
+    //                 index: i,
+    //                 imageUrl: null,
+    //                 // videoUrl: vurl,
+    //                 detail: data[i]
+    //             });
+    //         }
+    //     }
+    //     let oldData = this.state.discoveredList;
+    //     let updatedList = oldData.concat(listData);
+    //     this.setState({
+    //         discoveredList: updatedList,
+    //         noUser: false,
+    //         isLoading: false,
+    //         isRefreshing: false
+    //     });
+    // }
 
     renderSeparator = () => {
         return (

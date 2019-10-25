@@ -192,19 +192,57 @@ class Match extends Component {
     //     return
     //   });
     Global.saveData.isMatchVideo = true;
-    this.props.navigation.navigate("IncomeDetail",
-      { 
-        url: null, 
-        mid: mid, 
-        otherId: otherId, 
-        imageUrl: imgurl, 
-        name: name, 
-        age: age, 
-        distance: distance, 
-        gender: gender, 
-        description: description 
-      }
-    );
+    // this.props.navigation.navigate("IncomeDetail",
+    //   { 
+    //     url: null, 
+    //     mid: mid, 
+    //     otherId: otherId, 
+    //     imageUrl: imgurl, 
+    //     name: name, 
+    //     age: age, 
+    //     distance: distance, 
+    //     gender: gender, 
+    //     description: description 
+    //   }
+    // );
+
+    if (otherId != -1) {
+
+      fetch(`${SERVER_URL}/api/match/getOtherUserData/${otherId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': Global.saveData.token
+        }
+      }).then((response) => response.json())
+        .then((responseJson) => {
+          if (!responseJson.error) {
+
+            let newData = responseJson.data;
+            this.props.navigation.navigate(
+              "IncomeDetail",
+              {
+                url: null,
+                mid: -1,
+                otherId: otherId,
+                imageUrl: imgurl,
+                name: name,
+                age: age,
+                gender: gender,
+                distance: distance,
+                description: description,
+                country_name: newData.country_name,
+                ethnicity_name: newData.ethnicity_name,
+                language_name: newData.language_name,
+                last_loggedin_date: newData.last_loggedin_date,
+              }
+            )
+          }
+        }).catch((error) => {
+          alert(JSON.stringify(error));
+          return
+        });
+    }
   }
 
   //////////////////////////////////////////////////

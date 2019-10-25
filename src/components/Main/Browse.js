@@ -635,8 +635,12 @@ class Browse extends Component {
                     <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{parseInt(this.state.otherData.detail.distance) + ' mile'}</Text>
                   </View>
                   <View style={{ flexDirection: 'column', marginTop: 5 }}>
-                    <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.gender === 1 ? 'Male' : 'Female'}</Text>
-                    <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.last_loggedin_date}</Text>
+                    <Text>
+                      <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.gender === 1 ? 'Male, ' : 'Female, '}</Text>
+                      <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.ethnicity_name}</Text>
+                      <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{', speaks ' + this.state.otherData.detail.language_name}</Text>
+                    </Text>
+                    <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.last_loggedin_date + ', ' + this.state.otherData.detail.country_name}</Text>
                   </View>
                   <View style={{ marginTop: 10, marginRight: 20 }}>
                     <ScrollView contentContainerStyle={{ paddingVertical: 20 }} style={{ maxHeight: DEVICE_HEIGHT * 0.3 }}>

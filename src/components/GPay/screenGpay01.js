@@ -300,6 +300,25 @@ class screenGpay01 extends Component {
             passProducts.push(product);
           }
         })
+        
+        if (diamondProducts.length > 0) {
+          var prefix = [];
+          for (var i = 0; i < diamondProducts.length; i ++ ) {
+            let arr = diamondProducts[i].productId.split('_');
+            prefix[i] = parseInt(arr[0]);
+
+            for (var j = 0; j < i; j ++) {
+              if (prefix[i] < prefix[j]) {
+                let swap_value = diamondProducts[i];
+                let temp = prefix[i];
+                prefix[i] = prefix[j];
+                prefix[j] = temp;
+                diamondProducts[i] = diamondProducts[j];
+                diamondProducts[j] = swap_value;
+              }
+            }
+          }
+        }
 
         this.setState({
           productList: diamondProducts,
@@ -353,7 +372,7 @@ class screenGpay01 extends Component {
   }
   
   treatProductTitle = title => {
-    let split_title = title.split(' (Dazzled');
+    let split_title = title.split(' (Random');
     return split_title[0];
   }
  

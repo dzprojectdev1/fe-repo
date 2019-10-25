@@ -197,20 +197,59 @@ class Income extends Component {
     //     return
     //   });
     Global.saveData.isMatchVideo = false
-    this.props.navigation.navigate(
-      "IncomeDetail",
-      {
-        url: null,
-        mid: -1,
-        otherId: data.otherId,
-        imageUrl: data.imageUrl,
-        name: data.name,
-        age: data.age,
-        gender: data.gender,
-        distance: data.distance,
-        description: data.description
-      }
-    )
+    // this.props.navigation.navigate(
+    //   "IncomeDetail",
+    //   {
+    //     url: null,
+    //     mid: -1,
+    //     otherId: data.otherId,
+    //     imageUrl: data.imageUrl,
+    //     name: data.name,
+    //     age: data.age,
+    //     gender: data.gender,
+    //     distance: data.distance,
+    //     description: data.description
+    //   }
+    // )
+
+    
+    if (data.otherId != -1) {
+
+      fetch(`${SERVER_URL}/api/match/getOtherUserData/${data.otherId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': Global.saveData.token
+        }
+      }).then((response) => response.json())
+        .then((responseJson) => {
+          if (!responseJson.error) {
+
+            let newData = responseJson.data;
+            this.props.navigation.navigate(
+              "IncomeDetail",
+              {
+                url: null,
+                mid: -1,
+                otherId: data.otherId,
+                imageUrl: data.imageUrl,
+                name: data.name,
+                age: data.age,
+                gender: data.gender,
+                distance: data.distance,
+                description: data.description,
+                country_name: newData.country_name,
+                ethnicity_name: newData.ethnicity_name,
+                language_name: newData.language_name,
+                last_loggedin_date: newData.last_loggedin_date,
+              }
+            )
+          }
+        }).catch((error) => {
+          alert(JSON.stringify(error));
+          return
+        });
+    }
   }
   //////////////////////////////////////////////////
   gotoGpay() {

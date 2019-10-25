@@ -178,6 +178,9 @@ class Profile extends Component {
             distance: this.state.otherData.distance,
             gender: this.state.otherData.gender,
             last_loggedin_date: this.state.otherData.last_loggedin_date,
+            country_name: this.state.otherData.country_name,
+            ethnicity_name: this.state.otherData.ethnicity_name,
+            language_name: this.state.otherData.language_name,
           }
         }
       });
@@ -194,6 +197,9 @@ class Profile extends Component {
         gender: this.state.otherData.gender,
         last_loggedin_date: this.state.otherData.last_loggedin_date,
         mid: -1,
+        country_name: this.state.otherData.country_name,
+        ethnicity_name: this.state.otherData.ethnicity_name,
+        language_name: this.state.otherData.language_name,
       });
     } else {
       this.props.navigation.pop();

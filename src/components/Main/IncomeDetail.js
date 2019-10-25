@@ -484,6 +484,14 @@ class IncomeDetail extends Component {
               <Image source={b_distance} style={{ width: 15, height: 15 }} />
               <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userdistance + ' mile'}</Text>
             </View>
+            <View style={{ flexDirection: 'column', marginTop: 5 }}>
+              <Text>
+                <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.props.navigation.state.params.gender === 1 ? 'Male, ' : 'Female, '}</Text>
+                <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.props.navigation.state.params.ethnicity_name}</Text>
+                <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{', speaks ' + this.props.navigation.state.params.language_name}</Text>
+              </Text>
+              <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.props.navigation.state.params.last_loggedin_date + ', ' + this.props.navigation.state.params.country_name}</Text>
+            </View>
             <View style={{ marginTop: 10 }}>
               <ScrollView contentContainerStyle={{ paddingVertical: 20 }} style={{ maxHeight: DEVICE_HEIGHT * 0.3 }}>
                 <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#fff' }}>{this.state.description}</Text>
