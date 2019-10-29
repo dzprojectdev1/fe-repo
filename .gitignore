@@ -59,3 +59,6 @@ index.android.bundle
 
 # Cocoa pods
 /ios/Pods
+
+# For distinguish ios / android
+package-lock.json

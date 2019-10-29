@@ -134,7 +134,7 @@ class Register1 extends Component {
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 50, }}>
             <Text style={{ color: '#808080', fontSize: 12, marginLeft: 10 }}>{"INTRODUCTION"}</Text>
           </View>
-          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1,  marginTop: Platform.select({ 'android': 15, 'ios': 160 })}}>
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1,  marginTop: Platform.select({ 'android': 15, 'ios': 15 })}}>
             <TextInput
               style={{ borderColor: 'gray', borderWidth: 1, minHeight: DEVICE_HEIGHT * 0.3 }}
               onChangeText={description => { this.setState({ description }) }}
@@ -176,7 +176,7 @@ class Register1 extends Component {
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 50, }}>
             <Text style={{ color: '#808080', fontSize: 12, marginLeft: 10 }}>{"GENDER"}</Text>
           </View>
-          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, height: 30, marginTop: Platform.select({ 'android': 15, 'ios': 160 }), flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, height: 30, marginTop: Platform.select({ 'android': 15, 'ios': 15 }), flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} onPress={() => this.setState({ isMale: true })}>
               {!this.state.isMale && <Image source={unradioIcon} style={{ tintColor: '#DE5859', width: 15, height: 15 }} />}
               {this.state.isMale && <Image source={radioIcon} style={{ tintColor: '#DE5859', width: 15, height: 15 }} />}
