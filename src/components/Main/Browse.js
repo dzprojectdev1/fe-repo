@@ -565,7 +565,7 @@ class Browse extends Component {
                   </View>
                 )}
               <View style={{ position: 'absolute', left: 0, top: 30 }}>
-                <TouchableOpacity style={{ width: 60, height: 60, alignItems: 'center', justifyContent: 'center' }}
+                <TouchableOpacity style={{ width: 30, height: 60, alignItems: 'center', justifyContent: 'center' }}
                   onPress={this.backPressed}>
                   <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
                 </TouchableOpacity>

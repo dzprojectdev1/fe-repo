@@ -5,7 +5,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import storeReducer from './Reducer';
-import { AsyncStorage, View, PermissionsAndroid } from 'react-native';
+import { AsyncStorage, View, PermissionsAndroid, Platform } from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
 // import { connect } from 'react-redux';
 import firebase from 'firebase';
 import nativeFirebase from 'react-native-firebase';
@@ -23,20 +24,24 @@ class App extends React.Component {
   async componentWillMount() {
     console.disableYellowBox = true;
     var firebaseConfig = {
-      apiKey: "AIzaSyBuJ1590DczIiuH7JA_Ls8Pido4IJ_GVT4",
-      authDomain: "dazzled-date-dev.firebaseapp.com",
-      databaseURL: "https://dazzled-date-dev.firebaseio.com",
-      projectId: "dazzled-date-dev",
+      apiKey: "AIzaSyB2V7gfc-XeADjk66oZ6E6cLG3RZ8GxeI0",
+      authDomain: "dazzled-date-prod.firebaseapp.com",
+      databaseURL: "https://dazzled-date-prod.firebaseio.com",
+      projectId: "dazzled-date-prod",
       storageBucket: "",
-      messagingSenderId: "725302073253",
-      appId: "1:725302073253:android:0aa373b87b7f562c2a3a4c"
+      messagingSenderId: "220585011058",
+      appId: "1:220585011058:ios:07634017e03dc116e6dfeb"
     };
     firebase.initializeApp(firebaseConfig);
     this.setState({ loading: false });
   }
 
   componentDidMount() {
-    this.checkDefaultPermissions();
+    if (Platform.OS === 'android') {
+      this.checkDefaultPermissions();
+    } else if (Platform.OS === 'ios') {
+      Geolocation.requestAuthorization();
+    }
     this.checkFirebasePermission();
     // this.createNotificationListeners();
   }

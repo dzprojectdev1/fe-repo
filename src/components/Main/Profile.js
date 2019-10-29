@@ -215,7 +215,7 @@ class Profile extends Component {
             onPress={() => this.onBack()} >
             <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
           </TouchableOpacity>
-          <View style={{ width: DEVICE_WIDTH - 100, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ width: DEVICE_WIDTH - 100, height: 40, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: 16 }}>{this.state.name}</Text>
             <Text style={{
                 fontSize: 12,
