@@ -546,11 +546,16 @@ class Browse extends Component {
                 />
               )} */}
               {this.state.otherData.imageUrl ? (
-                <Image
-                  source={{ uri: this.state.otherData.imageUrl }}
-                  style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
-                />
+                <TouchableOpacity
+                  onPress={this.gotoProfile}>
+                  <Image
+                    source={{ uri: this.state.otherData.imageUrl }}
+                    style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
+                  />
+                </TouchableOpacity>
               ) : (
+                <TouchableOpacity
+                  onPress={this.gotoProfile}>
                   <View style={{
                     flex: 1,
                     backgroundColor: '#989392',
@@ -558,12 +563,13 @@ class Browse extends Component {
                     alignItems: 'center',
                     justifyContent: 'center'
                   }}>
-                    <Image
-                      source={no_photo}
-                      style={{ justifyContent: 'center', alignSelf: 'center' }}
-                    />
+                      <Image
+                        source={no_photo}
+                        style={{ justifyContent: 'center', alignSelf: 'center' }}
+                      />
                   </View>
-                )}
+                </TouchableOpacity>
+              )}
               <View style={{ position: 'absolute', left: 0, top: 30 }}>
                 <TouchableOpacity style={{ width: 60, height: 60, alignItems: 'center', justifyContent: 'center' }}
                   onPress={this.backPressed}>

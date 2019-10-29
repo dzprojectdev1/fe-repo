@@ -223,7 +223,7 @@ class Match extends Component {
               "IncomeDetail",
               {
                 url: null,
-                mid: -1,
+                mid: mid,
                 otherId: otherId,
                 imageUrl: imgurl,
                 name: name,
