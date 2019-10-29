@@ -127,7 +127,7 @@ class Profile extends Component {
   //     isLoading: false
   //   });
   // }
-  showUserVideo(url, otherId) {
+  showUserVideo(index, url, otherId, datas) {
     // fetch(url, {
     //   method: 'GET',
     //   headers: {
@@ -142,7 +142,7 @@ class Profile extends Component {
     //     alert("There is error, please try again!");
     //     return
     //   });
-    this.props.navigation.navigate("ProfileDetail", { url: url, otherId: otherId })
+    this.props.navigation.navigate("ProfileDetail", { index: index, url: url, otherId: otherId, datas: datas })
   }
   onBack() {
     // if (Global.saveData.prevpage === "ChatDetail" || Global.saveData.prevpage === "Browse" ) {
@@ -281,9 +281,9 @@ class Profile extends Component {
               removeClippedSubviews={true}
               data={this.state.datas}
               initialNumToRender={this.state.datas.length}
-              renderItem={({ item: rowData }) => {
+              renderItem={({ item: rowData, index }) => {
                 return (
-                  <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.imageUrl, rowData.otherId)}>
+                  <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(index, rowData.imageUrl, rowData.otherId, this.state.datas)}>
                     <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20) * 1.5, marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }}>
                     </ImageBackground>
                   </TouchableOpacity>

@@ -277,12 +277,92 @@ class Register2 extends Component {
               });
             },
             (error) => {
-              // See error code charts below.
-              alert(error.message);
-              return null;
+              if (error.code == 2) {
+                this.getdeviceId().then(deviceInfo => {
+                  let language_index = 1;
+                  this.state.languageData.forEach((item, index) => {
+                    if (item.value === this.state.language)
+                      language_index = item.id;
+                  });
+                  let country_index = 1;
+                  this.state.countryData.forEach((item, index) => {
+                    if (item.value === this.state.country)
+                      country_index = item.id;
+                  });
+                  let city_index = 1;
+                  this.state.cityData.forEach((item, index) => {
+                    if (item.value === this.state.city)
+                      city_index = item.id;
+                  })
+                  var details = {
+                    'username': this.state.nickName,
+                    // 'useremail': this.state.email,
+                    // 'userpassword': this.state.password,
+                    'usergender': this.state.gender,
+                    'description': this.state.description,
+                    'language': language_index,
+                    'country': country_index,
+                    'ethnicity': city_index,
+                    'birth_date': this.state.birthday,
+                    'lat_geo': 0,
+                    'long_geo': 0,
+                    'device_id': deviceInfo.device_id,
+                    'fcm_id': deviceInfo.fcm_id
+                  };
+                  var formBody = [];
+                  for (var property in details) {
+                    var encodedKey = encodeURIComponent(property);
+                    var encodedValue = encodeURIComponent(details[property]);
+                    formBody.push(encodedKey + "=" + encodedValue);
+                  }
+                  formBody = formBody.join("&");
+                  fetch(`${SERVER_URL}/api/user/signup`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formBody,
+                  }).then((response) => response.json())
+                    .then((responseJson) => {
+                      if (!responseJson.error) {
+                        // this.onLogin();
+                        Global.saveData.token = responseJson.user.token;
+                        Global.saveData.u_id = responseJson.user.id
+                        Global.saveData.u_name = responseJson.user.name
+                        Global.saveData.u_age = responseJson.user.age
+                        Global.saveData.u_gender = responseJson.user.gender
+                        Global.saveData.u_language = responseJson.user.language
+                        Global.saveData.u_city = responseJson.user.ethnicity
+                        Global.saveData.u_country = responseJson.user.country
+                        Global.saveData.u_description = responseJson.user.description;
+                        Global.saveData.coin_count = responseJson.user.coin_count;
+                        Global.saveData.newUser = true;
+                        this.registerLoadingBtn.showLoading(false);
+                        this.props.navigation.navigate("BrowseList");
+                      }
+                      this.registerLoadingBtn.showLoading(false);
+                    })
+                    .catch((error) => {
+                      alert(error);
+                    });
+                });
+              } else {
+                // See error code charts below.
+                alert(error.message);
+                return null;
+              }
             },
             // { enableHighAccuracy: Platform.OS != 'android', timeout: 5000, }
             { enableHighAccuracy: true, timeout: 15000 }
+          );
+        } else {
+          Alert.alert(
+            'Alert',
+            "You have to allow DazzledDate to access this device's location. Please restart app and allow to access.",
+            [
+              {text: 'Ok', onPress: () => console.log('Ok pressed.')},
+            ],
+            {cancelable: false},
           );
         }
       });
@@ -360,9 +440,80 @@ class Register2 extends Component {
           });
         },
         (error) => {
-          // See error code charts below.
-          alert(error.message);
-          return null;
+          if (error.code == 2) {
+            this.getdeviceId().then(deviceInfo => {
+              let language_index = 1;
+              this.state.languageData.forEach((item, index) => {
+                if (item.value === this.state.language)
+                  language_index = item.id;
+              });
+              let country_index = 1;
+              this.state.countryData.forEach((item, index) => {
+                if (item.value === this.state.country)
+                  country_index = item.id;
+              });
+              let city_index = 1;
+              this.state.cityData.forEach((item, index) => {
+                if (item.value === this.state.city)
+                  city_index = item.id;
+              })
+              var details = {
+                'username': this.state.nickName,
+                // 'useremail': this.state.email,
+                // 'userpassword': this.state.password,
+                'usergender': this.state.gender,
+                'description': this.state.description,
+                'language': language_index,
+                'country': country_index,
+                'ethnicity': city_index,
+                'birth_date': this.state.birthday,
+                'lat_geo': 0,
+                'long_geo': 0,
+                'device_id': deviceInfo.device_id,
+                'fcm_id': deviceInfo.fcm_id
+              };
+              var formBody = [];
+              for (var property in details) {
+                var encodedKey = encodeURIComponent(property);
+                var encodedValue = encodeURIComponent(details[property]);
+                formBody.push(encodedKey + "=" + encodedValue);
+              }
+              formBody = formBody.join("&");
+              fetch(`${SERVER_URL}/api/user/signup`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formBody,
+              }).then((response) => response.json())
+                .then((responseJson) => {
+                  if (!responseJson.error) {
+                    // this.onLogin();
+                    Global.saveData.token = responseJson.user.token;
+                    Global.saveData.u_id = responseJson.user.id
+                    Global.saveData.u_name = responseJson.user.name
+                    Global.saveData.u_age = responseJson.user.age
+                    Global.saveData.u_gender = responseJson.user.gender
+                    Global.saveData.u_language = responseJson.user.language
+                    Global.saveData.u_city = responseJson.user.ethnicity
+                    Global.saveData.u_country = responseJson.user.country
+                    Global.saveData.u_description = responseJson.user.description;
+                    Global.saveData.coin_count = responseJson.user.coin_count;
+                    Global.saveData.newUser = true;
+                    this.registerLoadingBtn.showLoading(false);
+                    this.props.navigation.navigate("BrowseList");
+                  }
+                  this.registerLoadingBtn.showLoading(false);
+                })
+                .catch((error) => {
+                  alert(error);
+                });
+            });
+          } else {
+            // See error code charts below.
+            alert(error.message);
+            return null;
+          }
         },
         // { enableHighAccuracy: Platform.OS != 'android', timeout: 5000, }
         { enableHighAccuracy: true, timeout: 15000 }

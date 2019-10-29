@@ -357,12 +357,17 @@ class IncomeDetail extends Component {
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <Content>
           {!this.state.isMatchVideo && (
-            this.state.userimage ? (
-              <Image
-                source={{ uri: this.state.userimage }}
-                style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
-              />
-            ) : (
+            this.state.userimage ? (              
+              <TouchableOpacity
+                onPress={() => this.gotoProfile()}>
+                <Image
+                  source={{ uri: this.state.userimage }}
+                  style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
+                />
+              </TouchableOpacity>
+            ) : (             
+              <TouchableOpacity
+                onPress={() => this.gotoProfile()}>
                 <View style={{
                   flex: 1,
                   backgroundColor: '#989392',
@@ -375,7 +380,8 @@ class IncomeDetail extends Component {
                     style={{ justifyContent: 'center', alignSelf: 'center' }}
                   />
                 </View>
-              )
+              </TouchableOpacity>
+            )
           )}
           {this.state.isMatchVideo && (
             // <Video source={{ uri: this.state.vUrl }}   // Can be a URL or a local file.
@@ -389,12 +395,17 @@ class IncomeDetail extends Component {
             //   onError={this.videoError}              // Callback when video cannot be loaded
             //   style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
             // />
-            this.state.userimage ? (
-              <Image
-                source={{ uri: this.state.userimage }}
-                style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
-              />
-            ) : (
+            this.state.userimage ? (            
+              <TouchableOpacity
+                onPress={() => this.gotoProfile()}>
+                <Image
+                  source={{ uri: this.state.userimage }}
+                  style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
+                />
+              </TouchableOpacity>
+            ) : (          
+              <TouchableOpacity
+                onPress={() => this.gotoProfile()}>
                 <View style={{
                   flex: 1,
                   backgroundColor: '#989392',
@@ -407,7 +418,8 @@ class IncomeDetail extends Component {
                     style={{ justifyContent: 'center', alignSelf: 'center' }}
                   />
                 </View>
-              )
+              </TouchableOpacity>
+            )
           )}
         </Content>
         <View style={{ position: 'absolute', left: 0, top: 30 }}>
