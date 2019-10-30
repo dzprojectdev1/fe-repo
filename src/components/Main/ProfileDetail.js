@@ -83,14 +83,19 @@ class ProfileDetail extends Component {
             //   source={{ uri: this.state.vUrl }}
             //   style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
             // />
+            
             <ImageSlider
               loopBothSides
-              autoPlayWithInterval={3000}
+              // autoPlayWithInterval={3000}
               images={this.state.changedData}
+              onPress={this.onReject} 
               customSlide={({ index, item, style, width }) => (
                 // It's important to put style here because it's got offset inside
                 <View key={index} style={[style, styles.customSlide]}>
-                  <Image source={{ uri: item }} style={styles.customImage} />
+                  <TouchableOpacity
+                    onPress={() => this.onReject()}>
+                    <Image source={{ uri: item }} style={styles.customImage} />
+                  </TouchableOpacity>
                 </View>
               )}
               customButtons={(position, move) => (

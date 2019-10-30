@@ -75,7 +75,8 @@ class MyVideo extends Component {
           } else {
             this.setState({
               noData: true,
-              isLoading: false
+              isLoading: false, 
+              datas: [],
             });
           }
         }
@@ -185,7 +186,7 @@ class MyVideo extends Component {
   onDeleteVideo(otherid) {
     Alert.alert(
       '',
-      'Are you sure you want to delete this video?',
+      'Are you sure you want to delete this photo?',
       [
         { text: 'Delete', backgroundColor: '#FCDD80', onPress: () => this.deleteVideo(otherid) },
         { text: 'Cancel', backgroundColor: '#FCDD80', onPress: () => () => console.log('Cancel Pressed'), style: 'cancel' },

@@ -37,9 +37,11 @@ import b_profile from '../../assets/images/profile.png';
 import no_photo from '../../assets/images/no_photo.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 // import instant_chat from '../../assets/images/instant_chat.png';
+import flash_heart from '../../assets/images/flash_heart.png';
+import flash_reject from '../../assets/images/flash_reject.png';
 import Global from '../Global';
 
-import { SERVER_URL } from '../../config/constants';
+import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
 
 class Browse extends Component {
   constructor(props) {
@@ -56,6 +58,8 @@ class Browse extends Component {
       visible: false,
       matchId: -1,
       unlimitedInstant: false,
+      flash_heart: false,
+      flash_reject: false,
       // operatedIDArr: [],
     };
   }
@@ -191,50 +195,75 @@ class Browse extends Component {
   }
   getDetails = async (data) => {
     if (data.cdn_filtered_id) {
-      var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=${data.cdn_filtered_id}-screenshot`;
-      fetch(v_url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': Global.saveData.token
-        }
-      }).then((response) => response.json())
-        .then((responseJson) => {
-          var otherData = {};
-          if (responseJson.url) {
-            otherData = {
-              imageUrl: responseJson.url,
-              detail: data
-            };
-          } else {
-            otherData = {
-              imageUrl: null,
-              detail: data
-            };
-          }
-          this.setState({
-            otherData
-          });
-        })
-        .catch((error) => {
-          alert(JSON.stringify(error));
-          return
-        }
-        );
+      var otherData = {};
+      otherData = {
+        imageUrl: GCS_BUCKET + data.cdn_filtered_id + '-screenshot',
+        detail: data
+      };
+      this.setState({
+        otherData: otherData,
+        flash_heart: false,
+        flash_reject: false,
+      });
     } else {
       var otherData = {
         imageUrl: null,
         detail: data
       };
       this.setState({
-        otherData
+        otherData: otherData,
+        flash_heart: false,
+        flash_reject: false,
       })
     }
   }
+  // getDetails = async (data) => {
+  //   if (data.cdn_filtered_id) {
+  //     var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=${data.cdn_filtered_id}-screenshot`;
+  //     fetch(v_url, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': Global.saveData.token
+  //       }
+  //     }).then((response) => response.json())
+  //       .then((responseJson) => {
+  //         var otherData = {};
+  //         if (responseJson.url) {
+  //           otherData = {
+  //             imageUrl: responseJson.url,
+  //             detail: data
+  //           };
+  //         } else {
+  //           otherData = {
+  //             imageUrl: null,
+  //             detail: data
+  //           };
+  //         }
+  //         this.setState({
+  //           otherData
+  //         });
+  //       })
+  //       .catch((error) => {
+  //         alert(JSON.stringify(error));
+  //         return
+  //       }
+  //       );
+  //   } else {
+  //     var otherData = {
+  //       imageUrl: null,
+  //       detail: data
+  //     };
+  //     this.setState({
+  //       otherData
+  //     })
+  //   }
+  // }
   onReject() {
     this.setState({
       isLoading: true,
-      disabled: false
+      disabled: false,
+      flash_reject: true,
     });
     var details = {
       'otherId': this.state.otherData.detail.id
@@ -282,7 +311,8 @@ class Browse extends Component {
   onHeart() {
     this.setState({
       isLoading: true,
-      disabled: true
+      disabled: true,
+      flash_heart: true,
     });
 
     var details = {
@@ -517,6 +547,18 @@ class Browse extends Component {
     return (
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
+        {this.state.flash_heart ? (
+          <View>
+            <Image source={flash_heart} style={{width: 300, height: 300, zIndex: 100, position: 'absolute', left: parseInt(DEVICE_WIDTH /2) - 150, top: parseInt(DEVICE_HEIGHT /2) - 150,}} />
+          </View>
+        ): null}
+        
+        {this.state.flash_reject ? (
+          <View>
+            <Image source={flash_reject} style={{width: 300, height: 300, zIndex: 100, position: 'absolute', left: parseInt(DEVICE_WIDTH /2) - 150, top: parseInt(DEVICE_HEIGHT /2) - 150,}} />
+          </View>
+        ): null}
+
         {this.state.noMoreUsers ?
           (<Content>
             <View>
