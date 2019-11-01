@@ -30,7 +30,7 @@ class App extends React.Component {
       projectId: "dazzled-date-prod",
       storageBucket: "",
       messagingSenderId: "220585011058",
-      appId: "1:220585011058:ios:07634017e03dc116e6dfeb"
+      appId: "1:220585011058:android:5e783118c820cfb1e6dfeb"
     };
     firebase.initializeApp(firebaseConfig);
     this.setState({ loading: false });

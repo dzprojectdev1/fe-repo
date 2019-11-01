@@ -535,8 +535,7 @@ class ProfileSetting extends Component {
               disabled={this.state.disabled}
             />
           </View>
-          <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 30, }}
-            onPress={() => this.gotoTermofService()}>
+          <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 30, }}>
             <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
               <Text style={{ fontSize: 16, fontWeight: 'bold' }} onPress={ ()=>{ Linking.openURL('https://dazzleddate.com/terms_and_conditions.html')}}>{"Term and Conditions / "}</Text>
               <Text style={{ fontSize: 16, fontWeight: 'bold' }} onPress={ ()=>{ Linking.openURL('https://dazzleddate.com/privacy_policy.html')}}>{"Privacy Policy"}</Text>

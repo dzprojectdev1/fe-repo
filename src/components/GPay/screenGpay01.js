@@ -387,6 +387,8 @@ class screenGpay01 extends Component {
       this.props.navigation.replace("MyVideo");
     } else if (Global.saveData.nowPage == 'Income') {
       this.props.navigation.replace("Income");
+    } else if (Global.saveData.nowPage == 'ProfileSetting') {
+      this.props.navigation.replace("MyVideo");
     } else {
       this.props.navigation.navigate(Global.saveData.nowPage);
     }
@@ -413,7 +415,7 @@ class screenGpay01 extends Component {
           if (responseData.success == false) {
             Alert.alert(
               '',
-              "Please wait " + responseData.hours+" hours "+responseData.minutes+" minutes and "+responseData.seconds+" seconds to unlock 50 free diamonds",
+              "Please wait " + responseData.hours+" hours "+responseData.minutes+" minutes and "+responseData.seconds+" seconds to unlock 90 free diamonds",
               [
                 {text: 'OK', onPress: () => console.log('OK Pressed')},
               ],
@@ -422,7 +424,7 @@ class screenGpay01 extends Component {
           } else {
             Alert.alert(
               'Success',
-              "50 diamonds were added to your account successfully. Next 50 diamonds will unlock in 24 hours",
+              "90 diamonds were added to your account successfully. Next 90 diamonds will unlock in 24 hours",
               [
                 {text: 'OK', onPress: () => console.log('OK Pressed')},
               ],

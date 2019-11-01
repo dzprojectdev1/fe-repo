@@ -62,8 +62,8 @@ class AppView extends React.Component {
         let senderId = data.senderId;
         if (this.props.senders && this.props.senders.length) {
           senders = this.props.senders;
-          let isExist = this.props.senders.filter(item => item === senderId);
-          if (!isExist) {
+          let isExist = senders.filter(item => item === senderId);
+          if (isExist == '') {
             senders.push(senderId)
           }
         } else {

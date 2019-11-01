@@ -221,7 +221,7 @@ class Profile extends Component {
                 fontSize: 12,
                 color: '#7d7d7d',
             }}>
-                {(this.state.otherData.age + ' years old, ') + (this.state.otherData.gender === 1 ? 'Male, ' : 'Female, ') + (parseInt(this.state.otherData.distance) + ' miles away, ')}
+                {(this.state.otherData.age + ' years old, ') + (this.state.otherData.gender === 1 ? 'Male, ' : 'Female, ') + ((parseInt(this.state.otherData.distance) != 0)? parseInt(this.state.otherData.distance): 'unknown' + ' miles away, ')}
             </Text>
             <Text style={{
                 fontSize: 12,

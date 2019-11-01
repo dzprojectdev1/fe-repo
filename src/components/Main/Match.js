@@ -229,8 +229,8 @@ class Match extends Component {
                 name: name,
                 age: age,
                 gender: gender,
-                distance: distance,
-                description: description,
+                distance: newData.distance,
+                description: newData.description,
                 country_name: newData.country_name,
                 ethnicity_name: newData.ethnicity_name,
                 language_name: newData.language_name,
@@ -255,6 +255,29 @@ class Match extends Component {
       visible: false
     })
     this.props.navigation.navigate('screenGpay01');
+  }
+
+  gotoMainMenu = (menu) => {
+      this.updateLastLoggedInDate();
+      this.props.navigation.replace(menu);
+  }
+
+  updateLastLoggedInDate = () => {
+      fetch(`${SERVER_URL}/api/match/updateLastLoggedInDate`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Authorization': Global.saveData.token
+          },
+      }).then((response) => response.json())
+          .then((responseJson) => {
+              if (!responseJson.error) {
+                  return
+              }
+          })
+          .catch((error) => {
+              return
+          });
   }
   render() {
     return (
@@ -304,13 +327,13 @@ class Match extends Component {
           />
           <View style={{ height: 50 }} />
         </ScrollView>)}
-        <Footer style={{ backgroundColor: '#222F3F', borderTopColor: '#222F3F', height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
+        <Footer style={{ backgroundColor: '#222F3F', borderTopColor: '#222F3F', height: Platform.select({ 'android': 50, 'ios': 50 }) }}>
           <FooterTab>
-            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("BrowseList")}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoMainMenu("BrowseList")}>
               <Image source={b_browse} style={{ width: 25, height: 25, }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"BROWSE"}</Text>
             </Button>
-            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("Income")}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoMainMenu("Income")}>
               <Image source={b_incoming} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"INCOMING"}</Text>
             </Button>
@@ -318,12 +341,12 @@ class Match extends Component {
               <Image source={b_match} style={{ width: 25, height: 25, tintColor: '#B64F54' }} />
               <Text style={{ color: '#B64F54', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MATCH"}</Text>
             </Button>
-            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("Chat")}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoMainMenu("Chat")}>
               {this.props.unreadFlag && (<View style={styles.badgeIcon}><Text style={{ color: '#FFF', textAlign: 'center', fontSize: 10, }}>{'N'}</Text></View>)}
               <Image source={b_chat} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"CHAT"}</Text>
             </Button>
-            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.navigate("MyVideo")}>
+            <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoMainMenu("MyVideo")}>
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
             </Button>

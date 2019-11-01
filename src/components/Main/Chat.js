@@ -209,6 +209,30 @@ class Chat extends Component {
     })
     this.props.navigation.navigate('screenGpay01');
   }
+
+  gotoMainMenu = (menu) => {
+      this.updateLastLoggedInDate();
+      this.props.navigation.replace(menu);
+  }
+
+  updateLastLoggedInDate = () => {
+      fetch(`${SERVER_URL}/api/match/updateLastLoggedInDate`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Authorization': Global.saveData.token
+          },
+      }).then((response) => response.json())
+          .then((responseJson) => {
+              if (!responseJson.error) {
+                  return
+              }
+          })
+          .catch((error) => {
+              return
+          });
+  }
+
   render() {
     return (
       <View style={styles.contentContainer}>
@@ -277,17 +301,17 @@ class Chat extends Component {
             />)}
           <View style={{ height: 50 }} />
         </ScrollView>)}
-        <Footer style={{ height: Platform.select({ 'android': 50, 'ios': 30 }) }}>
+        <Footer style={{ height: Platform.select({ 'android': 50, 'ios': 50 }) }}>
           <FooterTab>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("BrowseList")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoMainMenu("BrowseList")}>
               <Image source={b_browse} style={{ width: 25, height: 25, }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"BROWSE"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Income")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoMainMenu("Income")}>
               <Image source={b_incoming} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"INCOMING"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("Match")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoMainMenu("Match")}>
               <Image source={b_match} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"MATCH"}</Text>
             </Button>
@@ -296,7 +320,7 @@ class Chat extends Component {
               <Image source={b_chat} style={{ width: 25, height: 25, tintColor: '#B64F54' }} />
               <Text style={{ color: '#B64F54', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"CHAT"}</Text>
             </Button>
-            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.props.navigation.replace("MyVideo")}>
+            <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoMainMenu("MyVideo")}>
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
             </Button>

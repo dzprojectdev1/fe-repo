@@ -494,7 +494,7 @@ class IncomeDetail extends Component {
             </View>
             <View style={{ flexDirection: 'row', marginTop: 5 }}>
               <Image source={b_distance} style={{ width: 15, height: 15 }} />
-              <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userdistance + ' mile'}</Text>
+              <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{((this.state.userdistance != 0)? this.state.userdistance: 'unknown') + ' mile'}</Text>
             </View>
             <View style={{ flexDirection: 'column', marginTop: 5 }}>
               <Text>
