@@ -298,6 +298,9 @@ class ChatScreen extends React.Component {
 
     createNewMessage = () => {
         const { textMessage, matchId } = this.state;
+
+        this.setState({ textMessage: '' });
+
         var details = {
             'matchId': matchId,
             'messageText': textMessage
@@ -325,14 +328,14 @@ class ChatScreen extends React.Component {
                         let msgId = firebase.database().ref().child("dz-chat-data").child(Global.saveData.u_id).child(this.state.other.userId).push().key;
                         let updates = {};
                         let senderMessage = {
-                            message: this.state.textMessage,
+                            message: textMessage,
                             time: firebase.database.ServerValue.TIMESTAMP,
                             from: Global.saveData.u_id,
                             read: true
                         };
                         updates[Global.saveData.u_id + '/' + this.state.other.userId + '/' + msgId] = senderMessage;
                         let receiverMessage = {
-                            message: this.state.textMessage,
+                            message: textMessage,
                             time: firebase.database.ServerValue.TIMESTAMP,
                             from: Global.saveData.u_id,
                             read: false
@@ -343,8 +346,6 @@ class ChatScreen extends React.Component {
                         if (this.scrollView) {
                             this.scrollView.scrollToEnd({ animated: true });
                         }
-
-                        this.setState({ textMessage: '' });
                     } else {
                         Alert.alert(
                             '',

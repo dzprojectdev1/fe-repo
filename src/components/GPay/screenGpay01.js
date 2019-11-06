@@ -191,8 +191,23 @@ class screenGpay01 extends Component {
   
   goNext = () => {
 
-    var responseReceipt = this.state.receipt;
+    var responseReceipt   = this.state.receipt;
     var responseProductId = JSON.parse(responseReceipt).productId;
+    var responseOrderId   = JSON.parse(responseReceipt).orderId;
+
+    responseOrderId = '' + responseOrderId;
+
+    if (responseOrderId.indexOf('GPA.') == -1) {
+      Alert.alert(
+        'Purchase Error',
+        'Please retry with invalide Payment information',
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        {cancelable: false},
+      );
+      return
+    }
 
     var productIdIndex = 0;
 

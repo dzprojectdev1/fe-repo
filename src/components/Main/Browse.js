@@ -102,7 +102,8 @@ class Browse extends Component {
         }
       }
     }).catch((error) => {
-      alert(error);
+      // alert(error);
+      return
     })
   }
 
@@ -511,7 +512,7 @@ class Browse extends Component {
           }
         }
       }).catch((error) => {
-        alert(JSON.stringify(error));
+        // alert(JSON.stringify(error));
         return
       });
   }
@@ -680,7 +681,7 @@ class Browse extends Component {
                   </View>
                   <View style={{ flexDirection: 'row', marginTop: 5 }}>
                     <Image source={b_distance} style={{ width: 15, height: 15 }} />
-                    <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{(parseInt(this.state.otherData.detail.distance) != 0)? parseInt(this.state.otherData.detail.distance): 'unknown' + ' mile'}</Text>
+                    <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{((parseInt(this.state.otherData.detail.distance) != 0)? parseInt(this.state.otherData.detail.distance): 'unknown') + ' mile'}</Text>
                   </View>
                   <View style={{ flexDirection: 'column', marginTop: 5 }}>
                     <Text>
