@@ -483,7 +483,7 @@ class IncomeDetail extends Component {
           </View> */}
         </View>
         <View style={{ position: 'absolute', left: 0, bottom: 40 }}>
-          <View style={{ marginLeft: DEVICE_WIDTH * 0.1, marginBottom: 20 }}>
+          <View style={{ marginLeft: DEVICE_WIDTH * 0.1, marginBottom: 20, flexDirection:'column' }}>
             <View style={{ flexDirection: 'row' }}>
               <Image source={b_name} style={{ width: 15, height: 15 }} />
               <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.username}</Text>
@@ -509,7 +509,7 @@ class IncomeDetail extends Component {
                 <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#fff' }}>{this.state.description}</Text>
               </ScrollView>
             </View>
-            <View style={{ width: DEVICE_WIDTH * 0.5, marginLeft: DEVICE_WIDTH * 0.15, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
+            <View style={{ width: DEVICE_WIDTH * 0.5, marginLeft: DEVICE_WIDTH * 0.15, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
               {!this.state.isMatchVideo && (
                 <View style={{ width: DEVICE_WIDTH * 0.5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                   <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}
@@ -522,7 +522,7 @@ class IncomeDetail extends Component {
                   </TouchableOpacity>
                 </View>)}
               {this.state.isMatchVideo && (
-                <View>
+                <View style={{width:'100%', height:40, justifyContent:'center', alignItems:'center', }}>
                   <TouchableOpacity
                     style={{
                       width: DEVICE_WIDTH * 0.5,

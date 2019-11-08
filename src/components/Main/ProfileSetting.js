@@ -35,6 +35,8 @@ class ProfileSetting extends Component {
       isLoading: false,
       disabled: true,
       account_status: true,
+      blockData: [],
+      auto_block: '',
     };
 
     this.changeAccountStatus();
@@ -60,6 +62,7 @@ class ProfileSetting extends Component {
     this.get_ethnicity();
     this.get_country();
     this.get_language();
+    this.get_block();
   }
   componentDidMount() {
     Global.saveData.nowPage = 'ProfileSetting';    
@@ -158,6 +161,18 @@ class ProfileSetting extends Component {
         return
       });
   }
+
+  get_block = () => {
+    var itmes = [];
+    var data = [
+      'Yes - ON',
+      'No - OFF',
+    ]
+    for (var i = 0; i < 2; i++) {
+      itmes.push({ value: data[i] })
+    }
+    this.setState({ auto_block: (Global.saveData.auto_block == 1? 'Yes - ON': 'No - OFF'), blockData: itmes })
+  }
   onBack() {
     this.props.navigation.pop()
   }
@@ -198,12 +213,16 @@ class ProfileSetting extends Component {
         break;
       }
     }
+    
+    var blockindex = (this.state.auto_block == 'Yes - ON')? 1: 0;
+
     var details = {
       'name': this.state.name,
       'description': this.state.description,
       'languageId': lanindex,
       'ethnicityId': cityindex,
-      'countryId': coutryindex
+      'countryId': coutryindex,
+      'auto_blockId': blockindex
     };
     var formBody = [];
     for (var property in details) {
@@ -517,6 +536,27 @@ class ProfileSetting extends Component {
                 data={this.state.countryData}
                 onChangeText={(country) => this.setState({ country, disabled: false })}
                 value={this.state.country}
+                dropdownPosition={-4}
+              />
+            </View>
+          </View>
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 10 }}>
+            <View>
+              <Text style={{ color: '#808080', fontSize: 12 }}>{"SAFE CHAT FILTER"}</Text>
+              <Text style={{ color: '#808080', fontSize: 10, marginTop: 10 }}>{"Automatically block users sending inapproperiate chat texts"}</Text>
+            </View>
+            <View>
+              <Dropdown
+                containerStyle={{ width: "100%", marginTop: -15 }}
+                label=' '
+                pickerStyle={{ marginTop: -50, }}
+                style={{ color: '#808080', fontSize: 10 }}
+                inputContainerStyle={{ borderBottomColor: '#808080', }}
+                baseColor="#DE5859"//indicator color
+                textColor="#000"
+                data={this.state.blockData}
+                onChangeText={(auto_block) => this.setState({ auto_block, disabled: false })}
+                value={this.state.auto_block}
                 dropdownPosition={-4}
               />
             </View>

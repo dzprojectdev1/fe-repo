@@ -287,7 +287,7 @@ class Filter extends Component {
       gender: this.state.selectedIndex + 1,
       fromAge: this.state.multiSliderValue[0],
       toAge: this.state.multiSliderValue[1],
-      distance: this.state.sliderOneValue[0] === 2000 ? null : this.state.sliderOneValue[0],
+      distance: (this.state.sliderOneValue[0] === 2000 || this.state.sliderOneValue[0] === 1999) ? null : this.state.sliderOneValue[0],
       language_index: lanindex,
       city_index: cityindex,
       country_index: countryIndex,
@@ -313,9 +313,19 @@ class Filter extends Component {
     this.props.navigation.replace('BrowseList');
   }
 
+  _storeClearData = async () => {
+    try {
+      await AsyncStorage.removeItem('filterData');
+    } catch (error) {
+      // Error saving data
+    }
+  }
+
   removeAllFilters() {
-    Global.saveData.removedFilter = true
-    this.onBack();
+    let that = this;
+    this._storeClearData().then(() => {
+      that.onBack();
+    });
   }
   render() {
     const buttons = ['MALE', 'FEMALE']
@@ -378,9 +388,9 @@ class Filter extends Component {
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 10 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={{ color: '#808080', fontSize: 12 }}>{"DISTANCE"}</Text>
-              {(this.state.sliderOneValue[0] !== 2000) &&
+              {(this.state.sliderOneValue[0] !== 2000 && this.state.sliderOneValue[0] !== 1999) &&
                 <Text style={{ color: '#808080', fontSize: 12 }}>{"" + this.state.sliderOneValue + " mile"}</Text>}
-              {(this.state.sliderOneValue[0] === 2000) &&
+              {(this.state.sliderOneValue[0] === 2000 || this.state.sliderOneValue[0] === 1999) &&
                 <Text style={{ color: '#808080', fontSize: 12 }}>{"NO LIMIT"}</Text>}
             </View>
             <View>
@@ -393,12 +403,12 @@ class Filter extends Component {
                 }}
                 customMarker={() => {
                   return (<TouchableOpacity style={{ width: 20, height: 20, opacity: 0.7, borderRadius: 10, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center' }}>
-                    <TouchableOpacity style={{ width: 5, height: 5, backgroundColor: '#f00', borderRadius: 2 }} />
+                    <TouchableOpacity style={{ width: 5, height: 5, backgroundColor: '#f00', borderRadius: 1 }} />
                   </TouchableOpacity>
                   )
                 }}
                 min={0}
-                max={2001}
+                max={2000}
                 onValuesChangeStart={this.sliderOneValuesChangeStart}
                 onValuesChange={this.sliderOneValuesChange}
                 onValuesChangeFinish={this.sliderOneValuesChangeFinish}
@@ -473,14 +483,19 @@ class Filter extends Component {
                <Text style={{color:'#fff'}}>{"Remove All Filters"}</Text>
              </TouchableOpacity>
           </View> */}
-          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, height: 20, alignItems: 'flex-end', justifyContent: 'flex-end', marginTop: 10 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: 180 }}>
-              <TouchableOpacity style={{ width: 80, height: 20, borderRadius: 5, borderColor: '#DE5859', alignItems: 'center', justifyContent: 'center' }}
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, height: 40, alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: 280 }}>              
+              <TouchableOpacity style={{ width:80, height:40, alignItems:'center', justifyContent:'center', borderRadius:5}}
+                onPress={()=>this.removeAllFilters()}
+              >
+                <Text style={{ color:'#DE5859', fontSize: 12, fontWeight: 'bold' }}>{"Clear All"}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ width: 80, height: 40, borderRadius: 5, borderColor: '#DE5859', borderWidth: 1, alignItems: 'center', justifyContent: 'center' }}
                 onPress={() => this.props.navigation.pop()}
               >
                 <Text style={{ color: '#808080', fontSize: 12, fontWeight: 'bold' }}>{"CANCEL"}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{ width: 80, height: 20, borderRadius: 5, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center' }}
+              <TouchableOpacity style={{ width: 80, height: 40, borderRadius: 5, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center' }}
                 onPress={() => this.onApply()} disabled={this.state.disable}
               >
                 <Text style={{ color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{"APPLY"}</Text>

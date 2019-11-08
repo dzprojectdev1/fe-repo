@@ -24,7 +24,9 @@ import FastImage from 'react-native-fast-image';
 import shorthash from 'shorthash';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
+import { changeReadFlag } from '../../../Action';
 // import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import b_browse from '../../assets/images/browse.png';
@@ -190,7 +192,7 @@ class Chat extends Component {
         '',
         "You have been blocked by the user",
         [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
+          { text: 'OK', onPress: () => this.checkUnReadMessage(data) },
         ],
         { cancelable: false },
       );
@@ -198,6 +200,46 @@ class Chat extends Component {
       this.props.navigation.navigate("ChatDetail", { data: data })
     }
   }
+  
+
+  checkUnReadMessage = (data) => {
+    firebase.database().ref().child('dz-chat-unread').child(Global.saveData.u_id + '/')
+        .once('value', (value) => {
+            let senderIdArr = value.toJSON();
+            let newPayload = {};
+            let updates = {};
+            if (senderIdArr) {
+                senderIdArr = senderIdArr.split(',');
+                let index = senderIdArr.indexOf(data.data.other_user_id.toString());
+                if (index !== -1) {
+                    senderIdArr.splice(index, 1)
+                }
+                newPayload = {
+                    unreadFlag: true,
+                    senders: senderIdArr
+                }
+                if (senderIdArr.length) {
+                    // newPayload = {
+                    //     unreadFlag: true,
+                    //     senders: senderIdArr
+                    // }
+                    newPayload.unreadFlag = true;
+                    updates[Global.saveData.u_id] = senderIdArr.toString();
+                    firebase.database().ref().child('dz-chat-unread').update(updates);
+                } else {
+                    // newPayload = {
+                    //     unreadFlag: false,
+                    //     senders: []
+                    // }
+                    newPayload.unreadFlag = false;
+                    firebase.database().ref().child('dz-chat-unread').child(Global.saveData.u_id + '/').remove();
+                }
+
+                this.props.changeReadFlag(newPayload);
+                this.props.navigation.replace("Chat");
+            }
+        });
+}
   //////////////////////////////////////////////////
   gotoGpay() {
     this.props.navigation.replace("screenGpay01");
@@ -396,4 +438,10 @@ const mapStateToProps = (state) => {
   return { unreadFlag, senders }
 };
 
-export default connect(mapStateToProps)(Chat);
+const mapDispatchToProps = dispatch => (
+    bindActionCreators({
+        changeReadFlag,
+    }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);
