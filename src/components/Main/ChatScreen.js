@@ -136,7 +136,7 @@ class ChatScreen extends React.Component {
     }
 
     backPressed = () => {
-        if (Global.saveData.prevpage == "Chat") {
+        if (Global.saveData.prevpage == "Chat" || Global.saveData.prevpage == "ChatDetail") {
             this.props.navigation.replace("Chat");
         } else if (Global.saveData.prevpage == "BrowseList") {
             this.props.navigation.replace("BrowseList");

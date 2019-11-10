@@ -32,6 +32,8 @@ import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
 import b_delete from '../../assets/images/delete.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
+import bg from '../../assets/images/bg.jpg';
+import upload from '../../assets/images/upload_photos.png';
 import Global from '../Global';
 
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
@@ -249,9 +251,10 @@ class MyVideo extends Component {
   }
   render() {
     return (
-      <View style={styles.contentContainer}>
+      <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
+      {/* <View style={styles.contentContainer}> */}
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-        <View style={{ marginTop: 40, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ marginTop: 40, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', justifyContent: 'space-between', }}>
           <TouchableOpacity style={{ width: 60, height: 40 }}
             onPress={() => this.gotoShop()}>
             <View style={{ flexDirection: 'row' }}>
@@ -274,18 +277,23 @@ class MyVideo extends Component {
         )}
         {this.state.noData && !this.state.isLoading && (
           <View style={{
-            flex: 1, justifyContent: 'center', alignSelf: 'center', margin: 35
+            height: 40, justifyContent: 'center', alignSelf: 'center', margin: 45,
           }}>
             <Text style={{
+              margin:0,
               color: '#000',
-              fontSize: 20,
+              fontSize: 16,
               textAlign: "center",
               alignContent: 'center'
             }}>You dont have any photo. {'\n'} Please upload more than one so that others can find you more easily.</Text>
           </View>
         )}
-
-        <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
+        <ScrollView style={{ marginTop: 15, backgroundColor: '#FFF' }} removeClippedSubviews={true}>
+          {(this.state.datas.length == 0) && (
+            <View style={{ flex: 1, alignItems: 'center' }}>
+              <Image source={upload} style={{width: 160, height: 160, marginTop: 70}}></Image>
+            </View>
+          )}
           {(this.state.datas.length !== 0) && (
             <FlatList
               numColumns={2}
@@ -361,7 +369,8 @@ class MyVideo extends Component {
             </Button> */}
           </FooterTab>
         </Footer>
-      </View>
+      {/* </View> */}
+      </ImageBackground>
     );
   }
 }

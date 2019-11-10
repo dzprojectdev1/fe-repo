@@ -14,10 +14,12 @@ import {
   FlatList,
   TouchableOpacity,
   StatusBar, 
-  Image
+  Image,
 } from "react-native";
 
 import heart from '../../assets/images/heart.png';
+import search_photo from '../../assets/images/search_photo.png';
+import bg from '../../assets/images/bg.jpg';
 import Global from '../Global';
 
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
@@ -208,14 +210,16 @@ class Profile extends Component {
 
   render() {
     return (
-      <View style={styles.contentContainer}>
+      <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
+      {/* <View style={styles.contentContainer}> */}
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-        <View style={{ height: 40, marginTop: Platform.select({ 'ios': '20%', 'android': '20%' }), flexDirection: 'row' }}>
+        <View style={{ height: this.state.otherData.imageUrl? 160: 40, marginTop: Platform.select({ 'ios': '20%', 'android': '20%' }), marginBottom: 20, flexDirection: 'row' }}>
           <TouchableOpacity style={{ width: 40, height: 40, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}
             onPress={() => this.onBack()} >
             <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
           </TouchableOpacity>
-          <View style={{ width: DEVICE_WIDTH - 100, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ width: DEVICE_WIDTH - 100, height: this.state.otherData.imageUrl? 160: 40, alignItems: 'center', justifyContent: 'center' }}>
+            {this.state.otherData.imageUrl && (<Image source={{ uri: this.state.otherData.imageUrl}} style={{width: 120, height: 120, borderRadius: 60,}}></Image>)}
             <Text style={{ fontSize: 16 }}>{this.state.name}</Text>
             <Text style={{
                 fontSize: 12,
@@ -237,7 +241,7 @@ class Profile extends Component {
             </Text>
           </View>
         </View>
-        <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
+        <ScrollView style={{ marginTop: 15, backgroundColor: '#FFF' }} removeClippedSubviews={true}>
           {this.state.otherData.description && (
             <View style={{
               justifyContent: 'center',
@@ -245,7 +249,9 @@ class Profile extends Component {
               alignItems: 'center',
               marginTop: 10,
               marginBottom: 10,
-              padding: 10
+              padding: 10,
+              marginLeft: 20,
+              marginRight: 20,
             }}>
               <Text style={{ fontSize: 16, alignContent: 'center' }}>
                 {this.state.otherData.description}
@@ -253,8 +259,11 @@ class Profile extends Component {
             </View>
           )}
           {this.state.isLoading && (
+            // <View style={{
+            //   flex: 1, justifyContent: 'center', alignSelf: 'center', margin: 40
+            // }}>
             <View style={{
-              flex: 1, justifyContent: 'center', alignSelf: 'center', margin: 40
+              flex: 1, justifyContent: 'center', alignSelf: 'center',
             }}>
               <ActivityIndicator style={{ color: '#DE5859' }} />
             </View>
@@ -265,13 +274,15 @@ class Profile extends Component {
               alignItems: 'center',
             }}>
               <Text style={{
-                fontSize: 20,
-                marginTop: 50
+                fontSize: 16,
+                marginTop: 20,
+                color: '#dd4f53',
               }}>{'This user does not have any'}</Text>
               <Text style={{
-                fontSize: 20,
+                fontSize: 16,
+                color: '#dd4f53',
               }}>{' profile pictures.'}</Text>
-              <Image source={heart} style={{width: 150, height: 150, marginTop: 100}}></Image>
+              <Image source={search_photo} style={{width: 200, height: 200, marginTop: 40}}></Image>
             </View>
           )}
           {(this.state.datas.length != 0) && (
@@ -283,8 +294,10 @@ class Profile extends Component {
               initialNumToRender={this.state.datas.length}
               renderItem={({ item: rowData, index }) => {
                 return (
-                  <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(index, rowData.imageUrl, rowData.otherId, this.state.datas)}>
-                    <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20) * 1.5, marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }}>
+                  <TouchableOpacity style={{ width: DEVICE_WIDTH / 2, }} onPress={() => this.showUserVideo(index, rowData.imageUrl, rowData.otherId, this.state.datas)}>
+                  {/* <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(index, rowData.imageUrl, rowData.otherId, this.state.datas)}></TouchableOpacity> */}
+                    <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2, height: (DEVICE_WIDTH / 2) * 1.5, backgroundColor: '#5A5A5A' }}>
+                    {/* <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20) * 1.5, marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }}> */}
                     </ImageBackground>
                   </TouchableOpacity>
                 );
@@ -293,7 +306,8 @@ class Profile extends Component {
             />)}
           <View style={{ height: 50 }} />
         </ScrollView>
-      </View>
+      {/* </View> */}
+      </ImageBackground>
     );
   }
 }

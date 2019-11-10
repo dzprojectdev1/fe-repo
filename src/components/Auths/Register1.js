@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import {
   Text,
-  Content
+  Content,
+  Right
 } from "native-base"
 import {
   ImageBackground,
@@ -12,8 +13,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   StatusBar,
-  TextInput
-  // Alert
+  TextInput,
+  Alert,
 } from "react-native";
 // import Picker from 'react-native-wheel-picker';
 import logo from '../../assets/images/logo.png';
@@ -100,6 +101,17 @@ class Register1 extends Component {
     //   date = "" + d_item[this.state.selected_dItem]
     // }
     // var birthday = y_item[this.state.selected_yItem] + "-" + mon + "-" + date;
+    if (this.state.description === '') {
+      Alert.alert(
+        '',
+        "Introduction is required",
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        {cancelable: false},
+      );
+      return;
+    }
     var gender = 1;
     if (!this.state.isMale) {
       gender = 2
@@ -143,6 +155,7 @@ class Register1 extends Component {
               multiline
               textAlignVertical="top"
             />
+            <Text style={styles.requiredSent}>* This field is required</Text>
           </View>
           {/* <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 50, }}>
             <Text style={{ color: '#808080', fontSize: 12, marginLeft: 10 }}>{"BIRTHDAY"}</Text>
@@ -213,5 +226,9 @@ const styles = StyleSheet.create({
     color: '#3333ff',
     marginBottom: 5,
   },
+  requiredSent: {
+    textAlign: 'right',
+    color: 'red',    
+  }
 });
 export default Register1;

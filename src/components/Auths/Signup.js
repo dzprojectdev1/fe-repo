@@ -75,7 +75,14 @@ class Signup extends Component {
 
   handleSignup() {
     if (this.state.nickName === '') {
-      Alert.alert("The name is not inputed")
+      Alert.alert(
+        '',
+        "Nickname is required",
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        {cancelable: false},
+      );
       return;
     }
     var y_item = this.state.yitemList;
@@ -155,6 +162,7 @@ class Signup extends Component {
               />
             </View>
             <View style={{ height: 1, width: DEVICE_WIDTH * 0.8, backgroundColor: '#808080' }} />
+            <Text style={styles.requiredSent}>* This field is required</Text>
             <View style={{ width: DEVICE_WIDTH * 0.8, marginTop: 50, }}>
               <Text style={{ color: '#808080', fontSize: 14, marginLeft: 10 }}>{"BIRTHDAY"}</Text>
             </View>
@@ -264,5 +272,9 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#fff',
   },
+  requiredSent: {
+    textAlign: 'right',
+    color: 'red',    
+  }
 });
 export default Signup;

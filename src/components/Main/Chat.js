@@ -17,7 +17,8 @@ import {
   FlatList,
   TouchableOpacity,
   StatusBar,
-  Alert
+  Alert,
+  ImageBackground
 } from "react-native";
 import { Badge } from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
@@ -36,6 +37,8 @@ import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 import heart from '../../assets/images/heart.png';
+import search_photo from '../../assets/images/search_photo.png';
+import bg from '../../assets/images/bg.jpg';
 import Global from '../Global';
 
 class Chat extends Component {
@@ -277,7 +280,8 @@ class Chat extends Component {
 
   render() {
     return (
-      <View style={styles.contentContainer}>
+      <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
+      {/* <View style={styles.contentContainer}> */}
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <View style={{ marginTop: 40, alignItems: 'center', flexDirection: 'row' }}>
           <TouchableOpacity style={{ width: 80, height: 40 }}
@@ -304,8 +308,8 @@ class Chat extends Component {
             flex: 1,
             alignItems: 'center'
         }}>
-            <Text style={{ fontSize: 20, marginTop: 120 }}> {this.state.alertMsg} </Text>
-            <Image source={heart} style={{width: 150, height: 150, marginTop: 50}}></Image>
+            <Text style={{ fontSize: 16, marginTop: 90, color: '#dd4f53' }}> {this.state.alertMsg} </Text>
+            <Image source={search_photo} style={{width: 200, height: 200, marginTop: 50}}></Image>
         </View>) : (<ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
           {(this.state.datas.length != 0) && (
             <FlatList
@@ -372,7 +376,8 @@ class Chat extends Component {
             </Button> */}
           </FooterTab>
         </Footer>
-      </View>
+      {/* </View> */}
+      </ImageBackground>
     );
   }
 }

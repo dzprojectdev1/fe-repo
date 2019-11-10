@@ -108,9 +108,7 @@ class ProfileDetail extends Component {
                         onPress={() => move(index)}
                         style={styles.button}
                       >
-                        <Text style={position === index && styles.buttonSelected}>
-                          {index + 1}
-                        </Text>
+                        <View style={position === index ? styles.badgeIcon: styles.badgeIconWhite}></View>
                       </TouchableHighlight>
                     );
                   })}
@@ -169,7 +167,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   button: {
-    margin: 3,
+    margin: 5,
     width: 15,
     height: 15,
     opacity: 0.9,
@@ -188,5 +186,29 @@ const styles = StyleSheet.create({
     width: DEVICE_WIDTH,
     height: DEVICE_HEIGHT,
   },
+  badgeIcon: {
+      position: 'absolute',
+      zIndex: 1000,
+      top: -5,
+      right: 5,
+      width: 16,
+      height: 16,
+      borderRadius: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#B64F54'
+  },
+  badgeIconWhite: {
+      position: 'absolute',
+      zIndex: 1000,
+      top: -5,
+      right: 5,
+      width: 16,
+      height: 16,
+      borderRadius: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#f5f5f5'
+  }
 });
 export default ProfileDetail;

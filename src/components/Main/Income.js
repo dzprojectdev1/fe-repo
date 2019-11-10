@@ -15,7 +15,8 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  StatusBar
+  StatusBar,
+  ImageBackground
 } from "react-native";
 import { connect } from 'react-redux';
 import { Badge } from 'react-native-elements';
@@ -32,6 +33,8 @@ import b_age from '../../assets/images/age.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 import heart from '../../assets/images/heart.png';
+import search_photo from '../../assets/images/search_photo.png';
+import bg from '../../assets/images/bg.jpg';
 import Global from '../Global';
 
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
@@ -287,7 +290,8 @@ class Income extends Component {
   }
   render() {
     return (
-      <View style={styles.contentContainer}>
+      <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
+      {/* <View style={styles.contentContainer}> */}
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <View style={{ marginTop: 40, alignItems: 'center', flexDirection: 'row' }}>
           <TouchableOpacity style={{ width: 80, height: 40 }}
@@ -301,8 +305,8 @@ class Income extends Component {
         </View>
         {(this.state.datas.length === 0 ?
           <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontSize: 20, marginTop: 70}}>{this.state.alertMsg}</Text>
-            <Image source={heart} style={{width: 150, height: 150, marginTop: 100}}></Image>
+            <Text style={{ fontSize: 16, marginTop: 90, color: '#dd4f53'}}>{this.state.alertMsg}</Text>
+            <Image source={search_photo} style={{width: 200, height: 200, marginTop: 50}}></Image>
           </View> : <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
             <FlatList
               numColumns={2}
@@ -363,7 +367,8 @@ class Income extends Component {
             </Button> */}
           </FooterTab>
         </Footer>
-      </View>
+      {/* </View> */}
+      </ImageBackground>
     );
   }
 }

@@ -14,6 +14,7 @@ import {
   StatusBar,
   ScrollView,
   Alert,
+  ImageBackground,
   // ActivityIndicator
 } from "react-native";
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
@@ -25,8 +26,13 @@ import b_name from '../../assets/images/name.png';
 import b_age from '../../assets/images/age.png';
 import b_distance from '../../assets/images/distance.png';
 import b_profile from '../../assets/images/profile.png';
-import no_photo from '../../assets/images/no_photo.png';
+import no_photo from '../../assets/images/no_photo_new.png';
+import b_notification_red from '../../assets/images/notification_red.png';
+import b_name_red from '../../assets/images/name_red.png';
+import b_distance_red from '../../assets/images/distance_red.png';
+import b_profile_red from '../../assets/images/profile_red.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
+import bg from '../../assets/images/bg.jpg';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -368,18 +374,20 @@ class IncomeDetail extends Component {
             ) : (             
               <TouchableOpacity
                 onPress={() => this.gotoProfile()}>
-                <View style={{
+                <ImageBackground source={bg} style={{width: DEVICE_WIDTH, height: DEVICE_HEIGHT, alignItems: 'center', justifyContent: 'center', flex: 1,}}>
+                {/* <View style={{
                   flex: 1,
                   backgroundColor: '#989392',
                   height: DEVICE_HEIGHT,
                   alignItems: 'center',
                   justifyContent: 'center'
-                }}>
+                }}> */}
                   <Image
                     source={no_photo}
-                    style={{ justifyContent: 'center', alignSelf: 'center' }}
+                    style={{ justifyContent: 'center', alignSelf: 'center', width: 200, height: 183,  }}
                   />
-                </View>
+                {/* </View> */}
+                </ImageBackground>
               </TouchableOpacity>
             )
           )}
@@ -406,18 +414,20 @@ class IncomeDetail extends Component {
             ) : (          
               <TouchableOpacity
                 onPress={() => this.gotoProfile()}>
-                <View style={{
+                <ImageBackground source={bg} style={{width: DEVICE_WIDTH, height: DEVICE_HEIGHT, alignItems: 'center', justifyContent: 'center', flex: 1,}}>
+                {/* <View style={{
                   flex: 1,
                   backgroundColor: '#989392',
                   height: DEVICE_HEIGHT,
                   alignItems: 'center',
                   justifyContent: 'center'
-                }}>
+                }}> */}
                   <Image
                     source={no_photo}
-                    style={{ justifyContent: 'center', alignSelf: 'center' }}
+                    style={{ justifyContent: 'center', alignSelf: 'center', width: 200, height: 183,  }}
                   />
-                </View>
+                {/* </View> */}
+                </ImageBackground>
               </TouchableOpacity>
             )
           )}
@@ -460,18 +470,18 @@ class IncomeDetail extends Component {
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>
             <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
               onPress={() => this.gotoReport()}>
-              <Image source={b_notification} style={{ width: 25, height: 25 }} />
+              <Image source={this.state.userimage ? b_notification: b_notification_red} style={{ width: 25, height: 25 }} />
             </TouchableOpacity>
             <TouchableOpacity style={{ width: 40, height: 40}}
               onPress={() => this.gotoShop()}>
               <View style={{ flexDirection: 'row' }}>
                 <Image source={diamond} style={{ width: 25, height: 25, marginLeft: -15, marginTop: 10 }} />
-                <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
+                <Text style={{ marginLeft: 10, color: this.state.userimage ? '#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
               onPress={() => this.gotoProfile()}>
-              <Image source={b_profile} style={{ width: 30, height: 30 }} />
+              <Image source={this.state.userimage ? b_profile: b_profile_red} style={{ width: 30, height: 30 }} />
             </TouchableOpacity>
           </View>
           {/* <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -485,28 +495,28 @@ class IncomeDetail extends Component {
         <View style={{ position: 'absolute', left: 0, bottom: 40 }}>
           <View style={{ marginLeft: DEVICE_WIDTH * 0.1, marginBottom: 20, flexDirection:'column' }}>
             <View style={{ flexDirection: 'row' }}>
-              <Image source={b_name} style={{ width: 15, height: 15 }} />
-              <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.username}</Text>
+              <Image source={this.state.userimage ? b_name: b_name_red} style={{ width: 15, height: 15 }} />
+              <Text style={{ marginLeft: 10, color: this.state.userimage ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{this.state.username}</Text>
             </View>
             <View style={{ flexDirection: 'row', marginTop: 5 }}>
-              <Image source={b_age} style={{ width: 15, height: 15 }} />
-              <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.userage + ' years old'}</Text>
+              <Image source={b_age} style={{ width: 17, height: 15 }} />
+              <Text style={{ marginLeft: 10, color: this.state.userimage ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{this.state.userage + ' years old'}</Text>
             </View>
             <View style={{ flexDirection: 'row', marginTop: 5 }}>
-              <Image source={b_distance} style={{ width: 15, height: 15 }} />
-              <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{((this.state.userdistance != 0)? this.state.userdistance: 'unknown') + ' mile'}</Text>
+              <Image source={this.state.userimage ? b_distance: b_distance_red} style={{ width: 15, height: 15 }} />
+              <Text style={{ marginLeft: 10, color: this.state.userimage ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{((this.state.userdistance != 0)? this.state.userdistance: 'unknown') + ' mile'}</Text>
             </View>
             <View style={{ flexDirection: 'column', marginTop: 5 }}>
               <Text>
-                <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.props.navigation.state.params.gender === 1 ? 'Male, ' : 'Female, '}</Text>
-                <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.props.navigation.state.params.ethnicity_name}</Text>
-                <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{', speaks ' + this.props.navigation.state.params.language_name}</Text>
+                <Text style={{ marginTop: 5, color: this.state.userimage ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{this.props.navigation.state.params.gender === 1 ? 'Male, ' : 'Female, '}</Text>
+                <Text style={{ marginTop: 5, color: this.state.userimage ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{this.props.navigation.state.params.ethnicity_name}</Text>
+                <Text style={{ marginTop: 5, color: this.state.userimage ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{', speaks ' + this.props.navigation.state.params.language_name}</Text>
               </Text>
-              <Text style={{ marginTop: 5, color: '#fff', fontSize: 12, fontWeight: 'bold' }}>{this.props.navigation.state.params.last_loggedin_date + ', ' + this.props.navigation.state.params.country_name}</Text>
+              <Text style={{ marginTop: 5, color: this.state.userimage ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{this.props.navigation.state.params.last_loggedin_date + ', ' + this.props.navigation.state.params.country_name}</Text>
             </View>
             <View style={{ marginTop: 10 }}>
               <ScrollView contentContainerStyle={{ paddingVertical: 20 }} style={{ maxHeight: DEVICE_HEIGHT * 0.3 }}>
-                <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#fff' }}>{this.state.description}</Text>
+                <Text style={{ fontSize: 12, fontWeight: 'bold', color: this.state.userimage ?'#fff': '#dd4f53' }}>{this.state.description}</Text>
               </ScrollView>
             </View>
             <View style={{ width: DEVICE_WIDTH * 0.5, marginLeft: DEVICE_WIDTH * 0.15, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>

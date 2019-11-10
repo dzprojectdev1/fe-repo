@@ -45,4 +45,5 @@ module.exports.saveData =
         coin_count: 0,
         account_status: 0,
         auto_block: 1,
+        is_admin: 0,
     };
