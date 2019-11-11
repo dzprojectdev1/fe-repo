@@ -20,7 +20,8 @@ import {
     TouchableOpacity,
     RefreshControl,
     StatusBar,
-    Alert
+    Alert,
+    ImageBackground, 
 } from "react-native";
 import { Badge } from 'react-native-elements'
 import { connect } from 'react-redux';
@@ -34,6 +35,7 @@ import b_match from '../../assets/images/match.png';
 import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
+import bg from '../../assets/images/bg.jpg';
 import Global from '../Global';
 
 class BrowserList extends Component {
@@ -400,7 +402,8 @@ class BrowserList extends Component {
 
     render() {
         return (
-            <View style={styles.contentContainer}>
+            <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
+            {/* <View style={styles.contentContainer}> */}
                 <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
                 <View style={{ flexDirection: 'row', marginTop: 40, alignItems: 'center', justifyContent: 'space-between' }}>
                     <TouchableOpacity style={{ width: 80, height: 40 }}
@@ -426,7 +429,7 @@ class BrowserList extends Component {
                         </TouchableOpacity>
                     </View>
                 )}
-                <ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}
+                <ScrollView style={{ marginTop: 15, backgroundColor: '#FFF', }} removeClippedSubviews={true}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.isRefreshing}
@@ -563,7 +566,8 @@ class BrowserList extends Component {
                         </Button>
                     </FooterTab>
                 </Footer>
-            </View>
+            {/* </View> */}
+            </ImageBackground>
         );
     }
 }

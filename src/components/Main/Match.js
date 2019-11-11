@@ -301,9 +301,9 @@ class Match extends Component {
           flex: 1,
           alignItems: 'center'
         }}>
-          <Text style={{ fontSize: 16, marginTop: 90, color: '#dd4f53' }}> {this.state.alertMsg} </Text>
+          <Text style={{ fontSize: 16, marginTop: 90, color: '#f17f76' }}> {this.state.alertMsg} </Text>
           <Image source={search_photo} style={{width: 200, height: 200, marginTop: 50}}></Image>
-        </View>) : (<ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
+        </View>) : (<ScrollView style={{ marginTop: 15, backgroundColor: '#FFF', }} removeClippedSubviews={true}>
           <FlatList
             numColumns={2}
             style={{ flex: 0 }}

@@ -15,11 +15,15 @@ import {
   TouchableOpacity,
   StatusBar, 
   Image,
+  Modal,
+  Alert,
 } from "react-native";
 
 import heart from '../../assets/images/heart.png';
 import search_photo from '../../assets/images/search_photo.png';
 import bg from '../../assets/images/bg.jpg';
+import ban_user from '../../assets/images/ban_user.png';
+import ban_user_red from '../../assets/images/ban_user_red.png';
 import Global from '../Global';
 
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
@@ -34,6 +38,8 @@ class Profile extends Component {
       isLoading: true,
       noData: false,
       otherData: props.navigation.state.params.data,
+      fullImage: false,
+      flash_ban: false,
     };
   }
 
@@ -207,19 +213,94 @@ class Profile extends Component {
       this.props.navigation.pop();
     }
   }
+  banUser = () => {
+    Alert.alert(
+      '',
+      "Are you sure you want to ban this user?",
+      [
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+        {text: 'Yes', onPress: () => this.banUserRequest()},
+      ],
+      {cancelable: false},
+    );
+  }
+  banUserRequest = () => {
+    this.setState({
+      flash_ban: true,
+    });
+    var details = {
+      'otherId': this.state.otherData.id,
+    };
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    fetch(`${SERVER_URL}/api/user/banUser`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      },
+      body: formBody,
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          flash_ban: false,
+        });
+        if (!responseJson.error) {
+          this.props.navigation.replace("BrowseList");
+        }
+      })
+      .catch((error) => {
+        this.setState({
+          flash_ban: false,
+        });
+        return
+      });
+  }
 
   render() {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
       {/* <View style={styles.contentContainer}> */}
+        <Modal
+          transparent={false}
+          visible={this.state.fullImage}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+          }}>
+          <View style={{width: DEVICE_WIDTH, height: DEVICE_HEIGHT}}>
+            <TouchableOpacity 
+              onPress={() => this.setState({fullImage: false})} >
+                <Image source={{ uri: this.state.otherData.imageUrl}} style={{width: DEVICE_WIDTH, height: DEVICE_HEIGHT}}>
+                </Image>
+            </TouchableOpacity>
+          </View>
+        </Modal>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-        <View style={{ height: this.state.otherData.imageUrl? 160: 40, marginTop: Platform.select({ 'ios': '20%', 'android': '20%' }), marginBottom: 20, flexDirection: 'row' }}>
+        {this.state.flash_ban ? (
+          <View>
+            <Image source={ban_user} style={{width: 300, height: 300, zIndex: 100, position: 'absolute', left: parseInt(DEVICE_WIDTH /2) - 150, top: parseInt(DEVICE_HEIGHT /2) - 150,}} />
+          </View>
+        ): null}
+        <View style={{ height: this.state.otherData.imageUrl? 160: 40, marginTop: Platform.select({ 'ios': '20%', 'android': '20%' }), marginBottom: 20, flexDirection: 'row', }}>
           <TouchableOpacity style={{ width: 40, height: 40, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}
             onPress={() => this.onBack()} >
             <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
           </TouchableOpacity>
-          <View style={{ width: DEVICE_WIDTH - 100, height: this.state.otherData.imageUrl? 160: 40, alignItems: 'center', justifyContent: 'center' }}>
-            {this.state.otherData.imageUrl && (<Image source={{ uri: this.state.otherData.imageUrl}} style={{width: 120, height: 120, borderRadius: 60,}}></Image>)}
+          <View style={{ width: DEVICE_WIDTH - 110, height: this.state.otherData.imageUrl? 160: 40, alignItems: 'center', justifyContent: 'center' }}>
+            {this.state.otherData.imageUrl && (
+              <TouchableOpacity style={{ width: 120, height: 120, }}
+              onPress={() => this.showUserVideo(0, this.state.otherData.imageUrl, this.state.otherData.id, this.state.datas)} >
+              {/* <TouchableOpacity style={{ width: 120, height: 120, }}
+              onPress={() => this.setState({fullImage: true})} ></TouchableOpacity> */}
+                <Image source={{ uri: this.state.otherData.imageUrl}} style={{width: 120, height: 120, borderRadius: 60,}}>
+                </Image>
+              </TouchableOpacity>
+            )}
             <Text style={{ fontSize: 16 }}>{this.state.name}</Text>
             <Text style={{
                 fontSize: 12,
@@ -240,6 +321,12 @@ class Profile extends Component {
                 {('active ' + this.state.otherData.last_loggedin_date)}
             </Text>
           </View>
+          { (Global.saveData.is_admin === 1) && (
+            <TouchableOpacity style={{ width: 30, height: 40, marginRight: 10, alignItems: 'center', justifyContent: 'center' }}
+              onPress={this.banUser}>
+              <Image source={ban_user_red} style={{ width: 25, height: 25 }} />
+            </TouchableOpacity>
+          )}
         </View>
         <ScrollView style={{ marginTop: 15, backgroundColor: '#FFF' }} removeClippedSubviews={true}>
           {this.state.otherData.description && (
@@ -312,7 +399,7 @@ class Profile extends Component {
   }
 }
 const DEVICE_WIDTH = Dimensions.get('window').width;
-// const DEVICE_HEIGHT = Dimensions.get('window').height;
+const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   contentContainer: {
     width: '100%',

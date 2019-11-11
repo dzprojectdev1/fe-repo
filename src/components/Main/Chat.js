@@ -39,6 +39,7 @@ import diamond from '../../assets/images/red_diamond_trans.png';
 import heart from '../../assets/images/heart.png';
 import search_photo from '../../assets/images/search_photo.png';
 import bg from '../../assets/images/bg.jpg';
+import check from '../../assets/images/check_unread.png';
 import Global from '../Global';
 
 class Chat extends Component {
@@ -104,7 +105,7 @@ class Chat extends Component {
       if (data[i].cdn_id) {
         list_items.push({
           index: i,
-          imageUrl: GCS_BUCKET + 'thumb_64_' + data[i].cdn_id + '-screenshot',
+          imageUrl: GCS_BUCKET + data[i].cdn_id + '-screenshot',
           // videoUrl: vurl,
           sent: this.props.senders !== null ? ( this.props.senders.indexOf(JSON.stringify(senderId)) === -1 ? false : true) : false,
           data: data[i]
@@ -200,49 +201,77 @@ class Chat extends Component {
         { cancelable: false },
       );
     } else {
-      this.props.navigation.navigate("ChatDetail", { data: data })
+      this.props.navigation.replace("ChatDetail", { data: data })
     }
-  }
-  
+  } 
+
 
   checkUnReadMessage = (data) => {
     firebase.database().ref().child('dz-chat-unread').child(Global.saveData.u_id + '/')
-        .once('value', (value) => {
-            let senderIdArr = value.toJSON();
-            let newPayload = {};
-            let updates = {};
-            if (senderIdArr) {
-                senderIdArr = senderIdArr.split(',');
-                let index = senderIdArr.indexOf(data.data.other_user_id.toString());
-                if (index !== -1) {
-                    senderIdArr.splice(index, 1)
-                }
-                newPayload = {
-                    unreadFlag: true,
-                    senders: senderIdArr
-                }
-                if (senderIdArr.length) {
-                    // newPayload = {
-                    //     unreadFlag: true,
-                    //     senders: senderIdArr
-                    // }
-                    newPayload.unreadFlag = true;
-                    updates[Global.saveData.u_id] = senderIdArr.toString();
-                    firebase.database().ref().child('dz-chat-unread').update(updates);
-                } else {
-                    // newPayload = {
-                    //     unreadFlag: false,
-                    //     senders: []
-                    // }
-                    newPayload.unreadFlag = false;
-                    firebase.database().ref().child('dz-chat-unread').child(Global.saveData.u_id + '/').remove();
-                }
-
-                this.props.changeReadFlag(newPayload);
-                this.props.navigation.replace("Chat");
+      .once('value', (value) => {
+        let senderIdArr = value.toJSON();
+        let newPayload = {};
+        let updates = {};
+        if (senderIdArr) {
+            senderIdArr = senderIdArr.split(',');
+            let index = senderIdArr.indexOf(data.data.other_user_id.toString());
+            if (index !== -1) {
+                senderIdArr.splice(index, 1)
             }
-        });
-}
+            newPayload = {
+                unreadFlag: true,
+                senders: senderIdArr
+            }
+            if (senderIdArr.length) {
+                // newPayload = {
+                //     unreadFlag: true,
+                //     senders: senderIdArr
+                // }
+                newPayload.unreadFlag = true;
+                updates[Global.saveData.u_id] = senderIdArr.toString();
+                firebase.database().ref().child('dz-chat-unread').update(updates);
+            } else {
+                // newPayload = {
+                //     unreadFlag: false,
+                //     senders: []
+                // }
+                newPayload.unreadFlag = false;
+                firebase.database().ref().child('dz-chat-unread').child(Global.saveData.u_id + '/').remove();
+            }
+
+            this.props.changeReadFlag(newPayload);
+            this.props.navigation.replace("Chat");
+        }
+      });
+  }
+
+  readAll = () => {
+    Alert.alert(
+      '',
+      "Are you sure you want mark all messages as read?",
+      [
+        { text: 'Cancel', onPress: () => console.log('Cancel pressed') },
+        { text: 'OK', onPress: () => this.readAllAsRead() },
+      ],
+      { cancelable: false },
+    );
+  }
+
+  readAllAsRead = () => {
+    firebase.database().ref().child('dz-chat-unread').child(Global.saveData.u_id + '/')
+      .once('value', (value) => {
+        newPayload = {
+            unreadFlag: false,
+            senders: []
+        }
+        // newPayload.unreadFlag = false;
+        firebase.database().ref().child('dz-chat-unread').child(Global.saveData.u_id + '/').remove();
+
+        this.props.changeReadFlag(newPayload);
+        this.props.navigation.replace("Chat");
+      });
+  }
+
   //////////////////////////////////////////////////
   gotoGpay() {
     this.props.navigation.replace("screenGpay01");
@@ -283,15 +312,25 @@ class Chat extends Component {
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
       {/* <View style={styles.contentContainer}> */}
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-        <View style={{ marginTop: 40, alignItems: 'center', flexDirection: 'row' }}>
-          <TouchableOpacity style={{ width: 80, height: 40 }}
+        <View style={{ height: 40, marginTop: 40, flexDirection: 'row', }}>
+          <TouchableOpacity style={{ width: 80, height: 40, justifyContent: 'center', alignItems: 'center' }}
             onPress={() => this.gotoShop()}>
             <View style={{ flexDirection: 'row' }}>
               <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
               <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
             </View>
           </TouchableOpacity>
-          <Text style={{ justifyContent: 'center', marginLeft: DEVICE_WIDTH * 0.22 }}>{"CHAT"}</Text>
+          <View style={{ width: DEVICE_WIDTH - 150, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+            <Text>{"CHAT"}</Text>
+          </View>
+          {(this.state.datas.length !== 0) && (
+            <TouchableOpacity style={{ width: 60, height: 40, alignItems: 'center', justifyContent: 'center'}}
+              onPress={() => this.readAll()}
+              >
+              {/* <Text style={{ color: '#DE5859', fontSize: 12, fontWeight: 'bold' }}>{"MARK ALL AS READ"}</Text> */}
+              <Image source={check} style={{width: 20, height: 20}} />
+            </TouchableOpacity>
+          )}
         </View>
         <View style={styles.inputwrapper}>
           {/* <Icon type="Ionicons" name="ios-search" style={{color:"#808080", marginTop:5}}/> */}
@@ -303,18 +342,18 @@ class Chat extends Component {
             placeholderTextColor="#808080"
             underlineColorAndroid="transparent"
           />
-        </View>
+        </View>        
         {this.state.datas.length === 0 ? (<View style={{
             flex: 1,
             alignItems: 'center'
         }}>
-            <Text style={{ fontSize: 16, marginTop: 90, color: '#dd4f53' }}> {this.state.alertMsg} </Text>
+            <Text style={{ fontSize: 16, marginTop: 90, color: '#f17f76' }}> {this.state.alertMsg} </Text>
             <Image source={search_photo} style={{width: 200, height: 200, marginTop: 50}}></Image>
-        </View>) : (<ScrollView style={{ marginTop: 15 }} removeClippedSubviews={true}>
+        </View>) : (<ScrollView style={{ marginTop: 15, backgroundColor: '#FFF', }} removeClippedSubviews={true}>
           {(this.state.datas.length != 0) && (
             <FlatList
               numColumns={1}
-              style={{ flex: 0 }}
+              style={{ flex: 0, marginTop:10, }}
               removeClippedSubviews={true}
               data={this.state.datas}
               initialNumToRender={this.state.datas.length}

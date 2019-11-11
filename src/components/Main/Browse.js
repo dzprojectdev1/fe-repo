@@ -42,7 +42,7 @@ import b_distance_red from '../../assets/images/distance_red.png';
 import b_profile_red from '../../assets/images/profile_red.png';
 import ban_user_red from '../../assets/images/ban_user_red.png';
 // import no_image from '../../assets/images/no-image.png';
-import no_photo from '../../assets/images/no_photo_new.png';
+import no_photo from '../../assets/images/no_photo.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 // import instant_chat from '../../assets/images/instant_chat.png';
 import flash_heart from '../../assets/images/flash_heart.png';
@@ -670,20 +670,20 @@ class Browse extends Component {
               ) : (
                 <TouchableOpacity
                   onPress={this.gotoProfile}>
-                  <ImageBackground source={bg} style={{width: DEVICE_WIDTH, height: DEVICE_HEIGHT, alignItems: 'center', justifyContent: 'center', flex: 1,}}>
-                  {/* <View style={{
+                  {/* <ImageBackground source={bg} style={{width: DEVICE_WIDTH, height: DEVICE_HEIGHT, alignItems: 'center', justifyContent: 'center', flex: 1,}}> */}
+                  <View style={{
                     flex: 1,
                     backgroundColor: '#989392',
                     height: DEVICE_HEIGHT,
                     alignItems: 'center',
                     justifyContent: 'center'
-                  }}> */}
+                  }}>
                       <Image
                         source={no_photo}
                         style={{ justifyContent: 'center', alignSelf: 'center', width: 200, height: 183, }}
                       />
-                  {/* </View> */}
-                  </ImageBackground>
+                  </View>
+                  {/* </ImageBackground> */}
                 </TouchableOpacity>
               )}
               <View style={{ position: 'absolute', left: 0, top: 30 }}>
@@ -720,25 +720,25 @@ class Browse extends Component {
                 <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.gotoReport()}>
-                    <Image source={this.state.otherData.imageUrl ? b_notification: b_notification_red } style={{ width: 25, height: 25 }} />
+                    <Image source={ b_notification } style={{ width: 25, height: 25 }} />
                   </TouchableOpacity>
                   <TouchableOpacity style={{ width: 40, height: 40}}
                     onPress={() => this.gotoShop()}>
                     <View style={{ flexDirection: 'row' }}>
                       <Image source={diamond} style={{ width: 25, height: 25, marginLeft: -15, marginTop: 10 }} />
-                      <Text style={{ marginLeft: 10, color: this.state.otherData.imageUrl ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
+                      <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.gotoFilter()}>
-                    <Image source={this.state.otherData.imageUrl ? b_filters: b_filters_red} style={{ width: 25, height: 25 }} />
+                    <Image source={ b_filters } style={{ width: 25, height: 25 }} />
                   </TouchableOpacity>
                 </View>
                 <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
                   <View></View>
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                     onPress={this.gotoProfile}>
-                    <Image source={this.state.otherData.imageUrl ?b_profile: b_profile_red} style={{ width: 25, height: 25 }} />
+                    <Image source={b_profile} style={{ width: 25, height: 25 }} />
                   </TouchableOpacity>
                 </View>
                 { (Global.saveData.is_admin === 1) && (
@@ -746,7 +746,7 @@ class Browse extends Component {
                   <View></View>
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                     onPress={this.banUser}>
-                    <Image source={this.state.otherData.imageUrl ?ban_user: ban_user_red} style={{ width: 25, height: 25 }} />
+                    <Image source={ban_user} style={{ width: 25, height: 25 }} />
                   </TouchableOpacity>
                 </View>
                 )}
@@ -754,28 +754,28 @@ class Browse extends Component {
               <View style={{ position: 'absolute', left: 0, bottom: 40 }}>
                 <View style={{ marginLeft: DEVICE_WIDTH * 0.1, marginBottom: 20 }}>
                   <View style={{ flexDirection: 'row' }}>
-                    <Image source={this.state.otherData.imageUrl ?b_name: b_name_red} style={{ width: 15, height: 15 }} />
-                    <Text style={{ marginLeft: 10, color: this.state.otherData.imageUrl ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.name}</Text>
+                    <Image source={b_name} style={{ width: 15, height: 15 }} />
+                    <Text style={{ marginLeft: 10, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.name}</Text>
                   </View>
                   <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                    <Image source={b_age} style={{ width: 17, height: 15 }} />
-                    <Text style={{ marginLeft: 10, color: this.state.otherData.imageUrl ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.age + ' years old'}</Text>
+                    <Image source={b_age} style={{ width: 15, height: 16 }} />
+                    <Text style={{ marginLeft: 10, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.age + ' years old'}</Text>
                   </View>
                   <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                    <Image source={this.state.otherData.imageUrl ?b_distance: b_distance_red} style={{ width: 15, height: 15 }} />
-                    <Text style={{ marginLeft: 10, color: this.state.otherData.imageUrl ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{((parseInt(this.state.otherData.detail.distance) != 0)? parseInt(this.state.otherData.detail.distance): 'unknown') + ' mile'}</Text>
+                    <Image source={b_distance} style={{ width: 15, height: 15 }} />
+                    <Text style={{ marginLeft: 10, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{((parseInt(this.state.otherData.detail.distance) != 0)? parseInt(this.state.otherData.detail.distance): 'unknown') + ' mile'}</Text>
                   </View>
                   <View style={{ flexDirection: 'column', marginTop: 5 }}>
                     <Text>
-                      <Text style={{ marginTop: 5, color: this.state.otherData.imageUrl ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.gender === 1 ? 'Male, ' : 'Female, '}</Text>
-                      <Text style={{ marginTop: 5, color: this.state.otherData.imageUrl ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.ethnicity_name}</Text>
-                      <Text style={{ marginTop: 5, color: this.state.otherData.imageUrl ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{', speaks ' + this.state.otherData.detail.language_name}</Text>
+                      <Text style={{ marginTop: 5, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.gender === 1 ? 'Male, ' : 'Female, '}</Text>
+                      <Text style={{ marginTop: 5, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.ethnicity_name}</Text>
+                      <Text style={{ marginTop: 5, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{', speaks ' + this.state.otherData.detail.language_name}</Text>
                     </Text>
-                    <Text style={{ marginTop: 5, color: this.state.otherData.imageUrl ?'#fff': '#dd4f53', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.last_loggedin_date + ', ' + this.state.otherData.detail.country_name}</Text>
+                    <Text style={{ marginTop: 5, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.last_loggedin_date + ', ' + this.state.otherData.detail.country_name}</Text>
                   </View>
                   <View style={{ marginTop: 10, marginRight: 20 }}>
                     <ScrollView contentContainerStyle={{ paddingVertical: 20 }} style={{ maxHeight: DEVICE_HEIGHT * 0.3 }}>
-                      <Text style={{ fontSize: 12, fontWeight: 'bold', color: this.state.otherData.imageUrl ?'#fff': '#dd4f53' }}>{this.state.otherData.detail.description}</Text>
+                      <Text style={{ fontSize: 12, fontWeight: 'bold', color:'#fff'}}>{this.state.otherData.detail.description}</Text>
                     </ScrollView>
                   </View>
                 </View>

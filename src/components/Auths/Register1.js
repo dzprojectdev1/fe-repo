@@ -229,6 +229,7 @@ const styles = StyleSheet.create({
   requiredSent: {
     textAlign: 'right',
     color: 'red',    
+    fontSize: 10,   
   }
 });
 export default Register1;
