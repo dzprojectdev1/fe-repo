@@ -229,7 +229,7 @@ class Income extends Component {
           if (!responseJson.error) {
 
             let newData = responseJson.data;
-            this.props.navigation.navigate(
+            this.props.navigation.replace(
               "IncomeDetail",
               {
                 url: null,

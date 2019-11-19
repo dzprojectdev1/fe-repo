@@ -564,6 +564,10 @@ class BrowserList extends Component {
                             <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
                             <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
                         </Button>
+                        <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.gotoMainMenu("VoiceCall") }>
+                            <Image source={b_incoming} style={{ width: 25, height: 25 }} />
+                            <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"VOICE"}</Text>
+                        </Button>
                     </FooterTab>
                 </Footer>
             {/* </View> */}
