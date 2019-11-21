@@ -71,6 +71,25 @@ class Chat extends Component {
       .on('value', (value) => {
         this.getChatData();
       });
+
+    fetch(`${SERVER_URL}/api/transaction/getDiamondCount`, {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/x-www-form-urlencoded',
+            'Authorization': Global.saveData.token
+        }
+      }).then((response) => response.json())
+        .then((responseJson) => {
+          if (!responseJson.error) {
+              Global.saveData.coin_count = responseJson.coin_count;
+              this.setState({
+                coinCount: Global.saveData.coin_count,
+              });
+          }
+        })
+        .catch((error) => {
+          return
+        });
   }
 
   componentWillUnmount() {
@@ -370,7 +389,14 @@ class Chat extends Component {
                     <View style={styles.listItemName}>
                       <View style={{ width: DEVICE_WIDTH - 200, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
                         <View style={{ width: DEVICE_WIDTH - 200 }}>
-                          <Text numberOfLines={1} style={{ color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.name: 'Unavailable user'}</Text>
+                          <View style={{
+                              flexDirection: 'row',
+                              justifyContent: 'flex-start'
+                          }}>
+                            <Text numberOfLines={1} style={{ color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.name: 'Unavailable user'}</Text>
+                            {(rowData.data.publish == 1) && (<Image source={diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, }} />)}
+                            <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{(rowData.data.publish == 1) ? rowData.data.coin_count: ''}</Text>
+                          </View>
                           <Text numberOfLines={1} style={{ fontSize: 12, color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.message_text: ''}</Text>
                         </View>
                       </View>

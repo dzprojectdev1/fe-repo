@@ -108,7 +108,11 @@ class Browse extends Component {
         if (responseJSON.data.validation) {
           this.setState({
             unlimitedInstant: true,
-          })
+          });
+          Global.saveData.coin_count = responseJSON.data.coin_count;
+          this.setState({
+            coinCount: Global.saveData.coin_count,
+          });
         }
       }
     }).catch((error) => {
@@ -445,6 +449,7 @@ class Browse extends Component {
           ethnicity_name: this.state.otherData.detail.ethnicity_name,
           language_name: this.state.otherData.detail.language_name,
           country_name: this.state.otherData.detail.country_name,
+          coin_count: this.state.otherData.detail.coin_count,
           matchId: 0,
         } 
       }
@@ -755,7 +760,9 @@ class Browse extends Component {
                 <View style={{ marginLeft: DEVICE_WIDTH * 0.1, marginBottom: 20 }}>
                   <View style={{ flexDirection: 'row' }}>
                     <Image source={b_name} style={{ width: 15, height: 15 }} />
-                    <Text style={{ marginLeft: 10, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.name}</Text>
+                    <Text style={{ marginLeft: 10, color:'#fff', fontSize: 12, fontWeight: 'bold', }}>{this.state.otherData.detail.name}</Text>
+                    <Image source={diamond} style={{ marginLeft: 10, width: 15, height: 15, marginTop: 2, }} />
+                    <Text style={{ color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.coin_count}</Text>
                   </View>
                   <View style={{ flexDirection: 'row', marginTop: 5 }}>
                     <Image source={b_age} style={{ width: 15, height: 16 }} />

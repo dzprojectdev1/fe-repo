@@ -59,6 +59,25 @@ class Income extends Component {
     this.props.navigation.addListener('didFocus', (playload) => {
       this.getHeartUsers()
     });
+
+    fetch(`${SERVER_URL}/api/transaction/getDiamondCount`, {
+      method: 'POST',
+      headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+          'Authorization': Global.saveData.token
+      }
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+            Global.saveData.coin_count = responseJson.coin_count;
+            this.setState({
+              coinCount: Global.saveData.coin_count,
+            });
+        }
+      })
+      .catch((error) => {
+        return
+      });
     // this.getHeartUsers();
   }
   componentWillUnmount() {
@@ -107,7 +126,8 @@ class Income extends Component {
           age: data[i].age,
           gender: data[i].gender,
           description: data[i].description,
-          distance: data[i].distance
+          distance: data[i].distance,
+          coin_count: data[i].coin_count
         });
       } else {
         list_items.push({
@@ -120,6 +140,7 @@ class Income extends Component {
           gender: data[i].gender,
           description: data[i].description,
           distance: data[i].distance,
+          coin_count: data[i].coin_count
         });
       }
     }
@@ -245,6 +266,7 @@ class Income extends Component {
                 ethnicity_name: newData.ethnicity_name,
                 language_name: newData.language_name,
                 last_loggedin_date: newData.last_loggedin_date,
+                coin_count: newData.coin_count,
               }
             )
           }
@@ -329,6 +351,8 @@ class Income extends Component {
                         <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.age + ""}</Text>
                         <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.gender === 1 ? 'M' : 'F'}</Text>
                         <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.name}</Text>
+                        <Image source={diamond} style={{ width: 15, height: 15, marginTop: 2, marginLeft: 5, }} />
+                        <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.coin_count}</Text>
                       </View>
                     </View>
                   </TouchableOpacity>

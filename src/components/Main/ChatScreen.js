@@ -16,7 +16,8 @@ import {
     TouchableOpacity,
     Alert,
     Dimensions,
-    Platform
+    Platform,
+    Modal,
 } from 'react-native';
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 import Global from '../Global';
@@ -25,6 +26,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { changeReadFlag } from '../../../Action';
 import hiddenMan from '../../assets/images/hidden_man.png';
+import call_ring from '../../assets/images/call_ring_accept.png';
+import call_video from '../../assets/images/call_video.png';
+import diamond from '../../assets/images/red_diamond_trans.png';
 import { SERVER_URL } from '../../config/constants';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
@@ -41,13 +45,18 @@ class ChatScreen extends React.Component {
                 userId: props.navigation.state.params.data.data.other_user_id,
                 name: props.navigation.state.params.data.data.name,
                 imgUrl: props.navigation.state.params.data.imageUrl,
-                description: props.navigation.state.params.data.data.description
+                description: props.navigation.state.params.data.data.description,
+                coin_count: props.navigation.state.params.data.data.coin_count,
             },
             matchId: props.navigation.state.params.data.data.match_id,
             textMessage: '',
             messageList: [],
             coinCount: Global.saveData.coin_count,
             visible: false,
+            promptVisible: false,
+            sendDiamondsCount: 0,
+            msgErrorNumber: false,
+            msgError: '',
         }
     }
 
@@ -76,7 +85,27 @@ class ChatScreen extends React.Component {
         this._mounted = true;
         if (this._mounted && this.scrollView) {
             this.scrollView.scrollToEnd({ animated: true });
-        }        
+        }  
+
+        fetch(`${SERVER_URL}/api/transaction/getDiamondCount`, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/x-www-form-urlencoded',
+                'Authorization': Global.saveData.token
+            }
+        }).then((response) => response.json())
+            .then((responseJson) => {
+            if (!responseJson.error) {
+                Global.saveData.coin_count = responseJson.coin_count;
+                this.setState({
+                    coinCount: Global.saveData.coin_count,
+                });
+            }
+            })
+            .catch((error) => {
+            return
+            });
+
         this.checkUnReadMessage();
     }
 
@@ -399,6 +428,7 @@ class ChatScreen extends React.Component {
                     last_loggedin_date: newData.last_loggedin_date,
                     matchId: this.state.matchId,
                     imageUrl: this.state.other.imgUrl,
+                    coin_count: newData.coin_count, 
                   }
                 });
               }
@@ -412,6 +442,199 @@ class ChatScreen extends React.Component {
             visible: false
         })
         this.props.navigation.navigate('screenGpay01');
+    }
+
+    showSendDiamondsModal = () => {
+        this.setState({
+            promptVisible: true,
+            msgErrorNumber: false,
+            msgError: '',
+        })
+    }
+
+    sendDiamonds = () => {
+        let { sendDiamondsCount } = this.state;
+        if(isNaN(sendDiamondsCount))
+        {
+            Alert.alert(
+                'Warning',
+                'You must input only number.',
+                [
+                    { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
+                ],
+                { cancelable: false }
+            );
+        }
+        else
+        {
+            if (sendDiamondsCount > Global.saveData.coin_count) {
+                Alert.alert(
+                    'Warning',
+                    'You can send only ' + Global.saveData.coin_count + ' diamonds. You need more diamonds.',
+                    [
+                        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                        { text: 'Buy Diamonds', onPress: () => this.gotoShop(), style: 'cancel' },
+                    ],
+                    { cancelable: false }
+                );
+            } else if (sendDiamondsCount == 0 || sendDiamondsCount =='') {
+                Alert.alert(
+                    'Warning',
+                    'You must input one or more diamons count.',
+                    [
+                        { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
+                    ],
+                    { cancelable: false }
+                );
+            } else {
+                var details = {
+                    'userName': Global.saveData.u_name,
+                    'otherId': this.state.other.userId,
+                    'otherUserName': this.state.other.name,
+                    'amount': sendDiamondsCount,
+                };
+                var formBody = [];
+                for (var property in details) {
+                    var encodedKey = encodeURIComponent(property);
+                    var encodedValue = encodeURIComponent(details[property]);
+                    formBody.push(encodedKey + "=" + encodedValue);
+                }
+                formBody = formBody.join("&");
+                fetch(`${SERVER_URL}/api/transaction/sendDiamonds`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': Global.saveData.token
+                    },
+                    body: formBody,
+                }).then((response) => response.json())
+                .then((responseJson) => {
+                    if (!responseJson.error) {
+                        Global.saveData.coin_count = responseJson.coin_count;
+                        this.setState({
+                            other: {
+                                userId: this.state.other.userId,
+                                name: this.state.other.name,
+                                imgUrl: this.state.other.imgUrl,
+                                description: this.state.other.description,
+                                coin_count: parseInt(this.state.other.coin_count) + parseInt(sendDiamondsCount),
+                            }
+                        })
+                    }
+                })
+                .catch((error) => {
+                    this.setState({
+                        isLoading: false,
+                        disabled: false
+                    });
+                    return
+                });
+            }
+        }
+    }
+
+    checkCount = value => {
+        if(isNaN(value))
+        {
+            this.setState({
+                msgErrorNumber: true,
+                sendDiamondsCount: value,
+                msgError: 'This field should be number.',
+            })
+        }
+        else
+        {
+            if (value > Global.saveData.coin_count) {
+                this.setState({
+                    msgErrorNumber: true,
+                    sendDiamondsCount: value,
+                    msgError: 'You can send only ' + Global.saveData.coin_count + ' diamonds.',
+                })
+            } else {
+                this.setState({
+                    msgErrorNumber: false,
+                    sendDiamondsCount: value,
+                })
+            }
+        }
+    }
+
+    ringCall = () => {        
+        if (Global.saveData.coin_count < 30) {
+            Alert.alert(
+                '',
+                "You need 30 diamonds to start voice call with " + this.state.other.name + ".",
+                [
+                    { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                    { text: 'Buy Diamonds', onPress: () => this.gotoShop(), style: 'cancel' },
+                ],
+                { cancelable: false }
+            );
+        } else {
+            var details = {
+                'userName': Global.saveData.u_name,
+                'otherId': this.state.other.userId,
+                'otherUserName': this.state.other.name,
+                'callType': 1,
+            };
+            var formBody = [];
+            for (var property in details) {
+                var encodedKey = encodeURIComponent(property);
+                var encodedValue = encodeURIComponent(details[property]);
+                formBody.push(encodedKey + "=" + encodedValue);
+            }
+            formBody = formBody.join("&");
+            fetch(`${SERVER_URL}/api/call/initiate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': Global.saveData.token
+                },
+                body: formBody,
+            }).then((response) => response.json())
+            .then((responseJson) => {
+                if (!responseJson.error) {
+
+                    if (responseJson.data.call_available) {
+                        Global.saveData.call_id = responseJson.data.call_id;
+        
+                        this.props.navigation.replace('CallOutgo', {
+                            data: {
+                                userId: this.state.other.userId,
+                                name: this.state.other.name,
+                                imgUrl: this.state.other.imgUrl,
+                                description: this.state.other.description,
+                                matchId: this.state.matchId,
+                            },
+                        })
+                    } else {
+                        Alert.alert(
+                            '',
+                            responseJson.message,
+                            [
+                                { text: 'OK', onPress: () => console.log('OK Pressed'), style: 'cancel' }
+                            ],
+                            { cancelable: false }
+                        );
+                    }
+                }
+            })
+            .catch((error) => {
+                return
+            });
+        }
+    }
+
+    ringVideo = () => {
+        this.props.navigation.replace('CallIncome', {
+            data: {
+                userId: this.state.other.userId,
+                name: this.state.other.name,
+                imgUrl: this.state.other.imgUrl,
+                description: this.state.other.description,
+                matchId: this.state.matchId,
+            },
+        })
     }
 
     renderRow = ({ item }) => {
@@ -475,23 +698,113 @@ class ChatScreen extends React.Component {
 
     render() {
         return (
-            <View style={styles.outer}>
-                <View style={{ width: DEVICE_WIDTH, height: 60, flexDirection: 'row', marginTop: Platform.select({ 'android': 10, 'ios': 40, }), alignItems: 'center' }}>
+            <View style={styles.outer}>                
+                <Modal
+                    transparent={true}
+                    animationType="fade"
+                    visible={this.state.promptVisible}
+                    onRequestClose={() => {
+                        Alert.alert('Modal has been closed.');
+                    }}>
+                    <View style={styles.screenOverlay}>
+                        <View style={styles.dialogPrompt}>
+                            <Text style={[styles.title, ]}>
+                                {`You have ${Global.saveData.coin_count} diamonds`}
+                            </Text>
+                            <TextInput
+                                placeholder={`Diamonds count to send to ${this.state.other.name}`}
+                                style={styles.textInput}
+                                autoFocus={true}
+                                onChangeText={(value) => this.checkCount(value)}
+                            />
+                            { this.state.msgErrorNumber && <Text style={styles.requiredSent}>* {this.state.msgError} </Text> }
+                            <View style={styles.buttonsOuterView}>
+                                <View style={styles.buttonsInnerView}>
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.button, 
+                                        ]}
+                                        onPress={ () =>
+                                            this.setState({
+                                                promptVisible: !this.state.promptVisible
+                                            }, function() {
+                                                this.hideMenu();
+                                        })}>
+                                        <Text
+                                            style={[
+                                                styles.cancelButtonText,
+                                            ]}>
+                                            {'Cancel'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <View style={styles.buttonsDivider} />
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.button,
+                                        ]}
+                                        onPress={ () =>
+                                            this.setState({
+                                                promptVisible: !this.state.promptVisible
+                                            }, function() {
+                                                this.hideMenu();
+                                                this.sendDiamonds();
+                                        })}>
+                                        <Text
+                                            style={[
+                                                styles.submitButtonText,
+                                            ]}>
+                                            {'Send'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+
+                <View style={{ width: DEVICE_WIDTH, height: 60, flexDirection: 'row', justifyContent: 'space-between', marginTop: Platform.select({ 'android': 10, 'ios': 40, }), alignItems: 'center' }}>
                     <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: 40, height: 60, zIndex: 1000, marginLeft: 10 }}
                         onPress={this.backPressed}>
                         <Icon type="Ionicons" name="ios-arrow-back" />
                     </TouchableOpacity>
                     <View style={{ alignItems: 'center', justifyContent: 'center', width: DEVICE_WIDTH - 100, flexDirection: 'row' }}>
                         <TouchableOpacity style={styles.avatarOtherUserBtn} onPress={() => this.gotoProfilePage()}>
-                            <View style={{ flexDirection: 'row' }}>
+                            <View style={{ flexDirection: 'row', flex: 1, flexDirection: 'row', flexWrap: 'wrap', }}>
                                 <Image
                                     style={styles.avatarOtherUser}
                                     source={this.state.other.imgUrl ? { uri: this.state.other.imgUrl } : hiddenMan}
                                 />
                                 <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginLeft: 5, marginTop: 8 }}>{this.state.other.name}</Text>
+                                <Image source={diamond} style={{ width: 20, height: 20, marginLeft: 15, marginTop: 12 }} />
+                                <Text style={{ marginLeft: 1, fontSize: 14, fontWeight: 'bold', marginTop: 12 }}>{this.state.other.coin_count}</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
+                    {/* <View style={{ alignItems: 'center', justifyContent: 'center', width: DEVICE_WIDTH - 100, flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity style={styles.avatarOtherUserBtn} onPress={() => this.gotoProfilePage()}>
+                                <View style={{flexDirection: 'row', width: 100, height: 80,}}>
+                                    <Image
+                                        style={styles.avatarOtherUser}
+                                        source={this.state.other.imgUrl ? { uri: this.state.other.imgUrl } : hiddenMan}
+                                    />
+                                    <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginLeft: 5, marginRight: 5, marginTop: 8 }}>{this.state.other.name}</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.ringIconTouch} onPress={() => this.ringCall()}>
+                                <Image
+                                    style={styles.ringIcon}
+                                    source={ call_ring }
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.ringIconTouch} onPress={() => this.ringVideo()}>
+                                <Image
+                                    style={styles.ringIcon}
+                                    source={ call_video }
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View> */}
                     <View style={styles.menuIcon}>
                         <Menu
                             ref={this.setMenuRef}
@@ -501,6 +814,8 @@ class ChatScreen extends React.Component {
                             <MenuItem onPress={this.setBlock}>{'Leave Chat Room'}</MenuItem>
                             <MenuDivider />
                             <MenuItem onPress={this.setReport}>{'Report & Leave Chat Room'}</MenuItem>
+                            <MenuDivider />
+                            <MenuItem onPress={this.showSendDiamondsModal}>{'Send Diamonds'}</MenuItem>
                         </Menu>
                     </View>
                 </View>
@@ -539,7 +854,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     menuIcon: {
-        alignSelf: 'flex-end',
+        justifyContent: 'center',
         marginRight: 10,
         height: 45,
         width: 65,
@@ -615,10 +930,139 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         flexWrap: 'wrap-reverse',
     },
+    // avatarOtherUser: {
+    //     marginTop: 10,
+    //     width: 40,
+    //     height: 40,
+    //     borderRadius: 20,
+    //     flexWrap: 'wrap-reverse',
+    // },
     avatarOtherUserBtn: {
-        maxWidth: DEVICE_WIDTH - 145,
+        maxWidth: DEVICE_WIDTH - 115,
         height: 45,
     },
+    // avatarOtherUserBtn: {
+    //     flexDirection: 'row',
+    //     flex: 2,
+    //     maxWidth: 100,
+    //     height: 40,
+    // },
+    requiredSent: {
+      textAlign: 'right',
+      color: 'red',    
+      fontSize: 12,
+    },
+    ringIcon: {
+        width: 40,
+        height: 40,
+        marginLeft: 10,
+        marginTop: 5,
+    },
+    ringIconTouch: {
+        width: 40,
+        height: 40,
+        marginLeft: 10,
+        marginTop: 5,
+        height: 45,
+    },
+    screenOverlay: {
+		height: Dimensions.get("window").height,
+		backgroundColor: "black",
+		opacity: 0.9
+	},
+	dialogPrompt: {
+		...Platform.select({
+			ios: {
+				opacity: 0.9,
+				backgroundColor: "rgb(222,222,222)",
+				borderRadius: 15
+			},
+			android: {
+				borderRadius: 5,
+				backgroundColor: "white"
+			}
+		}),
+		marginHorizontal: 20,
+		marginTop: 150,
+		padding: 10,
+
+		flexDirection: "column",
+		justifyContent: "flex-start",
+		alignItems: "flex-start"
+	},
+	title: {
+		fontWeight: "bold",
+		fontSize: 16,
+        color: "black"
+	},
+	textInput: {
+		height: 50,
+		width: "100%",
+		paddingHorizontal: 10,
+		textAlignVertical: "bottom",
+		borderBottomColor: '#61bfa9',
+		borderBottomWidth: 1,
+		...Platform.select({
+			ios: {
+				borderRadius: 15,
+				backgroundColor: "rgba(166, 170, 172, 0.9)"
+			},
+			android: {}
+		})
+	},
+	buttonsOuterView: {
+		flexDirection: "row",
+		...Platform.select({
+			ios: {},
+			android: {
+				justifyContent: "flex-end"
+			}
+		}),
+		width: "100%"
+	},
+	buttonsDivider: {
+		...Platform.select({
+			ios: {
+				width: 1,
+				backgroundColor: "rgba(0,0,0,0.5)"
+			},
+			android: {
+				width: 20
+			}
+		})
+	},
+	buttonsInnerView: {
+		flexDirection: "row",
+		...Platform.select({
+			ios: {
+				borderTopWidth: 0.5,
+				flex: 1
+			},
+			android: {}
+		})
+	},
+	button: {
+		flexDirection: "column",
+		justifyContent: "center",
+
+		alignItems: "center",
+		...Platform.select({
+			ios: { flex: 1 },
+			android: {}
+		}),
+		marginTop: 5,
+		padding: 10
+	},
+	cancelButtonText: {
+		fontSize: 16,
+		fontWeight: "600",
+		color: "#61bfa9"
+	},
+	submitButtonText: {
+		color: "#61bfa9",
+		fontWeight: "600",
+		fontSize: 16
+	},
 });
 
 const mapStateToProps = (state) => {

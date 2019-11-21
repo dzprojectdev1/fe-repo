@@ -24,6 +24,7 @@ import search_photo from '../../assets/images/search_photo.png';
 import bg from '../../assets/images/bg.jpg';
 import ban_user from '../../assets/images/ban_user.png';
 import ban_user_red from '../../assets/images/ban_user_red.png';
+import diamond from '../../assets/images/red_diamond_trans.png';
 import Global from '../Global';
 
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
@@ -170,6 +171,7 @@ class Profile extends Component {
             name: this.state.otherData.name, 
             description: this.state.otherData.description,
             match_id: this.state.otherData.matchId,
+            coin_count: this.state.otherData.coin_count,
           }
         }
       });
@@ -189,6 +191,7 @@ class Profile extends Component {
             country_name: this.state.otherData.country_name,
             ethnicity_name: this.state.otherData.ethnicity_name,
             language_name: this.state.otherData.language_name,
+            coin_count: this.state.otherData.coin_count,
           }
         }
       });
@@ -204,10 +207,11 @@ class Profile extends Component {
         distance: this.state.otherData.distance,
         gender: this.state.otherData.gender,
         last_loggedin_date: this.state.otherData.last_loggedin_date,
-        mid: -1,
+        mid: this.state.otherData.mid,
         country_name: this.state.otherData.country_name,
         ethnicity_name: this.state.otherData.ethnicity_name,
         language_name: this.state.otherData.language_name,
+        coin_count: this.state.otherData.coin_count,
       });
     } else {
       this.props.navigation.pop();
@@ -286,12 +290,12 @@ class Profile extends Component {
             <Image source={ban_user} style={{width: 300, height: 300, zIndex: 100, position: 'absolute', left: parseInt(DEVICE_WIDTH /2) - 150, top: parseInt(DEVICE_HEIGHT /2) - 150,}} />
           </View>
         ): null}
-        <View style={{ height: this.state.otherData.imageUrl? 160: 40, marginTop: Platform.select({ 'ios': '20%', 'android': '20%' }), marginBottom: 20, flexDirection: 'row', }}>
+        <View style={{ height: this.state.otherData.imageUrl? 200: 80, marginTop: Platform.select({ 'ios': '20%', 'android': '20%' }), marginBottom: 20, flexDirection: 'row', }}>
           <TouchableOpacity style={{ width: 40, height: 40, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}
             onPress={() => this.onBack()} >
             <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
           </TouchableOpacity>
-          <View style={{ width: DEVICE_WIDTH - 110, height: this.state.otherData.imageUrl? 160: 40, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ width: DEVICE_WIDTH - 90, height: this.state.otherData.imageUrl? 200: 80, alignItems: 'center', justifyContent: 'center' }}>
             {this.state.otherData.imageUrl && (
               <TouchableOpacity style={{ width: 120, height: 120, }}
               onPress={() => this.showUserVideo(0, this.state.otherData.imageUrl, this.state.otherData.id, this.state.datas)} >
@@ -301,7 +305,16 @@ class Profile extends Component {
                 </Image>
               </TouchableOpacity>
             )}
-            <Text style={{ fontSize: 16 }}>{this.state.name}</Text>
+            <View style={{
+              flex: 3,
+              height: 20,
+              flexDirection: 'row',
+              justifyContent: 'space-around'
+            }}>
+              <Text style={{ fontSize: 16, }}>{this.state.name}</Text>
+              <Image source={diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 10, }} />
+              <Text style={{ fontSize: 14, marginTop: 3, }}>{this.state.otherData.coin_count}</Text>
+            </View>
             <Text style={{
                 fontSize: 12,
                 color: '#7d7d7d',
@@ -363,11 +376,11 @@ class Profile extends Component {
               <Text style={{
                 fontSize: 16,
                 marginTop: 20,
-                color: '#dd4f53',
+                color: '#f17f76',
               }}>{'This user does not have any'}</Text>
               <Text style={{
                 fontSize: 16,
-                color: '#dd4f53',
+                color: '#f17f76',
               }}>{' profile pictures.'}</Text>
               <Image source={search_photo} style={{width: 200, height: 200, marginTop: 40}}></Image>
             </View>

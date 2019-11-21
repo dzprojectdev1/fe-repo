@@ -65,6 +65,25 @@ class BrowserList extends Component {
 
     componentDidMount() {
         this.fetchUsers();
+
+        fetch(`${SERVER_URL}/api/transaction/getDiamondCount`, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/x-www-form-urlencoded',
+                'Authorization': Global.saveData.token
+            }
+          }).then((response) => response.json())
+            .then((responseJson) => {
+              if (!responseJson.error) {
+                  Global.saveData.coin_count = responseJson.coin_count;
+                  this.setState({
+                    coinCount: Global.saveData.coin_count,
+                  });
+              }
+            })
+            .catch((error) => {
+              return
+            });
     }
 
     // componentWillReceiveProps(nextProps) {
@@ -277,50 +296,6 @@ class BrowserList extends Component {
         });
     }
 
-    // getUserAvatar = async (data) => {
-    //     let listData = [];
-    //     for (var i = 0; i < data.length; i++) {
-    //         if (data[i].cdn_id) {
-    //             var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
-    //             // var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
-    //             await fetch(url, {
-    //                 method: 'GET',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': Global.saveData.token
-    //                 }
-    //             }).then((response) => response.json())
-    //                 .then((responseJson) => {
-    //                     listData.push({
-    //                         index: i,
-    //                         imageUrl: responseJson.url,
-    //                         // videoUrl: vurl,
-    //                         detail: data[i]
-    //                     });
-    //                 })
-    //                 .catch((error) => {
-    //                     alert(JSON.stringify(error))
-    //                     return
-    //                 });
-    //         } else {
-    //             listData.push({
-    //                 index: i,
-    //                 imageUrl: null,
-    //                 // videoUrl: vurl,
-    //                 detail: data[i]
-    //             });
-    //         }
-    //     }
-    //     let oldData = this.state.discoveredList;
-    //     let updatedList = oldData.concat(listData);
-    //     this.setState({
-    //         discoveredList: updatedList,
-    //         noUser: false,
-    //         isLoading: false,
-    //         isRefreshing: false
-    //     });
-    // }
-
     renderSeparator = () => {
         return (
             <View
@@ -464,15 +439,32 @@ class BrowserList extends Component {
                                             borderBottomWidth: 0.5,
                                             padding: 15,
                                         }}>
-                                            <Text style={{
-                                                fontSize: 16,
-                                                alignItems: 'center',
-                                                color: '#000',
-                                                fontWeight: 'bold',
-                                                marginRight: 10
+                                            <View style={{
+                                                flex: 1,
+                                                flexDirection: 'row',
+                                                justifyContent: 'flex-start'
                                             }}>
-                                                {item.detail.name}
-                                            </Text>
+                                                <Text style={{
+                                                    fontSize: 16,
+                                                    alignItems: 'center',
+                                                    color: '#000',
+                                                    fontWeight: 'bold',
+                                                    marginRight: 10
+                                                }}>
+                                                    {item.detail.name}
+                                                </Text>
+                                                <Image source={diamond} style={{ width: 15, height: 15, marginTop: 5, }} />
+                                                <Text style={{
+                                                    fontSize: 14,
+                                                    alignItems: 'center',
+                                                    color: '#000',
+                                                    fontWeight: 'normal',
+                                                    marginRight: 10,
+                                                    marginTop: 2,
+                                                }}>
+                                                    {item.detail.coin_count}
+                                                </Text>
+                                            </View>
                                             <Text style={{
                                                 fontSize: 12,
                                                 color: '#7d7d7d',
@@ -564,10 +556,10 @@ class BrowserList extends Component {
                             <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
                             <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
                         </Button>
-                        <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.gotoMainMenu("VoiceCall") }>
+                        {/* <Button badge style={{ backgroundColor: '#222F3F', borderRadius: 0, }} transparent onPress={() => this.gotoMainMenu("VoiceCall") }>
                             <Image source={b_incoming} style={{ width: 25, height: 25 }} />
                             <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"VOICE"}</Text>
-                        </Button>
+                        </Button> */}
                     </FooterTab>
                 </Footer>
             {/* </View> */}

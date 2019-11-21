@@ -58,7 +58,26 @@ class MyVideo extends Component {
     Global.saveData.nowPage = 'MyVideo';
     this.props.navigation.addListener('didFocus', (playload) => {
       this.getVideos()
-    });
+    });    
+
+    fetch(`${SERVER_URL}/api/transaction/getDiamondCount`, {
+      method: 'POST',
+      headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+          'Authorization': Global.saveData.token
+      }
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+            Global.saveData.coin_count = responseJson.coin_count;
+            this.setState({
+              coinCount: Global.saveData.coin_count,
+            });
+        }
+      })
+      .catch((error) => {
+        return
+      });
   }
   getVideos() {
     fetch(`${SERVER_URL}/api/video/getMyAllVideo`, {
