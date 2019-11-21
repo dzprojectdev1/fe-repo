@@ -24,6 +24,10 @@ import ProfileDetail from './components/Main/ProfileDetail';
 import ProfileSetting from './components/Main/ProfileSetting';
 import TermsPolicy from './components/Main/TermsPolicy';
 import Report from './components/Main/Report';
+import VoiceCall from './components/Main/VoiceCall';
+import CallIncome from './components/Main/CallIncome';
+import CallOutgo from './components/Main/CallOutgo';
+import CallIn from './components/Main/CallIn';
 // import AppView from '../AppView';
 
 import ChatScreen from './components/Main/ChatScreen';
@@ -60,6 +64,11 @@ export default Router = createStackNavigator({
     EmailConfirm: { screen: EmailConfirm },
     //Gpay
     screenGpay01: { screen: screenGpay01 },
+    //Calling
+    VoiceCall: { screen: VoiceCall },
+    CallIncome: { screen: CallIncome },
+    CallOutgo: { screen: CallOutgo },
+    CallIn: { screen: CallIn },
 }, {
     initialRouteName: 'FirstScreen',
     transitionConfig: () => ({

@@ -50,6 +50,7 @@ class IncomeDetail extends Component {
       userdistance: '',
       description: '',
       otherId: -1,
+      coin_count: 0,
       isMatchVideo: false,
       privatedPaused: false,
       isOperating: false,
@@ -102,7 +103,8 @@ class IncomeDetail extends Component {
         userimage: this.props.navigation.state.params.imageUrl,
         matchId: this.props.navigation.state.params.mid,
         userdistance: parseInt(this.props.navigation.state.params.distance),
-        description: this.props.navigation.state.params.description
+        description: this.props.navigation.state.params.description,
+        coin_count: this.props.navigation.state.params.coin_count
       });
     }
   }
@@ -110,6 +112,25 @@ class IncomeDetail extends Component {
     this.props.navigation.addListener('didFocus', (playload) => {
       this.setState({ paused: false, privatedPaused: false });
     });
+
+    fetch(`${SERVER_URL}/api/transaction/getDiamondCount`, {
+      method: 'POST',
+      headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+          'Authorization': Global.saveData.token
+      }
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+            Global.saveData.coin_count = responseJson.coin_count;
+            this.setState({
+              coinCount: Global.saveData.coin_count,
+            });
+        }
+      })
+      .catch((error) => {
+        return
+      });
   }
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.back);
@@ -124,7 +145,8 @@ class IncomeDetail extends Component {
       data: {
         name: this.state.username,
         other_user_id: this.state.otherId,
-        match_id: this.state.matchId
+        match_id: this.state.matchId,
+        coin_count: this.state.coin_count,
       }
     }
     Global.saveData.prevpage = "IncomeDetail"
@@ -309,14 +331,16 @@ class IncomeDetail extends Component {
               ethnicity_name: newData.ethnicity_name,
               language_name: newData.language_name,
               last_loggedin_date: newData.last_loggedin_date,
+              coin_count: newData.coin_count,
             });
-
+            
             this.props.navigation.replace("Profile", { 
               data: {
                 id: this.state.otherId, 
                 name: this.state.username, 
                 isMatched: this.state.isMatchVideo, 
                 description: this.state.description,
+                mid: this.state.matchId,
                 age: this.state.age,
                 gender: this.state.gender,
                 distance: this.state.distance,
@@ -325,6 +349,7 @@ class IncomeDetail extends Component {
                 language_name: this.state.language_name,
                 last_loggedin_date: this.state.last_loggedin_date,
                 imageUrl: this.state.userimage,
+                coin_count: this.state.coin_count,
               }
             });
           }
@@ -497,6 +522,8 @@ class IncomeDetail extends Component {
             <View style={{ flexDirection: 'row' }}>
               <Image source={b_name} style={{ width: 15, height: 15 }} />
               <Text style={{ marginLeft: 10, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.username}</Text>
+              <Image source={diamond} style={{ marginLeft: 10, width: 15, height: 15, marginTop: 2, }} />
+              <Text style={{ color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.coin_count}</Text>
             </View>
             <View style={{ flexDirection: 'row', marginTop: 5 }}>
               <Image source={b_age} style={{ width: 15, height: 16 }} />

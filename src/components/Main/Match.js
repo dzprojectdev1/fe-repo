@@ -57,7 +57,27 @@ class Match extends Component {
   //   await this.getHeartUsers();
   // }
   componentDidMount() {
-    Global.saveData.nowPage = 'Match';
+    Global.saveData.nowPage = 'Match';    
+
+    fetch(`${SERVER_URL}/api/transaction/getDiamondCount`, {
+      method: 'POST',
+      headers: {
+          'Content-type': 'application/x-www-form-urlencoded',
+          'Authorization': Global.saveData.token
+      }
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+            Global.saveData.coin_count = responseJson.coin_count;
+            this.setState({
+              coinCount: Global.saveData.coin_count,
+            });
+        }
+      })
+      .catch((error) => {
+        return
+      });
+
     this.getHeartUsers();
   }
   getHeartUsers = async () => {
@@ -97,7 +117,8 @@ class Match extends Component {
           age: data[i].age,
           gender: data[i].gender,
           distance: data[i].distance,
-          description: data[i].description
+          description: data[i].description,
+          coin_count: data[i].coin_count
         });
       } else {
         list_items.push({
@@ -110,7 +131,8 @@ class Match extends Component {
           age: data[i].age,
           gender: data[i].gender,
           distance: data[i].distance,
-          description: data[i].description
+          description: data[i].description,
+          coin_count: data[i].coin_count
         });
       }
 
@@ -222,7 +244,7 @@ class Match extends Component {
           if (!responseJson.error) {
 
             let newData = responseJson.data;
-            this.props.navigation.navigate(
+            this.props.navigation.replace(
               "IncomeDetail",
               {
                 url: null,
@@ -238,6 +260,7 @@ class Match extends Component {
                 ethnicity_name: newData.ethnicity_name,
                 language_name: newData.language_name,
                 last_loggedin_date: newData.last_loggedin_date,
+                coin_count: newData.coin_count,
               }
             )
           }
@@ -323,6 +346,8 @@ class Match extends Component {
                     <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.age + ""}</Text>
                     <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.gender === 1 ? 'M' : 'F'}</Text>
                     <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.name}</Text>
+                    <Image source={diamond} style={{ width: 15, height: 15, marginTop: 2, marginLeft: 5 }} />
+                    <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.coin_count}</Text>
                   </View>
                 </TouchableOpacity>
               );

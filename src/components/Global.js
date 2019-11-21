@@ -46,4 +46,5 @@ module.exports.saveData =
         account_status: 0,
         auto_block: 1,
         is_admin: 0,
+        call_id: 0,
     };
