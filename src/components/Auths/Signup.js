@@ -122,7 +122,7 @@ class Signup extends Component {
     if (deltaYear < 18) {
       Alert.alert(
         '',
-        'Sorry, you must be over 18 years old to register',
+        'Sorry, you must be 18 years or older to register.',
         [
           { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
           { text: 'Yes', onPress: () => console.log("Ok Pressed") },

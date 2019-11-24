@@ -140,17 +140,17 @@ class Register2 extends Component {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
-          title: 'Cool App Some Permissions',
+          title: 'Location Permissions',
           message:
-            'Cool App needs access to your some permissions.',
+            'App needs location permissions to be enabled',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        this.showAlert('Congrate!', 'Please try to registe your account again!');
+        this.showAlert('Granted.', 'Please try registering again.');
       } else {
-        this.showAlert('Location Permission Invalid', 'Please allow your phone settng to get location so that you can enjoy app.');
+        this.showAlert('Location permission invalid', 'Location permissions are required to use this app.');
       }
     } catch (error) {
       // Error retrieving data
@@ -363,7 +363,7 @@ class Register2 extends Component {
           } else {
             Alert.alert(
               'Alert',
-              "You have to allow DazzledDate to access this device's location. Please restart app and allow to access.",
+              "DazzledDate requires access to this device's location. Please restart and grant location permissions.",
               [
                 {text: 'Ok', onPress: () => console.log('Ok pressed.')},
               ],

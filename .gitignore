@@ -62,3 +62,5 @@ index.android.bundle
 
 # For distinguish ios / android
 package-lock.json
+
+.vscode

@@ -66,11 +66,11 @@ class Login extends Component {
   }
   onLogin() {
     if (this.state.email === '') {
-      Alert.alert("The email is not inputed")
+      Alert.alert("Please input email.")
       return;
     }
     if (this.state.password === '') {
-      Alert.alert("The password is not inputed")
+      Alert.alert("Please enter password.")
       return;
     }
     if (this.state.remberCheck) {
