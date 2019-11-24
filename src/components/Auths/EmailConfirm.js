@@ -86,7 +86,7 @@ class EmailConfirm extends Component {
           if (!responseJson.error) {
             this.props.navigation.replace("Browse");
           } else {
-            alert(responseJson.message ? responseJson.message : 'Woops! Try again.');
+            alert(responseJson.message ? responseJson.message : 'Something went wrong. Please try again.');
           }
         })
         .catch((error) => {
@@ -105,8 +105,8 @@ class EmailConfirm extends Component {
         </ImageBackground>
         <Content>
           <View style={{ width: DEVICE_WIDTH, alignItems: 'center', justifyContent: 'center', marginTop: 50 }}>
-            <Text style={{ color: '#000', fontSize: 16, fontWeight: 'bold' }}>{"Please enter your confirmation code"}</Text>
-            <Text style={{ color: '#000', fontSize: 16, fontWeight: 'bold' }}>{"We sent to your email"}</Text>
+            <Text style={{ color: '#000', fontSize: 16, fontWeight: 'bold' }}>{"Please enter the confirmation code"}</Text>
+            <Text style={{ color: '#000', fontSize: 16, fontWeight: 'bold' }}>{"that was sent to your email."}</Text>
           </View>
           <View style={{ width: DEVICE_WIDTH * 0.6, marginLeft: DEVICE_WIDTH * 0.2, marginTop: 50 }}>
             <View>
@@ -128,7 +128,7 @@ class EmailConfirm extends Component {
           </View>
 
           <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 30 }}>
-            <Text style={{ color: '#000', fontSize: 12, }}>{"Didn't get an Email?"}</Text>
+            <Text style={{ color: '#000', fontSize: 12, }}>{"Didn't get an email?"}</Text>
             <TouchableOpacity onPress={() => this.sendCode()}>
               <Text style={{ color: '#DE5859', fontSize: 14, fontWeight: 'bold', marginTop: 15 }}>{"Send email again"}</Text>
             </TouchableOpacity>

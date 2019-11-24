@@ -443,7 +443,7 @@ class Browse extends Component {
     } else {
       Alert.alert(
         '',
-        "Send instant messages to "+this.state.otherData.detail.name+" for 50 diamonds. Continue?",
+        "Send instant messages to " + this.state.otherData.detail.name + " for 50 diamonds. Continue?",
         [
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
           {text: 'OK', onPress: () => this.gotoInstantChat()},
@@ -478,7 +478,7 @@ class Browse extends Component {
             if (!responseJson.data.ability) {
               Alert.alert(
                 '',
-                "You need 50 diamonds to start chat with " + this.state.otherData.detail.name + " immediately",
+                "50 diamonds are required to start a chat with " + this.state.otherData.detail.name + " immediately.",
                 [
                   {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
                   {text: 'Buy Diamonds', onPress: () => this.gotoShop()},
@@ -601,7 +601,7 @@ class Browse extends Component {
     {
         Alert.alert(
             'Warning',
-            'You must input only number.',
+            'You must input a number.',
             [
                 { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
             ],
@@ -613,7 +613,7 @@ class Browse extends Component {
         if (sendDiamondsCount > Global.saveData.coin_count) {
             Alert.alert(
                 'Warning',
-                'You can send only ' + Global.saveData.coin_count + ' diamonds. You need more diamonds.',
+                'You only have ' + Global.saveData.coin_count + ' diamonds.',
                 [
                     { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
                     { text: 'Buy Diamonds', onPress: () => this.gotoShop(), style: 'cancel' },
@@ -623,7 +623,7 @@ class Browse extends Component {
         } else if (sendDiamondsCount == 0 || sendDiamondsCount == '') {
             Alert.alert(
                 'Warning',
-                'You must input one or more diamons count.',
+                'You must input a quantity of diamonds to send.',
                 [
                     { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
                 ],
@@ -933,7 +933,7 @@ class Browse extends Component {
                   }
                 >
                   <DialogContent>
-                    <Text style={{ color: '#000', fontSize: 18, marginTop: 20}}>{'You need 1 diamond to send a heart'}</Text>
+                    <Text style={{ color: '#000', fontSize: 18, marginTop: 20}}>{'You need 1 diamond to send a heart.'}</Text>
                   </DialogContent>
                 </Dialog>
                 <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>

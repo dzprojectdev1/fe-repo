@@ -280,7 +280,7 @@ class screenGpay01 extends Component {
         } else {
           Alert.alert(
             'Success!',
-            " " + diamondCount[productIdIndex] + " diamonds were added to your account",
+            " " + diamondCount[productIdIndex] + " diamonds were added to your account.",
             [
               {text: 'OK', onPress: () => console.log('OK Pressed')},
             ],
@@ -430,7 +430,7 @@ class screenGpay01 extends Component {
           if (responseData.success == false) {
             Alert.alert(
               '',
-              "Please wait " + responseData.hours+" hours "+responseData.minutes+" minutes and "+responseData.seconds+" seconds to unlock 90 free diamonds",
+              "Please wait " + responseData.hours + " hours " + responseData.minutes + " minutes and " + responseData.seconds + " seconds to unlock 90 free diamonds.",
               [
                 {text: 'OK', onPress: () => console.log('OK Pressed')},
               ],
@@ -439,7 +439,7 @@ class screenGpay01 extends Component {
           } else {
             Alert.alert(
               'Success',
-              "90 diamonds were added to your account successfully. Next 90 diamonds will unlock in 24 hours",
+              "90 diamonds were added to your account successfully. Next 90 diamonds will unlock in 24 hours.",
               [
                 {text: 'OK', onPress: () => console.log('OK Pressed')},
               ],
