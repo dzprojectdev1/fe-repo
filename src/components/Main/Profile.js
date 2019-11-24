@@ -17,14 +17,22 @@ import {
   Image,
   Modal,
   Alert,
+  TextInput,
 } from "react-native";
+import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
 
-import heart from '../../assets/images/heart.png';
 import search_photo from '../../assets/images/search_photo.png';
 import bg from '../../assets/images/bg.jpg';
 import ban_user from '../../assets/images/ban_user.png';
 import ban_user_red from '../../assets/images/ban_user_red.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
+import yellow_star from '../../assets/images/yellow_star.png';
+import shooting_star from '../../assets/images/shooting_star.png';
+import crown from '../../assets/images/crown.png';
+import hiddenMan from '../../assets/images/hidden_man.png';
+import admirable from '../../assets/images/admirable_icon.png';
+import collapse from '../../assets/images/collapse.png';
+import expand from '../../assets/images/expand.png';
 import Global from '../Global';
 
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
@@ -36,11 +44,25 @@ class Profile extends Component {
       id: '',
       name: '',
       datas: [],
+      fanUsers: [],
+      mutualUsers: [],
+      fanUsersCount: 0,
       isLoading: true,
       noData: false,
       otherData: props.navigation.state.params.data,
+      coin_count: props.navigation.state.params.data.coin_count,
+      fan_count: props.navigation.state.params.data.fan_count,
       fullImage: false,
       flash_ban: false,
+      fanUserVisible: false,
+      noFanUserVisible: false,
+      errorMsg: false,
+      msgError: '',
+      sendDiamondsCount: 0,
+      fanMessage: '',
+      showTip: false,
+      otherSelectedUserName: '',
+      showFanUsers: false,
     };
   }
 
@@ -54,7 +76,44 @@ class Profile extends Component {
 
     this.setState({ id: otherid, name: othername });
     this.getVideos(otherid);
+    
+    this.getBiggestFanUsers();
   }
+
+  getBiggestFanUsers = () => {
+    var details = {
+      'otherId': this.state.otherData.id,
+    };
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    fetch(`${SERVER_URL}/api/fan/getBiggestFanUsers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      },
+      body: formBody,
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+          this.setState({
+            fanUsers: responseJson.data.fanUsers,
+            mutualUsers: responseJson.data.mutualUsers,
+            fanUsersCount: responseJson.data.fanUsers.length,
+          })
+        }
+      })
+      .catch((error) => {
+        // alert(JSON.stringify(error));
+        return
+      });
+  }
+
   getVideos(otherid) {
     fetch(`${SERVER_URL}/api/video/othervideo/${otherid}`, {
       method: 'GET',
@@ -83,6 +142,7 @@ class Profile extends Component {
         return
       });
   }
+
   getTumbnails = async (data) => {
 
     var list_items = [];
@@ -103,65 +163,12 @@ class Profile extends Component {
       isLoading: false
     });
   }
-  // getTumbnails = async (data) => {
 
-  //   var list_items = [];
-  //   for (var i = 0; i < data.length; i++) {
-  //     var value = Object.values(data[i]);
-  //     var url = `${SERVER_URL}/api/storage/videoLink?fileId=${value[0]}-screenshot`;
-  //     var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${value[0]}`;
-  //     await fetch(url, {
-  //       method: 'GET',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': Global.saveData.token
-  //       }
-  //     }).then((response) => response.json())
-  //       .then((responseJson) => {
-  //         list_items.push({
-  //           index: i,
-  //           otherId: data[i].other_user_id,
-  //           imageUrl: responseJson.url,
-  //           videoUrl: vurl,
-  //           name: 'NAME',
-  //           time: 'TIME'
-  //         });
-  //       }).catch((error) => {
-  //         return
-  //       });
-  //   }
-  //   this.setState({
-  //     datas: list_items,
-  //     noData: false,
-  //     isLoading: false
-  //   });
-  // }
   showUserVideo(index, url, otherId, datas) {
-    // fetch(url, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': Global.saveData.token
-    //   }
-    // }).then((response) => response.json())
-    //   .then((responseJson) => {
-    //     this.props.navigation.navigate("ProfileDetail", { url: responseJson.url, otherId: otherId })
-    //   })
-    //   .catch((error) => {
-    //     alert("There is error, please try again!");
-    //     return
-    //   });
     this.props.navigation.navigate("ProfileDetail", { index: index, url: url, otherId: otherId, datas: datas })
   }
+
   onBack() {
-    // if (Global.saveData.prevpage === "ChatDetail" || Global.saveData.prevpage === "Browse" ) {
-    //   this.props.navigation.pop();
-    // }
-    // else {
-    //   Global.saveData.prePage = "Profile"
-    //   this.props.navigation.replace(Global.saveData.prevpage);
-    // }
-    // this.props.navigation.pop();
     if (Global.saveData.prevpage == "ChatDetail") {
       this.props.navigation.replace(Global.saveData.prevpage, {
         data: {
@@ -171,12 +178,13 @@ class Profile extends Component {
             name: this.state.otherData.name, 
             description: this.state.otherData.description,
             match_id: this.state.otherData.matchId,
-            coin_count: this.state.otherData.coin_count,
+            coin_count: this.state.coin_count,
+            fan_count: this.state.fan_count,
           }
         }
       });
-    } else if (Global.saveData.prevpage == "Browse") {
-      this.props.navigation.replace(Global.saveData.prevpage, {
+    } else if (Global.saveData.prevpage == "Browse" || Global.saveData.prevpage == "Profile") {
+      this.props.navigation.replace('Browse', {
         data: {
           imageUrl: this.state.otherData.imageUrl,
           isMatched: this.state.otherData.isMatched, 
@@ -191,7 +199,8 @@ class Profile extends Component {
             country_name: this.state.otherData.country_name,
             ethnicity_name: this.state.otherData.ethnicity_name,
             language_name: this.state.otherData.language_name,
-            coin_count: this.state.otherData.coin_count,
+            coin_count: this.state.coin_count,
+            fan_count: this.state.fan_count,
           }
         }
       });
@@ -211,12 +220,16 @@ class Profile extends Component {
         country_name: this.state.otherData.country_name,
         ethnicity_name: this.state.otherData.ethnicity_name,
         language_name: this.state.otherData.language_name,
-        coin_count: this.state.otherData.coin_count,
+        coin_count: this.state.coin_count,
+        fan_count: this.state.fan_count,
       });
+    } else if (Global.saveData.prevpage == "MyVideo") {
+      this.props.navigation.replace(Global.saveData.prevpage);
     } else {
       this.props.navigation.pop();
     }
   }
+
   banUser = () => {
     Alert.alert(
       '',
@@ -228,6 +241,7 @@ class Profile extends Component {
       {cancelable: false},
     );
   }
+
   banUserRequest = () => {
     this.setState({
       flash_ban: true,
@@ -266,10 +280,197 @@ class Profile extends Component {
       });
   }
 
+  becomeFan = () => {
+    var details = {
+      'otherId': this.state.otherData.id
+    };
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    fetch(`${SERVER_URL}/api/fan/checkFanOtherUser`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      },
+      body: formBody,
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {          
+          if (responseJson.is_fan) {
+            this.setState({
+              fanUserVisible: true,
+              noFanUserVisible: false,
+            })
+          } else {
+            this.setState({
+              fanUserVisible: false,
+              noFanUserVisible: true,
+            })
+          }
+        }
+      }).catch((error) => {
+        return
+      });
+  }
+
+  checkCount = value => {
+    if(isNaN(value))
+    {
+        this.setState({
+            errorMsg: true,
+            sendDiamondsCount: value,
+            msgError: 'This field should be number.',
+        })
+    }
+    else
+    {
+        if (value > Global.saveData.coin_count) {
+            this.setState({
+                errorMsg: true,
+                sendDiamondsCount: value,
+                msgError: 'You can send only ' + Global.saveData.coin_count + ' diamonds.',
+            })
+        } else {
+            this.setState({
+                errorMsg: false,
+                sendDiamondsCount: value,
+            })
+        }
+    }
+  }
+  
+  sendDiamonds = () => {
+    let { sendDiamondsCount, fanMessage } = this.state;
+    if(isNaN(sendDiamondsCount))
+    {
+        Alert.alert(
+            'Warning',
+            'You must input only number.',
+            [
+                { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
+            ],
+            { cancelable: false }
+        );
+    }
+    else
+    {
+        if (sendDiamondsCount > Global.saveData.coin_count) {
+            Alert.alert(
+                'Warning',
+                'You can send only ' + Global.saveData.coin_count + ' diamonds. You need more diamonds.',
+                [
+                    { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                    { text: 'Buy Diamonds', onPress: () => this.gotoShop(), style: 'cancel' },
+                ],
+                { cancelable: false }
+            );
+        } else if (sendDiamondsCount == 0 || sendDiamondsCount == '') {
+            Alert.alert(
+                'Warning',
+                'You must input one or more diamons count.',
+                [
+                    { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
+                ],
+                { cancelable: false }
+            );
+        } else {
+            var details = {
+                'userName': Global.saveData.u_name,
+                'otherId': this.state.otherData.id,
+                'otherUserName': this.state.otherData.name,
+                'amount': sendDiamondsCount,
+                'fanMessage': fanMessage,
+            };
+            var formBody = [];
+            for (var property in details) {
+                var encodedKey = encodeURIComponent(property);
+                var encodedValue = encodeURIComponent(details[property]);
+                formBody.push(encodedKey + "=" + encodedValue);
+            }
+            formBody = formBody.join("&");
+            fetch(`${SERVER_URL}/api/fan/sendDiamonds`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': Global.saveData.token
+                },
+                body: formBody,
+            }).then((response) => response.json())
+            .then((responseJson) => {
+                if (!responseJson.error) {
+                    Global.saveData.coin_count = responseJson.data.coin_count;
+                    this.setState({
+                      coin_count: parseInt(this.state.coin_count) + parseInt(sendDiamondsCount),
+                      fan_count: responseJson.data.other_fan_count,
+                    })
+                    this.getBiggestFanUsers();
+                }
+            })
+            .catch((error) => {
+                this.setState({
+                    isLoading: false,
+                    disabled: false
+                });
+                return
+            });
+        }
+    }
+  } 
+
+  gotoProfile = row => {
+    Global.saveData.prevpage = "Profile";
+    
+    fetch(`${SERVER_URL}/api/match/getOtherUserData/${row.userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': Global.saveData.token
+        }
+      }).then((response) => response.json())
+        .then((responseJson) => {
+          if (!responseJson.error) {
+            let newData = responseJson.data;
+
+            this.props.navigation.replace("Profile", { 
+              data: {
+                id: newData.id, 
+                name: newData.name, 
+                description: newData.description,
+                age: newData.age,
+                gender: newData.gender,
+                distance: newData.distance,
+                country_name: newData.country_name,
+                ethnicity_name: newData.ethnicity_name,
+                language_name: newData.language_name,
+                last_loggedin_date: newData.last_loggedin_date,
+                matchId: this.state.otherData.imageUrl,
+                imageUrl: (row.imgUrl !== '' && row.imgUrl !== null) ? GCS_BUCKET + row.imgUrl + '-screenshot': null,
+                coin_count: newData.coin_count, 
+                fan_count: newData.fan_count, 
+              }
+            });
+          }
+        }).catch((error) => {
+          // alert(JSON.stringify(error));
+          return
+        });
+  }
+
+  showTip = row => {
+    this.setState({
+      otherSelectedUserName: row.name,
+      showTip: true,
+    })
+  }
+
   render() {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
-      {/* <View style={styles.contentContainer}> */}
         <Modal
           transparent={false}
           visible={this.state.fullImage}
@@ -284,6 +485,218 @@ class Profile extends Component {
             </TouchableOpacity>
           </View>
         </Modal>
+        <Dialog
+          visible={this.state.fanUserVisible}
+          dialogAnimation={new SlideAnimation({
+            slideFrom: 'top',
+          })}
+        >
+            <View style={styles.screenOverlay}>
+                <View style={styles.dialogPrompt}>
+                    <Text style={[styles.bodyFont, ]}>
+                        {`You have ${Global.saveData.coin_count} diamonds`}
+                    </Text>
+                    <View style={{ flexDirection: 'row', }}>
+                      <Text style={[styles.bodyFont, ]}>
+                          {`Send `}
+                      </Text>
+                      <View style={styles.SectionStyle}>
+                        <Image source={diamond} style={{width: 25, height: 25, }} />
+                        <TextInput
+                            placeholder={``}
+                            style={styles.textInput}
+                            onChangeText={(value) => this.checkCount(value)}
+                        />
+                      </View>
+                      <Text style={[styles.bodyFont, ]}>
+                          {` Diamonds`}
+                      </Text>
+                    </View>                    
+                    { this.state.errorMsg && <Text style={styles.requiredSent}>* {this.state.msgError} </Text> }
+                    <Text style={{fontSize: 16, }}>
+                        {`Write a fan message to ${this.state.otherData.name} (public and optional)`}
+                    </Text>
+                    <TextInput
+                        multiline={true}
+                        numberOfLines={5}
+                        style={styles.textMessageInput}
+                        editable
+                        onChangeText={(text) => this.setState({
+                          fanMessage: text,
+                        })}
+                    />
+                    <View style={styles.buttonsOuterView}>
+                        <View style={styles.buttonsInnerView}>
+                            <TouchableOpacity
+                                style={[
+                                    styles.button, 
+                                ]}
+                                onPress={ () =>
+                                    this.setState({
+                                        fanUserVisible: !this.state.fanUserVisible
+                                    })}>
+                                <Text
+                                    style={[
+                                        styles.cancelButtonText,
+                                    ]}>
+                                    {'Cancel'}
+                                </Text>
+                            </TouchableOpacity>
+                            <View style={styles.buttonsDivider} />
+                            <TouchableOpacity
+                                style={[
+                                    styles.button,
+                                ]}
+                                onPress={ () =>
+                                    this.setState({
+                                      fanUserVisible: !this.state.fanUserVisible
+                                    }, function() {
+                                        this.sendDiamonds();
+                                    })
+                                }>
+                                <Text
+                                    style={[
+                                        styles.submitButtonText,
+                                    ]}>
+                                    {'Send'}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </View>
+        </Dialog>
+
+        <Dialog
+          visible={this.state.noFanUserVisible}
+          dialogAnimation={new SlideAnimation({
+            slideFrom: 'top',
+          })}
+        >
+            <View style={styles.screenOverlay}>
+                <View style={styles.dialogPrompt}>
+                    <Text style={[styles.title, ]}>
+                        {`Become a fan of ${this.state.otherData.name} by sending diamonds!`}
+                    </Text>
+                    <View style={{ alignItems: 'center', justifyContent: 'center', }}>
+                      <Image source={shooting_star} style={{width: 130, height: 130, marginTop: 20, }} />
+                    </View>
+                    <Text style={[styles.bodyFont, ]}>
+                        {`You have ${Global.saveData.coin_count} diamonds`}
+                    </Text>
+                    <View style={{ flexDirection: 'row', }}>
+                      <Text style={[styles.bodyFont, ]}>
+                          {`Send `}
+                      </Text>
+                      <View style={styles.SectionStyle}>
+                        <Image source={diamond} style={{width: 25, height: 25, }} />
+                        <TextInput
+                            placeholder={``}
+                            style={styles.textInput}
+                            onChangeText={(value) => this.checkCount(value)}
+                        />
+                      </View>
+                      <Text style={[styles.bodyFont, ]}>
+                          {` Diamonds`}
+                      </Text>
+                    </View>                    
+                    { this.state.errorMsg && <Text style={styles.requiredSent}>* {this.state.msgError} </Text> }
+                    <Text style={{fontSize: 16, }}>
+                        {`Write a fan message to ${this.state.otherData.name} (public and optional)`}
+                    </Text>
+                    <TextInput
+                        multiline={true}
+                        numberOfLines={5}
+                        style={styles.textMessageInput}
+                        editable
+                        onChangeText={(text) => this.setState({
+                          fanMessage: text,
+                        })}
+                    />
+                    <View style={styles.buttonsOuterView}>
+                        <View style={styles.buttonsInnerView}>
+                            <TouchableOpacity
+                                style={[
+                                    styles.button, 
+                                ]}
+                                onPress={ () =>
+                                    this.setState({
+                                        noFanUserVisible: !this.state.noFanUserVisible
+                                    })}>
+                                <Text
+                                    style={[
+                                        styles.cancelButtonText,
+                                    ]}>
+                                    {'Cancel'}
+                                </Text>
+                            </TouchableOpacity>
+                            <View style={styles.buttonsDivider} />
+                            <TouchableOpacity
+                                style={[
+                                    styles.button,
+                                ]}
+                                onPress={ () =>
+                                    this.setState({
+                                      noFanUserVisible: !this.state.noFanUserVisible
+                                    }, function() {
+                                        this.sendDiamonds();
+                                    })
+                                }>
+                                <Text
+                                    style={[
+                                        styles.submitButtonText,
+                                    ]}>
+                                    {'Send'}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </View>
+        </Dialog>
+
+        <Dialog
+          visible={this.state.showTip}
+          dialogAnimation={new SlideAnimation({
+            slideFrom: 'top',
+          })}
+        >
+            <View style={styles.screenOverlay}>
+                <View style={styles.dialogPrompt}>
+                    <View style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row', }}>
+                      <Image source={admirable} style={{width: 25, height: 25, marginTop: 20, marginRight: 10, }} />
+                      <Text style={{marginTop: 20, }}>{'mutual'}</Text>
+                    </View>
+                    <Text style={[styles.bodyFont, ]}>
+                        {`This icons means the number of diamonds sent from ${this.state.otherData.name} to ${this.state.otherSelectedUserName} is greater than the number of diamonds sent from ${this.state.otherSelectedUserName} to ${this.state.otherData.name}. Currently, ${this.state.otherSelectedUserName} is not a fan of ${this.state.otherData.name}`}
+                    </Text>
+                    <Text style={[styles.bodyFont, ]}>
+                        {`Users cannot become fans mutually. In order for ${this.state.otherSelectedUserName} to become a fan of ${this.state.otherData.name}, the number of diamonds sent from ${this.state.otherSelectedUserName} to ${this.state.otherData.name} must be greater than the amount of diamonds ${this.state.otherSelectedUserName} received from ${this.state.otherData.name}`}
+                    </Text>
+                    <View style={styles.buttonsOuterView}>
+                        <View style={styles.buttonsInnerView}>
+                            <TouchableOpacity
+                                style={[
+                                    styles.button,
+                                ]}
+                                onPress={ () =>
+                                    this.setState({
+                                      showTip: !this.state.showTip
+                                    })
+                                }>
+                                <Text
+                                    style={[
+                                        styles.submitButtonText,
+                                    ]}>
+                                    {'Ok'}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </View>
+        </Dialog>
+
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         {this.state.flash_ban ? (
           <View>
@@ -299,8 +712,6 @@ class Profile extends Component {
             {this.state.otherData.imageUrl && (
               <TouchableOpacity style={{ width: 120, height: 120, }}
               onPress={() => this.showUserVideo(0, this.state.otherData.imageUrl, this.state.otherData.id, this.state.datas)} >
-              {/* <TouchableOpacity style={{ width: 120, height: 120, }}
-              onPress={() => this.setState({fullImage: true})} ></TouchableOpacity> */}
                 <Image source={{ uri: this.state.otherData.imageUrl}} style={{width: 120, height: 120, borderRadius: 60,}}>
                 </Image>
               </TouchableOpacity>
@@ -312,8 +723,10 @@ class Profile extends Component {
               justifyContent: 'space-around'
             }}>
               <Text style={{ fontSize: 16, }}>{this.state.name}</Text>
-              <Image source={diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 10, }} />
-              <Text style={{ fontSize: 14, marginTop: 3, }}>{this.state.otherData.coin_count}</Text>
+              <Image source={diamond} style={{ width: 20, height: 20, marginTop: 3, marginLeft: 10, }} />
+              <Text style={{ fontSize: 14, marginTop: 3, }}>{this.state.coin_count}</Text>
+              <Image source={yellow_star} style={{ width: 20, height: 20, marginTop: 3, marginLeft: 10, }} />
+              <Text style={{ fontSize: 14, marginTop: 3, }}>{this.state.fan_count}</Text>
             </View>
             <Text style={{
                 fontSize: 12,
@@ -341,7 +754,130 @@ class Profile extends Component {
             </TouchableOpacity>
           )}
         </View>
-        <ScrollView style={{ marginTop: 15, backgroundColor: '#FFF' }} removeClippedSubviews={true}>
+        <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View></View>
+          <TouchableOpacity style={{ width: 40, height: 35, borderWidth: 1.5, borderRadius: 7, borderWidth: 3, borderColor: '#feef00', alignItems: 'center', justifyContent: 'center' }}
+            onPress={() => this.becomeFan()}>
+            <Image source={yellow_star} style={{ width: 20, height: 20 }} />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'center', backgroundColor: '#FFF', width: DEVICE_WIDTH, height: 40, marginTop: 10, paddingTop: 10, }}
+          onPress={() => this.setState({
+            showFanUsers: !this.state.showFanUsers,
+          })}
+        >
+          <Text style={{fontSize: 16, marginRight: 20, }}>{`Biggest Fans for ${this.state.otherData.name}`}</Text>
+          <Image source={this.state.showFanUsers? collapse: expand} style={{ width: 15, height: 15, marginTop: 3, }} />
+        </TouchableOpacity>
+        {(this.state.fanUsers.length !== 0 || this.state.mutualUsers.length !== 0) && this.state.showFanUsers && (
+        <View style={{ height: 200, marginTop: 1,}}>
+          <ScrollView style={{ backgroundColor: '#FFF', }} removeClippedSubviews={true}>
+          {/* <ScrollView  removeClippedSubviews={true}> */}
+            {(this.state.fanUsers.length != 0) && (
+              <FlatList
+                numColumns={1}
+                style={{ flex: 0, marginTop:10, }}
+                removeClippedSubviews={true}
+                data={this.state.fanUsers}
+                initialNumToRender={this.state.fanUsers.length}
+                renderItem={({ item: rowData, index }) => {
+                  return (
+                      <TouchableOpacity style={styles.listItem} onPress={() => this.gotoProfile(rowData)}>
+                        <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center', paddingTop: (index == 0)? 25: 10, }}>
+                          <Text style={{fontSize: 16, color: '#000'}}>{(index + 1) + '.'}</Text>
+                        </View>
+                        <View style={styles.listItemUser}>
+                          <View style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                            <View style={{ width: 30, height: 50, alignItems: 'center', justifyContent: 'center' }}>
+                              {(index == 0) && <Image source={crown} style={{ width: 30, height: 20, marginBottom: -5 }}></Image>}
+                              <Image source={rowData.imgUrl ? { uri: GCS_BUCKET + rowData.imgUrl + '-screenshot' } : hiddenMan} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} />
+                            </View>
+                            <View style={styles.listItemName}>
+                              <View style={{ width: DEVICE_WIDTH - 150, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
+                                <View style={{ width: DEVICE_WIDTH - 150, flexDirection: 'row', justifyContent: 'space-between', display: 'flex' }}>
+                                  <View style={{ paddingTop: (index == 0)? 25: 15, }}>
+                                    <Text numberOfLines={1} style={{ color: '#808080' }}>{ rowData.name}</Text>
+                                  </View>
+                                  <View style={{
+                                      flexDirection: 'row',
+                                      paddingTop: (index == 0)? 25: 15, 
+                                  }}>
+                                    <Image source={diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, marginRight: 5, }} />
+                                    <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{rowData.diamonds}</Text>
+                                  </View>
+                                </View>
+                              </View>
+                            </View>
+                          </View>
+                          {(rowData.fanMessage != '') && <View style={styles.fanMessage}>
+                            <Text style={{ color: '#808080', marginTop: 3, fontSize: 16, }}>{rowData.fanMessage}</Text>
+                          </View>}
+                        </View>
+                      </TouchableOpacity>
+                  );
+                }}
+                keyExtractor={(item, index) => index}
+              />)}
+              {(this.state.mutualUsers.length != 0) && (
+              <FlatList
+                numColumns={1}
+                style={{ flex: 0, marginTop:10, }}
+                removeClippedSubviews={true}
+                data={this.state.mutualUsers}
+                initialNumToRender={this.state.mutualUsers.length}
+                renderItem={({ item: rowData, index }) => {
+                  return (
+                    <TouchableOpacity style={styles.listItemMutual} onPress={() => this.gotoProfile(rowData)}>
+                      <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center', paddingTop: (index == 0)? 25: 10, }}>
+                        <Text style={{fontSize: 16, color: '#000'}}>{(parseInt(index) + parseInt(this.state.fanUsersCount) + 1) + '.'}</Text>
+                      </View>
+                      <View style={styles.listItemUser}>
+                        <View style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                          <View style={{ width: 30, height: 50, alignItems: 'center', justifyContent: 'center' }}>
+                            <Image source={rowData.imgUrl ? { uri: GCS_BUCKET + rowData.imgUrl + '-screenshot' } : hiddenMan} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} />
+                          </View>
+                          <View style={styles.listItemName}>
+                            <View style={{ width: DEVICE_WIDTH - 150, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
+                              <View style={{ width: DEVICE_WIDTH - 150, flexDirection: 'row', justifyContent: 'space-between', display: 'flex' }}>
+                                <View style={{ paddingTop: (index == 0)? 25: 15, }}>
+                                  <Text numberOfLines={1} style={{ color: '#808080' }}>{ rowData.name}</Text>
+                                </View>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    paddingTop: (index == 0)? 25: 15, 
+                                }}>
+                                  {(rowData.diamonds > 0) && (
+                                    <View style={{flexDirection: 'row'}}>
+                                      <Image source={ diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, marginRight: 5 }} />
+                                      <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{ rowData.diamonds }</Text>
+                                    </View>
+                                  )}
+                                  {(rowData.diamonds <= 0) && (
+                                    <View style={{flexDirection: 'row'}}>
+                                      <TouchableOpacity style={{width: 20, height: 20, marginRight: 5, }} onPress={() => this.showTip(rowData)}>
+                                        <Image source={ admirable } style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, }} />
+                                      </TouchableOpacity>
+                                      <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{'mutual'}</Text>
+                                    </View>
+                                  )}
+                                </View>
+                              </View>
+                            </View>
+                          </View>
+                        </View>
+                        {(rowData.fanMessage != '') && <View style={styles.fanMessage}>
+                          <Text style={{ color: '#808080', marginTop: 3, fontSize: 16, }}>{rowData.fanMessage}</Text>
+                        </View>}
+                      </View>
+                    </TouchableOpacity>
+                  );
+                }}
+                keyExtractor={(item, index) => index}
+              />)}
+            <View style={{ height: 20 }} />
+          </ScrollView>
+        </View>)}
+        <ScrollView style={{ backgroundColor: '#FFF', marginTop: 1, }} removeClippedSubviews={true}>
           {this.state.otherData.description && (
             <View style={{
               justifyContent: 'center',
@@ -359,9 +895,6 @@ class Profile extends Component {
             </View>
           )}
           {this.state.isLoading && (
-            // <View style={{
-            //   flex: 1, justifyContent: 'center', alignSelf: 'center', margin: 40
-            // }}>
             <View style={{
               flex: 1, justifyContent: 'center', alignSelf: 'center',
             }}>
@@ -395,9 +928,7 @@ class Profile extends Component {
               renderItem={({ item: rowData, index }) => {
                 return (
                   <TouchableOpacity style={{ width: DEVICE_WIDTH / 2, }} onPress={() => this.showUserVideo(index, rowData.imageUrl, rowData.otherId, this.state.datas)}>
-                  {/* <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(index, rowData.imageUrl, rowData.otherId, this.state.datas)}></TouchableOpacity> */}
                     <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2, height: (DEVICE_WIDTH / 2) * 1.5, backgroundColor: '#5A5A5A' }}>
-                    {/* <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20) * 1.5, marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }}> */}
                     </ImageBackground>
                   </TouchableOpacity>
                 );
@@ -406,7 +937,6 @@ class Profile extends Component {
             />)}
           <View style={{ height: 50 }} />
         </ScrollView>
-      {/* </View> */}
       </ImageBackground>
     );
   }
@@ -423,6 +953,170 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#3333ff',
     marginBottom: 5,
+  },
+  listItemUser: {
+    flexDirection: 'column', 
+    borderBottomColor: '#e8e8e8',
+    borderBottomWidth: 0.5,
+    paddingBottom: 10,
+  },
+  listItem: {
+    width: DEVICE_WIDTH - 25, 
+    flexDirection: 'row', 
+    marginTop: 7, 
+    marginBottom: 7, 
+    marginLeft: 5, 
+    marginRight: 5,
+    paddingLeft: 10,
+  },
+  listItemMutual: {
+    width: DEVICE_WIDTH - 25, 
+    flexDirection: 'row', 
+    marginBottom: 7, 
+    marginLeft: 5, 
+    marginRight: 5,
+    paddingLeft: 10,
+  },
+  listItemName: {    
+    marginLeft: 10,
+    paddingBottom: 20,
+    flexDirection: 'row', 
+  },
+  fanMessage: {
+    marginTop: 10,
+  },
+  requiredSent: {
+    textAlign: 'center',
+    color: 'red',    
+    fontSize: 12,
+    marginBottom: 5,
+  },
+  screenOverlay: {
+    height: Dimensions.get("window").height,
+    backgroundColor: "black",
+    opacity: 0.9
+  },
+  dialogPrompt: {
+    ...Platform.select({
+      ios: {
+        opacity: 0.9,
+        backgroundColor: "rgb(222,222,222)",
+        borderRadius: 15
+      },
+      android: {
+        borderRadius: 5,
+        backgroundColor: "white"
+      }
+    }),
+    marginHorizontal: 20,
+    marginTop: 150,
+    padding: 10,
+  },
+  title: {
+    fontWeight: "bold",
+    fontSize: 16,
+    color: "black"
+  },
+  bodyFont: {
+    fontSize: 16,
+    color: "black",
+    marginTop: 20, 
+  },
+  textMessageInput: {
+    marginTop: 10,
+    height: 80,
+    width: "100%",
+    paddingHorizontal: 10,
+    textAlignVertical: "top",
+    borderWidth: 0.5,
+    borderColor: '#000',
+    ...Platform.select({
+      ios: {
+        borderRadius: 15,
+        backgroundColor: "rgba(166, 170, 172, 0.9)"
+      },
+      android: {
+        borderRadius: 10,
+        backgroundColor: "white",
+      }
+    })
+  },
+  textInput: {
+    height: 40,
+    width: 60,
+    paddingHorizontal: 10,
+    textAlignVertical: "bottom",
+    ...Platform.select({
+      ios: {
+        borderRadius: 15,
+        backgroundColor: "rgba(166, 170, 172, 0.9)"
+      },
+      android: {}
+    })
+  },
+  buttonsOuterView: {
+    flexDirection: "row",
+    ...Platform.select({
+      ios: {},
+      android: {
+        justifyContent: "flex-end"
+      }
+    }),
+    width: "100%"
+  },
+  buttonsDivider: {
+    ...Platform.select({
+      ios: {
+        width: 1,
+        backgroundColor: "rgba(0,0,0,0.5)"
+      },
+      android: {
+        width: 20
+      }
+    })
+  },
+  buttonsInnerView: {
+    flexDirection: "row",
+    ...Platform.select({
+      ios: {
+        borderTopWidth: 0.5,
+        flex: 1
+      },
+      android: {}
+    })
+  },
+  button: {
+    flexDirection: "column",
+    justifyContent: "center",
+
+    alignItems: "center",
+    ...Platform.select({
+      ios: { flex: 1 },
+      android: {}
+    }),
+    marginTop: 5,
+    padding: 10
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#61bfa9"
+  },
+  submitButtonText: {
+    color: "#61bfa9",
+    fontWeight: "600",
+    fontSize: 16
+  },
+  SectionStyle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderWidth: 0.5,
+    borderColor: '#000',
+    height: 40,
+    borderRadius: 5,
+    margin: 10,
   },
 });
 export default Profile;

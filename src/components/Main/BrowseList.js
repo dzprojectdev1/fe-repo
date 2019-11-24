@@ -36,6 +36,7 @@ import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 import bg from '../../assets/images/bg.jpg';
+import yellow_star from '../../assets/images/yellow_star.png';
 import Global from '../Global';
 
 class BrowserList extends Component {
@@ -85,34 +86,6 @@ class BrowserList extends Component {
               return
             });
     }
-
-    // componentWillReceiveProps(nextProps) {
-    //     if (nextProps.navigation.state.params.ids){
-    //         let operatedIds = nextProps.navigation.state.params.ids;
-    //         if (operatedIds.length) {                
-    //             let oldData = this.state.discoveredList;
-    //             let filterIndexArr = [];
-    //             for (var i=0; i < operatedIds.length; i ++) {
-    //                 for (var j=0; j < oldData.length; j ++) {
-    //                     let item = oldData[j];
-    //                     if (item.detail.id === operatedIds[i]) {
-    //                         filterIndexArr.push(j);
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-    //             var filteredNewData = [];
-    //             alert(JSON.stringify(filterIndexArr));
-    //             for (var i in filterIndexArr) {
-    //                 alert(JSON.stringify(i));
-    //                 filteredNewData = oldData.filter((item, index) => parseInt(i) !== index)
-    //             }
-    //             this.setState({
-    //                 discoveredList: filteredNewData
-    //             });
-    //         }
-    //     }
-    // }
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
@@ -463,6 +436,17 @@ class BrowserList extends Component {
                                                     marginTop: 2,
                                                 }}>
                                                     {item.detail.coin_count}
+                                                </Text>
+                                                <Image source={yellow_star} style={{ width: 15, height: 15, marginTop: 5, }} />
+                                                <Text style={{
+                                                    fontSize: 14,
+                                                    alignItems: 'center',
+                                                    color: '#000',
+                                                    fontWeight: 'normal',
+                                                    marginRight: 10,
+                                                    marginTop: 3,
+                                                }}>
+                                                    {item.detail.fan_count}
                                                 </Text>
                                             </View>
                                             <Text style={{

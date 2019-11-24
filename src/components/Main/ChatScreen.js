@@ -20,15 +20,23 @@ import {
     Modal,
 } from 'react-native';
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
-import Global from '../Global';
+import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
 import { changeReadFlag } from '../../../Action';
+import Global from '../Global';
+
 import hiddenMan from '../../assets/images/hidden_man.png';
 import call_ring from '../../assets/images/call_ring_accept.png';
 import call_video from '../../assets/images/call_video.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
+import shooting_star from '../../assets/images/shooting_star.png';
+import yellow_star from '../../assets/images/yellow_star.png';
+import ban_black from '../../assets/images/ban_black.png';
+import notification_black from '../../assets/images/notification_black.png';
+
 import { SERVER_URL } from '../../config/constants';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
@@ -47,16 +55,20 @@ class ChatScreen extends React.Component {
                 imgUrl: props.navigation.state.params.data.imageUrl,
                 description: props.navigation.state.params.data.data.description,
                 coin_count: props.navigation.state.params.data.data.coin_count,
+                fan_count: props.navigation.state.params.data.data.fan_count,
             },
             matchId: props.navigation.state.params.data.data.match_id,
             textMessage: '',
             messageList: [],
             coinCount: Global.saveData.coin_count,
             visible: false,
-            promptVisible: false,
-            sendDiamondsCount: 0,
-            msgErrorNumber: false,
+            fanUserVisible: false,
+            noFanUserVisible: false,
+            errorMsg: false,
             msgError: '',
+            sendDiamondsCount: 0,
+            fanMessage: '',
+            is_fan: false,
         }
     }
 
@@ -107,6 +119,7 @@ class ChatScreen extends React.Component {
             });
 
         this.checkUnReadMessage();
+        this.checkFanUser();
     }
 
     checkUnReadMessage = () => {
@@ -198,6 +211,7 @@ class ChatScreen extends React.Component {
     };
 
     showMenu = () => {
+        this.checkFanUser();
         this._menu.show();
     };
 
@@ -429,6 +443,7 @@ class ChatScreen extends React.Component {
                     matchId: this.state.matchId,
                     imageUrl: this.state.other.imgUrl,
                     coin_count: newData.coin_count, 
+                    fan_count: newData.fan_count, 
                   }
                 });
               }
@@ -444,16 +459,79 @@ class ChatScreen extends React.Component {
         this.props.navigation.navigate('screenGpay01');
     }
 
+    checkFanUser = () => {
+        var details = {
+            'otherId': this.state.other.userId
+        };
+        var formBody = [];
+        for (var property in details) {
+            var encodedKey = encodeURIComponent(property);
+            var encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+        fetch(`${SERVER_URL}/api/fan/checkFanOtherUser`, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': Global.saveData.token
+            },
+            body: formBody,
+        }).then((response) => response.json())
+        .then((responseJson) => {
+        if (!responseJson.error) {          
+            if (responseJson.is_fan) {
+                this.setState({
+                    is_fan: true,
+                })
+            }
+        }
+        }).catch((error) => {
+            return
+        });
+    }
+
     showSendDiamondsModal = () => {
-        this.setState({
-            promptVisible: true,
-            msgErrorNumber: false,
-            msgError: '',
-        })
+        this.hideMenu();
+        var details = {
+          'otherId': this.state.other.userId
+        };
+        var formBody = [];
+        for (var property in details) {
+          var encodedKey = encodeURIComponent(property);
+          var encodedValue = encodeURIComponent(details[property]);
+          formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+        fetch(`${SERVER_URL}/api/fan/checkFanOtherUser`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': Global.saveData.token
+          },
+          body: formBody,
+        }).then((response) => response.json())
+          .then((responseJson) => {
+            if (!responseJson.error) {          
+              if (responseJson.is_fan) {
+                this.setState({
+                  fanUserVisible: true,
+                  noFanUserVisible: false,
+                })
+              } else {
+                this.setState({
+                  fanUserVisible: false,
+                  noFanUserVisible: true,
+                })
+              }
+            }
+          }).catch((error) => {
+            return
+          });
     }
 
     sendDiamonds = () => {
-        let { sendDiamondsCount } = this.state;
+        let { sendDiamondsCount, fanMessage } = this.state;
         if(isNaN(sendDiamondsCount))
         {
             Alert.alert(
@@ -477,7 +555,7 @@ class ChatScreen extends React.Component {
                     ],
                     { cancelable: false }
                 );
-            } else if (sendDiamondsCount == 0 || sendDiamondsCount =='') {
+            } else if (sendDiamondsCount == 0 || sendDiamondsCount == '') {
                 Alert.alert(
                     'Warning',
                     'You must input one or more diamons count.',
@@ -492,6 +570,7 @@ class ChatScreen extends React.Component {
                     'otherId': this.state.other.userId,
                     'otherUserName': this.state.other.name,
                     'amount': sendDiamondsCount,
+                    'fanMessage': fanMessage,
                 };
                 var formBody = [];
                 for (var property in details) {
@@ -500,7 +579,7 @@ class ChatScreen extends React.Component {
                     formBody.push(encodedKey + "=" + encodedValue);
                 }
                 formBody = formBody.join("&");
-                fetch(`${SERVER_URL}/api/transaction/sendDiamonds`, {
+                fetch(`${SERVER_URL}/api/fan/sendDiamonds`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -510,7 +589,7 @@ class ChatScreen extends React.Component {
                 }).then((response) => response.json())
                 .then((responseJson) => {
                     if (!responseJson.error) {
-                        Global.saveData.coin_count = responseJson.coin_count;
+                        Global.saveData.coin_count = responseJson.data.coin_count;
                         this.setState({
                             other: {
                                 userId: this.state.other.userId,
@@ -518,6 +597,7 @@ class ChatScreen extends React.Component {
                                 imgUrl: this.state.other.imgUrl,
                                 description: this.state.other.description,
                                 coin_count: parseInt(this.state.other.coin_count) + parseInt(sendDiamondsCount),
+                                fan_count: responseJson.data.other_fan_count,
                             }
                         })
                     }
@@ -698,26 +778,47 @@ class ChatScreen extends React.Component {
 
     render() {
         return (
-            <View style={styles.outer}>                
-                <Modal
-                    transparent={true}
-                    animationType="fade"
-                    visible={this.state.promptVisible}
-                    onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
-                    }}>
+            <View style={styles.outer}>
+                <Dialog
+                visible={this.state.fanUserVisible}
+                dialogAnimation={new SlideAnimation({
+                    slideFrom: 'top',
+                })}
+                >
                     <View style={styles.screenOverlay}>
                         <View style={styles.dialogPrompt}>
-                            <Text style={[styles.title, ]}>
+                            <Text style={[styles.bodyFont, ]}>
                                 {`You have ${Global.saveData.coin_count} diamonds`}
                             </Text>
+                            <View style={{ flexDirection: 'row', }}>
+                            <Text style={[styles.bodyFont, ]}>
+                                {`Send `}
+                            </Text>
+                            <View style={styles.SectionStyle}>
+                                <Image source={diamond} style={{width: 25, height: 25, }} />
+                                <TextInput
+                                    placeholder={``}
+                                    style={styles.textInput}
+                                    onChangeText={(value) => this.checkCount(value)}
+                                />
+                            </View>
+                            <Text style={[styles.bodyFont, ]}>
+                                {` Diamonds`}
+                            </Text>
+                            </View>                    
+                            { this.state.errorMsg && <Text style={styles.requiredSent}>* {this.state.msgError} </Text> }
+                            <Text style={{fontSize: 16, }}>
+                                {`Write a fan message to ${this.state.other.name} (public and optional)`}
+                            </Text>
                             <TextInput
-                                placeholder={`Diamonds count to send to ${this.state.other.name}`}
-                                style={styles.textInput}
-                                autoFocus={true}
-                                onChangeText={(value) => this.checkCount(value)}
+                                multiline={true}
+                                numberOfLines={5}
+                                style={styles.textMessageInput}
+                                editable
+                                onChangeText={(text) => this.setState({
+                                fanMessage: text,
+                                })}
                             />
-                            { this.state.msgErrorNumber && <Text style={styles.requiredSent}>* {this.state.msgError} </Text> }
                             <View style={styles.buttonsOuterView}>
                                 <View style={styles.buttonsInnerView}>
                                     <TouchableOpacity
@@ -726,10 +827,11 @@ class ChatScreen extends React.Component {
                                         ]}
                                         onPress={ () =>
                                             this.setState({
-                                                promptVisible: !this.state.promptVisible
+                                                fanUserVisible: !this.state.fanUserVisible
                                             }, function() {
                                                 this.hideMenu();
-                                        })}>
+                                            })
+                                        }>
                                         <Text
                                             style={[
                                                 styles.cancelButtonText,
@@ -744,11 +846,12 @@ class ChatScreen extends React.Component {
                                         ]}
                                         onPress={ () =>
                                             this.setState({
-                                                promptVisible: !this.state.promptVisible
+                                            fanUserVisible: !this.state.fanUserVisible
                                             }, function() {
                                                 this.hideMenu();
                                                 this.sendDiamonds();
-                                        })}>
+                                            })
+                                        }>
                                         <Text
                                             style={[
                                                 styles.submitButtonText,
@@ -760,7 +863,99 @@ class ChatScreen extends React.Component {
                             </View>
                         </View>
                     </View>
-                </Modal>
+                </Dialog>
+
+                <Dialog
+                visible={this.state.noFanUserVisible}
+                dialogAnimation={new SlideAnimation({
+                    slideFrom: 'top',
+                })}
+                >
+                    <View style={styles.screenOverlay}>
+                        <View style={styles.dialogPrompt}>
+                            <Text style={[styles.title, ]}>
+                                {`Become a fan of ${this.state.other.name} by sending diamonds!`}
+                            </Text>
+                            <View style={{ alignItems: 'center', justifyContent: 'center', }}>
+                            <Image source={shooting_star} style={{width: 130, height: 130, marginTop: 20, }} />
+                            </View>
+                            <Text style={[styles.bodyFont, ]}>
+                                {`You have ${Global.saveData.coin_count} diamonds`}
+                            </Text>
+                            <View style={{ flexDirection: 'row', }}>
+                            <Text style={[styles.bodyFont, ]}>
+                                {`Send `}
+                            </Text>
+                            <View style={styles.SectionStyle}>
+                                <Image source={diamond} style={{width: 25, height: 25, }} />
+                                <TextInput
+                                    placeholder={``}
+                                    style={styles.textInput}
+                                    onChangeText={(value) => this.checkCount(value)}
+                                />
+                            </View>
+                            <Text style={[styles.bodyFont, ]}>
+                                {` Diamonds`}
+                            </Text>
+                            </View>                    
+                            { this.state.errorMsg && <Text style={styles.requiredSent}>* {this.state.msgError} </Text> }
+                            <Text style={{fontSize: 16, }}>
+                                {`Write a fan message to ${this.state.other.name} (public and optional)`}
+                            </Text>
+                            <TextInput
+                                multiline={true}
+                                numberOfLines={5}
+                                style={styles.textMessageInput}
+                                editable
+                                onChangeText={(text) => this.setState({
+                                fanMessage: text,
+                                })}
+                            />
+                            <View style={styles.buttonsOuterView}>
+                                <View style={styles.buttonsInnerView}>
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.button, 
+                                        ]}
+                                        onPress={ () =>
+                                            this.setState({
+                                                noFanUserVisible: !this.state.noFanUserVisible
+                                            }, function() {
+                                                this.hideMenu();
+                                            })
+                                        }>
+                                        <Text
+                                            style={[
+                                                styles.cancelButtonText,
+                                            ]}>
+                                            {'Cancel'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <View style={styles.buttonsDivider} />
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.button,
+                                        ]}
+                                        onPress={ () =>
+                                            this.setState({
+                                            noFanUserVisible: !this.state.noFanUserVisible
+                                            }, function() {
+                                                this.hideMenu();
+                                                this.sendDiamonds();
+                                            })
+                                        }>
+                                        <Text
+                                            style={[
+                                                styles.submitButtonText,
+                                            ]}>
+                                            {'Send'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Dialog>
 
                 <View style={{ width: DEVICE_WIDTH, height: 60, flexDirection: 'row', justifyContent: 'space-between', marginTop: Platform.select({ 'android': 10, 'ios': 40, }), alignItems: 'center' }}>
                     <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: 40, height: 60, zIndex: 1000, marginLeft: 10 }}
@@ -777,6 +972,8 @@ class ChatScreen extends React.Component {
                                 <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginLeft: 5, marginTop: 8 }}>{this.state.other.name}</Text>
                                 <Image source={diamond} style={{ width: 20, height: 20, marginLeft: 15, marginTop: 12 }} />
                                 <Text style={{ marginLeft: 1, fontSize: 14, fontWeight: 'bold', marginTop: 12 }}>{this.state.other.coin_count}</Text>
+                                <Image source={yellow_star} style={{ width: 20, height: 20, marginLeft: 15, marginTop: 12 }} />
+                                <Text style={{ marginLeft: 1, fontSize: 14, fontWeight: 'bold', marginTop: 12 }}>{this.state.other.fan_count}</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -811,11 +1008,20 @@ class ChatScreen extends React.Component {
                             button={<TouchableOpacity style={{ width: 40, marginLeft: 10, }} onPress={this.showMenu}>
                                 <Icon type="MaterialCommunityIcons" name="dots-horizontal" />
                             </TouchableOpacity>}>
-                            <MenuItem onPress={this.setBlock}>{'Leave Chat Room'}</MenuItem>
+                            <MenuItem onPress={this.setBlock}>
+                                <Image source={ban_black} style={{width: 20, height: 20, marginRight: 30, }} />
+                                {'   Leave Chat Room'}
+                            </MenuItem>
                             <MenuDivider />
-                            <MenuItem onPress={this.setReport}>{'Report & Leave Chat Room'}</MenuItem>
+                            <MenuItem onPress={this.setReport}>
+                                <Image source={notification_black} style={{width: 20, height: 20, marginRight: 30, }} />
+                                {'   Report & Leave Chat Room'}
+                            </MenuItem>
                             <MenuDivider />
-                            <MenuItem onPress={this.showSendDiamondsModal}>{'Send Diamonds'}</MenuItem>
+                            <MenuItem onPress={this.showSendDiamondsModal}>
+                                <Image source={yellow_star} style={{width: 20, height: 20, marginRight: 30, }} />
+                                {this.state.is_fan? '   Send Diamonds': '   Become A Fan'}
+                            </MenuItem>
                         </Menu>
                     </View>
                 </View>
@@ -948,9 +1154,10 @@ const styles = StyleSheet.create({
     //     height: 40,
     // },
     requiredSent: {
-      textAlign: 'right',
-      color: 'red',    
-      fontSize: 12,
+        textAlign: 'center',
+        color: 'red',    
+        fontSize: 12,
+        marginBottom: 5,
     },
     ringIcon: {
         width: 40,
@@ -966,103 +1173,132 @@ const styles = StyleSheet.create({
         height: 45,
     },
     screenOverlay: {
-		height: Dimensions.get("window").height,
-		backgroundColor: "black",
-		opacity: 0.9
-	},
-	dialogPrompt: {
-		...Platform.select({
-			ios: {
-				opacity: 0.9,
-				backgroundColor: "rgb(222,222,222)",
-				borderRadius: 15
-			},
-			android: {
-				borderRadius: 5,
-				backgroundColor: "white"
-			}
-		}),
-		marginHorizontal: 20,
-		marginTop: 150,
-		padding: 10,
-
-		flexDirection: "column",
-		justifyContent: "flex-start",
-		alignItems: "flex-start"
-	},
-	title: {
-		fontWeight: "bold",
-		fontSize: 16,
-        color: "black"
-	},
-	textInput: {
-		height: 50,
-		width: "100%",
-		paddingHorizontal: 10,
-		textAlignVertical: "bottom",
-		borderBottomColor: '#61bfa9',
-		borderBottomWidth: 1,
-		...Platform.select({
-			ios: {
-				borderRadius: 15,
-				backgroundColor: "rgba(166, 170, 172, 0.9)"
-			},
-			android: {}
-		})
-	},
-	buttonsOuterView: {
-		flexDirection: "row",
-		...Platform.select({
-			ios: {},
-			android: {
-				justifyContent: "flex-end"
-			}
-		}),
-		width: "100%"
-	},
-	buttonsDivider: {
-		...Platform.select({
-			ios: {
-				width: 1,
-				backgroundColor: "rgba(0,0,0,0.5)"
-			},
-			android: {
-				width: 20
-			}
-		})
-	},
-	buttonsInnerView: {
-		flexDirection: "row",
-		...Platform.select({
-			ios: {
-				borderTopWidth: 0.5,
-				flex: 1
-			},
-			android: {}
-		})
-	},
-	button: {
-		flexDirection: "column",
-		justifyContent: "center",
-
-		alignItems: "center",
-		...Platform.select({
-			ios: { flex: 1 },
-			android: {}
-		}),
-		marginTop: 5,
-		padding: 10
-	},
-	cancelButtonText: {
-		fontSize: 16,
-		fontWeight: "600",
-		color: "#61bfa9"
-	},
-	submitButtonText: {
-		color: "#61bfa9",
-		fontWeight: "600",
-		fontSize: 16
-	},
+      height: Dimensions.get("window").height,
+      backgroundColor: "black",
+      opacity: 0.9
+    },
+    dialogPrompt: {
+      ...Platform.select({
+        ios: {
+          opacity: 0.9,
+          backgroundColor: "rgb(222,222,222)",
+          borderRadius: 15
+        },
+        android: {
+          borderRadius: 5,
+          backgroundColor: "white"
+        }
+      }),
+      marginHorizontal: 20,
+      marginTop: 150,
+      padding: 10,
+    },
+    title: {
+      fontWeight: "bold",
+      fontSize: 16,
+      color: "black"
+    },
+    bodyFont: {
+      fontSize: 16,
+      color: "black",
+      marginTop: 20, 
+    },
+    textMessageInput: {
+      marginTop: 10,
+      height: 80,
+      width: "100%",
+      paddingHorizontal: 10,
+      textAlignVertical: "top",
+      borderWidth: 0.5,
+      borderColor: '#000',
+      ...Platform.select({
+        ios: {
+          borderRadius: 15,
+          backgroundColor: "rgba(166, 170, 172, 0.9)"
+        },
+        android: {
+          borderRadius: 10,
+          backgroundColor: "white",
+        }
+      })
+    },
+    textInput: {
+      height: 40,
+      width: 60,
+      paddingHorizontal: 10,
+      textAlignVertical: "bottom",
+      ...Platform.select({
+        ios: {
+          borderRadius: 15,
+          backgroundColor: "rgba(166, 170, 172, 0.9)"
+        },
+        android: {}
+      })
+    },
+    buttonsOuterView: {
+      flexDirection: "row",
+      ...Platform.select({
+        ios: {},
+        android: {
+          justifyContent: "flex-end"
+        }
+      }),
+      width: "100%"
+    },
+    buttonsDivider: {
+      ...Platform.select({
+        ios: {
+          width: 1,
+          backgroundColor: "rgba(0,0,0,0.5)"
+        },
+        android: {
+          width: 20
+        }
+      })
+    },
+    buttonsInnerView: {
+      flexDirection: "row",
+      ...Platform.select({
+        ios: {
+          borderTopWidth: 0.5,
+          flex: 1
+        },
+        android: {}
+      })
+    },
+    button: {
+      flexDirection: "column",
+      justifyContent: "center",
+  
+      alignItems: "center",
+      ...Platform.select({
+        ios: { flex: 1 },
+        android: {}
+      }),
+      marginTop: 5,
+      padding: 10
+    },
+    cancelButtonText: {
+      fontSize: 16,
+      fontWeight: "600",
+      color: "#61bfa9"
+    },
+    submitButtonText: {
+      color: "#61bfa9",
+      fontWeight: "600",
+      fontSize: 16
+    },
+    SectionStyle: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#fff',
+      borderWidth: 0.5,
+      borderColor: '#000',
+      height: 40,
+      borderRadius: 5,
+      margin: 10,
+    },
 });
 
 const mapStateToProps = (state) => {

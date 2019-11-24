@@ -40,6 +40,7 @@ import heart from '../../assets/images/heart.png';
 import search_photo from '../../assets/images/search_photo.png';
 import bg from '../../assets/images/bg.jpg';
 import check from '../../assets/images/check_unread.png';
+import yellow_star from '../../assets/images/yellow_star.png';
 import Global from '../Global';
 
 class Chat extends Component {
@@ -147,49 +148,6 @@ class Chat extends Component {
 
     console.log(JSON.stringify(this.state.datas));
   }
-  // getTumbnails = async (data) => {
-  //   var list_items = [];
-  //   for (var i = 0; i < data.length; i++) {
-  //     let senderId = data[i].other_user_id;
-  //     if (data[i].cdn_id) {
-  //       var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
-  //       // var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
-  //       await fetch(url, {
-  //         method: 'GET',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Authorization': Global.saveData.token
-  //         }
-  //       }).then((response) => response.json())
-  //         .then((responseJson) => {
-  //           list_items.push({
-  //             index: i,
-  //             imageUrl: responseJson.url,
-  //             // videoUrl: vurl,
-  //             sent: this.props.senders !== null ? ( this.props.senders.indexOf(JSON.stringify(senderId)) === -1 ? false : true) : false,
-  //             data: data[i]
-  //           });
-  //         })
-  //         .catch((error) => {
-  //           alert(JSON.stringify(error))
-  //           return
-  //         });
-  //     } else {
-  //       list_items.push({
-  //         index: i,
-  //         imageUrl: null,
-  //         sent: this.props.senders !== null ? ( this.props.senders.indexOf(JSON.stringify(senderId)) === -1 ? false : true) : false,
-  //         // videoUrl: vurl,
-  //         data: data[i]
-  //       });
-  //     }
-  //   }
-  //   this.setState({
-  //     datas: list_items,
-  //     tmpData: list_items,
-  //     alertMsg: "There is no chat list.",
-  //   });
-  // }
   toggle() {
     Alert.alert("The UI is not supported yet")
   }
@@ -290,12 +248,11 @@ class Chat extends Component {
         this.props.navigation.replace("Chat");
       });
   }
-
-  //////////////////////////////////////////////////
+  
   gotoGpay() {
     this.props.navigation.replace("screenGpay01");
   }
-  //////////////////////////////////////////////////
+  
   gotoShop = () => {
     this.setState({
       visible: false
@@ -329,7 +286,6 @@ class Chat extends Component {
   render() {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
-      {/* <View style={styles.contentContainer}> */}
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <View style={{ height: 40, marginTop: 40, flexDirection: 'row', }}>
           <TouchableOpacity style={{ width: 80, height: 40, justifyContent: 'center', alignItems: 'center' }}
@@ -381,10 +337,6 @@ class Chat extends Component {
                   <TouchableOpacity style={styles.listItem} onPress={() => this.gotoChat(rowData)}>
                     <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center' }}>
                       <Image source={rowData.imageUrl && (rowData.data.publish == 1) ? { uri: rowData.imageUrl } : hiddenMan} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} />
-                      {/* <FastImage 
-                        source={rowData.imageUrl && (rowData.data.publish == 1) ? { uri: rowData.imageUrl, headers: { Authorization: shorthash.unique(rowData.imageUrl) }, priority: FastImage.priority.high, } : hiddenMan} 
-                        resizeMode="cover" 
-                        style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} /> */}
                     </View>
                     <View style={styles.listItemName}>
                       <View style={{ width: DEVICE_WIDTH - 200, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
@@ -396,6 +348,8 @@ class Chat extends Component {
                             <Text numberOfLines={1} style={{ color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.name: 'Unavailable user'}</Text>
                             {(rowData.data.publish == 1) && (<Image source={diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, }} />)}
                             <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{(rowData.data.publish == 1) ? rowData.data.coin_count: ''}</Text>
+                            {(rowData.data.publish == 1) && (<Image source={yellow_star} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, }} />)}
+                            <Text numberOfLines={1} style={{ color: '#808080', marginTop: 5, fontSize: 12, }}>{(rowData.data.publish == 1) ? rowData.data.fan_count: ''}</Text>
                           </View>
                           <Text numberOfLines={1} style={{ fontSize: 12, color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.message_text: ''}</Text>
                         </View>
@@ -435,13 +389,8 @@ class Chat extends Component {
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
             </Button>
-            {/* <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
-              <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
-              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
-            </Button> */}
           </FooterTab>
         </Footer>
-      {/* </View> */}
       </ImageBackground>
     );
   }
