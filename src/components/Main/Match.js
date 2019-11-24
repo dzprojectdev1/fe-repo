@@ -19,22 +19,17 @@ import {
   ImageBackground,
 } from "react-native";
 import { connect } from 'react-redux';
-import { Badge } from 'react-native-elements';
-import FastImage from 'react-native-fast-image';
-import shorthash from 'shorthash';
-// import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';
 import b_chat from '../../assets/images/chat.png';
-// import b_age from '../../assets/images/age.png';
 import b_myvideo from '../../assets/images/myvideo.png';
 import b_name from '../../assets/images/name.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
-import heart from '../../assets/images/heart.png';
 import search_photo from '../../assets/images/search_photo.png';
 import bg from '../../assets/images/bg.jpg';
+import yellow_star from '../../assets/images/yellow_star.png';
 import Global from '../Global';
 
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
@@ -53,9 +48,6 @@ class Match extends Component {
   static navigationOptions = {
     header: null
   };
-  // async componentWillMount() {
-  //   await this.getHeartUsers();
-  // }
   componentDidMount() {
     Global.saveData.nowPage = 'Match';    
 
@@ -118,7 +110,8 @@ class Match extends Component {
           gender: data[i].gender,
           distance: data[i].distance,
           description: data[i].description,
-          coin_count: data[i].coin_count
+          coin_count: data[i].coin_count,
+          fan_count: data[i].fan_count
         });
       } else {
         list_items.push({
@@ -132,62 +125,14 @@ class Match extends Component {
           gender: data[i].gender,
           distance: data[i].distance,
           description: data[i].description,
-          coin_count: data[i].coin_count
+          coin_count: data[i].coin_count,
+          fan_count: data[i].fan_count
         });
       }
 
     }
     this.setState({ datas: list_items });
   }
-  // getTumbnails = async (data) => {
-  //   var list_items = [];
-  //   for (var i = 0; i < data.length; i++) {
-  //     if (data[i].cdn_id) {
-  //       var url = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}-screenshot`;
-  //       var vurl = `${SERVER_URL}/api/storage/videoLink?fileId=${data[i].cdn_id}`;
-  //       await fetch(url, {
-  //         method: 'GET',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Authorization': Global.saveData.token
-  //         }
-  //       }).then((response) => response.json())
-  //         .then((responseJson) => {
-  //           if (responseJson.url) {
-  //             list_items.push({
-  //               index: i,
-  //               mid: data[i].id,
-  //               otherId: data[i].other_user_id,
-  //               imageUrl: responseJson.url,
-  //               name: data[i].name,
-  //               time: 'TIME',
-  //               age: data[i].age,
-  //               gender: data[i].gender,
-  //               distance: data[i].distance,
-  //               description: data[i].description
-  //             });
-  //           }
-  //         }).catch((error) => {
-  //           return
-  //         });
-  //     } else {
-  //       list_items.push({
-  //         index: i,
-  //         mid: data[i].id,
-  //         otherId: data[i].other_user_id,
-  //         imageUrl: null,
-  //         name: data[i].name,
-  //         time: 'TIME',
-  //         age: data[i].age,
-  //         gender: data[i].gender,
-  //         distance: data[i].distance,
-  //         description: data[i].description
-  //       });
-  //     }
-
-  //   }
-  //   this.setState({ datas: list_items });
-  // }
   componentWillMount() {
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
   }
@@ -202,34 +147,7 @@ class Match extends Component {
   }
 
   showUserVideo(url, mid, otherId, name, imgurl, age, distance, gender, description) {
-    // fetch(url, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': Global.saveData.token
-    //   }
-    // }).then((response) => response.json())
-    //   .then((responseJson) => {
-    //     Global.saveData.isMatchVideo = true;
-    //     this.props.navigation.navigate("IncomeDetail", { url: responseJson.url, mid: mid, otherId: otherId, imageUrl: imgurl, name: name, age: age, distance: distance });
-    //   }).catch((error) => {
-    //     alert("There is error, please try again!");
-    //     return
-    //   });
     Global.saveData.isMatchVideo = true;
-    // this.props.navigation.navigate("IncomeDetail",
-    //   { 
-    //     url: null, 
-    //     mid: mid, 
-    //     otherId: otherId, 
-    //     imageUrl: imgurl, 
-    //     name: name, 
-    //     age: age, 
-    //     distance: distance, 
-    //     gender: gender, 
-    //     description: description 
-    //   }
-    // );
 
     if (otherId != -1) {
 
@@ -261,6 +179,7 @@ class Match extends Component {
                 language_name: newData.language_name,
                 last_loggedin_date: newData.last_loggedin_date,
                 coin_count: newData.coin_count,
+                fan_count: newData.fan_count,
               }
             )
           }
@@ -270,12 +189,11 @@ class Match extends Component {
         });
     }
   }
-
-  //////////////////////////////////////////////////
+  
   gotoGpay() {
     this.props.navigation.navigate("screenGpay01");
   }
-  //////////////////////////////////////////////////
+  
   gotoShop = () => {
     this.setState({
       visible: false
@@ -308,9 +226,8 @@ class Match extends Component {
   render() {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
-      {/* <View style={styles.contentContainer}> */}
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-        <View style={{ marginTop: 40, alignItems: 'center', flexDirection: 'row' }}>
+        <View style={{ marginTop: 40, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', }}>
           <TouchableOpacity style={{ width: 80, height: 40 }}
             onPress={() => this.gotoShop()}>
             <View style={{ flexDirection: 'row' }}>
@@ -318,7 +235,12 @@ class Match extends Component {
               <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
             </View>
           </TouchableOpacity>
-          <Text style={{ justifyContent: 'center', marginLeft: DEVICE_WIDTH * 0.2 }}>{"MATCH"}</Text>
+          <View style={{ width: DEVICE_WIDTH - 130, height: 40, alignItems: 'center', justifyContent: 'center', marginLeft: -40, }}>
+            <Text>{"MATCH"}</Text>
+          </View>
+          <View style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+            <Text>{''}</Text>
+          </View>
         </View>
         {this.state.datas.length === 0 ? (<View style={{
           flex: 1,
@@ -337,10 +259,6 @@ class Match extends Component {
               return (
                 <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.videoUrl, rowData.mid, rowData.otherId, rowData.name, rowData.imageUrl, rowData.age, rowData.distance, rowData.gender, rowData.description)}>
                   <Image source={rowData.imageUrl ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
-                  {/* <FastImage 
-                    source={rowData.imageUrl ? { uri: rowData.imageUrl, headers: { Authorization: shorthash.unique(rowData.imageUrl) }, priority: FastImage.priority.high, } : hiddenMan} 
-                    resizeMethod={FastImage.resizeMode.contain} 
-                    style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} /> */}
                   <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
                     <Image source={b_name} style={{ width: 10, marginTop: 4, marginLeft: 2, height: 10, tintColor: '#B64F54' }} />
                     <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }}>{rowData.age + ""}</Text>
@@ -348,6 +266,8 @@ class Match extends Component {
                     <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.name}</Text>
                     <Image source={diamond} style={{ width: 15, height: 15, marginTop: 2, marginLeft: 5 }} />
                     <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.coin_count}</Text>
+                    <Image source={yellow_star} style={{ width: 15, height: 15, marginLeft: 5 }} />
+                    <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.fan_count}</Text>
                   </View>
                 </TouchableOpacity>
               );
@@ -379,13 +299,8 @@ class Match extends Component {
               <Image source={b_myvideo} style={{ width: 25, height: 25 }} />
               <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"PROFILE"}</Text>
             </Button>
-            {/* <Button style={{ backgroundColor: '#222F3F', borderRadius: 0 }} transparent onPress={() => this.gotoGpay()}>
-              <Image source={OnlyGImage} style={{ width: 25, height: 25 }} />
-              <Text style={{ color: '#fff', fontSize: 6, fontWeight: 'bold', marginTop: 3 }}>{"GPAY"}</Text>
-            </Button> */}
           </FooterTab>
         </Footer>
-      {/* </View> */}
       </ImageBackground>
     );
   }
