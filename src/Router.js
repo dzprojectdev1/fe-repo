@@ -28,6 +28,7 @@ import VoiceCall from './components/Main/VoiceCall';
 import CallIncome from './components/Main/CallIncome';
 import CallOutgo from './components/Main/CallOutgo';
 import CallIn from './components/Main/CallIn';
+import MyFans from './components/Main/MyFans';
 // import AppView from '../AppView';
 
 import ChatScreen from './components/Main/ChatScreen';
@@ -56,6 +57,7 @@ export default Router = createStackNavigator({
     ProfileDetail: { screen: ProfileDetail },
     ProfileSetting: { screen: ProfileSetting },
     TermsPolicy: { screen: TermsPolicy },
+    MyFans: { screen: MyFans },
     //Auths
     Login: { screen: Login },
     Signup: { screen: Signup },

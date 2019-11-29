@@ -39,11 +39,15 @@ import hiddenMan from '../../assets/images/hidden_man.png';
 import admirable from '../../assets/images/admirable_icon.png';
 import collapse from '../../assets/images/collapse.png';
 import expand from '../../assets/images/expand.png';
+import yellow_star from '../../assets/images/yellow_star.png';
+import yellow_heart_black from '../../assets/images/yellow_heart_black.png';
+import yellow_star_black from '../../assets/images/yellow_star_black.png';
 import Global from '../Global';
 
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
 import { uploadPhoto } from '../../util/upload';
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
 
 class MyVideo extends Component {
   constructor(props) {
@@ -53,13 +57,18 @@ class MyVideo extends Component {
       isLoading: true,
       noData: false,
       coinCount: Global.saveData.coin_count,
+      fanCount: Global.saveData.fan_count,
       visible: false,
       fanUsers: [],
       mutualUsers: [],
+      starUsers: [],
       fanUsersCount: 0,
+      mutualUsersCount: 0,
+      starUsersCount: 0,
       showTip: false,
       otherSelectedUserName: '',
       showFanUsers: false,
+      showMutualUsers: false,
       showStarUsers: false,
     };
   }
@@ -74,6 +83,7 @@ class MyVideo extends Component {
     });
     
     this.getBiggestFanUsers();
+    this.getStarUsers();
 
     fetch(`${SERVER_URL}/api/transaction/getDiamondCount`, {
       method: 'POST',
@@ -84,10 +94,12 @@ class MyVideo extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-            Global.saveData.coin_count = responseJson.coin_count;
-            this.setState({
+          Global.saveData.coin_count = responseJson.data.coin_count;
+          Global.saveData.fan_count = responseJson.data.fan_count;
+          this.setState({
               coinCount: Global.saveData.coin_count,
-            });
+              fanCount: Global.saveData.fan_count,
+          });
         }
       })
       .catch((error) => {
@@ -120,6 +132,7 @@ class MyVideo extends Component {
             fanUsers: responseJson.data.fanUsers,
             mutualUsers: responseJson.data.mutualUsers,
             fanUsersCount: responseJson.data.fanUsers.length,
+            mutualUsersCount: responseJson.data.mutualUsers.length,
           })
         }
       })
@@ -129,43 +142,64 @@ class MyVideo extends Component {
       });
   }
 
-  gotoProfile = row => {
+  getStarUsers = () => {
+    var details = {
+      'otherId': Global.saveData.u_id,
+    };
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    fetch(`${SERVER_URL}/api/fan/getStarUsers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      },
+      body: formBody,
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+          this.setState({
+            starUsers: responseJson.data.starUsers,
+            starUsersCount: responseJson.data.starUsers.length,
+          })
+        }
+      })
+      .catch((error) => {
+        // alert(JSON.stringify(error));
+        return
+      });
+  }
+
+  gotoBrowsDetail = row => {
     Global.saveData.prevpage = "MyVideo";
     
     fetch(`${SERVER_URL}/api/match/getOtherUserData/${row.userId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': Global.saveData.token
-        }
-      }).then((response) => response.json())
-        .then((responseJson) => {
-          if (!responseJson.error) {
-            let newData = responseJson.data;
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      }
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+          let newData = responseJson.data;
 
-            this.props.navigation.replace("Profile", { 
-              data: {
-                id: newData.id, 
-                name: newData.name, 
-                description: newData.description,
-                age: newData.age,
-                gender: newData.gender,
-                distance: newData.distance,
-                country_name: newData.country_name,
-                ethnicity_name: newData.ethnicity_name,
-                language_name: newData.language_name,
-                last_loggedin_date: newData.last_loggedin_date,
-                matchId: 0,
-                imageUrl: (row.imgUrl !== '' && row.imgUrl !== null) ? GCS_BUCKET + row.imgUrl + '-screenshot': null,
-                coin_count: newData.coin_count, 
-                fan_count: newData.fan_count, 
-              }
-            });
-          }
-        }).catch((error) => {
-          // alert(JSON.stringify(error));
-          return
-        });
+          this.props.navigation.replace("Browse", { 
+            data: {
+              imageUrl: (row.imgUrl !== '' && row.imgUrl !== null) ? GCS_BUCKET + row.imgUrl + '-screenshot': null,
+              detail: newData,
+            }
+          });
+        }
+      }).catch((error) => {
+        alert(JSON.stringify(error));
+        return
+      });
   }
 
   showTip = row => {
@@ -349,6 +383,46 @@ class MyVideo extends Component {
               return
           });
   }
+
+  showFanUsersList = () => {
+    if (this.state.fanUsers.length > 0 && this.state.mutualUsers.length > 0) {
+      this.setState({
+        showFanUsers: !this.state.showFanUsers,
+        showMutualUsers: !this.state.showMutualUsers,
+      })
+    } else if (this.state.fanUsers.length > 0 && this.state.mutualUsers.length <= 0) {
+      this.setState({
+        showFanUsers: !this.state.showFanUsers,
+      })
+    } else if (this.state.fanUsers.length <= 0 && this.state.mutualUsers.length > 0) {
+      this.setState({
+        showMutualUsers: !this.state.showMutualUsers,
+      })
+    } else {
+      this.refs.fmLocalInstance.showMessage({
+        message: "You do not have any fan",
+        type: "info",
+      });
+    }
+  }
+
+  showStarUsersList = () => {
+    if (this.state.starUsers.length > 0) {
+      this.setState({
+        showStarUsers: !this.state.showStarUsers,
+      })
+    } else {
+      this.refs.fmLocalInstance.showMessage({
+        message: "You do not have any star",
+        type: "info",
+      });
+    }
+  }
+
+  gotoMyFans = () => {
+      this.props.navigation.replace("MyFans");
+  }
+
   render() {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
@@ -397,14 +471,23 @@ class MyVideo extends Component {
 
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <View style={{ marginTop: 40, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', justifyContent: 'space-between', }}>
-          <TouchableOpacity style={{ width: 60, height: 40 }}
-            onPress={() => this.gotoShop()}>
-            <View style={{ flexDirection: 'row' }}>
-              <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
-              <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
-            </View>
-          </TouchableOpacity>
-          <Text style={{ justifyContent: 'center', marginLeft: -15 }}>{"PROFILE"}</Text>
+          <View style={{width: 100, flexDirection: 'row',}}>
+            <TouchableOpacity style={{ width: 60, height: 40, marginRight: 15, }}
+              onPress={() => this.gotoShop()}>
+              <View style={{ flexDirection: 'row' }}>
+                <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
+                <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 14 }}>{this.state.coinCount}</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ width: 50, height: 40 }}
+              onPress={() => this.gotoMyFans()}>
+              <View style={{ flexDirection: 'row' }}>
+                <Image source={yellow_star} style={{ width: 20, height: 20, marginLeft: 15, marginTop: 12 }} />
+                <Text style={{ marginLeft: 7, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 14 }}>{this.state.fanCount}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <Text style={{ justifyContent: 'center', marginLeft: -60 }}>{"PROFILE"}</Text>
           <TouchableOpacity style={{ width: 30, height: 40, alignItems: 'center', justifyContent: 'center', marginRight: 10 }}
             onPress={() => this.gotoProfileSetting()}>
             <Icon type="MaterialCommunityIcons" name="menu" style={{ color: "#000", marginTop: 5 }} />
@@ -417,153 +500,24 @@ class MyVideo extends Component {
             <ActivityIndicator style={{ color: '#DE5859' }} />
           </View>
         )}
-        <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'center', backgroundColor: '#FFF', width: DEVICE_WIDTH, height: 40, marginTop: 10, paddingTop: 10, }}
-          onPress={() => this.setState({
-            showFanUsers: !this.state.showFanUsers,
-          })}
-        >
-          <Text style={{fontSize: 16, marginRight: 20, }}>{`My Fans`}</Text>
-          <Image source={this.state.showFanUsers? collapse: expand} style={{ width: 15, height: 15, marginTop: 3, }} />
-        </TouchableOpacity>
-        {(this.state.fanUsers.length !== 0) && this.state.showFanUsers && (
-        <View style={{ height: 200, marginTop: 1,}}>
-          <ScrollView style={{ backgroundColor: '#FFF', }} removeClippedSubviews={true}>
-            {(this.state.fanUsers.length != 0) && (
-              <FlatList
-                numColumns={1}
-                style={{ flex: 0, marginTop:10, }}
-                removeClippedSubviews={true}
-                data={this.state.fanUsers}
-                initialNumToRender={this.state.fanUsers.length}
-                renderItem={({ item: rowData, index }) => {
-                  return (
-                      <TouchableOpacity style={styles.listItem} onPress={() => this.gotoProfile(rowData)}>
-                        <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center', paddingTop: (index == 0)? 25: 10, }}>
-                          <Text style={{fontSize: 16, color: '#000'}}>{(index + 1) + '.'}</Text>
-                        </View>
-                        <View style={styles.listItemUser}>
-                          <View style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
-                            <View style={{ width: 30, height: 50, alignItems: 'center', justifyContent: 'center' }}>
-                              {(index == 0) && <Image source={crown} style={{ width: 30, height: 20, marginBottom: -5 }}></Image>}
-                              <Image source={rowData.imgUrl ? { uri: GCS_BUCKET + rowData.imgUrl + '-screenshot' } : hiddenMan} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} />
-                            </View>
-                            <View style={styles.listItemName}>
-                              <View style={{ width: DEVICE_WIDTH - 150, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
-                                <View style={{ width: DEVICE_WIDTH - 150, flexDirection: 'row', justifyContent: 'space-between', display: 'flex' }}>
-                                  <View style={{ paddingTop: (index == 0)? 25: 15, }}>
-                                    <Text numberOfLines={1} style={{ color: '#808080' }}>{ rowData.name}</Text>
-                                  </View>
-                                  <View style={{
-                                      flexDirection: 'row',
-                                      paddingTop: (index == 0)? 25: 15, 
-                                  }}>
-                                    <Image source={diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, marginRight: 5, }} />
-                                    <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{rowData.diamonds}</Text>
-                                  </View>
-                                </View>
-                              </View>
-                            </View>
-                          </View>
-                          {(rowData.fanMessage != '') && <View style={styles.fanMessage}>
-                            <Text style={{ color: '#808080', marginTop: 3, fontSize: 16, }}>{rowData.fanMessage}</Text>
-                          </View>}
-                        </View>
-                      </TouchableOpacity>
-                  );
-                }}
-                keyExtractor={(item, index) => index}
-              />)}
-            <View style={{ height: 20 }} />
-          </ScrollView>
-        </View>)}
-        <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'center', backgroundColor: '#FFF', width: DEVICE_WIDTH, height: 40, marginTop: 1, paddingTop: 10, }}
-          onPress={() => this.setState({
-            showStarUsers: !this.state.showStarUsers,
-          })}
-        >
-          <Text style={{fontSize: 16, marginRight: 20, }}>{`My Stars`}</Text>
-          <Image source={this.state.showStarUsers? collapse: expand} style={{ width: 15, height: 15, marginTop: 3, }} />
-        </TouchableOpacity>
-        {(this.state.mutualUsers.length !== 0) && this.state.showStarUsers && (
-        <View style={{ height: 200, marginTop: 1,}}>
-          <ScrollView style={{ backgroundColor: '#FFF', }} removeClippedSubviews={true}>
-            {(this.state.mutualUsers.length != 0) && (
-            <FlatList
-              numColumns={1}
-              style={{ flex: 0, marginTop:10, }}
-              removeClippedSubviews={true}
-              data={this.state.mutualUsers}
-              initialNumToRender={this.state.mutualUsers.length}
-              renderItem={({ item: rowData, index }) => {
-                return (
-                  <TouchableOpacity style={styles.listItemMutual} onPress={() => this.gotoProfile(rowData)}>
-                    <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center', paddingTop: (index == 0)? 25: 10, }}>
-                      <Text style={{fontSize: 16, color: '#000'}}>{(parseInt(index) + parseInt(this.state.fanUsersCount) + 1) + '.'}</Text>
-                    </View>
-                    <View style={styles.listItemUser}>
-                      <View style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
-                        <View style={{ width: 30, height: 50, alignItems: 'center', justifyContent: 'center' }}>
-                          <Image source={rowData.imgUrl ? { uri: GCS_BUCKET + rowData.imgUrl + '-screenshot' } : hiddenMan} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} />
-                        </View>
-                        <View style={styles.listItemName}>
-                          <View style={{ width: DEVICE_WIDTH - 150, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
-                            <View style={{ width: DEVICE_WIDTH - 150, flexDirection: 'row', justifyContent: 'space-between', display: 'flex' }}>
-                              <View style={{ paddingTop: (index == 0)? 25: 15, }}>
-                                <Text numberOfLines={1} style={{ color: '#808080' }}>{ rowData.name}</Text>
-                              </View>
-                              <View style={{
-                                  flexDirection: 'row',
-                                  paddingTop: (index == 0)? 25: 15, 
-                              }}>
-                                {(rowData.diamonds > 0) && (
-                                  <View style={{flexDirection: 'row'}}>
-                                    <Image source={ diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, marginRight: 5 }} />
-                                    <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{ rowData.diamonds }</Text>
-                                  </View>
-                                )}
-                                {(rowData.diamonds <= 0) && (
-                                  <View style={{flexDirection: 'row'}}>
-                                    <TouchableOpacity style={{width: 20, height: 20, marginRight: 5, }} onPress={() => this.showTip(rowData)}>
-                                      <Image source={ admirable } style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, }} />
-                                    </TouchableOpacity>
-                                    <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{'mutual'}</Text>
-                                  </View>
-                                )}
-                              </View>
-                            </View>
-                          </View>
-                        </View>
-                      </View>
-                      {(rowData.fanMessage != '') && <View style={styles.fanMessage}>
-                        <Text style={{ color: '#808080', marginTop: 3, fontSize: 16, }}>{rowData.fanMessage}</Text>
-                      </View>}
-                    </View>
-                  </TouchableOpacity>
-                );
-              }}
-              keyExtractor={(item, index) => index}
-            />)}
-            <View style={{ height: 20 }} />
-          </ScrollView>
-        </View>)}
-        {this.state.noData && !this.state.isLoading && (
-          <View style={{
-            height: 40, justifyContent: 'center', alignSelf: 'center', margin: 45, backgroundColor: '#FFF',
-          }}>
-            <Text style={{
-              margin:0,
-              color: '#000',
-              fontSize: 16,
-              textAlign: "center",
-              alignContent: 'center'
-            }}>You dont have any photo. {'\n'} Please upload more than one so that others can find you more easily.</Text>
-          </View>
-        )}
-        <ScrollView style={{ marginTop: 1, backgroundColor: '#FFF' }} removeClippedSubviews={true}>
-          {(this.state.datas.length == 0) && (
-            <View style={{ flex: 1, alignItems: 'center' }}>
-              <Image source={upload} style={{width: 160, height: 160, marginTop: 70}}></Image>
+        <ScrollView style={{ backgroundColor: '#FFF', marginTop: 1, }} removeClippedSubviews={true}>
+          {this.state.noData && !this.state.isLoading && (
+            <View style={{
+              justifyContent: 'center', alignSelf: 'center', padding: 45, backgroundColor: '#FFF', width: '100%',
+            }}>
+              <Text style={{
+                margin:0,
+                color: '#000',
+                fontSize: 16,
+                textAlign: "center",
+                alignContent: 'center'
+              }}>You dont have any photo. {'\n'} Please upload more than one so that others can find you more easily.</Text>
             </View>
+          )}
+          {(this.state.datas.length == 0) && (
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Image source={upload} style={{width: 160, height: 160, marginTop: 70}}></Image>
+          </View>
           )}
           {(this.state.datas.length !== 0) && (
             <FlatList
@@ -599,7 +553,7 @@ class MyVideo extends Component {
               }}
               keyExtractor={(item, index) => index}
             />)}
-          <View style={{ height: 50 }} />
+          <View style={{ height: 20 }} />
         </ScrollView>
         <TouchableOpacity style={{
           position: 'absolute', right: 15,
@@ -636,6 +590,7 @@ class MyVideo extends Component {
             </Button>
           </FooterTab>
         </Footer>
+        <FlashMessage ref="fmLocalInstance" position="bottom" animated={true} autoHide={true} style={{marginBottom: 50,}} />
       </ImageBackground>
     );
   }

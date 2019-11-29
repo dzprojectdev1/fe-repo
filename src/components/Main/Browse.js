@@ -17,6 +17,7 @@ import {
   Alert,
   TextInput,
   Platform,
+  Keyboard,
 } from "react-native";
 import { Button } from 'react-native-elements';
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
@@ -66,6 +67,7 @@ class Browse extends Component {
       msgError: '',
       sendDiamondsCount: 0,
       fanMessage: '',
+      dialogStyle: {},
     };
   }
 
@@ -105,6 +107,30 @@ class Browse extends Component {
     }).catch((error) => {
       // alert(error);
       return
+    })
+
+    Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
+    Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
+  }
+
+  _keyboardDidShow = () => {
+    this.setState({
+      dialogStyle: {
+          top: -1 * (DEVICE_WIDTH / 4),
+          borderRadius: 20,
+          padding: 10,
+          overflow: 'hidden',
+      },
+    })
+  }
+
+  _keyboardDidHide = () => {
+    this.setState({
+      dialogStyle: {
+          borderRadius: 20,
+          padding: 10,
+          overflow: 'hidden',
+      },
     })
   }
 
@@ -326,6 +352,21 @@ class Browse extends Component {
               {cancelable: false},
             );
           }
+        } else {
+          Alert.alert(
+            '',
+            responseJson.message,
+            [
+              {text: 'OK', onPress: () => console.log('OK Pressed')},
+            ],
+            {cancelable: false},
+          );
+          this.setState({
+            isLoading: false,
+            disabled: false,
+            isReplace: true,
+            flash_heart: false,
+          });
         }
         this.setState({
           isLoading: false,
@@ -336,7 +377,8 @@ class Browse extends Component {
       .catch((error) => {
         this.setState({
           isLoading: false,
-          disabled: false
+          disabled: false,
+          flash_heart: false
         });
         return
       });
@@ -503,6 +545,19 @@ class Browse extends Component {
               {cancelable: false},
             );
           }
+        } else {
+          Alert.alert(
+            '',
+            responseJson.message,
+            [
+              {text: 'OK', onPress: () => console.log('OK Pressed')},
+            ],
+            {cancelable: false},
+          );
+          this.setState({
+            isLoading: false,
+            disabled: false,
+          });
         }
       }).catch((error) => {
         return
@@ -654,12 +709,32 @@ class Browse extends Component {
             }).then((response) => response.json())
             .then((responseJson) => {
                 if (!responseJson.error) {
-                    Global.saveData.coin_count = responseJson.data.coin_count;
-                    this.setState({
-                      coinCount: Global.saveData.coin_count,
-                      coin_count: parseInt(this.state.coin_count) + parseInt(sendDiamondsCount),
-                      fan_count: responseJson.data.other_fan_count,
-                    })
+                  if (responseJson.data.account_status == 1) {
+                    if (responseJson.data.sending_available) {
+                      Global.saveData.coin_count = responseJson.data.coin_count;
+                      this.setState({
+                        coinCount: Global.saveData.coin_count,
+                        coin_count: parseInt(this.state.coin_count) + parseInt(sendDiamondsCount),
+                        fan_count: responseJson.data.other_fan_count,
+                      })
+                    } else {
+                      Alert.alert(
+                          '',
+                          'You cannot send diamonds.',
+                          [
+                              { text: 'OK', onPress: () => this.props.navigation.replace("BrowseList") },
+                          ],
+                          { cancelable: false },
+                      );
+                    }
+                  } else {
+                    Alert.alert(
+                        '',
+                        responseJson.message,
+                        [],
+                        { cancelable: false },
+                    );
+                  }
                 }
             })
             .catch((error) => {
@@ -779,6 +854,7 @@ class Browse extends Component {
 
         <Dialog
           visible={this.state.noFanUserVisible}
+          dialogStyle={this.state.dialogStyle}
           dialogAnimation={new SlideAnimation({
             slideFrom: 'top',
           })}
@@ -941,13 +1017,13 @@ class Browse extends Component {
                     onPress={() => this.gotoReport()}>
                     <Image source={ b_notification } style={{ width: 25, height: 25 }} />
                   </TouchableOpacity>
-                  <TouchableOpacity style={{ width: 40, height: 40}}
+                  {/* <TouchableOpacity style={{ width: 40, height: 40}}
                     onPress={() => this.gotoShop()}>
                     <View style={{ flexDirection: 'row' }}>
                       <Image source={diamond} style={{ width: 25, height: 25, marginLeft: -15, marginTop: 10 }} />
                       <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
                     </View>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.gotoFilter()}>
                     <Image source={ b_filters } style={{ width: 25, height: 25 }} />
@@ -957,7 +1033,7 @@ class Browse extends Component {
                   <View></View>
                   <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.becomeFan()}>
-                    <Image source={line_star} style={{ width: 35, height: 35 }} />
+                    <Image source={yellow_star} style={{ width: 35, height: 35 }} />
                   </TouchableOpacity>
                 </View>
                 { (Global.saveData.is_admin === 1) && (
@@ -1099,7 +1175,7 @@ const styles = StyleSheet.create({
   textMessageInput: {
     marginTop: 10,
     height: 80,
-    width: "100%",
+    width: DEVICE_WIDTH * 0.8,
     paddingHorizontal: 10,
     textAlignVertical: "top",
     borderWidth: 0.5,
