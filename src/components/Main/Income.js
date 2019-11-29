@@ -41,6 +41,7 @@ class Income extends Component {
       datas: [],
       alertMsg: 'Loading ...',
       coinCount: Global.saveData.coin_count,
+      fanCount: Global.saveData.fan_count,
       visible: false,
     };
   }
@@ -64,10 +65,12 @@ class Income extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-            Global.saveData.coin_count = responseJson.coin_count;
-            this.setState({
+          Global.saveData.coin_count = responseJson.data.coin_count;
+          Global.saveData.fan_count = responseJson.data.fan_count;
+          this.setState({
               coinCount: Global.saveData.coin_count,
-            });
+              fanCount: Global.saveData.fan_count,
+          });
         }
       })
       .catch((error) => {
@@ -220,20 +223,33 @@ class Income extends Component {
               return
           });
   }
+
+  gotoMyFans = () => {
+      this.props.navigation.replace("MyFans");
+  }
   render() {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <View style={{ marginTop: 40, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', }}>
-          <TouchableOpacity style={{ width: 80, height: 40 }}
-            onPress={() => this.gotoShop()}>
-            <View style={{ flexDirection: 'row' }}>
-              <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
-              <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
-            </View>
-          </TouchableOpacity>
-          <View style={{ width: DEVICE_WIDTH - 130, height: 40, alignItems: 'center', justifyContent: 'center', marginLeft: -45, }}>
-            <Text>{"INCOMING HEARTS"}</Text>
+          <View style={{width: 100, flexDirection: 'row',}}>
+            <TouchableOpacity style={{ width: 80, height: 40 }}
+              onPress={() => this.gotoShop()}>
+              <View style={{ flexDirection: 'row' }}>
+                <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 10, marginTop: 10 }} />
+                <Text style={{ marginLeft: 2, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ width: 50, height: 40 }}
+              onPress={() => this.gotoMyFans()}>
+              <View style={{ flexDirection: 'row' }}>
+                <Image source={yellow_star} style={{ width: 20, height: 20, marginLeft: 5, marginTop: 12 }} />
+                <Text style={{ marginLeft: 2, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 14 }}>{this.state.fanCount}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={{ width: DEVICE_WIDTH - 130, height: 40, alignItems: 'center', justifyContent: 'center', marginLeft: -55, }}>
+            <Text style={{fontSize: 12, marginTop: 5}}>{"INCOMING HEARTS"}</Text>
           </View>
           <View style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}>
             <Text>{''}</Text>
@@ -262,8 +278,8 @@ class Income extends Component {
                         <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.name}</Text>
                         <Image source={diamond} style={{ width: 15, height: 15, marginTop: 2, marginLeft: 5, }} />
                         <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.coin_count}</Text>
-                        <Image source={yellow_star} style={{ width: 15, height: 15, marginLeft: 5, }} />
-                        <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.fan_count}</Text>
+                        {/* <Image source={yellow_star} style={{ width: 15, height: 15, marginLeft: 5, }} />
+                        <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.fan_count}</Text> */}
                       </View>
                     </View>
                   </TouchableOpacity>

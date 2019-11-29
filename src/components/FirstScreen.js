@@ -85,6 +85,7 @@ class FirstScreen extends Component {
                     Global.saveData.confirmation_code = responseJson.user.confirmation_code; 
                     Global.saveData.auto_block = responseJson.user.auto_block;
                     Global.saveData.is_admin = responseJson.user.is_admin;
+                    Global.saveData.fan_count = responseJson.user.fan_count;
 
                     if (responseJson.user.account_status == 3) {
 

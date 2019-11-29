@@ -14,6 +14,9 @@ import {
   StatusBar,
   ScrollView,
   Alert,
+  TextInput,
+  Platform,
+  Keyboard,
 } from "react-native";
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
 
@@ -25,6 +28,8 @@ import b_profile from '../../assets/images/profile.png';
 import no_photo from '../../assets/images/no_photo.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 import yellow_star from '../../assets/images/yellow_star.png';
+import line_star from '../../assets/images/line_star.png';
+import shooting_star from '../../assets/images/shooting_star.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -56,6 +61,12 @@ class IncomeDetail extends Component {
       ethnicity_name: '',
       language_name: '',
       last_loggedin_date: '',
+      fanUserVisible: false,
+      noFanUserVisible: false,
+      errorMsg: false,
+      msgError: '',
+      sendDiamondsCount: 0,
+      fanMessage: '',
     };
   }
 
@@ -116,7 +127,7 @@ class IncomeDetail extends Component {
     }).then((response) => response.json())
       .then((responseJson) => {
         if (!responseJson.error) {
-            Global.saveData.coin_count = responseJson.coin_count;
+            Global.saveData.coin_count = responseJson.data.coin_count;
             this.setState({
               coinCount: Global.saveData.coin_count,
             });
@@ -125,7 +136,32 @@ class IncomeDetail extends Component {
       .catch((error) => {
         return
       });
+
+      Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
+      Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
   }
+
+  _keyboardDidShow = () => {
+    this.setState({
+      dialogStyle: {
+          top: -1 * (DEVICE_WIDTH / 4),
+          borderRadius: 20,
+          padding: 10,
+          overflow: 'hidden',
+      },
+    })
+  }
+
+  _keyboardDidHide = () => {
+    this.setState({
+      dialogStyle: {
+          borderRadius: 20,
+          padding: 10,
+          overflow: 'hidden',
+      },
+    })
+  }
+
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.back);
   }
@@ -331,10 +367,345 @@ class IncomeDetail extends Component {
       this.props.navigation.navigate("Report", { otherId: this.state.otherId });
     }
   }
+
+  becomeFan = () => {
+    var details = {
+      'otherId': this.state.otherId
+    };
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    fetch(`${SERVER_URL}/api/fan/checkFanOtherUser`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      },
+      body: formBody,
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {          
+          if (responseJson.is_fan) {
+            this.setState({
+              fanUserVisible: true,
+              noFanUserVisible: false,
+            })
+          } else {
+            this.setState({
+              fanUserVisible: false,
+              noFanUserVisible: true,
+            })
+          }
+        }
+      }).catch((error) => {
+        return
+      });
+  }
+
+  checkCount = value => {
+    if(isNaN(value))
+    {
+        this.setState({
+            errorMsg: true,
+            sendDiamondsCount: value,
+            msgError: 'This field should be number.',
+        })
+    }
+    else
+    {
+        if (value > Global.saveData.coin_count) {
+            this.setState({
+                errorMsg: true,
+                sendDiamondsCount: value,
+                msgError: 'You can send only ' + Global.saveData.coin_count + ' diamonds.',
+            })
+        } else {
+            this.setState({
+                errorMsg: false,
+                sendDiamondsCount: value,
+            })
+        }
+    }
+  }
+  
+  sendDiamonds = () => {
+    let { sendDiamondsCount, fanMessage } = this.state;
+    if(isNaN(sendDiamondsCount))
+    {
+        Alert.alert(
+            'Warning',
+            'You must input only number.',
+            [
+                { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
+            ],
+            { cancelable: false }
+        );
+    }
+    else
+    {
+        if (sendDiamondsCount > Global.saveData.coin_count) {
+            Alert.alert(
+                'Warning',
+                'You can send only ' + Global.saveData.coin_count + ' diamonds. You need more diamonds.',
+                [
+                    { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                    { text: 'Buy Diamonds', onPress: () => this.gotoShop(), style: 'cancel' },
+                ],
+                { cancelable: false }
+            );
+        } else if (sendDiamondsCount == 0 || sendDiamondsCount == '') {
+            Alert.alert(
+                'Warning',
+                'You must input one or more diamons count.',
+                [
+                    { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
+                ],
+                { cancelable: false }
+            );
+        } else {
+            var details = {
+                'userName': Global.saveData.u_name,
+                'otherId': this.state.otherId,
+                'otherUserName': this.state.username,
+                'amount': sendDiamondsCount,
+                'fanMessage': fanMessage,
+            };
+            var formBody = [];
+            for (var property in details) {
+                var encodedKey = encodeURIComponent(property);
+                var encodedValue = encodeURIComponent(details[property]);
+                formBody.push(encodedKey + "=" + encodedValue);
+            }
+            formBody = formBody.join("&");
+            fetch(`${SERVER_URL}/api/fan/sendDiamonds`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': Global.saveData.token
+                },
+                body: formBody,
+            }).then((response) => response.json())
+            .then((responseJson) => {
+                if (!responseJson.error) {
+                  if (responseJson.data.account_status == 1) {
+                    if (responseJson.data.sending_available) {
+                      Global.saveData.coin_count = responseJson.data.coin_count;
+                      this.setState({
+                        coinCount: Global.saveData.coin_count,
+                        coin_count: parseInt(this.state.coin_count) + parseInt(sendDiamondsCount),
+                        fan_count: responseJson.data.other_fan_count,
+                      })
+                    } else {
+                      Alert.alert(
+                          '',
+                          'You cannot send diamonds.',
+                          [
+                              { text: 'OK', onPress: () => this.props.navigation.replace("BrowseList") },
+                          ],
+                          { cancelable: false },
+                      );
+                    }
+                  } else {
+                    Alert.alert(
+                        '',
+                        responseJson.message,
+                        [],
+                        { cancelable: false },
+                    );
+                  }
+                }
+            })
+            .catch((error) => {
+                this.setState({
+                    isLoading: false,
+                    disabled: false
+                });
+                return
+            });
+        }
+    }
+  } 
+
   render() {
     return (
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
+
+        <Dialog
+          visible={this.state.fanUserVisible}
+          dialogAnimation={new SlideAnimation({
+            slideFrom: 'top',
+          })}
+        >
+            <View style={styles.screenOverlay}>
+                <View style={styles.dialogPrompt}>
+                    <Text style={[styles.bodyFont, ]}>
+                        {`You have ${Global.saveData.coin_count} diamonds`}
+                    </Text>
+                    <View style={{ flexDirection: 'row', }}>
+                      <Text style={[styles.bodyFont, ]}>
+                          {`Send `}
+                      </Text>
+                      <View style={styles.SectionStyle}>
+                        <Image source={diamond} style={{width: 25, height: 25, }} />
+                        <TextInput
+                            placeholder={``}
+                            style={styles.textInput}
+                            onChangeText={(value) => this.checkCount(value)}
+                        />
+                      </View>
+                      <Text style={[styles.bodyFont, ]}>
+                          {` Diamonds`}
+                      </Text>
+                    </View>                    
+                    { this.state.errorMsg && <Text style={styles.requiredSent}>* {this.state.msgError} </Text> }
+                    <Text style={{fontSize: 16, }}>
+                        {`Write a fan message to ${this.state.username} (public and optional)`}
+                    </Text>
+                    <TextInput
+                        multiline={true}
+                        numberOfLines={5}
+                        style={styles.textMessageInput}
+                        editable
+                        onChangeText={(text) => this.setState({
+                          fanMessage: text,
+                        })}
+                    />
+                    <View style={styles.buttonsOuterView}>
+                        <View style={styles.buttonsInnerView}>
+                            <TouchableOpacity
+                                style={[
+                                    styles.button, 
+                                ]}
+                                onPress={ () =>
+                                    this.setState({
+                                        fanUserVisible: !this.state.fanUserVisible
+                                    })}>
+                                <Text
+                                    style={[
+                                        styles.cancelButtonText,
+                                    ]}>
+                                    {'Cancel'}
+                                </Text>
+                            </TouchableOpacity>
+                            <View style={styles.buttonsDivider} />
+                            <TouchableOpacity
+                                style={[
+                                    styles.button,
+                                ]}
+                                onPress={ () =>
+                                    this.setState({
+                                      fanUserVisible: !this.state.fanUserVisible
+                                    }, function() {
+                                        this.sendDiamonds();
+                                    })
+                                }>
+                                <Text
+                                    style={[
+                                        styles.submitButtonText,
+                                    ]}>
+                                    {'Send'}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </View>
+        </Dialog>
+
+        <Dialog
+          visible={this.state.noFanUserVisible}
+          dialogStyle={this.state.dialogStyle}
+          dialogAnimation={new SlideAnimation({
+            slideFrom: 'top',
+          })}
+        >
+            <View style={styles.screenOverlay}>
+                <View style={styles.dialogPrompt}>
+                    <Text style={[styles.title, ]}>
+                        {`Become a fan of ${this.state.username} by sending diamonds!`}
+                    </Text>
+                    <View style={{ alignItems: 'center', justifyContent: 'center', }}>
+                      <Image source={shooting_star} style={{width: 130, height: 130, marginTop: 20, }} />
+                    </View>
+                    <Text style={[styles.bodyFont, ]}>
+                        {`You have ${Global.saveData.coin_count} diamonds`}
+                    </Text>
+                    <View style={{ flexDirection: 'row', }}>
+                      <Text style={[styles.bodyFont, ]}>
+                          {`Send `}
+                      </Text>
+                      <View style={styles.SectionStyle}>
+                        <Image source={diamond} style={{width: 25, height: 25, }} />
+                        <TextInput
+                            placeholder={``}
+                            style={styles.textInput}
+                            onChangeText={(value) => this.checkCount(value)}
+                        />
+                      </View>
+                      <Text style={[styles.bodyFont, ]}>
+                          {` Diamonds`}
+                      </Text>
+                    </View>                    
+                    { this.state.errorMsg && <Text style={styles.requiredSent}>* {this.state.msgError} </Text> }
+                    <Text style={{fontSize: 16, }}>
+                        {`Write a fan message to ${this.state.username} (public and optional)`}
+                    </Text>
+                    <TextInput
+                        multiline={true}
+                        numberOfLines={5}
+                        style={styles.textMessageInput}
+                        editable
+                        onChangeText={(text) => this.setState({
+                          fanMessage: text,
+                        })}
+                    />
+                    <View style={styles.buttonsOuterView}>
+                        <View style={styles.buttonsInnerView}>
+                            <TouchableOpacity
+                                style={[
+                                    styles.button, 
+                                ]}
+                                onPress={ () =>
+                                    this.setState({
+                                        noFanUserVisible: !this.state.noFanUserVisible
+                                    })}>
+                                <Text
+                                    style={[
+                                        styles.cancelButtonText,
+                                    ]}>
+                                    {'Cancel'}
+                                </Text>
+                            </TouchableOpacity>
+                            <View style={styles.buttonsDivider} />
+                            <TouchableOpacity
+                                style={[
+                                    styles.button,
+                                ]}
+                                onPress={ () =>
+                                    this.setState({
+                                      noFanUserVisible: !this.state.noFanUserVisible
+                                    }, function() {
+                                        this.sendDiamonds();
+                                    })
+                                }>
+                                <Text
+                                    style={[
+                                        styles.submitButtonText,
+                                    ]}>
+                                    {'Send'}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </View>
+        </Dialog>
+
         <Content>
           {!this.state.isMatchVideo && (
             this.state.userimage ? (              
@@ -427,16 +798,23 @@ class IncomeDetail extends Component {
               onPress={() => this.gotoReport()}>
               <Image source={ b_notification} style={{ width: 25, height: 25 }} />
             </TouchableOpacity>
-            <TouchableOpacity style={{ width: 40, height: 40}}
+            {/* <TouchableOpacity style={{ width: 40, height: 40}}
               onPress={() => this.gotoShop()}>
               <View style={{ flexDirection: 'row' }}>
                 <Image source={diamond} style={{ width: 25, height: 25, marginLeft: -15, marginTop: 10 }} />
                 <Text style={{ marginLeft: 10, color:'#fff', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
               onPress={() => this.gotoProfile()}>
               <Image source={b_profile} style={{ width: 30, height: 30 }} />
+            </TouchableOpacity>
+          </View>
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View></View>
+            <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
+              onPress={() => this.becomeFan()}>
+              <Image source={yellow_star} style={{ width: 35, height: 35 }} />
             </TouchableOpacity>
           </View>
         </View>
@@ -518,6 +896,133 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#3333ff',
     marginBottom: 5,
+  },
+  screenOverlay: {
+    height: Dimensions.get("window").height,
+    backgroundColor: "black",
+    opacity: 0.9
+  },
+  dialogPrompt: {
+    ...Platform.select({
+      ios: {
+        opacity: 0.9,
+        backgroundColor: "rgb(222,222,222)",
+        borderRadius: 15
+      },
+      android: {
+        borderRadius: 5,
+        backgroundColor: "white"
+      }
+    }),
+    marginHorizontal: 20,
+    marginTop: 150,
+    padding: 10,
+  },
+  title: {
+    fontWeight: "bold",
+    fontSize: 16,
+    color: "black"
+  },
+  bodyFont: {
+    fontSize: 16,
+    color: "black",
+    marginTop: 20, 
+  },
+  textMessageInput: {
+    marginTop: 10,
+    height: 80,
+    width: DEVICE_WIDTH * 0.8,
+    paddingHorizontal: 10,
+    textAlignVertical: "top",
+    borderWidth: 0.5,
+    borderColor: '#000',
+    ...Platform.select({
+      ios: {
+        borderRadius: 15,
+        backgroundColor: "rgba(166, 170, 172, 0.9)"
+      },
+      android: {
+        borderRadius: 10,
+        backgroundColor: "white",
+      }
+    })
+  },
+  textInput: {
+    height: 40,
+    width: 60,
+    paddingHorizontal: 10,
+    textAlignVertical: "bottom",
+    ...Platform.select({
+      ios: {
+        borderRadius: 15,
+        backgroundColor: "rgba(166, 170, 172, 0.9)"
+      },
+      android: {}
+    })
+  },
+  buttonsOuterView: {
+    flexDirection: "row",
+    ...Platform.select({
+      ios: {},
+      android: {
+        justifyContent: "flex-end"
+      }
+    }),
+    width: "100%"
+  },
+  buttonsDivider: {
+    ...Platform.select({
+      ios: {
+        width: 1,
+        backgroundColor: "rgba(0,0,0,0.5)"
+      },
+      android: {
+        width: 20
+      }
+    })
+  },
+  buttonsInnerView: {
+    flexDirection: "row",
+    ...Platform.select({
+      ios: {
+        borderTopWidth: 0.5,
+        flex: 1
+      },
+      android: {}
+    })
+  },
+  button: {
+    flexDirection: "column",
+    justifyContent: "center",
+
+    alignItems: "center",
+    ...Platform.select({
+      ios: { flex: 1 },
+      android: {}
+    }),
+    marginTop: 5,
+    padding: 10
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#61bfa9"
+  },
+  submitButtonText: {
+    color: "#61bfa9",
+    fontWeight: "600",
+    fontSize: 16
+  },
+  SectionStyle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderWidth: 0.5,
+    borderColor: '#000',
+    height: 40,
+    borderRadius: 5,
+    margin: 10,
   },
 });
 export default IncomeDetail;

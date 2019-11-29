@@ -47,4 +47,5 @@ module.exports.saveData =
         auto_block: 1,
         is_admin: 0,
         call_id: 0,
+        fan_count: 0,
     };

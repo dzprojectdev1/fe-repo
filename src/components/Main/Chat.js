@@ -52,6 +52,7 @@ class Chat extends Component {
       searchText: '',
       alertMsg: 'Loading ...',
       coinCount: Global.saveData.coin_count,
+      fanCount: Global.saveData.fan_count,
       visible: false,
     };
   }
@@ -82,10 +83,12 @@ class Chat extends Component {
       }).then((response) => response.json())
         .then((responseJson) => {
           if (!responseJson.error) {
-              Global.saveData.coin_count = responseJson.coin_count;
-              this.setState({
+            Global.saveData.coin_count = responseJson.data.coin_count;
+            Global.saveData.fan_count = responseJson.data.fan_count;
+            this.setState({
                 coinCount: Global.saveData.coin_count,
-              });
+                fanCount: Global.saveData.fan_count,
+            });
           }
         })
         .catch((error) => {
@@ -283,19 +286,32 @@ class Chat extends Component {
           });
   }
 
+  gotoMyFans = () => {
+      this.props.navigation.replace("MyFans");
+  }
+
   render() {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <View style={{ height: 40, marginTop: 40, flexDirection: 'row', }}>
-          <TouchableOpacity style={{ width: 80, height: 40, justifyContent: 'center', alignItems: 'center' }}
-            onPress={() => this.gotoShop()}>
-            <View style={{ flexDirection: 'row' }}>
-              <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
-              <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
-            </View>
-          </TouchableOpacity>
-          <View style={{ width: DEVICE_WIDTH - 150, height: 40, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{width: 100, flexDirection: 'row',}}>
+            <TouchableOpacity style={{ width: 80, height: 40 }}
+              onPress={() => this.gotoShop()}>
+              <View style={{ flexDirection: 'row' }}>
+                <Image source={diamond} style={{ width: 25, height: 25, marginLeft: 15, marginTop: 10 }} />
+                <Text style={{ marginLeft: 10, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ width: 50, height: 40 }}
+              onPress={() => this.gotoMyFans()}>
+              <View style={{ flexDirection: 'row' }}>
+                <Image source={yellow_star} style={{ width: 20, height: 20, marginLeft: 15, marginTop: 12 }} />
+                <Text style={{ marginLeft: 7, color: '#000', fontSize: 12, fontWeight: 'bold', marginTop: 14 }}>{this.state.fanCount}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={{ width: DEVICE_WIDTH - 150, height: 40, alignItems: 'center', justifyContent: 'center', marginLeft: -20, }}>
             <Text>{"CHAT"}</Text>
           </View>
           {(this.state.datas.length !== 0) && (
@@ -345,11 +361,12 @@ class Chat extends Component {
                               flexDirection: 'row',
                               justifyContent: 'flex-start'
                           }}>
+                            {/* <Text numberOfLines={1} style={{ color: '#808080' }}>{(rowData.data.publish == 1) ? (((rowData.data.name).length > 6) ? (((rowData.data.name).substring(0, 6)) + '...') : rowData.data.name): 'Unavailable user'}</Text> */}
                             <Text numberOfLines={1} style={{ color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.name: 'Unavailable user'}</Text>
                             {(rowData.data.publish == 1) && (<Image source={diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, }} />)}
                             <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{(rowData.data.publish == 1) ? rowData.data.coin_count: ''}</Text>
-                            {(rowData.data.publish == 1) && (<Image source={yellow_star} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, }} />)}
-                            <Text numberOfLines={1} style={{ color: '#808080', marginTop: 5, fontSize: 12, }}>{(rowData.data.publish == 1) ? rowData.data.fan_count: ''}</Text>
+                            {(rowData.data.publish == 1) && (<Image source={yellow_star} style={{ width: 13, height: 13, marginTop: 5, marginLeft: 5, }} />)}
+                            <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{(rowData.data.publish == 1) ? rowData.data.fan_count: ''}</Text>
                           </View>
                           <Text numberOfLines={1} style={{ fontSize: 12, color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.message_text: ''}</Text>
                         </View>

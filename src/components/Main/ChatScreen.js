@@ -69,6 +69,7 @@ class ChatScreen extends React.Component {
             sendDiamondsCount: 0,
             fanMessage: '',
             is_fan: false,
+            dialogStyle: {},
         }
     }
 
@@ -108,7 +109,7 @@ class ChatScreen extends React.Component {
         }).then((response) => response.json())
             .then((responseJson) => {
             if (!responseJson.error) {
-                Global.saveData.coin_count = responseJson.coin_count;
+                Global.saveData.coin_count = responseJson.data.coin_count;
                 this.setState({
                     coinCount: Global.saveData.coin_count,
                 });
@@ -120,6 +121,30 @@ class ChatScreen extends React.Component {
 
         this.checkUnReadMessage();
         this.checkFanUser();
+
+        Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
+        Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
+    }
+
+    _keyboardDidShow = () => {
+      this.setState({
+        dialogStyle: {
+            top: -1 * (DEVICE_WIDTH / 4),
+            borderRadius: 20,
+            padding: 10,
+            overflow: 'hidden',
+        },
+      })
+    }
+  
+    _keyboardDidHide = () => {
+      this.setState({
+        dialogStyle: {
+            borderRadius: 20,
+            padding: 10,
+            overflow: 'hidden',
+        },
+      })
     }
 
     checkUnReadMessage = () => {
@@ -589,17 +614,37 @@ class ChatScreen extends React.Component {
                 }).then((response) => response.json())
                 .then((responseJson) => {
                     if (!responseJson.error) {
-                        Global.saveData.coin_count = responseJson.data.coin_count;
-                        this.setState({
-                            other: {
-                                userId: this.state.other.userId,
-                                name: this.state.other.name,
-                                imgUrl: this.state.other.imgUrl,
-                                description: this.state.other.description,
-                                coin_count: parseInt(this.state.other.coin_count) + parseInt(sendDiamondsCount),
-                                fan_count: responseJson.data.other_fan_count,
+                        if (responseJson.data.account_status == 1) {
+                            if (responseJson.data.sending_available) {                        
+                                Global.saveData.coin_count = responseJson.data.coin_count;
+                                this.setState({
+                                    other: {
+                                        userId: this.state.other.userId,
+                                        name: this.state.other.name,
+                                        imgUrl: this.state.other.imgUrl,
+                                        description: this.state.other.description,
+                                        coin_count: parseInt(this.state.other.coin_count) + parseInt(sendDiamondsCount),
+                                        fan_count: responseJson.data.other_fan_count,
+                                    }
+                                })
+                            } else {
+                                Alert.alert(
+                                    '',
+                                    'You cannot send diamonds.',
+                                    [
+                                        { text: 'OK', onPress: () => this.props.navigation.replace("BrowseList") },
+                                    ],
+                                    { cancelable: false },
+                                );
                             }
-                        })
+                        } else {
+                            Alert.alert(
+                                '',
+                                responseJson.message,
+                                [],
+                                { cancelable: false },
+                            );
+                        }
                     }
                 })
                 .catch((error) => {
@@ -867,6 +912,7 @@ class ChatScreen extends React.Component {
 
                 <Dialog
                 visible={this.state.noFanUserVisible}
+                dialogStyle={this.state.dialogStyle}
                 dialogAnimation={new SlideAnimation({
                     slideFrom: 'top',
                 })}
@@ -969,7 +1015,7 @@ class ChatScreen extends React.Component {
                                     style={styles.avatarOtherUser}
                                     source={this.state.other.imgUrl ? { uri: this.state.other.imgUrl } : hiddenMan}
                                 />
-                                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginLeft: 5, marginTop: 8 }}>{this.state.other.name}</Text>
+                                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20, marginLeft: 5, marginTop: 8 }}>{ ((this.state.other.name).length > 6) ? (((this.state.other.name).substring(0, 6)) + '...') : this.state.other.name}</Text>
                                 <Image source={diamond} style={{ width: 20, height: 20, marginLeft: 15, marginTop: 12 }} />
                                 <Text style={{ marginLeft: 1, fontSize: 14, fontWeight: 'bold', marginTop: 12 }}>{this.state.other.coin_count}</Text>
                                 <Image source={yellow_star} style={{ width: 20, height: 20, marginLeft: 15, marginTop: 12 }} />
@@ -1206,7 +1252,7 @@ const styles = StyleSheet.create({
     textMessageInput: {
       marginTop: 10,
       height: 80,
-      width: "100%",
+      width: DEVICE_WIDTH * 0.8,
       paddingHorizontal: 10,
       textAlignVertical: "top",
       borderWidth: 0.5,

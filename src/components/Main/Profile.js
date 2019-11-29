@@ -18,8 +18,10 @@ import {
   Modal,
   Alert,
   TextInput,
+  Keyboard,
 } from "react-native";
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
 
 import search_photo from '../../assets/images/search_photo.png';
 import bg from '../../assets/images/bg.jpg';
@@ -27,6 +29,8 @@ import ban_user from '../../assets/images/ban_user.png';
 import ban_user_red from '../../assets/images/ban_user_red.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 import yellow_star from '../../assets/images/yellow_star.png';
+import yellow_star_black from '../../assets/images/yellow_star_black.png';
+import line_star from '../../assets/images/line_star.png';
 import shooting_star from '../../assets/images/shooting_star.png';
 import crown from '../../assets/images/crown.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
@@ -47,6 +51,7 @@ class Profile extends Component {
       fanUsers: [],
       mutualUsers: [],
       fanUsersCount: 0,
+      mutualUsersCount: 0,
       isLoading: true,
       noData: false,
       otherData: props.navigation.state.params.data,
@@ -63,6 +68,8 @@ class Profile extends Component {
       showTip: false,
       otherSelectedUserName: '',
       showFanUsers: false,
+      showMutualUsers: false,
+      dialogStyle: {},
     };
   }
 
@@ -78,6 +85,30 @@ class Profile extends Component {
     this.getVideos(otherid);
     
     this.getBiggestFanUsers();
+
+    Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
+    Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
+  }
+
+  _keyboardDidShow = () => {
+    this.setState({
+      dialogStyle: {
+          top: -1 * (DEVICE_WIDTH / 4),
+          borderRadius: 20,
+          padding: 10,
+          overflow: 'hidden',
+      },
+    })
+  }
+
+  _keyboardDidHide = () => {
+    this.setState({
+      dialogStyle: {
+          borderRadius: 20,
+          padding: 10,
+          overflow: 'hidden',
+      },
+    })
   }
 
   getBiggestFanUsers = () => {
@@ -105,11 +136,12 @@ class Profile extends Component {
             fanUsers: responseJson.data.fanUsers,
             mutualUsers: responseJson.data.mutualUsers,
             fanUsersCount: responseJson.data.fanUsers.length,
+            mutualUsersCount: responseJson.data.mutualUsers.length,
           })
         }
       })
       .catch((error) => {
-        // alert(JSON.stringify(error));
+        alert(JSON.stringify(error));
         return
       });
   }
@@ -403,12 +435,32 @@ class Profile extends Component {
             }).then((response) => response.json())
             .then((responseJson) => {
                 if (!responseJson.error) {
-                    Global.saveData.coin_count = responseJson.data.coin_count;
-                    this.setState({
-                      coin_count: parseInt(this.state.coin_count) + parseInt(sendDiamondsCount),
-                      fan_count: responseJson.data.other_fan_count,
-                    })
-                    this.getBiggestFanUsers();
+                  if (responseJson.data.account_status == 1) {
+                    if (responseJson.data.sending_available) {
+                      Global.saveData.coin_count = responseJson.data.coin_count;
+                      this.setState({
+                        coin_count: parseInt(this.state.coin_count) + parseInt(sendDiamondsCount),
+                        fan_count: responseJson.data.other_fan_count,
+                      })
+                      this.getBiggestFanUsers();
+                    } else {
+                      Alert.alert(
+                          '',
+                          'You cannot send diamonds.',
+                          [
+                              { text: 'OK', onPress: () => this.props.navigation.replace("BrowseList") },
+                          ],
+                          { cancelable: false },
+                      );
+                    }
+                  } else {
+                    Alert.alert(
+                        '',
+                        responseJson.message,
+                        [],
+                        { cancelable: false },
+                    );
+                  }
                 }
             })
             .catch((error) => {
@@ -422,43 +474,35 @@ class Profile extends Component {
     }
   } 
 
-  gotoProfile = row => {
+  gotoBrowsDetail = row => {
     Global.saveData.prevpage = "Profile";
-    
-    fetch(`${SERVER_URL}/api/match/getOtherUserData/${row.userId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': Global.saveData.token
-        }
-      }).then((response) => response.json())
-        .then((responseJson) => {
-          if (!responseJson.error) {
-            let newData = responseJson.data;
 
-            this.props.navigation.replace("Profile", { 
-              data: {
-                id: newData.id, 
-                name: newData.name, 
-                description: newData.description,
-                age: newData.age,
-                gender: newData.gender,
-                distance: newData.distance,
-                country_name: newData.country_name,
-                ethnicity_name: newData.ethnicity_name,
-                language_name: newData.language_name,
-                last_loggedin_date: newData.last_loggedin_date,
-                matchId: this.state.otherData.imageUrl,
-                imageUrl: (row.imgUrl !== '' && row.imgUrl !== null) ? GCS_BUCKET + row.imgUrl + '-screenshot': null,
-                coin_count: newData.coin_count, 
-                fan_count: newData.fan_count, 
-              }
-            });
+    if (Global.saveData.u_id == row.userId) {
+      this.props.navigation.replace('MyVideo');
+    } else {
+      fetch(`${SERVER_URL}/api/match/getOtherUserData/${row.userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': Global.saveData.token
           }
-        }).catch((error) => {
-          // alert(JSON.stringify(error));
-          return
-        });
+        }).then((response) => response.json())
+          .then((responseJson) => {
+            if (!responseJson.error) {
+              let newData = responseJson.data;
+  
+              this.props.navigation.replace("Browse", { 
+                data: {
+                  imageUrl: (row.imgUrl !== '' && row.imgUrl !== null) ? GCS_BUCKET + row.imgUrl + '-screenshot': null,
+                  detail: newData,
+                }
+              });
+            }
+          }).catch((error) => {
+            alert(JSON.stringify(error));
+            return
+          });
+    }
   }
 
   showTip = row => {
@@ -466,6 +510,28 @@ class Profile extends Component {
       otherSelectedUserName: row.name,
       showTip: true,
     })
+  }
+
+  showFanUsersList = () => {
+    if (this.state.fanUsersCount > 0 && this.state.mutualUsersCount > 0) {
+      this.setState({
+        showFanUsers: !this.state.showFanUsers,
+        showMutualUsers: !this.state.showMutualUsers,
+      })
+    } else if (this.state.fanUsersCount > 0 && this.state.mutualUsersCount <= 0) {
+      this.setState({
+        showFanUsers: !this.state.showFanUsers,
+      })
+    } else if (this.state.fanUsersCount <= 0 && this.state.mutualUsersCount > 0) {
+      this.setState({
+        showMutualUsers: !this.state.showMutualUsers,
+      })
+    } else {
+      this.refs.fmLocalInstance.showMessage({
+        message: "This user does not have any fan",
+        type: "info",
+      });
+    }
   }
 
   render() {
@@ -569,6 +635,7 @@ class Profile extends Component {
 
         <Dialog
           visible={this.state.noFanUserVisible}
+          dialogStyle={this.state.dialogStyle}
           dialogAnimation={new SlideAnimation({
             slideFrom: 'top',
           })}
@@ -703,18 +770,32 @@ class Profile extends Component {
             <Image source={ban_user} style={{width: 300, height: 300, zIndex: 100, position: 'absolute', left: parseInt(DEVICE_WIDTH /2) - 150, top: parseInt(DEVICE_HEIGHT /2) - 150,}} />
           </View>
         ): null}
-        <View style={{ height: this.state.otherData.imageUrl? 200: 80, marginTop: Platform.select({ 'ios': '20%', 'android': '20%' }), marginBottom: 20, flexDirection: 'row', }}>
+        <View style={{ height: this.state.otherData.imageUrl? 200: 120, marginTop: Platform.select({ 'ios': '10%', 'android': '10%' }), marginBottom: 5, flexDirection: 'row', }}>
           <TouchableOpacity style={{ width: 40, height: 40, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}
             onPress={() => this.onBack()} >
             <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
           </TouchableOpacity>
-          <View style={{ width: DEVICE_WIDTH - 90, height: this.state.otherData.imageUrl? 200: 80, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ width: DEVICE_WIDTH - 90, height: this.state.otherData.imageUrl? 200: 120, alignItems: 'center', justifyContent: 'center' }}>
             {this.state.otherData.imageUrl && (
-              <TouchableOpacity style={{ width: 120, height: 120, }}
-              onPress={() => this.showUserVideo(0, this.state.otherData.imageUrl, this.state.otherData.id, this.state.datas)} >
-                <Image source={{ uri: this.state.otherData.imageUrl}} style={{width: 120, height: 120, borderRadius: 60,}}>
-                </Image>
-              </TouchableOpacity>
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity style={{ width: 120, height: 120, marginLeft: 90, }}
+                onPress={() => this.showUserVideo(0, this.state.otherData.imageUrl, this.state.otherData.id, this.state.datas)} >
+                  <Image source={{ uri: this.state.otherData.imageUrl}} style={{width: 120, height: 120, borderRadius: 60,}}>
+                  </Image>
+                </TouchableOpacity>
+                <TouchableOpacity style={{ marginLeft: 20, width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center', marginTop: 40, }}
+                  onPress={() => this.becomeFan()}>
+                  <Image source={yellow_star} style={{ width: 35, height: 35 }} />
+                </TouchableOpacity>
+              </View>
+            )}
+            {!this.state.otherData.imageUrl && (
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity style={{ width: 60, height: 50, borderWidth: 1.5, borderRadius: 7, borderColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
+                  onPress={() => this.becomeFan()}>
+                  <Image source={yellow_star} style={{ width: 35, height: 35 }} />
+                </TouchableOpacity>
+              </View>
             )}
             <View style={{
               flex: 3,
@@ -722,10 +803,11 @@ class Profile extends Component {
               flexDirection: 'row',
               justifyContent: 'space-around'
             }}>
+              {/* <Text style={{ fontSize: 16, }}>{((this.state.name).length > 6) ? (((this.state.name).substring(0, 6)) + '...') : this.state.name}</Text> */}
               <Text style={{ fontSize: 16, }}>{this.state.name}</Text>
               <Image source={diamond} style={{ width: 20, height: 20, marginTop: 3, marginLeft: 10, }} />
               <Text style={{ fontSize: 14, marginTop: 3, }}>{this.state.coin_count}</Text>
-              <Image source={yellow_star} style={{ width: 20, height: 20, marginTop: 3, marginLeft: 10, }} />
+              <Image source={yellow_star} style={{ width: 17, height: 17, marginTop: 4, marginLeft: 10, }} />
               <Text style={{ fontSize: 14, marginTop: 3, }}>{this.state.fan_count}</Text>
             </View>
             <Text style={{
@@ -754,86 +836,31 @@ class Profile extends Component {
             </TouchableOpacity>
           )}
         </View>
-        <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>
-          <View></View>
-          <TouchableOpacity style={{ width: 40, height: 35, borderWidth: 1.5, borderRadius: 7, borderWidth: 3, borderColor: '#feef00', alignItems: 'center', justifyContent: 'center' }}
-            onPress={() => this.becomeFan()}>
-            <Image source={yellow_star} style={{ width: 20, height: 20 }} />
-          </TouchableOpacity>
-        </View>
         <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'center', backgroundColor: '#FFF', width: DEVICE_WIDTH, height: 40, marginTop: 10, paddingTop: 10, }}
-          onPress={() => this.setState({
-            showFanUsers: !this.state.showFanUsers,
-          })}
+          onPress={() => this.showFanUsersList() }
         >
-          <Text style={{fontSize: 16, marginRight: 20, }}>{`Biggest Fans for ${this.state.otherData.name}`}</Text>
+          <Image source={yellow_star_black} style={{width: 20, height: 20, marginRight: 15, }} />
+          <Text style={{fontSize: 16, marginRight: 20, color: '#7d7d7d' }}>{`Biggest Fans for ${this.state.otherData.name} (${this.state.fanUsersCount})`}</Text>
           <Image source={this.state.showFanUsers? collapse: expand} style={{ width: 15, height: 15, marginTop: 3, }} />
-        </TouchableOpacity>
-        {(this.state.fanUsers.length !== 0 || this.state.mutualUsers.length !== 0) && this.state.showFanUsers && (
-        <View style={{ height: 200, marginTop: 1,}}>
-          <ScrollView style={{ backgroundColor: '#FFF', }} removeClippedSubviews={true}>
-          {/* <ScrollView  removeClippedSubviews={true}> */}
-            {(this.state.fanUsers.length != 0) && (
-              <FlatList
-                numColumns={1}
-                style={{ flex: 0, marginTop:10, }}
-                removeClippedSubviews={true}
-                data={this.state.fanUsers}
-                initialNumToRender={this.state.fanUsers.length}
-                renderItem={({ item: rowData, index }) => {
-                  return (
-                      <TouchableOpacity style={styles.listItem} onPress={() => this.gotoProfile(rowData)}>
-                        <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center', paddingTop: (index == 0)? 25: 10, }}>
-                          <Text style={{fontSize: 16, color: '#000'}}>{(index + 1) + '.'}</Text>
-                        </View>
-                        <View style={styles.listItemUser}>
-                          <View style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
-                            <View style={{ width: 30, height: 50, alignItems: 'center', justifyContent: 'center' }}>
-                              {(index == 0) && <Image source={crown} style={{ width: 30, height: 20, marginBottom: -5 }}></Image>}
-                              <Image source={rowData.imgUrl ? { uri: GCS_BUCKET + rowData.imgUrl + '-screenshot' } : hiddenMan} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} />
-                            </View>
-                            <View style={styles.listItemName}>
-                              <View style={{ width: DEVICE_WIDTH - 150, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
-                                <View style={{ width: DEVICE_WIDTH - 150, flexDirection: 'row', justifyContent: 'space-between', display: 'flex' }}>
-                                  <View style={{ paddingTop: (index == 0)? 25: 15, }}>
-                                    <Text numberOfLines={1} style={{ color: '#808080' }}>{ rowData.name}</Text>
-                                  </View>
-                                  <View style={{
-                                      flexDirection: 'row',
-                                      paddingTop: (index == 0)? 25: 15, 
-                                  }}>
-                                    <Image source={diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, marginRight: 5, }} />
-                                    <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{rowData.diamonds}</Text>
-                                  </View>
-                                </View>
-                              </View>
-                            </View>
-                          </View>
-                          {(rowData.fanMessage != '') && <View style={styles.fanMessage}>
-                            <Text style={{ color: '#808080', marginTop: 3, fontSize: 16, }}>{rowData.fanMessage}</Text>
-                          </View>}
-                        </View>
-                      </TouchableOpacity>
-                  );
-                }}
-                keyExtractor={(item, index) => index}
-              />)}
-              {(this.state.mutualUsers.length != 0) && (
-              <FlatList
-                numColumns={1}
-                style={{ flex: 0, marginTop:10, }}
-                removeClippedSubviews={true}
-                data={this.state.mutualUsers}
-                initialNumToRender={this.state.mutualUsers.length}
-                renderItem={({ item: rowData, index }) => {
-                  return (
-                    <TouchableOpacity style={styles.listItemMutual} onPress={() => this.gotoProfile(rowData)}>
+        </TouchableOpacity>        
+        <ScrollView style={{ backgroundColor: '#FFF', marginTop: 1, }} removeClippedSubviews={true}>
+          {(this.state.fanUsersCount != 0) && this.state.showFanUsers && (
+            <FlatList
+              numColumns={1}
+              style={{ flex: 0, marginTop:10, }}
+              removeClippedSubviews={true}
+              data={this.state.fanUsers}
+              initialNumToRender={this.state.fanUsersCount}
+              renderItem={({ item: rowData, index }) => {
+                return (
+                    <TouchableOpacity style={styles.listItem} onPress={() => this.gotoBrowsDetail(rowData)}>
                       <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center', paddingTop: (index == 0)? 25: 10, }}>
-                        <Text style={{fontSize: 16, color: '#000'}}>{(parseInt(index) + parseInt(this.state.fanUsersCount) + 1) + '.'}</Text>
+                        <Text style={{fontSize: 16, color: '#000'}}>{(index + 1) + '.'}</Text>
                       </View>
                       <View style={styles.listItemUser}>
                         <View style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
                           <View style={{ width: 30, height: 50, alignItems: 'center', justifyContent: 'center' }}>
+                            {(index == 0) && <Image source={crown} style={{ width: 30, height: 20, marginBottom: -5 }}></Image>}
                             <Image source={rowData.imgUrl ? { uri: GCS_BUCKET + rowData.imgUrl + '-screenshot' } : hiddenMan} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} />
                           </View>
                           <View style={styles.listItemName}>
@@ -846,38 +873,79 @@ class Profile extends Component {
                                     flexDirection: 'row',
                                     paddingTop: (index == 0)? 25: 15, 
                                 }}>
-                                  {(rowData.diamonds > 0) && (
-                                    <View style={{flexDirection: 'row'}}>
-                                      <Image source={ diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, marginRight: 5 }} />
-                                      <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{ rowData.diamonds }</Text>
-                                    </View>
-                                  )}
-                                  {(rowData.diamonds <= 0) && (
-                                    <View style={{flexDirection: 'row'}}>
-                                      <TouchableOpacity style={{width: 20, height: 20, marginRight: 5, }} onPress={() => this.showTip(rowData)}>
-                                        <Image source={ admirable } style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, }} />
-                                      </TouchableOpacity>
-                                      <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{'mutual'}</Text>
-                                    </View>
-                                  )}
+                                  <Image source={diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, marginRight: 5, }} />
+                                  <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{rowData.diamonds}</Text>
                                 </View>
                               </View>
                             </View>
                           </View>
                         </View>
                         {(rowData.fanMessage != '') && <View style={styles.fanMessage}>
-                          <Text style={{ color: '#808080', marginTop: 3, fontSize: 16, }}>{rowData.fanMessage}</Text>
+                          <Text style={{ color: '#808080', marginTop: 3, fontSize: 16, flexWrap: 'wrap', width: DEVICE_WIDTH - 100, }}>{rowData.name + ' says "' + rowData.fanMessage + '"'}</Text>
                         </View>}
                       </View>
                     </TouchableOpacity>
-                  );
-                }}
-                keyExtractor={(item, index) => index}
-              />)}
-            <View style={{ height: 20 }} />
-          </ScrollView>
-        </View>)}
-        <ScrollView style={{ backgroundColor: '#FFF', marginTop: 1, }} removeClippedSubviews={true}>
+                );
+              }}
+              keyExtractor={(item, index) => index}
+            />)}
+            {(this.state.mutualUsersCount != 0) && this.state.showMutualUsers && (
+            <FlatList
+              numColumns={1}
+              style={{ flex: 0, marginTop: 5, }}
+              removeClippedSubviews={true}
+              data={this.state.mutualUsers}
+              initialNumToRender={this.state.mutualUsersCount}
+              renderItem={({ item: rowData, index }) => {
+                return (
+                  <TouchableOpacity style={styles.listItemMutual} onPress={() => this.gotoBrowsDetail(rowData)}>
+                    <View style={{ width: 50, height: 50, alignItems: 'center', justifyContent: 'center', paddingTop: (index == 0)? 25: 10, }}>
+                      <Text style={{fontSize: 16, color: '#000'}}>{(parseInt(index) + parseInt(this.state.fanUsersCount) + 1) + '.'}</Text>
+                    </View>
+                    <View style={styles.listItemUser}>
+                      <View style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                        <View style={{ width: 30, height: 50, alignItems: 'center', justifyContent: 'center' }}>
+                          <Image source={rowData.imgUrl ? { uri: GCS_BUCKET + rowData.imgUrl + '-screenshot' } : hiddenMan} resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#5A5A5A' }} />
+                        </View>
+                        <View style={styles.listItemName}>
+                          <View style={{ width: DEVICE_WIDTH - 150, height: 40, marginLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ width: DEVICE_WIDTH - 150, flexDirection: 'row', justifyContent: 'space-between', display: 'flex' }}>
+                              <View style={{ paddingTop: (index == 0)? 25: 15, }}>
+                                <Text numberOfLines={1} style={{ color: '#808080' }}>{ rowData.name}</Text>
+                              </View>
+                              <View style={{
+                                  flexDirection: 'row',
+                                  paddingTop: (index == 0)? 25: 15, 
+                              }}>
+                                {(rowData.diamonds > 0) && (
+                                  <View style={{flexDirection: 'row'}}>
+                                    <Image source={ diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, marginRight: 5 }} />
+                                    <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{ rowData.diamonds }</Text>
+                                  </View>
+                                )}
+                                {(rowData.diamonds <= 0) && (
+                                  <View style={{flexDirection: 'row'}}>
+                                    <TouchableOpacity style={{width: 20, height: 20, marginRight: 5, }} onPress={() => this.showTip(rowData)}>
+                                      <Image source={ admirable } style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, }} />
+                                    </TouchableOpacity>
+                                    <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{'mutual'}</Text>
+                                  </View>
+                                )}
+                              </View>
+                            </View>
+                          </View>
+                        </View>
+                      </View>
+                      {(rowData.fanMessage != '') && <View style={styles.fanMessage}>
+                        <Text style={{ color: '#808080', marginTop: 3, fontSize: 16, flexWrap: 'wrap', width: DEVICE_WIDTH - 100, }}>{rowData.name + ' says "' + rowData.fanMessage + '"'}</Text>
+                      </View>}
+                    </View>
+                  </TouchableOpacity>
+                );
+              }}
+              keyExtractor={(item, index) => index}
+            />)}
+          <View style={{ height: 10 }} />
           {this.state.otherData.description && (
             <View style={{
               justifyContent: 'center',
@@ -937,6 +1005,7 @@ class Profile extends Component {
             />)}
           <View style={{ height: 50 }} />
         </ScrollView>
+        <FlashMessage ref="fmLocalInstance" position="bottom" animated={true} autoHide={true} />
       </ImageBackground>
     );
   }
@@ -1025,7 +1094,7 @@ const styles = StyleSheet.create({
   textMessageInput: {
     marginTop: 10,
     height: 80,
-    width: "100%",
+    width: DEVICE_WIDTH * 0.8,
     paddingHorizontal: 10,
     textAlignVertical: "top",
     borderWidth: 0.5,
