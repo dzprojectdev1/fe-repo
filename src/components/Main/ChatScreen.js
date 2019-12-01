@@ -250,7 +250,7 @@ class ChatScreen extends React.Component {
         this.hideMenu();
         Alert.alert(
             'Are you sure you want to block this user?',
-            'Once blocked, all chat history will disappear from the chat list',
+            'Your chat history with this user will disappear from your chat list.',
             [
                 { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
                 { text: 'Confirm', onPress: () => this.requestBlock() },
@@ -417,7 +417,7 @@ class ChatScreen extends React.Component {
                     } else {
                         Alert.alert(
                             '',
-                            'You cannot send message.',
+                            'You cannot send a message to this uer.',
                             [
                                 { text: 'OK', onPress: () => this.props.navigation.replace("Chat") },
                             ],
@@ -560,8 +560,8 @@ class ChatScreen extends React.Component {
         if(isNaN(sendDiamondsCount))
         {
             Alert.alert(
-                'Warning',
-                'You must input only number.',
+                'Invalid input',
+                'You must input a valid number of diamonds to send.',
                 [
                     { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
                 ],
@@ -572,8 +572,8 @@ class ChatScreen extends React.Component {
         {
             if (sendDiamondsCount > Global.saveData.coin_count) {
                 Alert.alert(
-                    'Warning',
-                    'You can send only ' + Global.saveData.coin_count + ' diamonds. You need more diamonds.',
+                    'Insufficient diamonds',
+                    'You only have ' + Global.saveData.coin_count + ' diamonds available. More diamonds are needed.',
                     [
                         { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
                         { text: 'Buy Diamonds', onPress: () => this.gotoShop(), style: 'cancel' },
@@ -582,8 +582,8 @@ class ChatScreen extends React.Component {
                 );
             } else if (sendDiamondsCount == 0 || sendDiamondsCount == '') {
                 Alert.alert(
-                    'Warning',
-                    'You must input one or more diamons count.',
+                    'Invalid count',
+                    'You must send 1 or more diamonds.',
                     [
                         { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
                     ],
@@ -673,7 +673,7 @@ class ChatScreen extends React.Component {
                 this.setState({
                     msgErrorNumber: true,
                     sendDiamondsCount: value,
-                    msgError: 'You can send only ' + Global.saveData.coin_count + ' diamonds.',
+                    msgError: 'You only have ' + Global.saveData.coin_count + ' diamonds available.',
                 })
             } else {
                 this.setState({
@@ -688,7 +688,7 @@ class ChatScreen extends React.Component {
         if (Global.saveData.coin_count < 30) {
             Alert.alert(
                 '',
-                "You need 30 diamonds to start voice call with " + this.state.other.name + ".",
+                "You need 30 diamonds to start a voice call with " + this.state.other.name + ".",
                 [
                     { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
                     { text: 'Buy Diamonds', onPress: () => this.gotoShop(), style: 'cancel' },

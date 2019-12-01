@@ -273,7 +273,7 @@ class ProfileSetting extends Component {
   onDeactivateAccount() {
     Alert.alert(
       '',
-      'Are you sure you want to deactivate your account? You can activate your account later',
+      'Are you sure you want to deactivate your account? You can reactivate your account at a later time.',
       [
         { text: 'Cancel', backgroundColor: '#FCDD80', onPress: () => () => console.log('Cancel Pressed'), style: 'cancel' },
         { text: 'Confirm', backgroundColor: '#FCDD80', onPress: () => this.deactivateAccount() },
@@ -292,7 +292,7 @@ class ProfileSetting extends Component {
         if (!responseJson.error) {
           Alert.alert(
             '',
-            'Your account is deactivated',
+            'Your account is now deactivated.',
             [
               { text: 'Activate', backgroundColor: '#FCDD80', onPress: () => this.activateAccount() },
             ],
@@ -335,7 +335,7 @@ class ProfileSetting extends Component {
   onCloseAccout() {
     Alert.alert(
       '',
-      'Are you sure you want to close your account permanently? You cannot activate your account again',
+      'Are you sure you want to close your account permanently? You will not be able to recover your account later.',
       [
         { text: 'Cancel', backgroundColor: '#FCDD80', onPress: () => () => console.log('Cancel Pressed'), style: 'cancel' },
         { text: 'Confirm', backgroundColor: '#FCDD80', onPress: () => this.closeAccout() },
@@ -357,7 +357,7 @@ class ProfileSetting extends Component {
 
           let alert_str = 'Your account is closed. Please send an email to admin@dazzleddate.com if this was done in error. Please include the following information in your email ';
           alert_str += 'User ID : ' + resultData.user_id +' Confirmation Code ' + resultData.confirmation_code;
-          alert_str += ' In your email, please describe in details why this was done in error';
+          alert_str += ' In your email, please describe why you believe this was done in error.';
 
           Alert.alert(
             '',
@@ -543,7 +543,7 @@ class ProfileSetting extends Component {
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 10 }}>
             <View>
               <Text style={{ color: '#808080', fontSize: 12 }}>{"SAFE CHAT FILTER"}</Text>
-              <Text style={{ color: '#808080', fontSize: 10, marginTop: 10 }}>{"Automatically block users sending inapproperiate chat texts"}</Text>
+              <Text style={{ color: '#808080', fontSize: 10, marginTop: 10 }}>{"Automatically block users sending inappropriate chats."}</Text>
             </View>
             <View>
               <Dropdown

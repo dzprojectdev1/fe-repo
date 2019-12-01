@@ -356,7 +356,7 @@ class Profile extends Component {
         this.setState({
             errorMsg: true,
             sendDiamondsCount: value,
-            msgError: 'This field should be number.',
+            msgError: 'This field should be a number.',
         })
     }
     else
@@ -365,7 +365,7 @@ class Profile extends Component {
             this.setState({
                 errorMsg: true,
                 sendDiamondsCount: value,
-                msgError: 'You can send only ' + Global.saveData.coin_count + ' diamonds.',
+                msgError: 'You only have ' + Global.saveData.coin_count + ' diamonds available to send.',
             })
         } else {
             this.setState({
@@ -381,8 +381,8 @@ class Profile extends Component {
     if(isNaN(sendDiamondsCount))
     {
         Alert.alert(
-            'Warning',
-            'You must input only number.',
+            'Invalid input',
+            'You must input a valid number of diamonds to send.',
             [
                 { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
             ],
@@ -393,8 +393,8 @@ class Profile extends Component {
     {
         if (sendDiamondsCount > Global.saveData.coin_count) {
             Alert.alert(
-                'Warning',
-                'You can send only ' + Global.saveData.coin_count + ' diamonds. You need more diamonds.',
+                'Insufficient diamonds',
+                'You only have ' + Global.saveData.coin_count + ' diamonds available. You need more diamonds.',
                 [
                     { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
                     { text: 'Buy Diamonds', onPress: () => this.gotoShop(), style: 'cancel' },
@@ -403,8 +403,8 @@ class Profile extends Component {
             );
         } else if (sendDiamondsCount == 0 || sendDiamondsCount == '') {
             Alert.alert(
-                'Warning',
-                'You must input one or more diamons count.',
+                'Invalid input',
+                'You must send one or more diamonds.',
                 [
                     { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
                 ],
@@ -528,7 +528,7 @@ class Profile extends Component {
       })
     } else {
       this.refs.fmLocalInstance.showMessage({
-        message: "This user does not have any fan",
+        message: "You currently have no fans.",
         type: "info",
       });
     }
@@ -735,10 +735,20 @@ class Profile extends Component {
                       <Text style={{marginTop: 20, }}>{'mutual'}</Text>
                     </View>
                     <Text style={[styles.bodyFont, ]}>
-                        {`This icons means the number of diamonds sent from ${this.state.otherData.name} to ${this.state.otherSelectedUserName} is greater than the number of diamonds sent from ${this.state.otherSelectedUserName} to ${this.state.otherData.name}. Currently, ${this.state.otherSelectedUserName} is not a fan of ${this.state.otherData.name}`}
+                        {`
+                          This icons means that the number of diamonds sent from ${this.state.otherData.name} to ${this.state.otherSelectedUserName} is
+                          greater than the number of diamonds sent from ${this.state.otherSelectedUserName} to ${this.state.otherData.name}.
+                          Therefore, ${this.state.otherSelectedUserName} is not a fan of ${this.state.otherData.name}.
+                        `}
                     </Text>
                     <Text style={[styles.bodyFont, ]}>
                         {`Users cannot become fans mutually. In order for ${this.state.otherSelectedUserName} to become a fan of ${this.state.otherData.name}, the number of diamonds sent from ${this.state.otherSelectedUserName} to ${this.state.otherData.name} must be greater than the amount of diamonds ${this.state.otherSelectedUserName} received from ${this.state.otherData.name}`}
+                        {`
+                          Users cannot be mutual fans of each other.
+                          In order for ${this.state.otherSelectedUserName} to become a fan of ${this.state.otherData.name},
+                          the number of diamonds ${this.state.otherData.name} has sent to ${this.state.otherSelectedUserName} must be greater than
+                          the number of diamonds ${this.state.otherSelectedUserName} has received from ${this.state.otherData.name}.
+                        `}
                     </Text>
                     <View style={styles.buttonsOuterView}>
                         <View style={styles.buttonsInnerView}>

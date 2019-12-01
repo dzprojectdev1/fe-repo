@@ -175,9 +175,9 @@ class Record extends Component {
           style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
           type={RNCamera.Constants.Type.front}
           flashMode={RNCamera.Constants.FlashMode.on}
-          permissionDialogTitle={"Permission to use camera"}
+          permissionDialogTitle={"Permission to access camera"}
           permissionDialogMessage={
-            "We need your permission to use your camera phone"
+            "In order for you to record a video, permission must be granted to access your device's camera."
           }
         />}
 

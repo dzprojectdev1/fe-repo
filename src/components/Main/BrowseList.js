@@ -168,7 +168,7 @@ class BrowserList extends Component {
                     }
                 })
                 .catch((error) => {
-                    this.setState({ isLoading: false, error: 'Something just went wrong' });
+                    this.setState({ isLoading: false, error: 'Something just went wrong.' });
                     return
                 });
         });
@@ -237,7 +237,7 @@ class BrowserList extends Component {
                     }
                 })
                 .catch((error) => {
-                    this.setState({ isRefreshing: false, error: 'Something just went wrong' })
+                    this.setState({ isRefreshing: false, error: 'Something just went wrong.' })
                     return
                 });
         });

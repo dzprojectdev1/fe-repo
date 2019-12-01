@@ -238,7 +238,7 @@ class MyFans extends Component {
       })
     } else {
       this.refs.fmLocalInstance.showMessage({
-        message: "You do not have any fan",
+        message: "You currently have no fans.",
         type: "info",
       });
     }
@@ -251,7 +251,7 @@ class MyFans extends Component {
       })
     } else {
       this.refs.fmLocalInstance.showMessage({
-        message: "You do not have any star",
+        message: "You currently have no stars.",
         type: "info",
       });
     }
@@ -273,10 +273,17 @@ class MyFans extends Component {
                       <Text style={{marginTop: 20, }}>{'mutual'}</Text>
                     </View>
                     <Text style={[styles.bodyFont, ]}>
-                        {`This icons means the number of diamonds sent from you to ${this.state.otherSelectedUserName} is greater than the number of diamonds sent from ${this.state.otherSelectedUserName} to you. Currently, ${this.state.otherSelectedUserName} is not a fan of you`}
+                        {`
+                          This icon means that the number of diamonds you sent to ${this.state.otherSelectedUserName} is greater than the number of diamonds ${this.state.otherSelectedUserName} has sent to you.
+                          Therefore, ${this.state.otherSelectedUserName} is not your fan.
+                        `}
                     </Text>
                     <Text style={[styles.bodyFont, ]}>
-                        {`Users cannot become fans mutually. In order for ${this.state.otherSelectedUserName} to become a fan of you, the number of diamonds sent from ${this.state.otherSelectedUserName} to you must be greater than the amount of diamonds ${this.state.otherSelectedUserName} received from you.`}
+                        {`
+                          Users cannot be mutual fans of each other.
+                          In order for ${this.state.otherSelectedUserName} to become your fan,
+                          the number of diamonds ${this.state.otherSelectedUserName} has sent to you must be greater than the number of diamonds ${this.state.otherSelectedUserName} has received from you.
+                        `}
                     </Text>
                     <View style={styles.buttonsOuterView}>
                         <View style={styles.buttonsInnerView}>
