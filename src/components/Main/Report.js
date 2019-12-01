@@ -38,7 +38,7 @@ class Report extends Component {
   }
   onReport() {
     if (this.state.problem_content == "") {
-      Alert.alert("Please fill the input field")
+      Alert.alert("Please describe your problem.")
       return
     }
     var details = {

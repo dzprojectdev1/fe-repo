@@ -450,7 +450,7 @@ class IncomeDetail extends Component {
         if (sendDiamondsCount > Global.saveData.coin_count) {
             Alert.alert(
                 'Warning',
-                'You can send only ' + Global.saveData.coin_count + ' diamonds. You need more diamonds.',
+                'You only have ' + Global.saveData.coin_count + ' diamonds available. You need more diamonds.',
                 [
                     { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
                     { text: 'Buy Diamonds', onPress: () => this.gotoShop(), style: 'cancel' },
@@ -460,7 +460,7 @@ class IncomeDetail extends Component {
         } else if (sendDiamondsCount == 0 || sendDiamondsCount == '') {
             Alert.alert(
                 'Warning',
-                'You must input one or more diamons count.',
+                'At least one diamond must be sent.',
                 [
                     { text: 'Ok', onPress: () => console.log('Ok Pressed'), style: 'cancel' },
                 ],
@@ -790,7 +790,7 @@ class IncomeDetail extends Component {
             }
           >
             <DialogContent>
-              <Text style={{ color: '#000', fontSize: 18, marginTop: 20}}>{'You need 1 diamond to send a heart'}</Text>
+              <Text style={{ color: '#000', fontSize: 18, marginTop: 20}}>{'You need 1 diamond to send a heart.'}</Text>
             </DialogContent>
           </Dialog>
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, flexDirection: 'row', justifyContent: 'space-between' }}>

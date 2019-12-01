@@ -271,7 +271,7 @@ class ChatDetail extends React.Component {
   onBlock() {
     Alert.alert(
       'Are you sure you want to block this user?',
-      'Once blocked, all chat history will disappear from the chat list',
+      'Your chat history with this user will disappear from your chat list.',
       [
         { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
         { text: 'Cinfirm', onPress: () => this.setBlock() },

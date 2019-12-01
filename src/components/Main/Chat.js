@@ -231,7 +231,7 @@ class Chat extends Component {
       "Are you sure you want mark all messages as read?",
       [
         { text: 'Cancel', onPress: () => console.log('Cancel pressed') },
-        { text: 'OK', onPress: () => this.readAllAsRead() },
+        { text: 'Yes', onPress: () => this.readAllAsRead() },
       ],
       { cancelable: false },
     );
