@@ -70,6 +70,8 @@ class ChatScreen extends React.Component {
             fanMessage: '',
             is_fan: false,
             dialogStyle: {},
+            statusByMatchId: 0,
+            msgCoinPerMessage: 0,
         }
     }
 
@@ -92,6 +94,39 @@ class ChatScreen extends React.Component {
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide.bind(this));
         this.backHanlder = BackHandler.addEventListener('hardwareBackPress', this.backPressed);
         // this.getMessageData();
+        this.getStatusByMatchId();
+    }
+
+    getStatusByMatchId = () => {
+        var details = {
+            'matchId': this.state.matchId,
+        };
+        var formBody = [];
+        for (var property in details) {
+            var encodedKey = encodeURIComponent(property);
+            var encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+        fetch(`${SERVER_URL}/api/match/getStatusByMatchId`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': Global.saveData.token
+            },
+            body: formBody,
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                if (!responseJson.error) {
+                    this.setState({
+                        statusByMatchId: responseJson.data.status,
+                        msgCoinPerMessage: responseJson.data.coin_per_message,
+                    })
+                }
+            })
+            .catch((error) => {
+                return
+            });
     }
 
     componentDidMount() {
@@ -415,14 +450,26 @@ class ChatScreen extends React.Component {
                             this.scrollView.scrollToEnd({ animated: true });
                         }
                     } else {
-                        Alert.alert(
-                            '',
-                            'You cannot send a message to this uer.',
-                            [
-                                { text: 'OK', onPress: () => this.props.navigation.replace("Chat") },
-                            ],
-                            { cancelable: false },
-                        );
+                        if (!responseJson.data.diamonds_enough) {
+                            Alert.alert(
+                                '',
+                                responseJson.message,
+                                [
+                                    { text: 'Cancel', onPress: () => console.log('Cancel Pressed') },
+                                    { text: 'Buy Diamonds', onPress: () => this.gotoShop() },
+                                ],
+                                { cancelable: false },
+                            );
+                        } else {
+                            Alert.alert(
+                                '',
+                                'You cannot send a message to this uer.',
+                                [
+                                    { text: 'OK', onPress: () => this.props.navigation.replace("Chat") },
+                                ],
+                                { cancelable: false },
+                            );
+                        }
                     }
                 } else {
                     Alert.alert(
@@ -434,7 +481,7 @@ class ChatScreen extends React.Component {
                 }
             })
             .catch((error) => {
-                alert(JSON.stringify(error))
+                // alert(JSON.stringify(error))
                 return
             });
     }
@@ -468,12 +515,13 @@ class ChatScreen extends React.Component {
                     matchId: this.state.matchId,
                     imageUrl: this.state.other.imgUrl,
                     coin_count: newData.coin_count, 
-                    fan_count: newData.fan_count, 
+                    fan_count: newData.fan_count,  
+                    coin_per_message: newData.coin_per_message, 
                   }
                 });
               }
             }).catch((error) => {
-              alert(JSON.stringify(error));
+            //   alert(JSON.stringify(error));
               return
             });
     }
@@ -1070,6 +1118,40 @@ class ChatScreen extends React.Component {
                             </MenuItem>
                         </Menu>
                     </View>
+                </View>
+                <View style={{ width: DEVICE_WIDTH, height: 60, flexDirection: 'row', justifyContent: 'center', marginTop: 20, alignItems: 'center' }}>
+                    {(this.state.statusByMatchId == 6) && (
+                        <View style={{justifyContent: 'center', borderColor: '#d9d9d9', borderWidth: 0.5, padding: 20, }}>
+                            <Text>
+                                {`Everytime you receive a message from ${this.state.other.name}, `}
+                            </Text>
+                            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                <Text>
+                                    {`you will receive `}
+                                </Text>
+                                <Image source={diamond} style={{width: 15, height: 15, marginTop: 3, marginRight: 2 }}></Image>
+                                <Text>
+                                    {`${this.state.msgCoinPerMessage} from ${this.state.other.name}`}
+                                </Text>
+                            </View>
+                        </View>
+                    )}
+                    {(this.state.statusByMatchId == 7) && (
+                        <View style={{justifyContent: 'center', borderColor: '#d9d9d9', borderWidth: 0.5, padding: 20, }}>
+                            <Text>
+                                {`Everytime you send a message to ${this.state.other.name}, `}
+                            </Text>
+                            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                <Text>
+                                    {`you will send `}
+                                </Text>
+                                <Image source={diamond} style={{width: 15, height: 15, marginTop: 3, marginRight: 2 }}></Image>
+                                <Text>
+                                    {`${this.state.msgCoinPerMessage} to ${this.state.other.name}`}
+                                </Text>
+                            </View>
+                        </View>
+                    )}
                 </View>
                 <ScrollView style={{ marginTop: 15 }} ref={(ref) => { this.scrollView = ref }}
                     onContentSizeChange={(contentWidth, contentHeight) => {

@@ -453,16 +453,27 @@ class BrowserList extends Component {
                                                 }}>
                                                     {item.detail.coin_count}
                                                 </Text>
-                                                <Image source={yellow_star} style={{ width: 15, height: 15, marginTop: 5, }} />
+                                                <Image source={yellow_star} style={{ width: 15, height: 15, marginTop: 4, }} />
                                                 <Text style={{
                                                     fontSize: 14,
                                                     alignItems: 'center',
                                                     color: '#000',
                                                     fontWeight: 'normal',
                                                     marginRight: 10,
-                                                    marginTop: 3,
+                                                    marginTop: 2,
                                                 }}>
                                                     {item.detail.fan_count}
+                                                </Text>
+                                                <Image source={diamond} style={{ width: 15, height: 15, marginTop: 5, }} />
+                                                <Text style={{
+                                                    fontSize: 14,
+                                                    alignItems: 'center',
+                                                    color: '#000',
+                                                    fontWeight: 'normal',
+                                                    marginRight: 10,
+                                                    marginTop: 2,
+                                                }}>
+                                                    {item.detail.coin_per_message + '/msg'}
                                                 </Text>
                                             </View>
                                             <Text style={{

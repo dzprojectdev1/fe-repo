@@ -269,7 +269,12 @@ class Register2 extends Component {
                         Global.saveData.u_city = responseJson.user.ethnicity
                         Global.saveData.u_country = responseJson.user.country
                         Global.saveData.u_description = responseJson.user.description;
-                        Global.saveData.coin_count = responseJson.user.coin_count;
+                        Global.saveData.coin_count = responseJson.user.coin_count;      
+                        Global.saveData.account_status = responseJson.user.account_status; 
+                        Global.saveData.auto_block = responseJson.user.auto_block;
+                        Global.saveData.is_admin = responseJson.user.is_admin;
+                        Global.saveData.fan_count = responseJson.user.fan_count;
+                        Global.saveData.coin_per_message = responseJson.user.coin_per_message;
                         Global.saveData.newUser = true;
                         this.registerLoadingBtn.showLoading(false);
                         this.props.navigation.navigate("BrowseList");

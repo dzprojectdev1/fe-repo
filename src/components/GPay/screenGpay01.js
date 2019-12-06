@@ -411,6 +411,18 @@ class screenGpay01 extends Component {
 
   gotoFreeDiamonds = () => {
     var user_id = Global.saveData.u_id;
+
+    if (this.state.gemNumber > 300) {
+      Alert.alert(
+        '',
+        "You must spend your diamonds to 300 or less in order to get free diamonds. You can always buy more diamonds at the diamond shop page.",
+        [
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        {cancelable: false},
+      );
+      return
+    }
     
     fetch(`${SERVER_URL}/api/transaction/freeDiamonds/${user_id}`, {
       method: 'POST',
@@ -430,7 +442,7 @@ class screenGpay01 extends Component {
           if (responseData.success == false) {
             Alert.alert(
               '',
-              "Please wait " + responseData.hours + " hours " + responseData.minutes + " minutes and " + responseData.seconds + " seconds to unlock 90 free diamonds.",
+              "Please wait " + responseData.hours + " hours " + responseData.minutes + " minutes and " + responseData.seconds + " seconds to unlock 30 free diamonds.",
               [
                 {text: 'OK', onPress: () => console.log('OK Pressed')},
               ],
@@ -439,7 +451,7 @@ class screenGpay01 extends Component {
           } else {
             Alert.alert(
               'Success',
-              "90 diamonds were added to your account successfully. Next 90 diamonds will unlock in 24 hours.",
+              "30 diamonds were added to your account successfully. Next 30 diamonds will unlock in 24 hours.",
               [
                 {text: 'OK', onPress: () => console.log('OK Pressed')},
               ],

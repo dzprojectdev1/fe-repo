@@ -13,11 +13,13 @@ import {
   StatusBar,
   Alert,
   AsyncStorage,
-  Linking
+  Linking,
+  Image
 } from "react-native";
 import { Dropdown } from 'react-native-material-dropdown';
 import { Button } from 'react-native-elements';
 import Global from '../Global';
+import diamond from '../../assets/images/red_diamond_trans.png';
 
 import { SERVER_URL } from '../../config/constants';
 
@@ -37,6 +39,9 @@ class ProfileSetting extends Component {
       account_status: true,
       blockData: [],
       auto_block: '',
+      errorMsg: false,
+      msgError: '',
+      coin_per_message: Global.saveData.coin_per_message,
     };
 
     this.changeAccountStatus();
@@ -184,6 +189,14 @@ class ProfileSetting extends Component {
       Alert.alert("The name field is not inputed")
       return
     }
+    if(isNaN(this.state.coin_per_message)) {
+      Alert.alert("The diamonds per message field should be number.")
+      return
+    }
+    if(this.state.coin_per_message == '' || this.state.coin_per_message == null) {
+      Alert.alert("Some number should be entered.")
+      return
+    }
     this.setState({
       isLoading: true
     });
@@ -222,7 +235,8 @@ class ProfileSetting extends Component {
       'languageId': lanindex,
       'ethnicityId': cityindex,
       'countryId': coutryindex,
-      'auto_blockId': blockindex
+      'auto_blockId': blockindex,
+      'coin_per_message': this.state.coin_per_message,
     };
     var formBody = [];
     for (var property in details) {
@@ -250,6 +264,7 @@ class ProfileSetting extends Component {
           Global.saveData.u_city = this.state.city
           Global.saveData.u_country = this.state.country
           Global.saveData.u_language = this.state.language
+          Global.saveData.coin_per_message = this.state.coin_per_message
           alert(responseJson.message);
         }
         else {
@@ -439,6 +454,27 @@ class ProfileSetting extends Component {
     Global.saveData.isMatchVideo = false;
     Global.saveData.prevpage = "";
   }
+
+  checkCount = value => {
+    if(isNaN(value))
+    {
+      this.setState({
+        errorMsg: true,
+        coin_per_message: value,
+        msgError: 'This field should be number.',
+        disabled: false,
+      })
+    }
+    else
+    {
+      this.setState({
+        errorMsg: false,
+        coin_per_message: value,
+        disabled: false,
+      })
+    }
+  }
+
   render() {
     return (
       <View style={styles.contentContainer}>
@@ -543,7 +579,7 @@ class ProfileSetting extends Component {
           <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 10 }}>
             <View>
               <Text style={{ color: '#808080', fontSize: 12 }}>{"SAFE CHAT FILTER"}</Text>
-              <Text style={{ color: '#808080', fontSize: 10, marginTop: 10 }}>{"Automatically block users sending inappropriate chats."}</Text>
+              <Text style={{ color: '#808080', fontSize: 10, marginTop: 10 }}>{"Automatically block users sending inappropriate chats"}</Text>
             </View>
             <View>
               <Dropdown
@@ -561,7 +597,18 @@ class ProfileSetting extends Component {
               />
             </View>
           </View>
-          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 10, flexDirection: 'row', justifyContent: 'center' }} >
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 10 }}>
+            <View>
+              <Text style={{ color: '#808080', fontSize: 12 }}>{"DIAMONDS PER MESSAGE"}</Text>
+              <Text style={{ color: '#808080', fontSize: 10, marginTop: 10, flexWrap: 'wrap', }}>{"Number of diamonds received per message for Incoming Hearts"}</Text>
+            </View>
+            <View style={styles.SectionStyle}>
+              <Image source={diamond} style={{width: 20, height: 20, }} />
+              <TextInput style={{ color: '#808080', fontSize: 10, width: '100%' }} onChangeText={(value) => this.checkCount(value)} value={'' + this.state.coin_per_message} />
+            </View>         
+            { this.state.errorMsg && <Text style={styles.requiredSent}>* {this.state.msgError} </Text> } 
+          </View>
+          <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 20, flexDirection: 'row', justifyContent: 'center' }} >
             {/* <View /> */}
             {/* <TouchableOpacity style={{ width: 180, height: 30, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center', borderRadius: 5 }}
               onPress={() => this.onUpdate()}>
@@ -613,6 +660,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#3333ff',
     marginBottom: 5,
+  },
+  requiredSent: {
+    textAlign: 'left',
+    color: 'red',    
+    fontSize: 12,
+    marginBottom: 15,
+  },
+  SectionStyle: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderBottomWidth: 0.3,
+    borderBottomColor: '#808080',
+    height: 40,
+    marginTop: 5,
+    marginBottom: 15,
   },
 });
 export default ProfileSetting;

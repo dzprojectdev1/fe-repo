@@ -86,6 +86,7 @@ class FirstScreen extends Component {
                     Global.saveData.auto_block = responseJson.user.auto_block;
                     Global.saveData.is_admin = responseJson.user.is_admin;
                     Global.saveData.fan_count = responseJson.user.fan_count;
+                    Global.saveData.coin_per_message = responseJson.user.coin_per_message;
 
                     if (responseJson.user.account_status == 3) {
 

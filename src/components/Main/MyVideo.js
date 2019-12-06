@@ -42,6 +42,7 @@ import expand from '../../assets/images/expand.png';
 import yellow_star from '../../assets/images/yellow_star.png';
 import yellow_heart_black from '../../assets/images/yellow_heart_black.png';
 import yellow_star_black from '../../assets/images/yellow_star_black.png';
+import dollar_sign from '../../assets/images/dollar_sign.png';
 import Global from '../Global';
 
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
@@ -82,8 +83,8 @@ class MyVideo extends Component {
       this.getVideos()
     });
     
-    this.getBiggestFanUsers();
-    this.getStarUsers();
+    // this.getBiggestFanUsers();
+    // this.getStarUsers();
 
     fetch(`${SERVER_URL}/api/transaction/getDiamondCount`, {
       method: 'POST',
@@ -325,7 +326,7 @@ class MyVideo extends Component {
       'Are you sure you want to delete this photo?',
       [
         { text: 'Delete', backgroundColor: '#FCDD80', onPress: () => this.deleteVideo(otherid) },
-        { text: 'Cancel', backgroundColor: '#FCDD80', onPress: () => () => console.log('Cancel Pressed'), style: 'cancel' },
+        { text: 'Cancel', backgroundColor: '#FCDD80', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
       ],
       { cancelable: false });
   }
@@ -421,6 +422,10 @@ class MyVideo extends Component {
 
   gotoMyFans = () => {
       this.props.navigation.replace("MyFans");
+  }
+
+  gotoExDiamonds = () => {
+    this.props.navigation.replace("ExchangeDiamonds");
   }
 
   render() {
@@ -562,6 +567,16 @@ class MyVideo extends Component {
             />)}
           <View style={{ height: 20 }} />
         </ScrollView>
+        <TouchableOpacity style={{
+          position: 'absolute', left: 15,
+          bottom: Platform.select({ 'android': 90, 'ios': 105 }),
+          width: 70, height: 70,
+          borderRadius: 35,
+          alignItems: 'center', justifyContent: 'center'
+        }}
+          onPress={() => this.gotoExDiamonds()}>
+          <Image source={dollar_sign} style={{width: 90, height: 90, }} />
+        </TouchableOpacity>
         <TouchableOpacity style={{
           position: 'absolute', right: 15,
           bottom: Platform.select({ 'android': 90, 'ios': 105 }),

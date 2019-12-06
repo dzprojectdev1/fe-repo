@@ -361,8 +361,8 @@ class Chat extends Component {
                               flexDirection: 'row',
                               justifyContent: 'flex-start'
                           }}>
-                            {/* <Text numberOfLines={1} style={{ color: '#808080' }}>{(rowData.data.publish == 1) ? (((rowData.data.name).length > 6) ? (((rowData.data.name).substring(0, 6)) + '...') : rowData.data.name): 'Unavailable user'}</Text> */}
-                            <Text numberOfLines={1} style={{ color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.name: 'Unavailable user'}</Text>
+                            <Text numberOfLines={1} style={{ color: '#808080' }}>{(rowData.data.publish == 1) ? (((rowData.data.name).length > 12) ? (((rowData.data.name).substring(0, 12)) + '...') : rowData.data.name): 'Unavailable user'}</Text>
+                            {/* <Text numberOfLines={1} style={{ color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.name: 'Unavailable user'}</Text> */}
                             {(rowData.data.publish == 1) && (<Image source={diamond} style={{ width: 15, height: 15, marginTop: 5, marginLeft: 5, }} />)}
                             <Text numberOfLines={1} style={{ color: '#808080', marginTop: 3, fontSize: 12, }}>{(rowData.data.publish == 1) ? rowData.data.coin_count: ''}</Text>
                             {(rowData.data.publish == 1) && (<Image source={yellow_star} style={{ width: 13, height: 13, marginTop: 5, marginLeft: 5, }} />)}

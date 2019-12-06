@@ -273,17 +273,10 @@ class MyFans extends Component {
                       <Text style={{marginTop: 20, }}>{'mutual'}</Text>
                     </View>
                     <Text style={[styles.bodyFont, ]}>
-                        {`
-                          This icon means that the number of diamonds you sent to ${this.state.otherSelectedUserName} is greater than the number of diamonds ${this.state.otherSelectedUserName} has sent to you.
-                          Therefore, ${this.state.otherSelectedUserName} is not your fan.
-                        `}
+                        {`This icon means that the number of diamonds you sent to ${this.state.otherSelectedUserName} is greater than the number of diamonds ${this.state.otherSelectedUserName} has sent to you. Therefore, ${this.state.otherSelectedUserName} is not your fan.`}
                     </Text>
                     <Text style={[styles.bodyFont, ]}>
-                        {`
-                          Users cannot be mutual fans of each other.
-                          In order for ${this.state.otherSelectedUserName} to become your fan,
-                          the number of diamonds ${this.state.otherSelectedUserName} has sent to you must be greater than the number of diamonds ${this.state.otherSelectedUserName} has received from you.
-                        `}
+                        {`Users cannot become fans mutually. In order for ${this.state.otherSelectedUserName} to become your fan, the number of diamonds ${this.state.otherSelectedUserName} has sent to you must be greater than the number of diamonds ${this.state.otherSelectedUserName} has received from you.`}
                     </Text>
                     <View style={styles.buttonsOuterView}>
                         <View style={styles.buttonsInnerView}>
@@ -499,7 +492,7 @@ class MyFans extends Component {
             />)}
           <View style={{ height: 20 }} />
         </ScrollView>
-        <FlashMessage ref="fmLocalInstance" position="bottom" animated={true} autoHide={true} style={{marginBottom: 50,}} />
+        <FlashMessage ref="fmLocalInstance" position="bottom" animated={true} autoHide={true} style={{marginBottom: 20,}} />
       </View>
     );
   }

@@ -183,6 +183,7 @@ class Match extends Component {
                 last_loggedin_date: newData.last_loggedin_date,
                 coin_count: newData.coin_count,
                 fan_count: newData.fan_count,
+                coin_per_message: newData.coin_per_message,
               }
             )
           }

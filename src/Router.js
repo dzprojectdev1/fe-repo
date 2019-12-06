@@ -29,6 +29,7 @@ import CallIncome from './components/Main/CallIncome';
 import CallOutgo from './components/Main/CallOutgo';
 import CallIn from './components/Main/CallIn';
 import MyFans from './components/Main/MyFans';
+import ExchangeDiamonds from './components/Main/ExchangeDiamonds';
 // import AppView from '../AppView';
 
 import ChatScreen from './components/Main/ChatScreen';
@@ -58,6 +59,7 @@ export default Router = createStackNavigator({
     ProfileSetting: { screen: ProfileSetting },
     TermsPolicy: { screen: TermsPolicy },
     MyFans: { screen: MyFans },
+    ExchangeDiamonds: { screen: ExchangeDiamonds },
     //Auths
     Login: { screen: Login },
     Signup: { screen: Signup },

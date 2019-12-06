@@ -30,6 +30,7 @@ import diamond from '../../assets/images/red_diamond_trans.png';
 import yellow_star from '../../assets/images/yellow_star.png';
 import line_star from '../../assets/images/line_star.png';
 import shooting_star from '../../assets/images/shooting_star.png';
+import accept from '../../assets/images/accept.png';
 import Global from '../Global';
 
 import { SERVER_URL } from '../../config/constants';
@@ -49,6 +50,7 @@ class IncomeDetail extends Component {
       otherId: -1,
       coin_count: 0,
       fan_count: 0,
+      coin_per_message: 0,
       isMatchVideo: false,
       privatedPaused: false,
       isOperating: false,
@@ -110,6 +112,7 @@ class IncomeDetail extends Component {
         description: this.props.navigation.state.params.description,
         coin_count: this.props.navigation.state.params.coin_count,
         fan_count: this.props.navigation.state.params.fan_count,
+        coin_per_message: this.props.navigation.state.params.coin_per_message,
       });
     }
   }
@@ -178,6 +181,7 @@ class IncomeDetail extends Component {
         match_id: this.state.matchId,
         coin_count: this.state.coin_count,
         fan_count: this.state.fan_count,
+        coin_per_message: this.state.coin_per_message,
       }
     }
     Global.saveData.prevpage = "IncomeDetail"
@@ -317,6 +321,7 @@ class IncomeDetail extends Component {
               last_loggedin_date: newData.last_loggedin_date,
               coin_count: newData.coin_count,
               fan_count: newData.fan_count,
+              coin_per_message: newData.coin_per_message,
             });
             
             this.props.navigation.replace("Profile", { 
@@ -336,6 +341,7 @@ class IncomeDetail extends Component {
                 imageUrl: this.state.userimage,
                 coin_count: this.state.coin_count,
                 fan_count: this.state.fan_count,
+                coin_per_message: this.state.coin_per_message,
               }
             });
           }
@@ -836,6 +842,10 @@ class IncomeDetail extends Component {
               <Image source={b_distance} style={{ width: 15, height: 15 }} />
               <Text style={{ marginLeft: 10, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{((this.state.userdistance != 0)? this.state.userdistance: 'unknown') + ' mile'}</Text>
             </View>
+            <View style={{ flexDirection: 'row', marginTop: 5 }}>
+              <Image source={diamond} style={{ width: 15, height: 15, marginTop: 3, }} />
+              <Text style={{ marginLeft: 10, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.coin_per_message + ' per message'}</Text>
+            </View>
             <View style={{ flexDirection: 'column', marginTop: 5 }}>
               <Text>
                 <Text style={{ marginTop: 5, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{this.props.navigation.state.params.gender === 1 ? 'Male, ' : 'Female, '}</Text>
@@ -856,9 +866,10 @@ class IncomeDetail extends Component {
                     onPress={() => this.onReject()}>
                     <Icon type="FontAwesome" name="close" style={{ color: '#B64F54' }} />
                   </TouchableOpacity>
-                  <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#B64F54', alignItems: 'center', justifyContent: 'center' }}
+                  <TouchableOpacity style={{ width: 60, height: 60, borderRadius: 30, alignItems: 'center', justifyContent: 'center' }}
                     onPress={() => this.onMatch()}>
-                    <Icon type="FontAwesome" name="heart" style={{ color: '#fff' }} />
+                    {/* <Icon type="FontAwesome" name="heart" style={{ color: '#fff' }} /> */}
+                    <Image source={accept} style={{width: 62, height: 62}} />
                   </TouchableOpacity>
                 </View>)}
               {this.state.isMatchVideo && (

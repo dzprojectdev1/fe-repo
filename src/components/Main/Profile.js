@@ -57,6 +57,7 @@ class Profile extends Component {
       otherData: props.navigation.state.params.data,
       coin_count: props.navigation.state.params.data.coin_count,
       fan_count: props.navigation.state.params.data.fan_count,
+      coin_per_message: props.navigation.state.params.data.coin_per_message,
       fullImage: false,
       flash_ban: false,
       fanUserVisible: false,
@@ -141,7 +142,7 @@ class Profile extends Component {
         }
       })
       .catch((error) => {
-        alert(JSON.stringify(error));
+        // alert(JSON.stringify(error));
         return
       });
   }
@@ -212,6 +213,7 @@ class Profile extends Component {
             match_id: this.state.otherData.matchId,
             coin_count: this.state.coin_count,
             fan_count: this.state.fan_count,
+            coin_per_message: this.state.coin_per_message,
           }
         }
       });
@@ -233,6 +235,7 @@ class Profile extends Component {
             language_name: this.state.otherData.language_name,
             coin_count: this.state.coin_count,
             fan_count: this.state.fan_count,
+            coin_per_message: this.state.coin_per_message,
           }
         }
       });
@@ -254,6 +257,7 @@ class Profile extends Component {
         language_name: this.state.otherData.language_name,
         coin_count: this.state.coin_count,
         fan_count: this.state.fan_count,
+        coin_per_message: this.state.coin_per_message,
       });
     } else if (Global.saveData.prevpage == "MyVideo") {
       this.props.navigation.replace(Global.saveData.prevpage);
@@ -528,7 +532,7 @@ class Profile extends Component {
       })
     } else {
       this.refs.fmLocalInstance.showMessage({
-        message: "You currently have no fans.",
+        message: "This user does not have any fan.",
         type: "info",
       });
     }
@@ -735,20 +739,10 @@ class Profile extends Component {
                       <Text style={{marginTop: 20, }}>{'mutual'}</Text>
                     </View>
                     <Text style={[styles.bodyFont, ]}>
-                        {`
-                          This icons means that the number of diamonds sent from ${this.state.otherData.name} to ${this.state.otherSelectedUserName} is
-                          greater than the number of diamonds sent from ${this.state.otherSelectedUserName} to ${this.state.otherData.name}.
-                          Therefore, ${this.state.otherSelectedUserName} is not a fan of ${this.state.otherData.name}.
-                        `}
+                        {`This icons means that the number of diamonds sent from ${this.state.otherData.name} to ${this.state.otherSelectedUserName} is greater than the number of diamonds sent from ${this.state.otherSelectedUserName} to ${this.state.otherData.name}. Therefore, ${this.state.otherSelectedUserName} is not a fan of ${this.state.otherData.name}.`}
                     </Text>
                     <Text style={[styles.bodyFont, ]}>
                         {`Users cannot become fans mutually. In order for ${this.state.otherSelectedUserName} to become a fan of ${this.state.otherData.name}, the number of diamonds sent from ${this.state.otherSelectedUserName} to ${this.state.otherData.name} must be greater than the amount of diamonds ${this.state.otherSelectedUserName} received from ${this.state.otherData.name}`}
-                        {`
-                          Users cannot be mutual fans of each other.
-                          In order for ${this.state.otherSelectedUserName} to become a fan of ${this.state.otherData.name},
-                          the number of diamonds ${this.state.otherData.name} has sent to ${this.state.otherSelectedUserName} must be greater than
-                          the number of diamonds ${this.state.otherSelectedUserName} has received from ${this.state.otherData.name}.
-                        `}
                     </Text>
                     <View style={styles.buttonsOuterView}>
                         <View style={styles.buttonsInnerView}>
@@ -780,12 +774,12 @@ class Profile extends Component {
             <Image source={ban_user} style={{width: 300, height: 300, zIndex: 100, position: 'absolute', left: parseInt(DEVICE_WIDTH /2) - 150, top: parseInt(DEVICE_HEIGHT /2) - 150,}} />
           </View>
         ): null}
-        <View style={{ height: this.state.otherData.imageUrl? 200: 120, marginTop: Platform.select({ 'ios': '10%', 'android': '10%' }), marginBottom: 5, flexDirection: 'row', }}>
+        <View style={{ height: this.state.otherData.imageUrl? 220: 140, marginTop: Platform.select({ 'ios': '10%', 'android': '10%' }), marginBottom: 5, flexDirection: 'row', }}>
           <TouchableOpacity style={{ width: 40, height: 40, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}
             onPress={() => this.onBack()} >
             <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
           </TouchableOpacity>
-          <View style={{ width: DEVICE_WIDTH - 90, height: this.state.otherData.imageUrl? 200: 120, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ width: DEVICE_WIDTH - 90, height: this.state.otherData.imageUrl? 220: 140, alignItems: 'center', justifyContent: 'center' }}>
             {this.state.otherData.imageUrl && (
               <View style={{flexDirection: 'row'}}>
                 <TouchableOpacity style={{ width: 120, height: 120, marginLeft: 90, }}
@@ -838,6 +832,10 @@ class Profile extends Component {
             }}>
                 {('active ' + this.state.otherData.last_loggedin_date)}
             </Text>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <Image source={diamond} style={{width: 15, height: 15, marginTop: 2, marginRight: 3,}} />
+              <Text style={{fontSize: 12, color: '#7d7d7d'}}>{`${this.state.coin_per_message} per message`}</Text>
+            </View>
           </View>
           { (Global.saveData.is_admin === 1) && (
             <TouchableOpacity style={{ width: 30, height: 40, marginRight: 10, alignItems: 'center', justifyContent: 'center' }}

@@ -415,6 +415,7 @@ class Browse extends Component {
           country_name: this.state.otherData.detail.country_name,
           coin_count: this.state.coin_count,
           fan_count: this.state.fan_count,
+          coin_per_message: this.state.otherData.detail.coin_per_message,
           matchId: 0,
         } 
       }
@@ -1059,6 +1060,10 @@ class Browse extends Component {
                   <View style={{ flexDirection: 'row', marginTop: 5 }}>
                     <Image source={b_age} style={{ width: 15, height: 16 }} />
                     <Text style={{ marginLeft: 10, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.age + ' years old'}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                    <Image source={diamond} style={{ width: 15, height: 15, marginTop: 3, }} />
+                    <Text style={{ marginLeft: 10, color:'#fff', fontSize: 12, fontWeight: 'bold' }}>{this.state.otherData.detail.coin_per_message + ' per message'}</Text>
                   </View>
                   <View style={{ flexDirection: 'row', marginTop: 5 }}>
                     <Image source={b_distance} style={{ width: 15, height: 15 }} />
