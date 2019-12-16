@@ -379,7 +379,7 @@ class Chat extends Component {
                   </TouchableOpacity>
                 );
               }}
-              keyExtractor={(item, index) => index}
+              keyExtractor={(item, index) => index.toString()}
             />)}
           <View style={{ height: 50 }} />
         </ScrollView>)}

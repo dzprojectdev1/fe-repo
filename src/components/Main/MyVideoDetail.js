@@ -5,23 +5,25 @@ import {
   Content,
 } from "native-base";
 import { Dimensions, View, StyleSheet, TouchableOpacity, StatusBar, Image } from "react-native";
-// import Video from 'react-native-video';
+import Video from 'react-native-video';
 import Global from '../Global';
 
-import { SERVER_URL } from '../../config/constants';
+import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
 
 class MyVideoDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
       paused: false,
-      vid: -1,
-      vUrl: '',
       username: '',
       userage: '',
       userdistance: '',
-      otherId: -1,
-      primary: -1,
+      vUrl: this.props.navigation.state.params.vUrl,      
+      cdn_id: this.props.navigation.state.params.cdn_id,
+      otherId: this.props.navigation.state.params.otherId,
+      vid: this.props.navigation.state.params.id,
+      primary: this.props.navigation.state.params.primary,
+      content_type: this.props.navigation.state.params.content_type,
     };
   }
 
@@ -34,15 +36,37 @@ class MyVideoDetail extends Component {
     this.props.navigation.addListener('didFocus', (playload) => {
       this.setState({ paused: false })
     });
+    // if (this.state.content_type == 2) {
+    //   this.getVideoUrl(this.state.cdn_id);
+    // }
   }
   componentWillMount() {
-    this.setState({
-      vUrl: this.props.navigation.state.params.url,
-      otherId: this.props.navigation.state.params.otherId,
-      vid: this.props.navigation.state.params.id,
-      primary: this.props.navigation.state.params.primary
+  }
+
+
+  getVideoUrl = async (cdn_id) => {
+    var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + cdn_id;
+    await fetch(v_url, {
+        method: 'GET',
+        headers: { 
+            'Content-Type':'application/json',
+            'Authorization':Global.saveData.token
+        }
+    }).then((response) => response.json())
+        .then((responseJson) => {
+          console.log('responseJson.url ', responseJson.url);
+            this.setState({
+              vUrl: responseJson.url,
+            })
+        })
+        .catch((error) => {
+            console.log("There is error, please try again!");
+            return
     });
   }
+
+
+
   onBack() {
     this.props.navigation.pop()
   }
@@ -68,20 +92,19 @@ class MyVideoDetail extends Component {
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
         <Content>
-          {/* <Video source={{ uri: this.state.vUrl }}   // Can be a URL or a local file.
+          {this.state.content_type == 2 && (<Video source={{ uri: this.state.vUrl }}   // Can be a URL or a local file.
             ref={(ref) => {
               this.player = ref
             }}
             ignoreSilentSwitch={null}
             resizeMode="cover"
             repeat={true}
-            paused={this.state.paused}
-            onError={this.videoError}        // Callback when video cannot be loaded
-            style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }} /> */}
-          <Image
-            source={{ uri: this.state.vUrl }}
+            style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }} 
+          />)}
+          {this.state.content_type == 1 && (<Image
+            source={{ uri: GCS_BUCKET + this.state.cdn_id + '-screenshot' }}
             style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
-          />
+          />)}
         </Content>
         <TouchableOpacity style={{ position: 'absolute', left: 0, top: 30, width: 60, height: 60, alignItems: 'center', justifyContent: 'center' }}
           onPress={() => this.onBack()}>

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import {
   Text,
-  Icon
+  Icon,
 } from "native-base"
-import { Image, Dimensions, View, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
+import { Image, Dimensions, View, StyleSheet, TouchableOpacity, StatusBar, Alert } from "react-native";
 import { RNCamera } from 'react-native-camera';
 import Video from 'react-native-video';
 import heart from '../../assets/images/heart.png';
@@ -12,9 +12,14 @@ import recordImg from '../../assets/images/b_recording.png';
 import saving from '../../assets/images/saving.png';
 import retrying from '../../assets/images/retrying.png';
 import stoping from '../../assets/images/stoping.png';
+import b_stop from '../../assets/images/b_stop.png';
+import switching_camera from '../../assets/images/switching_camera.png';
 import Global from '../Global';
 
-import {SERVER_URL} from '../../config/constants';
+import {SERVER_URL, GCS_BUCKET, VIDEO_UPLOAD, BUCKET, GOOGLE_ACCESS_ID} from '../../config/constants';
+import { uploadVideo } from '../../util/uploadVideo';
+import { TextInput } from "react-native-gesture-handler";
+import FlashMessage, { showMessage } from 'react-native-flash-message';
 
 class Record extends Component {
   constructor(props) {
@@ -28,6 +33,9 @@ class Record extends Component {
       recordTime: 0,
       recordTimeText: '00:00',
       uploadCredentials: null,
+      fileId: '',
+      camera: 'front',
+      camera_type: RNCamera.Constants.Type.front,
     };
   }
   static navigationOptions = {
@@ -35,6 +43,7 @@ class Record extends Component {
   };
   componentDidMount() {
     Global.saveData.nowPage = 'Record';
+    Global.saveData.prevpage = 'Record';
     fetch(`${SERVER_URL}/api/storage/uploadCredentials`, {
       method: 'GET',
       headers: {        
@@ -119,50 +128,121 @@ class Record extends Component {
   openStop() {
     this.setState({ paused: true })
   }
-  onUpload() {
-    console.log(this.state.recordedUri);
-    console.log(this.state.uploadCredentials);
+  onUpload() { 
+    // this.showVideoUploadedMessage(); 
+    console.log('recordedUri', this.state.recordedUri);
+    console.log('uploadCredentials', this.state.uploadCredentials);
     const {
       policy,
       fileId,
     } = this.state.uploadCredentials;
     const file = this.state.recordedUri;
+    this.setState({
+      fileId: fileId
+    });
+
+    console.log('policy', policy);
+    console.log('fileId', fileId);
 
     const formData = new FormData();
-    formData.append('GoogleAccessId', 'main-service-account@dazzled-date-246123.iam.gserviceaccount.com');
+    formData.append('GoogleAccessId', GOOGLE_ACCESS_ID);
     formData.append('key', fileId);
-    formData.append('bucket', 'fireblast-begonia-maxwell-dev');
+    formData.append('bucket', BUCKET);
     formData.append('Content-Type', 'video/mp4');
     formData.append('policy', policy.base64);
     formData.append('signature', policy.signature);
-    // formData.append('file', file);
     formData.append("file", {
       name: "video.mp4",
       type: 'video/mp4',
       uri: this.state.recordedUri,
     });
 
-    fetch('http://fireblast-begonia-maxwell-dev.storage.googleapis.com', {
+    console.log('formData', formData);
+
+    fetch(VIDEO_UPLOAD, {
       method: 'POST',
       // mode: 'no-cors',
       body: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    })
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    // this.props.navigation.navigate("Browse",{url:this.state.recordedUri})
-  }
-  rgisterVideo() {
+    }).then(res => {
+      console.log('success', res);
 
+      if (res.ok) {
+        this.registerVideo();
+      }
+    }).catch(err => {
+      console.log('error', err);
+      return;
+    });
+    
+    Alert.alert(
+      '',
+      "Video uploading is in progress. It usually take 2 to 10 minutes to upload video depends on the size of the video",
+      [
+        {text: 'OK', onPress: () => this.props.navigation.replace('MyVideo')},
+      ],
+      {cancelable: false},
+    );
+  }
+  /**
+   * 
+   * @param {file data} fileData 
+   * inserting video data to tbl_video
+   */
+  registerVideo() {  
+    var details = {
+      'cdn_id': this.state.fileId,
+    };
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    fetch(`${SERVER_URL}/api/upload/insertVideo`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      },
+      body: formBody,
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+          console.log('Response ', responseJson);
+          // this.props.navigation.replace('MyVideo');
+        }
+      })
+      .catch((error) => {
+        console.log('Error ', error);
+        return
+      });
   }
   onBack() {
     this.props.navigation.pop()
+  }
+  switchCamera() {
+    if (this.state.camera == 'front') {
+      this.setState({
+        camera: 'back',
+        camera_type: RNCamera.Constants.Type.back,
+      })
+    } else {
+      this.setState({
+        camera: 'front',
+        camera_type: RNCamera.Constants.Type.front,
+      })
+    }
+  }
+
+  showVideoUploadedMessage = () => {
+    this.refs.fmLocalInstance.showMessage({
+      message: "Video is uploading. It will show up in your profile page in 1-10 minutes (depends on the size of the video).",
+      type: "info",
+    });
   }
   render() {
     return (
@@ -173,7 +253,7 @@ class Record extends Component {
             this.camera = ref;
           }}
           style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
-          type={RNCamera.Constants.Type.front}
+          type={this.state.camera_type}
           flashMode={RNCamera.Constants.FlashMode.on}
           permissionDialogTitle={"Permission to access camera"}
           permissionDialogMessage={
@@ -197,10 +277,10 @@ class Record extends Component {
         >
           <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
         </TouchableOpacity>
-        {!this.state.isRecorded && (
+        {/* {!this.state.isRecorded && (
           <View style={{ position: 'absolute', top: DEVICE_HEIGHT * 0.2, width: DEVICE_WIDTH, height: DEVICE_WIDTH * 0.7, alignItems: 'center', justifyContent: 'center' }}>
             <Image source={heart} style={{ width: DEVICE_WIDTH * 0.7, height: DEVICE_WIDTH * 0.7, opacity: 0.75 }} />
-          </View>)}
+          </View>)} */}
         {this.state.recording && (
           <View style={{
             position: 'absolute', left: 0, bottom: 100, height: 40, width: DEVICE_WIDTH,
@@ -214,6 +294,7 @@ class Record extends Component {
             alignItems: 'center', justifyContent: 'center'
           }}>
           <View style={{ width: DEVICE_WIDTH * 0.8, height: 60, flexDirection: 'row', justifyContent: this.state.isRecorded ? 'space-between' : 'center' }}>
+          {/* <View style={{ width: DEVICE_WIDTH * 0.8, height: 60, flexDirection: 'row', justifyContent: 'space-between'}}> */}
             {this.state.isRecorded && this.state.paused && (
               <TouchableOpacity onPress={() => this.openPlay()}>
                 <Image source={playing} style={{ width: 60, height: 60 }} />
@@ -224,13 +305,45 @@ class Record extends Component {
               </TouchableOpacity>)}
             {!this.state.isRecorded && (
               <TouchableOpacity
+                // onPress={() => this.onRecord()}
+              //  activeOpacity={1.0} 
+              //  delayPressIn={0}
+              //  onPressIn={()=>this.onRecord()}
+              //  onPressOut={()=>this.onRecord()}
+              >
+                {/* <Image source={recordImg} style={{ width: 60, height: 60, display: 'none' }} /> */}
+                <Text style={{width: 60, height: 60,}}>{null}</Text>
+              </TouchableOpacity>)}
+            {!this.state.isRecorded && (
+              <TouchableOpacity
                 onPress={() => this.onRecord()}
               //  activeOpacity={1.0} 
               //  delayPressIn={0}
               //  onPressIn={()=>this.onRecord()}
               //  onPressOut={()=>this.onRecord()}
               >
-                <Image source={recordImg} style={{ width: 60, height: 60 }} />
+                <Image source={this.state.recording? b_stop : recordImg} style={{ width: 60, height: 60, marginLeft: 27,}} />
+              </TouchableOpacity>)}
+            {!this.state.isRecorded && !this.state.recording && (
+              <TouchableOpacity
+                onPress={() => this.switchCamera()}
+              //  activeOpacity={1.0} 
+              //  delayPressIn={0}
+              //  onPressIn={()=>this.onRecord()}
+              //  onPressOut={()=>this.onRecord()}
+              >
+                <Image source={switching_camera} style={{ width: 85, height: 85, marginTop: -12, }} />
+              </TouchableOpacity>)}              
+            {!this.state.isRecorded && this.state.recording && (
+              <TouchableOpacity
+                // onPress={() => this.onRecord()}
+              //  activeOpacity={1.0} 
+              //  delayPressIn={0}
+              //  onPressIn={()=>this.onRecord()}
+              //  onPressOut={()=>this.onRecord()}
+              >
+                {/* <Image source={recordImg} style={{ width: 60, height: 60, display: 'none' }} /> */}
+                <Text style={{width: 85, height: 85,}}>{null}</Text>
               </TouchableOpacity>)}
             {this.state.isRecorded && (
               <TouchableOpacity onPress={() => this.onRetry()}>
@@ -242,6 +355,7 @@ class Record extends Component {
               </TouchableOpacity>)}
           </View>
         </View>
+        <FlashMessage ref="fmLocalInstance" position="top" animated={true} autoHide={true} />
       </View>
     );
   }

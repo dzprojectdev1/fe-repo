@@ -37,6 +37,7 @@ import hiddenMan from '../../assets/images/hidden_man.png';
 import admirable from '../../assets/images/admirable_icon.png';
 import collapse from '../../assets/images/collapse.png';
 import expand from '../../assets/images/expand.png';
+import video_player from '../../assets/images/video_player.png';
 import Global from '../Global';
 
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
@@ -181,14 +182,52 @@ class Profile extends Component {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
       var value = Object.values(data[i]);
-      list_items.push({
-        index: i,
-        otherId: data[i].other_user_id,
-        imageUrl: GCS_BUCKET + value[0] + '-screenshot',
-        videoUrl: null,
-        name: 'NAME',
-        time: 'TIME'
-      });
+      if (data[i].cdn_id && data[i].content_type == 1) {
+        list_items.push({
+          index: i,
+          otherId: data[i].other_user_id,
+          imageUrl: GCS_BUCKET + value[0] + '-screenshot',
+          videoUrl: null,
+          content_type: 1,
+          name: 'NAME',
+          time: 'TIME'
+        });
+      } else if (data[i].cdn_id && data[i].content_type == 2) {
+
+        var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + data[i].cdn_id;
+        await fetch(v_url, {
+            method: 'GET',
+            headers: { 
+                'Content-Type':'application/json',
+                'Authorization':Global.saveData.token
+            }
+        }).then((response) => response.json())
+            .then((responseJson) => {
+              list_items.push({
+                index: i,
+                otherId: data[i].other_user_id,
+                imageUrl: data[i].cdn_id_128,
+                videoUrl: responseJson.url,
+                content_type: 2,
+                name: 'NAME',
+                time: 'TIME'
+              });
+            })
+            .catch((error) => {
+                alert("There is error, please try again!")
+                return
+        });
+      } else {
+        list_items.push({
+          index: i,
+          otherId: data[i].other_user_id,
+          imageUrl: null,
+          videoUrl: null,
+          content_type: 0,
+          name: 'NAME',
+          time: 'TIME'
+        });
+      }
     }
     this.setState({
       datas: list_items,
@@ -1005,6 +1044,7 @@ class Profile extends Component {
                 return (
                   <TouchableOpacity style={{ width: DEVICE_WIDTH / 2, }} onPress={() => this.showUserVideo(index, rowData.imageUrl, rowData.otherId, this.state.datas)}>
                     <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2, height: (DEVICE_WIDTH / 2) * 1.5, backgroundColor: '#5A5A5A' }}>
+                      {rowData.content_type == 2 && (<Image source={video_player} style={{ position: 'absolute', width: 30, height: 30, top: (DEVICE_WIDTH / 4) * 1.5 - 15, left: DEVICE_WIDTH / 4 -15, }} />)}
                     </ImageBackground>
                   </TouchableOpacity>
                 );
