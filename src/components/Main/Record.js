@@ -44,7 +44,7 @@ class Record extends Component {
   componentDidMount() {
     Global.saveData.nowPage = 'Record';
     Global.saveData.prevpage = 'Record';
-    fetch(`${SERVER_URL}/api/storage/uploadCredentials`, {
+    fetch(`${SERVER_URL}/api/storage/uploadCredentials?contentType=2`, {
       method: 'GET',
       headers: {        
         'Content-Type': 'application/json',

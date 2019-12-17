@@ -390,7 +390,7 @@ class MyVideo extends Component {
     // this.props.navigation.navigate("Record");
   }
   getUploadCredentials() {
-    fetch(`${SERVER_URL}/api/storage/uploadCredentials`, {
+    fetch(`${SERVER_URL}/api/storage/uploadCredentials?contentType=2`, {
       method: 'GET',
       headers: {        
         'Content-Type': 'application/json',

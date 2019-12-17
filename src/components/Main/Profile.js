@@ -261,6 +261,7 @@ class Profile extends Component {
         data: {
           imageUrl: this.state.otherData.imageUrl,
           isMatched: this.state.otherData.isMatched, 
+          videoUrl: this.state.otherData.videoUrl,
           detail: { 
             id: this.state.otherData.id, 
             name: this.state.otherData.name, 
@@ -297,6 +298,8 @@ class Profile extends Component {
         coin_count: this.state.coin_count,
         fan_count: this.state.fan_count,
         coin_per_message: this.state.coin_per_message,
+        videoUrl: this.state.otherData.videoUrl,
+        content_type: this.state.otherData.content_type,
       });
     } else if (Global.saveData.prevpage == "MyVideo") {
       this.props.navigation.replace(Global.saveData.prevpage);
@@ -533,13 +536,39 @@ class Profile extends Component {
           .then((responseJson) => {
             if (!responseJson.error) {
               let newData = responseJson.data;
-  
-              this.props.navigation.replace("Browse", { 
-                data: {
-                  imageUrl: (row.imgUrl !== '' && row.imgUrl !== null) ? GCS_BUCKET + row.imgUrl + '-screenshot': null,
-                  detail: newData,
-                }
-              });
+              if (row.contentType == 2) {
+                var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + row.imgUrl;
+                fetch(v_url, {
+                    method: 'GET',
+                    headers: { 
+                        'Content-Type':'application/json',
+                        'Authorization':Global.saveData.token
+                    }
+                }).then((response) => response.json())
+                    .then((responseJson) => {
+                        this.props.navigation.replace("Browse", { 
+                          data: {
+                            imageUrl: (row.imgUrl !== '' && row.imgUrl !== null) ? GCS_BUCKET + row.imgUrl + '-screenshot': null,
+                            videoUrl: responseJson.url,
+                            content_type: row.contentType,
+                            detail: newData,
+                          }
+                        });
+                    })
+                    .catch((error) => {
+                        alert("There is error, please try again!")
+                        return
+                });
+              } else {
+                this.props.navigation.replace("Browse", { 
+                  data: {
+                    imageUrl: (row.imgUrl !== '' && row.imgUrl !== null) ? GCS_BUCKET + row.imgUrl + '-screenshot': null,
+                    videoUrl: null,
+                    content_type: contentType,
+                    detail: newData,
+                  }
+                });
+              }
             }
           }).catch((error) => {
             alert(JSON.stringify(error));

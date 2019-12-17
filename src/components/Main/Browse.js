@@ -225,12 +225,44 @@ class Browse extends Component {
     });
   }
   getDetails = async (data) => {
-    if (data.cdn_filtered_id) {
+    if (data.cdn_filtered_id && data.content_type == 1) {
       var otherData = {};
       otherData = {
         imageUrl: GCS_BUCKET + data.cdn_filtered_id + '-screenshot',
+        videoUrl: null,
+        content_type: data.content_type,
         detail: data
       };
+      this.setState({
+        otherData: otherData,
+        coin_count: data.coin_count,
+        fan_count: data.fan_count,
+        flash_heart: false,
+        flash_reject: false,
+        flash_ban: false,
+      });
+    } else if (data.cdn_filtered_id && data.content_type == 2) {
+      var otherData = {};
+      var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + data.cdn_filtered_id;
+      await fetch(v_url, {
+          method: 'GET',
+          headers: { 
+              'Content-Type':'application/json',
+              'Authorization':Global.saveData.token
+          }
+      }).then((response) => response.json())
+          .then((responseJson) => { 
+              otherData = {
+                imageUrl: GCS_BUCKET + data.cdn_filtered_id + '_128ss',
+                videoUrl: responseJson.url,
+                content_type: data.content_type,
+                detail: data
+              };
+          })
+          .catch((error) => {
+              alert("There is error, please try again!")
+              return
+      });
       this.setState({
         otherData: otherData,
         coin_count: data.coin_count,
@@ -242,6 +274,8 @@ class Browse extends Component {
     } else {
       var otherData = {
         imageUrl: null,
+        videoUrl: null,
+        content_type: null,
         detail: data
       };
       this.setState({
@@ -409,6 +443,7 @@ class Browse extends Component {
           isMatched: false, 
           description: this.state.otherData.detail.description,
           imageUrl: this.state.otherData.imageUrl,
+          videoUrl: this.state.otherData.videoUrl,
           age: this.state.otherData.detail.age,
           distance: this.state.otherData.detail.distance,
           gender: this.state.otherData.detail.gender,

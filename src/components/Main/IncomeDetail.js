@@ -19,6 +19,7 @@ import {
   Keyboard,
 } from "react-native";
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
+import Video from 'react-native-video';
 
 import b_notification from '../../assets/images/notification.png';
 import b_name from '../../assets/images/name.png';
@@ -69,6 +70,7 @@ class IncomeDetail extends Component {
       msgError: '',
       sendDiamondsCount: 0,
       fanMessage: '',
+      content_type: 0,
     };
   }
 
@@ -101,7 +103,7 @@ class IncomeDetail extends Component {
       Global.saveData.preuserdistance = parseInt(this.props.navigation.state.params.distance);
 
       this.setState({
-        vUrl: this.props.navigation.state.params.url,
+        vUrl: this.props.navigation.state.params.videoUrl,
         otherId: this.props.navigation.state.params.otherId,
         isMatchVideo: Global.saveData.isMatchVideo,
         username: this.props.navigation.state.params.name,
@@ -113,6 +115,7 @@ class IncomeDetail extends Component {
         coin_count: this.props.navigation.state.params.coin_count,
         fan_count: this.props.navigation.state.params.fan_count,
         coin_per_message: this.props.navigation.state.params.coin_per_message,
+        content_type: this.props.navigation.state.params.content_type,
       });
     }
   }
@@ -342,6 +345,8 @@ class IncomeDetail extends Component {
                 coin_count: this.state.coin_count,
                 fan_count: this.state.fan_count,
                 coin_per_message: this.state.coin_per_message,
+                videoUrl: this.state.vUrl,
+                content_type: this.state.content_type,
               }
             });
           }
@@ -713,7 +718,22 @@ class IncomeDetail extends Component {
         </Dialog>
 
         <Content>
-          {!this.state.isMatchVideo && (
+          {(this.state.vUrl != null) && (
+            <TouchableOpacity
+              onPress={() => this.gotoProfile()}>
+              <Video source={{uri:this.state.vUrl}}   // Can be a URL or a local file.
+                  ref={(ref) => {
+                    this.player = ref
+                  }}
+                  resizeMode = "cover"
+                  ignoreSilentSwitch={null}
+                  repeat ={true}
+                  // paused={this.state.isPlayVideo} // option to play video automatically or manually
+                  // onError={this.videoError}       // Callback when video cannot be loaded
+                  style={{height:DEVICE_HEIGHT, width:DEVICE_WIDTH}}/>
+            </TouchableOpacity>
+          )}
+          {!this.state.isMatchVideo && this.state.vUrl == null && (
             this.state.userimage ? (              
               <TouchableOpacity
                 onPress={() => this.gotoProfile()}>
