@@ -1073,12 +1073,12 @@ class ChatScreen extends React.Component {
                                     source={call_ring}
                                 />
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.ringIconTouch, { marginLeft: 20 }]} onPress={() => this.ringVideo()}>
+                            {/* <TouchableOpacity style={[styles.ringIconTouch, { marginLeft: 20 }]} onPress={() => this.ringVideo()}>
                                 <Image
                                     style={styles.ringIcon}
                                     source={call_video}
                                 />
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
                     </View>
                     <View style={styles.menuIcon}>
