@@ -20,15 +20,9 @@ import {
   Alert,
   ImageBackground
 } from "react-native";
-<<<<<<< HEAD
-// import { Badge } from 'react-native-elements';
-// import FastImage from 'react-native-fast-image';
-// import shorthash from 'shorthash';
-=======
 import { Badge } from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import shorthash from 'shorthash';
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -300,10 +294,6 @@ class Chat extends Component {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-<<<<<<< HEAD
-         
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         <View style={{ height: 40, marginTop: 40, flexDirection: 'row', }}>
           <View style={{width: 100, flexDirection: 'row',}}>
             <TouchableOpacity style={{ width: 80, height: 40 }}
@@ -389,11 +379,7 @@ class Chat extends Component {
                   </TouchableOpacity>
                 );
               }}
-<<<<<<< HEAD
-              keyExtractor={(item, index) => index}
-=======
               keyExtractor={(item, index) => index.toString()}
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
             />)}
           <View style={{ height: 50 }} />
         </ScrollView>)}

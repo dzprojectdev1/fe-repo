@@ -37,10 +37,7 @@ import hiddenMan from '../../assets/images/hidden_man.png';
 import admirable from '../../assets/images/admirable_icon.png';
 import collapse from '../../assets/images/collapse.png';
 import expand from '../../assets/images/expand.png';
-<<<<<<< HEAD
-=======
 import video_player from '../../assets/images/video_player.png';
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 import Global from '../Global';
 
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
@@ -185,7 +182,6 @@ class Profile extends Component {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
       var value = Object.values(data[i]);
-<<<<<<< HEAD
       list_items.push({
         index: i,
         otherId: data[i].other_user_id,
@@ -194,54 +190,6 @@ class Profile extends Component {
         name: 'NAME',
         time: 'TIME'
       });
-=======
-      if (data[i].cdn_id && data[i].content_type == 1) {
-        list_items.push({
-          index: i,
-          otherId: data[i].other_user_id,
-          imageUrl: GCS_BUCKET + value[0] + '-screenshot',
-          videoUrl: null,
-          content_type: 1,
-          name: 'NAME',
-          time: 'TIME'
-        });
-      } else if (data[i].cdn_id && data[i].content_type == 2) {
-
-        var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + data[i].cdn_id;
-        await fetch(v_url, {
-            method: 'GET',
-            headers: { 
-                'Content-Type':'application/json',
-                'Authorization':Global.saveData.token
-            }
-        }).then((response) => response.json())
-            .then((responseJson) => {
-              list_items.push({
-                index: i,
-                otherId: data[i].other_user_id,
-                imageUrl: data[i].cdn_id_128,
-                videoUrl: responseJson.url,
-                content_type: 2,
-                name: 'NAME',
-                time: 'TIME'
-              });
-            })
-            .catch((error) => {
-                alert("There is error, please try again!")
-                return
-        });
-      } else {
-        list_items.push({
-          index: i,
-          otherId: data[i].other_user_id,
-          imageUrl: null,
-          videoUrl: null,
-          content_type: 0,
-          name: 'NAME',
-          time: 'TIME'
-        });
-      }
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
     }
     this.setState({
       datas: list_items,
@@ -275,10 +223,6 @@ class Profile extends Component {
         data: {
           imageUrl: this.state.otherData.imageUrl,
           isMatched: this.state.otherData.isMatched, 
-<<<<<<< HEAD
-=======
-          videoUrl: this.state.otherData.videoUrl,
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
           detail: { 
             id: this.state.otherData.id, 
             name: this.state.otherData.name, 
@@ -315,11 +259,8 @@ class Profile extends Component {
         coin_count: this.state.coin_count,
         fan_count: this.state.fan_count,
         coin_per_message: this.state.coin_per_message,
-<<<<<<< HEAD
-=======
         videoUrl: this.state.otherData.videoUrl,
         content_type: this.state.otherData.content_type,
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
       });
     } else if (Global.saveData.prevpage == "MyVideo") {
       this.props.navigation.replace(Global.saveData.prevpage);
@@ -556,15 +497,6 @@ class Profile extends Component {
           .then((responseJson) => {
             if (!responseJson.error) {
               let newData = responseJson.data;
-<<<<<<< HEAD
-  
-              this.props.navigation.replace("Browse", { 
-                data: {
-                  imageUrl: (row.imgUrl !== '' && row.imgUrl !== null) ? GCS_BUCKET + row.imgUrl + '-screenshot': null,
-                  detail: newData,
-                }
-              });
-=======
               if (row.contentType == 2) {
                 var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + row.imgUrl;
                 fetch(v_url, {
@@ -598,7 +530,6 @@ class Profile extends Component {
                   }
                 });
               }
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
             }
           }).catch((error) => {
             alert(JSON.stringify(error));
@@ -639,10 +570,6 @@ class Profile extends Component {
   render() {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
-<<<<<<< HEAD
-         
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         <Modal
           transparent={false}
           visible={this.state.fullImage}
@@ -1107,10 +1034,7 @@ class Profile extends Component {
                 return (
                   <TouchableOpacity style={{ width: DEVICE_WIDTH / 2, }} onPress={() => this.showUserVideo(index, rowData.imageUrl, rowData.otherId, this.state.datas)}>
                     <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2, height: (DEVICE_WIDTH / 2) * 1.5, backgroundColor: '#5A5A5A' }}>
-<<<<<<< HEAD
-=======
                       {rowData.content_type == 2 && (<Image source={video_player} style={{ position: 'absolute', width: 30, height: 30, top: (DEVICE_WIDTH / 4) * 1.5 - 15, left: DEVICE_WIDTH / 4 -15, }} />)}
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
                     </ImageBackground>
                   </TouchableOpacity>
                 );

@@ -28,10 +28,6 @@ import b_camera from '../../assets/images/camera.png';
 import b_userplus from '../../assets/images/userplus.png';
 
 import {SERVER_URL} from '../../config/constants';
-<<<<<<< HEAD
- 
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 
 class ChatDetail extends React.Component {
   state = {
@@ -317,10 +313,6 @@ class ChatDetail extends React.Component {
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: '#fff' }}>
-<<<<<<< HEAD
-                 
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         <View style={{ width: DEVICE_WIDTH, height: 60, flexDirection: 'row', marginTop: Platform.select({ 'android': 10, 'ios': 40, }), alignItems: 'center' }}>
           <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: 40, height: 60, zIndex: 1000, marginLeft: 10 }}
             onPress={() => this.back()}>

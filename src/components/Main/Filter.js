@@ -332,10 +332,6 @@ class Filter extends Component {
     return (
       <View style={styles.contentContainer}>
         <StatusBar backgroundColor='#fff' barStyle='dark-content' />
-<<<<<<< HEAD
-         
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         <ImageBackground source={slogo} style={{ width: DEVICE_WIDTH, height: 150, marginTop: Platform.select({ 'android': 0, 'ios': 30 }), alignItems: 'center', justifyContent: 'center' }}>
           <Image source={logo} style={{ width: 205, height: 83, tintColor: '#DE5859' }} />
         </ImageBackground>

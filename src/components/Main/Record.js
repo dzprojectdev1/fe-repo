@@ -1,15 +1,9 @@
 import React, { Component } from "react";
 import {
   Text,
-<<<<<<< HEAD
-  Icon
-} from "native-base"
-import { Image, Dimensions, View, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
-=======
   Icon,
 } from "native-base"
 import { Image, Dimensions, View, StyleSheet, TouchableOpacity, StatusBar, Alert } from "react-native";
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 import { RNCamera } from 'react-native-camera';
 import Video from 'react-native-video';
 import heart from '../../assets/images/heart.png';
@@ -18,11 +12,6 @@ import recordImg from '../../assets/images/b_recording.png';
 import saving from '../../assets/images/saving.png';
 import retrying from '../../assets/images/retrying.png';
 import stoping from '../../assets/images/stoping.png';
-<<<<<<< HEAD
-import Global from '../Global';
-
-import {SERVER_URL} from '../../config/constants';
-=======
 import b_stop from '../../assets/images/b_stop.png';
 import switching_camera from '../../assets/images/switching_camera.png';
 import Global from '../Global';
@@ -31,7 +20,6 @@ import {SERVER_URL, GCS_BUCKET, VIDEO_UPLOAD, BUCKET, GOOGLE_ACCESS_ID} from '..
 import { uploadVideo } from '../../util/uploadVideo';
 import { TextInput } from "react-native-gesture-handler";
 import FlashMessage, { showMessage } from 'react-native-flash-message';
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 
 class Record extends Component {
   constructor(props) {
@@ -45,12 +33,9 @@ class Record extends Component {
       recordTime: 0,
       recordTimeText: '00:00',
       uploadCredentials: null,
-<<<<<<< HEAD
-=======
       fileId: '',
       camera: 'front',
       camera_type: RNCamera.Constants.Type.front,
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
     };
   }
   static navigationOptions = {
@@ -58,12 +43,8 @@ class Record extends Component {
   };
   componentDidMount() {
     Global.saveData.nowPage = 'Record';
-<<<<<<< HEAD
-    fetch(`${SERVER_URL}/api/storage/uploadCredentials`, {
-=======
     Global.saveData.prevpage = 'Record';
     fetch(`${SERVER_URL}/api/storage/uploadCredentials?contentType=2`, {
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
       method: 'GET',
       headers: {        
         'Content-Type': 'application/json',
@@ -147,32 +128,15 @@ class Record extends Component {
   openStop() {
     this.setState({ paused: true })
   }
-<<<<<<< HEAD
-  onUpload() {
-    console.log(this.state.recordedUri);
-    console.log(this.state.uploadCredentials);
-=======
   onUpload() { 
     // this.showVideoUploadedMessage(); 
     console.log('recordedUri', this.state.recordedUri);
     console.log('uploadCredentials', this.state.uploadCredentials);
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
     const {
       policy,
       fileId,
     } = this.state.uploadCredentials;
     const file = this.state.recordedUri;
-<<<<<<< HEAD
-
-    const formData = new FormData();
-    formData.append('GoogleAccessId', 'main-service-account@dazzled-date-246123.iam.gserviceaccount.com');
-    formData.append('key', fileId);
-    formData.append('bucket', 'fireblast-begonia-maxwell-dev');
-    formData.append('Content-Type', 'video/mp4');
-    formData.append('policy', policy.base64);
-    formData.append('signature', policy.signature);
-    // formData.append('file', file);
-=======
     this.setState({
       fileId: fileId
     });
@@ -187,39 +151,21 @@ class Record extends Component {
     formData.append('Content-Type', 'video/mp4');
     formData.append('policy', policy.base64);
     formData.append('signature', policy.signature);
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
     formData.append("file", {
       name: "video.mp4",
       type: 'video/mp4',
       uri: this.state.recordedUri,
     });
 
-<<<<<<< HEAD
-    fetch('http://fireblast-begonia-maxwell-dev.storage.googleapis.com', {
-=======
     console.log('formData', formData);
 
     fetch(VIDEO_UPLOAD, {
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
       method: 'POST',
       // mode: 'no-cors',
       body: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-<<<<<<< HEAD
-    })
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    // this.props.navigation.navigate("Browse",{url:this.state.recordedUri})
-  }
-  rgisterVideo() {
-
-=======
     }).then(res => {
       console.log('success', res);
 
@@ -274,13 +220,10 @@ class Record extends Component {
         console.log('Error ', error);
         return
       });
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
   }
   onBack() {
     this.props.navigation.pop()
   }
-<<<<<<< HEAD
-=======
   switchCamera() {
     if (this.state.camera == 'front') {
       this.setState({
@@ -301,25 +244,16 @@ class Record extends Component {
       type: "info",
     });
   }
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
   render() {
     return (
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-<<<<<<< HEAD
-         
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         {!this.state.isRecorded && <RNCamera
           ref={ref => {
             this.camera = ref;
           }}
           style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
-<<<<<<< HEAD
-          type={RNCamera.Constants.Type.front}
-=======
           type={this.state.camera_type}
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
           flashMode={RNCamera.Constants.FlashMode.on}
           permissionDialogTitle={"Permission to access camera"}
           permissionDialogMessage={
@@ -343,17 +277,10 @@ class Record extends Component {
         >
           <Icon type="Ionicons" name="ios-arrow-back" style={{ color: '#B64F54' }} />
         </TouchableOpacity>
-<<<<<<< HEAD
-        {!this.state.isRecorded && (
-          <View style={{ position: 'absolute', top: DEVICE_HEIGHT * 0.2, width: DEVICE_WIDTH, height: DEVICE_WIDTH * 0.7, alignItems: 'center', justifyContent: 'center' }}>
-            <Image source={heart} style={{ width: DEVICE_WIDTH * 0.7, height: DEVICE_WIDTH * 0.7, opacity: 0.75 }} />
-          </View>)}
-=======
         {/* {!this.state.isRecorded && (
           <View style={{ position: 'absolute', top: DEVICE_HEIGHT * 0.2, width: DEVICE_WIDTH, height: DEVICE_WIDTH * 0.7, alignItems: 'center', justifyContent: 'center' }}>
             <Image source={heart} style={{ width: DEVICE_WIDTH * 0.7, height: DEVICE_WIDTH * 0.7, opacity: 0.75 }} />
           </View>)} */}
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         {this.state.recording && (
           <View style={{
             position: 'absolute', left: 0, bottom: 100, height: 40, width: DEVICE_WIDTH,
@@ -367,10 +294,7 @@ class Record extends Component {
             alignItems: 'center', justifyContent: 'center'
           }}>
           <View style={{ width: DEVICE_WIDTH * 0.8, height: 60, flexDirection: 'row', justifyContent: this.state.isRecorded ? 'space-between' : 'center' }}>
-<<<<<<< HEAD
-=======
           {/* <View style={{ width: DEVICE_WIDTH * 0.8, height: 60, flexDirection: 'row', justifyContent: 'space-between'}}> */}
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
             {this.state.isRecorded && this.state.paused && (
               <TouchableOpacity onPress={() => this.openPlay()}>
                 <Image source={playing} style={{ width: 60, height: 60 }} />
@@ -381,8 +305,6 @@ class Record extends Component {
               </TouchableOpacity>)}
             {!this.state.isRecorded && (
               <TouchableOpacity
-<<<<<<< HEAD
-=======
                 // onPress={() => this.onRecord()}
               //  activeOpacity={1.0} 
               //  delayPressIn={0}
@@ -394,16 +316,12 @@ class Record extends Component {
               </TouchableOpacity>)}
             {!this.state.isRecorded && (
               <TouchableOpacity
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
                 onPress={() => this.onRecord()}
               //  activeOpacity={1.0} 
               //  delayPressIn={0}
               //  onPressIn={()=>this.onRecord()}
               //  onPressOut={()=>this.onRecord()}
               >
-<<<<<<< HEAD
-                <Image source={recordImg} style={{ width: 60, height: 60 }} />
-=======
                 <Image source={this.state.recording? b_stop : recordImg} style={{ width: 60, height: 60, marginLeft: 27,}} />
               </TouchableOpacity>)}
             {!this.state.isRecorded && !this.state.recording && (
@@ -426,7 +344,6 @@ class Record extends Component {
               >
                 {/* <Image source={recordImg} style={{ width: 60, height: 60, display: 'none' }} /> */}
                 <Text style={{width: 85, height: 85,}}>{null}</Text>
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
               </TouchableOpacity>)}
             {this.state.isRecorded && (
               <TouchableOpacity onPress={() => this.onRetry()}>
@@ -438,10 +355,7 @@ class Record extends Component {
               </TouchableOpacity>)}
           </View>
         </View>
-<<<<<<< HEAD
-=======
         <FlashMessage ref="fmLocalInstance" position="top" animated={true} autoHide={true} />
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
       </View>
     );
   }
