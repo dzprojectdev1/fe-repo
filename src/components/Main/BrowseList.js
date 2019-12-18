@@ -246,18 +246,40 @@ class BrowserList extends Component {
     getUserAvatar = async (data) => {
         let listData = [];
         for (var i = 0; i < data.length; i++) {
-            if (data[i].cdn_id) {
+            if (data[i].cdn_id && data[i].content_type == 1) {
                 listData.push({
                     index: i,
                     imageUrl: GCS_BUCKET + data[i].cdn_id + '-screenshot',
-                    // videoUrl: vurl,
+                    videoUrl: null,
                     detail: data[i]
+                });
+            } else if (data[i].cdn_id && data[i].content_type == 2) {
+
+                var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + data[i].cdn_id;
+                await fetch(v_url, {
+                    method: 'GET',
+                    headers: { 
+                        'Content-Type':'application/json',
+                        'Authorization':Global.saveData.token
+                    }
+                }).then((response) => response.json())
+                    .then((responseJson) => {
+                        listData.push({
+                            index: i,
+                            imageUrl: null,
+                            videoUrl: responseJson.url,
+                            detail: data[i]
+                        });
+                    })
+                    .catch((error) => {
+                        alert("There is error, please try again!")
+                        return
                 });
             } else {
                 listData.push({
                     index: i,
                     imageUrl: null,
-                    // videoUrl: vurl,
+                    videoUrl: null,
                     detail: data[i]
                 });
             }
@@ -360,7 +382,6 @@ class BrowserList extends Component {
             <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
             {/* <View style={styles.contentContainer}> */}
                 <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-                 
                 <View style={{ flexDirection: 'row', marginTop: 40, alignItems: 'center', justifyContent: 'space-between' }}>
                     <View style={{width: 100, flexDirection: 'row',}}>
                         <TouchableOpacity style={{ width: 80, height: 40 }}

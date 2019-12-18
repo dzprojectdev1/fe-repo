@@ -479,7 +479,10 @@ class ProfileSetting extends Component {
     return (
       <View style={styles.contentContainer}>
         <StatusBar backgroundColor='#fff' barStyle='dark-content' />
+<<<<<<< HEAD
          
+=======
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         <View style={{ marginTop: 40, flexDirection: 'row', height: 40 }}>
           <TouchableOpacity style={{ height: 40, width: 40, marginLeft: 10, alignItems: 'center', }}
             onPress={() => this.onBack()}>

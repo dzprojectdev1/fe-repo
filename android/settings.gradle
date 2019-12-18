@@ -1,4 +1,5 @@
 rootProject.name = 'DazzledDate'
+<<<<<<< HEAD
 include ':react-native-sound'
 project(':react-native-sound').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-sound/android')
 include ':quickblox-react-native-sdk'
@@ -9,6 +10,8 @@ include ':react-native-wheel-picker'
 project(':react-native-wheel-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-wheel-picker/android')
 include ':react-native-date-picker'
 project(':react-native-date-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-date-picker/android')
+=======
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 include ':react-native-fast-image'
 project(':react-native-fast-image').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fast-image/android')
 include ':react-native-iap'
@@ -27,6 +30,11 @@ include ':react-native-device-info'
 project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
 include ':react-native-video'
 project(':react-native-video').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-video/android-exoplayer')
+<<<<<<< HEAD
+=======
+include ':react-native-wheel-picker'
+project(':react-native-wheel-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-wheel-picker/android')
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 include ':react-native-fs'
 project(':react-native-fs').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fs/android')
 include ':react-native-camera'
@@ -38,3 +46,8 @@ project(':react-native-image-picker').projectDir = new File(rootProject.projectD
 
 include ':app'
 
+<<<<<<< HEAD
+=======
+include ':WebRTCModule', ':app'
+project(':WebRTCModule').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-webrtc/android')
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f

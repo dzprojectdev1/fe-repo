@@ -43,13 +43,15 @@ import yellow_star from '../../assets/images/yellow_star.png';
 import yellow_heart_black from '../../assets/images/yellow_heart_black.png';
 import yellow_star_black from '../../assets/images/yellow_star_black.png';
 import dollar_sign from '../../assets/images/dollar_sign.png';
+import video_add from '../../assets/images/video_add.png';
+import video_player from '../../assets/images/video_player.png';
 import Global from '../Global';
 
-import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
+import {SERVER_URL, GCS_BUCKET, VIDEO_UPLOAD, BUCKET, GOOGLE_ACCESS_ID} from '../../config/constants';
 import { uploadPhoto } from '../../util/upload';
+import { uploadVideo } from '../../util/uploadVideo';
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
-import CommonComponent from "../CommonComponent";
 
 class MyVideo extends Component {
   constructor(props) {
@@ -72,6 +74,9 @@ class MyVideo extends Component {
       showFanUsers: false,
       showMutualUsers: false,
       showStarUsers: false,
+      recordedUri: '',      
+      uploadCredentials: null,
+      fileId: '',
     };
   }
 
@@ -83,6 +88,10 @@ class MyVideo extends Component {
     this.props.navigation.addListener('didFocus', (playload) => {
       this.getVideos()
     });
+
+    // if (Global.saveData.prevpage == 'Record') {
+    //   this.showVideoUploadedMessage();
+    // }
     
     // this.getBiggestFanUsers();
     // this.getStarUsers();
@@ -286,16 +295,40 @@ class MyVideo extends Component {
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
   }
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
+    // BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
   }
   backPressed = () => {
     this.props.navigation.replace("Chat");
     return true;
   }
-  showUserVideo(url, user_id, id, primary) {
-    this.props.navigation.navigate("MyVideoDetail", { url: url, otherId: user_id, id: id, primary })
+  showUserVideo(cdn_id, user_id, id, primary, content_type) {
+    if (content_type == 2) {
+      this.getVideoUrl(cdn_id, user_id, id, primary, content_type);
+    } else {
+      this.props.navigation.navigate("MyVideoDetail", { cdn_id: cdn_id, otherId: user_id, id: id, primary: primary, content_type: content_type, vUrl: null })
+    }
   }
-  addVideo() {
+
+  getVideoUrl = async (cdn_id, user_id, id, primary, content_type) => {
+    var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + cdn_id;
+    await fetch(v_url, {
+        method: 'GET',
+        headers: { 
+            'Content-Type':'application/json',
+            'Authorization':Global.saveData.token
+        }
+    }).then((response) => response.json())
+        .then((responseJson) => {
+          console.log('responseJson.url ', responseJson.url);
+          this.props.navigation.navigate("MyVideoDetail", { cdn_id: cdn_id, otherId: user_id, id: id, primary: primary, content_type: content_type, vUrl: responseJson.url })
+        })
+        .catch((error) => {
+            console.log("There is error, please try again!");
+            return
+    });
+  }
+
+  addImage() {
 
     // More info on all the options is below in the API Reference... just some common use cases shown here
     const options = {
@@ -321,6 +354,166 @@ class MyVideo extends Component {
       }
     });
   }
+
+  addVideo() {
+    // More info on all the options is below in the API Reference... just some common use cases shown here
+    const options = {
+      title: 'Select Video',
+      takePhotoButtonTitle: 'Take Video...',
+      mediaType: 'video',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    ImagePicker.showImagePicker(options, (imagePickerResponse) => {
+      if (imagePickerResponse.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (imagePickerResponse.error) {
+        console.log('ImagePicker Error: ', imagePickerResponse.error);
+      } else if (imagePickerResponse.customButton) {
+        console.log('User tapped custom button: ', imagePickerResponse.customButton);
+      } else {
+        // uploadPhoto(imagePickerResponse)
+        //   .then(() => {
+        //     this.getVideos();
+        //   });
+        console.log('imagePickerResponse ', imagePickerResponse);
+        this.setState({
+          recordedUri: imagePickerResponse.uri,
+        }, function() {
+          this.getUploadCredentials();
+        })
+      }
+    });
+    // this.props.navigation.navigate("Record");
+  }
+  getUploadCredentials() {
+    fetch(`${SERVER_URL}/api/storage/uploadCredentials?contentType=2`, {
+      method: 'GET',
+      headers: {        
+        'Content-Type': 'application/json',
+        'Authorization': Global.saveData.token
+      },
+    })
+    .then(response => {
+      return response.json();
+    })
+    .then(uploadCredentials => {
+      if (uploadCredentials.message === 'Auth Failed') {
+        throw new Error(uploadCredentials.message);
+      } else {
+        this.setState({
+          uploadCredentials,
+        }, function() {
+          this.onUpload();
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(`error`, error);
+    });
+  }
+
+
+  onUpload() { 
+    // this.showVideoUploadedMessage(); 
+    console.log('recordedUri', this.state.recordedUri);
+    console.log('uploadCredentials', this.state.uploadCredentials);
+    const {
+      policy,
+      fileId,
+    } = this.state.uploadCredentials;
+    const file = this.state.recordedUri;
+    this.setState({
+      fileId: fileId
+    });
+
+    console.log('policy', policy);
+    console.log('fileId', fileId);
+
+    const formData = new FormData();
+    formData.append('GoogleAccessId', GOOGLE_ACCESS_ID);
+    formData.append('key', fileId);
+    formData.append('bucket', BUCKET);
+    formData.append('Content-Type', 'video/mp4');
+    formData.append('policy', policy.base64);
+    formData.append('signature', policy.signature);
+    formData.append("file", {
+      name: "video.mp4",
+      type: 'video/mp4',
+      uri: this.state.recordedUri,
+    });
+
+    console.log('formData', formData);
+    console.log('VIDEO_UPLOAD', VIDEO_UPLOAD);
+
+    fetch(VIDEO_UPLOAD, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }).then(res => {
+      console.log('success', res);
+
+      if (res.ok) {
+        this.registerVideo();
+      }
+    }).catch(err => {
+      console.log('error', err);
+      return;
+    });
+    
+    Alert.alert(
+      '',
+      "Video uploading is in progress. It usually take 2 to 10 minutes to upload video depends on the size of the video",
+      [
+        {text: 'OK', onPress: () => this.props.navigation.replace('MyVideo')},
+      ],
+      {cancelable: false},
+    );
+  }
+  /**
+   * 
+   * @param {file data} fileData 
+   * inserting video data to tbl_video
+   */
+  registerVideo() {  
+    var details = {
+      'cdn_id': this.state.fileId,
+    };
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    fetch(`${SERVER_URL}/api/upload/insertVideo`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': Global.saveData.token
+      },
+      body: formBody,
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        if (!responseJson.error) {
+          console.log('Response ', responseJson);
+          // this.props.navigation.replace('MyVideo');
+          this.getVideos();
+        }
+      })
+      .catch((error) => {
+        console.log('Error ', error);
+        return
+      });
+  }
+
+
   onDeleteVideo(otherid) {
     Alert.alert(
       '',
@@ -421,6 +614,13 @@ class MyVideo extends Component {
     }
   }
 
+  showVideoUploadedMessage = () => {
+    this.refs.fmLocalInstance.showMessage({
+      message: "Video is uploading. It will show up in your profile page in 1-10 minutes (depends on the size of the video).",
+      type: "info",
+    });
+  }
+
   gotoMyFans = () => {
       this.props.navigation.replace("MyFans");
   }
@@ -432,7 +632,6 @@ class MyVideo extends Component {
   render() {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
-         
         <Dialog
           visible={this.state.showTip}
           dialogAnimation={new SlideAnimation({
@@ -542,7 +741,7 @@ class MyVideo extends Component {
               renderItem={({ item: rowData }) => {
                 return (
                   <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }}
-                    onPress={() => this.showUserVideo(GCS_BUCKET + rowData.cdn_id + '-screenshot', rowData.user_id, rowData.id, rowData.primary)}>
+                    onPress={() => this.showUserVideo(rowData.cdn_id, rowData.user_id, rowData.id, rowData.primary, rowData.content_type)}>
                     {/* <ImageBackground source={{ uri: rowData.imageUrl }} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20) * 1.5, marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }}> */}
                     <ImageBackground source={{ uri: GCS_BUCKET +  rowData.cdn_id + '-screenshot'}} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20) * 1.5, marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }}>
                       <View style={{ width: '100%', height: 30, marginTop: (DEVICE_WIDTH / 2 - 20) * 1.5 - 50, flexDirection: 'row' }}>
@@ -560,6 +759,9 @@ class MyVideo extends Component {
                           <Image source={b_delete} style={{ width: 30, height: 30 }} />
                         </TouchableOpacity>
                       </View>
+                      {rowData.content_type == 2 && (
+                        <Image source={video_player} style={{width: 30, height: 30, position: 'absolute', top: ((DEVICE_WIDTH / 2 - 20) * 1.5) /2 - 15, left: (DEVICE_WIDTH / 2 - 20) /2 - 15, }} />
+                      )}
                     </ImageBackground>
                   </TouchableOpacity>
                 );
@@ -579,13 +781,23 @@ class MyVideo extends Component {
           <Image source={dollar_sign} style={{width: 90, height: 90, }} />
         </TouchableOpacity>
         <TouchableOpacity style={{
+          position: 'absolute', right: 100,
+          bottom: Platform.select({ 'android': 90, 'ios': 105 }),
+          width: 70, height: 70,
+          borderRadius: 35,
+          alignItems: 'center', justifyContent: 'center'
+        }}
+          onPress={() => this.addVideo()}>
+          <Image source={video_add} style={{width: 85, height: 85, }} />
+        </TouchableOpacity>
+        <TouchableOpacity style={{
           position: 'absolute', right: 15,
           bottom: Platform.select({ 'android': 90, 'ios': 105 }),
           width: 70, height: 70,
           backgroundColor: '#f00', borderRadius: 35,
           alignItems: 'center', justifyContent: 'center'
         }}
-          onPress={() => this.addVideo()}>
+          onPress={() => this.addImage()}>
           <Icon type="FontAwesome" name="plus" style={{ color: '#fff' }} />
         </TouchableOpacity>
         <Footer style={{ height: Platform.select({ 'android': 50, 'ios': 50 }) }}>

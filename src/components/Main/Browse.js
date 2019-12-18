@@ -21,6 +21,7 @@ import {
 } from "react-native";
 import { Button } from 'react-native-elements';
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
+import Video from 'react-native-video';
 
 import b_chat from '../../assets/images/chat.png';
 import b_notification from '../../assets/images/notification.png';
@@ -40,7 +41,6 @@ import yellow_star from '../../assets/images/yellow_star.png';
 import Global from '../Global';
 
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';
-import CommonComponent from "../CommonComponent";
 
 class Browse extends Component {
   constructor(props) {
@@ -69,6 +69,8 @@ class Browse extends Component {
       sendDiamondsCount: 0,
       fanMessage: '',
       dialogStyle: {},
+      paused:false,
+      isPlayVideo: true,
     };
   }
 
@@ -223,12 +225,44 @@ class Browse extends Component {
     });
   }
   getDetails = async (data) => {
-    if (data.cdn_filtered_id) {
+    if (data.cdn_filtered_id && data.content_type == 1) {
       var otherData = {};
       otherData = {
         imageUrl: GCS_BUCKET + data.cdn_filtered_id + '-screenshot',
+        videoUrl: null,
+        content_type: data.content_type,
         detail: data
       };
+      this.setState({
+        otherData: otherData,
+        coin_count: data.coin_count,
+        fan_count: data.fan_count,
+        flash_heart: false,
+        flash_reject: false,
+        flash_ban: false,
+      });
+    } else if (data.cdn_filtered_id && data.content_type == 2) {
+      var otherData = {};
+      var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + data.cdn_filtered_id;
+      await fetch(v_url, {
+          method: 'GET',
+          headers: { 
+              'Content-Type':'application/json',
+              'Authorization':Global.saveData.token
+          }
+      }).then((response) => response.json())
+          .then((responseJson) => { 
+              otherData = {
+                imageUrl: GCS_BUCKET + data.cdn_filtered_id + '_128ss',
+                videoUrl: responseJson.url,
+                content_type: data.content_type,
+                detail: data
+              };
+          })
+          .catch((error) => {
+              alert("There is error, please try again!")
+              return
+      });
       this.setState({
         otherData: otherData,
         coin_count: data.coin_count,
@@ -240,6 +274,8 @@ class Browse extends Component {
     } else {
       var otherData = {
         imageUrl: null,
+        videoUrl: null,
+        content_type: null,
         detail: data
       };
       this.setState({
@@ -407,6 +443,7 @@ class Browse extends Component {
           isMatched: false, 
           description: this.state.otherData.detail.description,
           imageUrl: this.state.otherData.imageUrl,
+          videoUrl: this.state.otherData.videoUrl,
           age: this.state.otherData.detail.age,
           distance: this.state.otherData.detail.distance,
           gender: this.state.otherData.detail.gender,
@@ -754,7 +791,6 @@ class Browse extends Component {
     return (
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-         
         {this.state.flash_heart ? (
           <View>
             <Image source={flash_heart} style={{width: 300, height: 300, zIndex: 100, position: 'absolute', left: parseInt(DEVICE_WIDTH /2) - 150, top: parseInt(DEVICE_HEIGHT /2) - 150,}} />
@@ -959,7 +995,22 @@ class Browse extends Component {
             </View>
           </Content>) : (
             <Content>
-              {this.state.otherData.imageUrl ? (
+              {(this.state.otherData.videoUrl != null) && (
+                <TouchableOpacity
+                  onPress={this.gotoProfile}>
+                  <Video source={{uri:this.state.otherData.videoUrl}}   // Can be a URL or a local file.
+                      ref={(ref) => {
+                        this.player = ref
+                      }}
+                      resizeMode = "cover"
+                      ignoreSilentSwitch={null}
+                      repeat ={true}
+                      // paused={this.state.isPlayVideo} // option to play video automatically or manually
+                      // onError={this.videoError}       // Callback when video cannot be loaded
+                      style={{height:DEVICE_HEIGHT, width:DEVICE_WIDTH}}/>
+                </TouchableOpacity>
+              )}
+              {this.state.otherData.imageUrl && this.state.otherData.videoUrl == null && (
                 <TouchableOpacity
                   onPress={this.gotoProfile}>
                   <Image
@@ -967,7 +1018,8 @@ class Browse extends Component {
                     style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
                   />
                 </TouchableOpacity>
-              ) : (
+              )}
+              {this.state.otherData.imageUrl == null && this.state.otherData.videoUrl == null && (
                 <TouchableOpacity
                   onPress={this.gotoProfile}>
                   <View style={{

@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 
 const INITIAL_STATE = {
   unreadFlag: false,
+<<<<<<< HEAD
   senders: [],
   quickBloxInfo: {},
   fcmID: '',
@@ -56,6 +57,20 @@ const reducer = (state = INITIAL_STATE, action) => {
       return newState;
     default:
       return state;
+=======
+  senders: []
+}
+
+const reducer = (state = INITIAL_STATE, action) => {
+  switch (action.type) {
+    case 'CHANGE_READFLAG':
+      const data = action.payload;
+      // Finally, update our redux state
+      const newState = { unreadFlag : data.unreadFlag, senders: data.senders };
+      return newState;
+    default:
+      return state
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
   }
 };
 

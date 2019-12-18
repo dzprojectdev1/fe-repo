@@ -19,6 +19,10 @@ import {
   Keyboard,
 } from "react-native";
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
+<<<<<<< HEAD
+=======
+import Video from 'react-native-video';
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 
 import b_notification from '../../assets/images/notification.png';
 import b_name from '../../assets/images/name.png';
@@ -69,6 +73,10 @@ class IncomeDetail extends Component {
       msgError: '',
       sendDiamondsCount: 0,
       fanMessage: '',
+<<<<<<< HEAD
+=======
+      content_type: 0,
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
     };
   }
 
@@ -101,7 +109,11 @@ class IncomeDetail extends Component {
       Global.saveData.preuserdistance = parseInt(this.props.navigation.state.params.distance);
 
       this.setState({
+<<<<<<< HEAD
         vUrl: this.props.navigation.state.params.url,
+=======
+        vUrl: this.props.navigation.state.params.videoUrl,
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         otherId: this.props.navigation.state.params.otherId,
         isMatchVideo: Global.saveData.isMatchVideo,
         username: this.props.navigation.state.params.name,
@@ -113,6 +125,10 @@ class IncomeDetail extends Component {
         coin_count: this.props.navigation.state.params.coin_count,
         fan_count: this.props.navigation.state.params.fan_count,
         coin_per_message: this.props.navigation.state.params.coin_per_message,
+<<<<<<< HEAD
+=======
+        content_type: this.props.navigation.state.params.content_type,
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
       });
     }
   }
@@ -342,6 +358,11 @@ class IncomeDetail extends Component {
                 coin_count: this.state.coin_count,
                 fan_count: this.state.fan_count,
                 coin_per_message: this.state.coin_per_message,
+<<<<<<< HEAD
+=======
+                videoUrl: this.state.vUrl,
+                content_type: this.state.content_type,
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
               }
             });
           }
@@ -540,7 +561,11 @@ class IncomeDetail extends Component {
     return (
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
+<<<<<<< HEAD
          
+=======
+
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         <Dialog
           visible={this.state.fanUserVisible}
           dialogAnimation={new SlideAnimation({
@@ -713,7 +738,26 @@ class IncomeDetail extends Component {
         </Dialog>
 
         <Content>
+<<<<<<< HEAD
           {!this.state.isMatchVideo && (
+=======
+          {(this.state.vUrl != null) && (
+            <TouchableOpacity
+              onPress={() => this.gotoProfile()}>
+              <Video source={{uri:this.state.vUrl}}   // Can be a URL or a local file.
+                  ref={(ref) => {
+                    this.player = ref
+                  }}
+                  resizeMode = "cover"
+                  ignoreSilentSwitch={null}
+                  repeat ={true}
+                  // paused={this.state.isPlayVideo} // option to play video automatically or manually
+                  // onError={this.videoError}       // Callback when video cannot be loaded
+                  style={{height:DEVICE_HEIGHT, width:DEVICE_WIDTH}}/>
+            </TouchableOpacity>
+          )}
+          {!this.state.isMatchVideo && this.state.vUrl == null && (
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
             this.state.userimage ? (              
               <TouchableOpacity
                 onPress={() => this.gotoProfile()}>

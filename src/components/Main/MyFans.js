@@ -171,12 +171,48 @@ class MyFans extends Component {
         if (!responseJson.error) {
           let newData = responseJson.data;
 
+<<<<<<< HEAD
           this.props.navigation.replace("Browse", { 
             data: {
               imageUrl: (row.imgUrl !== '' && row.imgUrl !== null) ? GCS_BUCKET + row.imgUrl + '-screenshot': null,
               detail: newData,
             }
           });
+=======
+          if (row.contentType == 2) {
+            var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + row.imgUrl;
+            fetch(v_url, {
+                method: 'GET',
+                headers: { 
+                    'Content-Type':'application/json',
+                    'Authorization':Global.saveData.token
+                }
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    this.props.navigation.replace("Browse", { 
+                      data: {
+                        imageUrl: (row.imgUrl !== '' && row.imgUrl !== null) ? GCS_BUCKET + row.imgUrl + '-screenshot': null,
+                        videoUrl: responseJson.url,
+                        content_type: row.contentType,
+                        detail: newData,
+                      }
+                    });
+                })
+                .catch((error) => {
+                    alert("There is error, please try again!")
+                    return
+            });
+          } else {
+            this.props.navigation.replace("Browse", { 
+              data: {
+                imageUrl: (row.imgUrl !== '' && row.imgUrl !== null) ? GCS_BUCKET + row.imgUrl + '-screenshot': null,
+                videoUrl: null,
+                content_type: contentType,
+                detail: newData,
+              }
+            });
+          }
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         }
       }).catch((error) => {
         alert(JSON.stringify(error));
@@ -184,6 +220,32 @@ class MyFans extends Component {
       });
   }
 
+<<<<<<< HEAD
+=======
+  getUserAvatar = async (cdn_id) => {
+    var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + cdn_id;
+    await fetch(v_url, {
+        method: 'GET',
+        headers: { 
+            'Content-Type':'application/json',
+            'Authorization':Global.saveData.token
+        }
+    }).then((response) => response.json())
+        .then((responseJson) => {
+            listData.push({
+                index: i,
+                imageUrl: null,
+                videoUrl: responseJson.url,
+                detail: data[i]
+            });
+        })
+        .catch((error) => {
+            alert("There is error, please try again!")
+            return
+    });
+  }
+
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
   showTip = row => {
     this.setState({
       otherSelectedUserName: row.name,
@@ -260,7 +322,10 @@ class MyFans extends Component {
   render() {
     return (
       <View style={styles.contentContainer}>
+<<<<<<< HEAD
          
+=======
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         <Dialog
           visible={this.state.showTip}
           dialogAnimation={new SlideAnimation({

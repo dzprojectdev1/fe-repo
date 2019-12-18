@@ -6,7 +6,12 @@ import {
 import { Dimensions, View, StyleSheet, TouchableOpacity, StatusBar, Image, TouchableHighlight, Text } from "react-native";
 import ImageSlider from 'react-native-image-slider';
 // import Slideshow from 'react-native-image-slider-show';
+<<<<<<< HEAD
 // import Video from 'react-native-video';
+=======
+import Video from 'react-native-video';
+import video_player from '../../assets/images/video_player.png';
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 import Global from '../Global';
 
 class ProfileDetail extends Component {
@@ -21,7 +26,14 @@ class ProfileDetail extends Component {
       otherId: -1,
       datas: props.navigation.state.params.datas,
       index: props.navigation.state.params.index,
+<<<<<<< HEAD
       changedData: []
+=======
+      changedData: [],
+      video_indexes: [],
+      video_index: -1,
+      play_video: false,
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
     };
   }
 
@@ -38,6 +50,11 @@ class ProfileDetail extends Component {
     
     var images = [];
     var custom_datas = this.state.datas;
+<<<<<<< HEAD
+=======
+    console.log('custom_datas ', custom_datas);
+    var {video_indexes} = this.state;
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 
     let swap = custom_datas[this.state.index];
     custom_datas[this.state.index] = custom_datas[0];
@@ -45,10 +62,22 @@ class ProfileDetail extends Component {
 
     for (var i = 0; i < custom_datas.length; i ++ ){
       images.push(custom_datas[i].imageUrl);
+<<<<<<< HEAD
+=======
+      if (custom_datas[i].content_type == 2) {
+        video_indexes.push(i);
+      }
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
     }
 
     this.setState({
       changedData: images,
+<<<<<<< HEAD
+=======
+      video_indexes: video_indexes,
+    }, function() {
+      console.log('video_indexes', this.state.video_indexes);
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
     })
     
   }
@@ -60,12 +89,30 @@ class ProfileDetail extends Component {
   }
 
   onReject() {
+<<<<<<< HEAD
     this.props.navigation.pop();
+=======
+    if (this.state.play_video) {
+      this.setState({
+        play_video: false,
+      })
+    } else {
+      this.props.navigation.pop();
+    }
+  }
+
+  playVideo(index) {
+    this.setState({
+      play_video: true,
+      video_index: index,
+    })
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
   }
   render() {
     return (
       <View style={styles.contentContainer}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
+<<<<<<< HEAD
          
         <Content>
           {(this.state.vUrl != "") && (
@@ -84,6 +131,25 @@ class ProfileDetail extends Component {
             //   source={{ uri: this.state.vUrl }}
             //   style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
             // />
+=======
+        <Content>
+          {/* {(this.state.vUrl != "") && ( */}
+            {this.state.play_video == true && (<Video source={{ uri: this.state.datas[this.state.video_index].videoUrl }}   // Can be a URL or a local file.
+              ref={(ref) => {
+                this.player = ref
+              }}
+              ignoreSilentSwitch={null}
+              resizeMode="cover"
+              repeat={true}
+              paused={this.state.paused}
+              onError={this.videoError}           // Callback when video cannot be loaded
+              style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }} 
+            />)}
+            {/* <Image
+              source={{ uri: this.state.vUrl }}
+              style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
+            /> */}
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
             
             <ImageSlider
               loopBothSides
@@ -96,6 +162,17 @@ class ProfileDetail extends Component {
                   <TouchableOpacity
                     onPress={() => this.onReject()}>
                     <Image source={{ uri: item }} style={styles.customImage} />
+<<<<<<< HEAD
+=======
+                    {this.state.video_indexes.indexOf(index) > -1 && (
+                      <TouchableOpacity
+                        onPress={() => this.playVideo(index)}
+                        style={{position: 'absolute', width: 80, height: 80, top: DEVICE_HEIGHT / 2 - 40, left: DEVICE_WIDTH / 2 -40 }}
+                        >
+                        <Image source={ video_player } style={{width: 80, height: 80, }} />
+                      </TouchableOpacity>
+                    )}
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
                   </TouchableOpacity>
                 </View>
               )}
@@ -116,7 +193,11 @@ class ProfileDetail extends Component {
                 </View>
               )}
             />
+<<<<<<< HEAD
           )}
+=======
+          {/* )} */}
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         </Content>
         <TouchableOpacity style={{ position: 'absolute', left: 0, top: 30, width: 60, height: 60, alignItems: 'center', justifyContent: 'center' }}
           onPress={() => this.onReject()}>

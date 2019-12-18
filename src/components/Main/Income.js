@@ -114,7 +114,11 @@ class Income extends Component {
   getTumbnails = async (data) => {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
+<<<<<<< HEAD
       if (data[i].cdn_filtered_id) {        
+=======
+      if (data[i].cdn_filtered_id && data[i].content_type == 1) {        
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         list_items.push({
           index: i,
           otherId: data[i].other_user_id,
@@ -127,6 +131,39 @@ class Income extends Component {
           distance: data[i].distance,
           coin_count: data[i].coin_count, 
           fan_count: data[i].fan_count, 
+<<<<<<< HEAD
+=======
+          content_type: data[i].content_type,
+        });
+      } else if (data[i].cdn_filtered_id && data[i].content_type == 2) {
+        var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + data[i].cdn_filtered_id;
+        await fetch(v_url, {
+            method: 'GET',
+            headers: { 
+                'Content-Type':'application/json',
+                'Authorization':Global.saveData.token
+            }
+        }).then((response) => response.json())
+            .then((responseJson) => {                       
+                list_items.push({
+                  index: i,
+                  otherId: data[i].other_user_id,
+                  imageUrl: GCS_BUCKET + data[i].cdn_filtered_id + '_128ss',
+                  videoUrl: responseJson.url,
+                  name: data[i].name,
+                  age: data[i].age,
+                  gender: data[i].gender,
+                  description: data[i].description,
+                  distance: data[i].distance,
+                  coin_count: data[i].coin_count, 
+                  fan_count: data[i].fan_count, 
+                  content_type: data[i].content_type,
+                });
+            })
+            .catch((error) => {
+                alert("There is error, please try again!")
+                return
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         });
       } else {
         list_items.push({
@@ -141,6 +178,10 @@ class Income extends Component {
           distance: data[i].distance,
           coin_count: data[i].coin_count,
           fan_count: data[i].fan_count, 
+<<<<<<< HEAD
+=======
+          content_type: data[i].content_type,
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         });
       }
     }
@@ -169,6 +210,11 @@ class Income extends Component {
                 mid: -1,
                 otherId: data.otherId,
                 imageUrl: data.imageUrl,
+<<<<<<< HEAD
+=======
+                videoUrl: data.videoUrl,
+                content_type: data.content_type,
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
                 name: data.name,
                 age: data.age,
                 gender: data.gender,
@@ -232,7 +278,10 @@ class Income extends Component {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
+<<<<<<< HEAD
          
+=======
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         <View style={{ marginTop: 40, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', }}>
           <View style={{width: 100, flexDirection: 'row',}}>
             <TouchableOpacity style={{ width: 80, height: 40 }}

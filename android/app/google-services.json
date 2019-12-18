@@ -1,34 +1,57 @@
 {
   "project_info": {
+<<<<<<< HEAD
     "project_number": "220585011058",
     "firebase_url": "https://dazzled-date-prod.firebaseio.com",
     "project_id": "dazzled-date-prod",
     "storage_bucket": "dazzled-date-prod.appspot.com"
+=======
+    "project_number": "725302073253",
+    "firebase_url": "https://dazzled-date-dev.firebaseio.com",
+    "project_id": "dazzled-date-dev",
+    "storage_bucket": "dazzled-date-dev.appspot.com"
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
   },
   "client": [
     {
       "client_info": {
+<<<<<<< HEAD
         "mobilesdk_app_id": "1:220585011058:android:5e783118c820cfb1e6dfeb",
+=======
+        "mobilesdk_app_id": "1:725302073253:android:0aa373b87b7f562c2a3a4c",
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         "android_client_info": {
           "package_name": "com.pys.dazzleddate"
         }
       },
       "oauth_client": [
         {
+<<<<<<< HEAD
           "client_id": "220585011058-t955l2sb7h1r98vbvjktg3ololf3lgtl.apps.googleusercontent.com",
+=======
+          "client_id": "725302073253-h65ldlp3k4bl7g624j7ukbk3a0egaqd5.apps.googleusercontent.com",
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
           "client_type": 3
         }
       ],
       "api_key": [
         {
+<<<<<<< HEAD
           "current_key": "AIzaSyBqdKP-ilbisHdErV8mVS1QiZHVzD6a0g8"
+=======
+          "current_key": "AIzaSyAABNffZJBDOs6WMblX4wWLX9jlo2HA_hA"
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
+<<<<<<< HEAD
               "client_id": "220585011058-t955l2sb7h1r98vbvjktg3ololf3lgtl.apps.googleusercontent.com",
+=======
+              "client_id": "725302073253-h65ldlp3k4bl7g624j7ukbk3a0egaqd5.apps.googleusercontent.com",
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
               "client_type": 3
             }
           ]

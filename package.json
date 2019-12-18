@@ -12,6 +12,7 @@
   "dependencies": {
     "@ptomasroos/react-native-multi-slider": "^1.0.0",
     "@react-native-community/async-storage": "^1.5.0",
+<<<<<<< HEAD
     "@react-navigation/native": "^3.6.2",
     "firebase": "^6.4.0",
     "jetifier": "^1.6.5",
@@ -24,6 +25,14 @@
     "react-native-callkeep": "^3.0.8",
     "react-native-camera": "^2.10.2",
     "react-native-date-picker": "^2.7.0",
+=======
+    "firebase": "^6.4.0",
+    "native-base": "^2.12.1",
+    "react": "16.8.3",
+    "react-native": "0.59.9",
+    "react-native-animate-loading-button": "^1.0.3",
+    "react-native-camera": "^2.10.2",
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
     "react-native-device-info": "^2.3.2",
     "react-native-elements": "^1.1.0",
     "react-native-fast-image": "^6.1.1",
@@ -43,11 +52,18 @@
     "react-native-popup-dialog": "^0.18.3",
     "react-native-simple-store": "^2.0.0",
     "react-native-smart-corner-label": "^1.1.2",
+<<<<<<< HEAD
     "react-native-sound": "^0.11.0",
     "react-native-video": "^4.4.2",
     "react-native-wheel-picker": "^1.2.0",
     "react-navigation": "^2.18.2",
     "react-navigation-hooks": "^1.1.0",
+=======
+    "react-native-video": "^4.4.2",
+    "react-native-webrtc": "^1.75.1",
+    "react-native-wheel-picker": "^1.2.0",
+    "react-navigation": "^2.18.2",
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
     "react-redux": "^5.1.1",
     "redux": "^4.0.4",
     "shorthash": "0.0.2",

@@ -1,7 +1,12 @@
+<<<<<<< HEAD
 
 import { createStackNavigator, createSwitchNavigator } from 'react-navigation';
 //FirstScreen
 import CommonScreen from './components/CommonComponent';
+=======
+import { createStackNavigator } from 'react-navigation';
+//FirstScreen
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 import FirstScreen from './components/FirstScreen';
 //Auths
 import Login from './components/Auths/Login';
@@ -26,23 +31,38 @@ import ProfileDetail from './components/Main/ProfileDetail';
 import ProfileSetting from './components/Main/ProfileSetting';
 import TermsPolicy from './components/Main/TermsPolicy';
 import Report from './components/Main/Report';
+<<<<<<< HEAD
+=======
+import VoiceCall from './components/Main/VoiceCall';
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 import CallIncome from './components/Main/CallIncome';
 import CallOutgo from './components/Main/CallOutgo';
 import CallIn from './components/Main/CallIn';
 import MyFans from './components/Main/MyFans';
 import ExchangeDiamonds from './components/Main/ExchangeDiamonds';
+<<<<<<< HEAD
 import ChatScreen from './components/Main/ChatScreen';
 import VideoCall from './components/Main/VideoCall';
 import VideoCallIncome from './components/Main/VideoCallIncome';
 import VoiceCall from './components/Main/VoiceCall';
 import VoiceCallIncome from './components/Main/VoiceCallIncome';
+=======
+// import AppView from '../AppView';
+
+import ChatScreen from './components/Main/ChatScreen';
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 
 // Google Pay 
 import screenGpay01 from './components/GPay/screenGpay01';
 
 export default Router = createStackNavigator({
+<<<<<<< HEAD
     FirstScreen: { screen: FirstScreen },
     CommonScreen: { screen: CommonScreen },
+=======
+    // AppView: {screen: AppView},
+    FirstScreen: { screen: FirstScreen },
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
     //Main
     Income: { screen: Income },
     IncomeDetail: { screen: IncomeDetail },
@@ -72,6 +92,7 @@ export default Router = createStackNavigator({
     //Gpay
     screenGpay01: { screen: screenGpay01 },
     //Calling
+<<<<<<< HEAD
     CallIncome: { screen: CallIncome },
     CallOutgo: { screen: CallOutgo },
     CallIn: { screen: CallIn },
@@ -79,6 +100,12 @@ export default Router = createStackNavigator({
     VoiceCall: { screen: VoiceCall },
     VideoCallIncome: { screen: VideoCallIncome },
     VoiceCallIncome: { screen: VoiceCallIncome }
+=======
+    VoiceCall: { screen: VoiceCall },
+    CallIncome: { screen: CallIncome },
+    CallOutgo: { screen: CallOutgo },
+    CallIn: { screen: CallIn },
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 }, {
     initialRouteName: 'FirstScreen',
     transitionConfig: () => ({

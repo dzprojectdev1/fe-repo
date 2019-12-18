@@ -98,15 +98,26 @@ class Match extends Component {
         return
       });
   }
+<<<<<<< HEAD
   getTumbnails = (data) => {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
       if (data[i].cdn_id) {
+=======
+  getTumbnails = async (data) => {
+    var list_items = [];
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].cdn_id && data[i].content_type == 1) {
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         list_items.push({
           index: i,
           mid: data[i].id,
           otherId: data[i].other_user_id,
           imageUrl: GCS_BUCKET + data[i].cdn_id + '-screenshot',
+<<<<<<< HEAD
+=======
+          videoUrl: null,
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
           name: data[i].name,
           time: 'TIME',
           age: data[i].age,
@@ -114,7 +125,41 @@ class Match extends Component {
           distance: data[i].distance,
           description: data[i].description,
           coin_count: data[i].coin_count,
+<<<<<<< HEAD
           fan_count: data[i].fan_count
+=======
+          fan_count: data[i].fan_count,
+          content_type: data[i].content_type,
+        });
+      } else if (data[i].cdn_id && data[i].content_type == 2) {
+        var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + data[i].cdn_id;
+        await fetch(v_url, {
+            method: 'GET',
+            headers: { 
+                'Content-Type':'application/json',
+                'Authorization':Global.saveData.token
+            }
+        }).then((response) => response.json())
+            .then((responseJson) => {                       
+                list_items.push({
+                  index: i,
+                  otherId: data[i].other_user_id,
+                  imageUrl: GCS_BUCKET + data[i].cdn_id + '_128ss',
+                  videoUrl: responseJson.url,
+                  name: data[i].name,
+                  age: data[i].age,
+                  gender: data[i].gender,
+                  description: data[i].description,
+                  distance: data[i].distance,
+                  coin_count: data[i].coin_count, 
+                  fan_count: data[i].fan_count, 
+                  content_type: data[i].content_type,
+                });
+            })
+            .catch((error) => {
+                alert("There is error, please try again!")
+                return
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         });
       } else {
         list_items.push({
@@ -122,6 +167,10 @@ class Match extends Component {
           mid: data[i].id,
           otherId: data[i].other_user_id,
           imageUrl: null,
+<<<<<<< HEAD
+=======
+          videoUrl: null,
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
           name: data[i].name,
           time: 'TIME',
           age: data[i].age,
@@ -129,7 +178,12 @@ class Match extends Component {
           distance: data[i].distance,
           description: data[i].description,
           coin_count: data[i].coin_count,
+<<<<<<< HEAD
           fan_count: data[i].fan_count
+=======
+          fan_count: data[i].fan_count,
+          content_type: data[i].content_type,
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         });
       }
 
@@ -149,7 +203,11 @@ class Match extends Component {
     return true;
   }
 
+<<<<<<< HEAD
   showUserVideo(url, mid, otherId, name, imgurl, age, distance, gender, description) {
+=======
+  showUserVideo(url, mid, otherId, name, imgurl, age, distance, gender, description, videoUrl, content_type) {
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
     Global.saveData.isMatchVideo = true;
 
     if (otherId != -1) {
@@ -172,6 +230,11 @@ class Match extends Component {
                 mid: mid,
                 otherId: otherId,
                 imageUrl: imgurl,
+<<<<<<< HEAD
+=======
+                videoUrl: videoUrl,
+                content_type: content_type,
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
                 name: name,
                 age: age,
                 gender: gender,
@@ -235,7 +298,10 @@ class Match extends Component {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
+<<<<<<< HEAD
          
+=======
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         <View style={{ marginTop: 40, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', }}>
           <View style={{width: 100, flexDirection: 'row',}}>
             <TouchableOpacity style={{ width: 80, height: 40 }}
@@ -275,7 +341,11 @@ class Match extends Component {
             initialNumToRender={this.state.datas.length}
             renderItem={({ item: rowData }) => {
               return (
+<<<<<<< HEAD
                 <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.videoUrl, rowData.mid, rowData.otherId, rowData.name, rowData.imageUrl, rowData.age, rowData.distance, rowData.gender, rowData.description)}>
+=======
+                <TouchableOpacity style={{ width: DEVICE_WIDTH / 2 - 10, marginTop: 10, marginLeft: 5, marginRight: 5, }} onPress={() => this.showUserVideo(rowData.videoUrl, rowData.mid, rowData.otherId, rowData.name, rowData.imageUrl, rowData.age, rowData.distance, rowData.gender, rowData.description, rowData.videoUrl, rowData.content_type)}>
+>>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
                   <Image source={rowData.imageUrl ? { uri: rowData.imageUrl } : hiddenMan} resizeMethod="resize" style={{ width: DEVICE_WIDTH / 2 - 20, height: (DEVICE_WIDTH / 2 - 20), marginTop: 3, marginLeft: 5, backgroundColor: '#5A5A5A' }} />
                   <View style={{ flexDirection: 'row', marginTop: 10, width: (DEVICE_WIDTH / 2 - 10) * 0.6, justifyContent: 'space-between' }}>
                     <Image source={b_name} style={{ width: 10, marginTop: 4, marginLeft: 2, height: 10, tintColor: '#B64F54' }} />
