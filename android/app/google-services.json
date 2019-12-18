@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "220585011058",
+    "firebase_url": "https://dazzled-date-prod.firebaseio.com",
+    "project_id": "dazzled-date-prod",
+    "storage_bucket": "dazzled-date-prod.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:220585011058:android:5e783118c820cfb1e6dfeb",
+        "android_client_info": {
+          "package_name": "com.pys.dazzleddate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "220585011058-t955l2sb7h1r98vbvjktg3ololf3lgtl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqdKP-ilbisHdErV8mVS1QiZHVzD6a0g8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "220585011058-t955l2sb7h1r98vbvjktg3ololf3lgtl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
