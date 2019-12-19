@@ -19,6 +19,7 @@ import {
   Keyboard,
 } from "react-native";
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
+import Video from 'react-native-video';
 
 import b_notification from '../../assets/images/notification.png';
 import b_name from '../../assets/images/name.png';
@@ -69,6 +70,7 @@ class IncomeDetail extends Component {
       msgError: '',
       sendDiamondsCount: 0,
       fanMessage: '',
+      content_type: 0,
     };
   }
 
@@ -101,7 +103,7 @@ class IncomeDetail extends Component {
       Global.saveData.preuserdistance = parseInt(this.props.navigation.state.params.distance);
 
       this.setState({
-        vUrl: this.props.navigation.state.params.url,
+        vUrl: this.props.navigation.state.params.videoUrl,
         otherId: this.props.navigation.state.params.otherId,
         isMatchVideo: Global.saveData.isMatchVideo,
         username: this.props.navigation.state.params.name,

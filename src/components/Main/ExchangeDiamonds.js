@@ -413,7 +413,6 @@ class ExchangeDiamonds extends Component {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-         
         <Dialog
           visible={this.state.showConfirmEmail}
           dialogAnimation={new SlideAnimation({

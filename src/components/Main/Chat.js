@@ -294,7 +294,6 @@ class Chat extends Component {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
         <StatusBar translucent={true} backgroundColor='transparent' barStyle='dark-content' />
-         
         <View style={{ height: 40, marginTop: 40, flexDirection: 'row', }}>
           <View style={{width: 100, flexDirection: 'row',}}>
             <TouchableOpacity style={{ width: 80, height: 40 }}
