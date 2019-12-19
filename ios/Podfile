@@ -58,7 +58,6 @@ target 'DazzledDate' do
 
   pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
 
-<<<<<<< HEAD
 
   pod 'react-native-date-picker', :path => '../node_modules/react-native-date-picker'
 
@@ -70,8 +69,6 @@ target 'DazzledDate' do
 
   pod 'RNSound', :path => '../node_modules/react-native-sound'
 
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
   target 'DazzledDateTests' do
     inherit! :search_paths
     # Pods for testing

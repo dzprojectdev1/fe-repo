@@ -28,10 +28,7 @@ import b_camera from '../../assets/images/camera.png';
 import b_userplus from '../../assets/images/userplus.png';
 
 import {SERVER_URL} from '../../config/constants';
-<<<<<<< HEAD
  
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 
 class ChatDetail extends React.Component {
   state = {

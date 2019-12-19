@@ -12,10 +12,6 @@ import {
   Dimensions, TouchableOpacity
 } from 'react-native';
 import Global from '../Global';
-<<<<<<< HEAD
- 
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 
 var BGWASH = 'rgba(255,255,255,0.8)';
 var DISABLED_WASH = 'rgba(255,255,255,0.25)';
@@ -53,10 +49,6 @@ class TermsPolicy extends Component {
     return (
       <View style={[styles.container]}>
         <StatusBar backgroundColor='#fff' barStyle='dark-content' />
-<<<<<<< HEAD
-         
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
         <View style={{ backgroundColor: '#fff', flexDirection: 'row', height: 60, marginTop: Platform.select({ ios: 40, android: 10, }), alignItems: 'center', }}>
           <TouchableOpacity style={{ marginTop: 10, marginLeft: 10, width: 40, height: 30 }} onPress={() => this.back()}>
             <Icon type="Ionicons" name="md-arrow-round-back" style={{ color: '#EF7193', }} />

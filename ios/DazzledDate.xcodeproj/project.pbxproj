@@ -5,10 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-<<<<<<< HEAD
-=======
-
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* DazzledDateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* DazzledDateTests.m */; };
 		07B3E430AB944EB2AE9835CD /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 15590421B5464544AB49FE03 /* FontAwesome5_Solid.ttf */; };
@@ -43,10 +39,7 @@
 		EFF1D3CEDF4D4CD495EBCAF1 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 986A09E899134DC48A685738 /* FontAwesome5_Brands.ttf */; };
 		F8514C288A9FD26C152BCFE7 /* libPods-DazzledDateTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 697F398D8DD5B4E8929BFAB2 /* libPods-DazzledDateTests.a */; };
 		FA8457F5D8294E6A9CC4A390 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B034B44C3FDD4A5BABC613C1 /* Fontisto.ttf */; };
-<<<<<<< HEAD
 		18624F70572C45488F0142A2 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3776AE64E94245E08B6489B4 /* libRNFirebase.a */; };
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,11 +107,8 @@
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F0EB28E4373242A285562B08 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/native-base/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		F5CCA538958544328FD22007 /* Roboto_medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Roboto_medium.ttf; path = "../node_modules/native-base/Fonts/Roboto_medium.ttf"; sourceTree = "<group>"; };
-<<<<<<< HEAD
 		4DD5F43E59BC4522BE93E5A6 /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; name = "RNFirebase.xcodeproj"; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		3776AE64E94245E08B6489B4 /* libRNFirebase.a */ = {isa = PBXFileReference; name = "libRNFirebase.a"; path = "libRNFirebase.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,10 +125,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BC8C8E542D6BAA3FDAE1DCE /* libPods-DazzledDate.a in Frameworks */,
-<<<<<<< HEAD
 				18624F70572C45488F0142A2 /* libRNFirebase.a in Frameworks */,
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,10 +211,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-<<<<<<< HEAD
 				4DD5F43E59BC4522BE93E5A6 /* RNFirebase.xcodeproj */,
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -712,7 +696,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DazzledDate.app/DazzledDate";
-<<<<<<< HEAD
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -721,8 +704,6 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
 				);
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 			};
 			name = Debug;
 		};
@@ -744,7 +725,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DazzledDate.app/DazzledDate";
-<<<<<<< HEAD
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -753,8 +733,6 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
 				);
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 			};
 			name = Release;
 		};
@@ -776,13 +754,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.pys.dazzleddate;
 				PRODUCT_NAME = DazzledDate;
 				VERSIONING_SYSTEM = "apple-generic";
-<<<<<<< HEAD
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
 				);
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 			};
 			name = Debug;
 		};
@@ -803,13 +778,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.pys.dazzleddate;
 				PRODUCT_NAME = DazzledDate;
 				VERSIONING_SYSTEM = "apple-generic";
-<<<<<<< HEAD
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
 				);
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 			};
 			name = Release;
 		};
@@ -839,7 +811,6 @@
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
-<<<<<<< HEAD
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -848,8 +819,6 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
 				);
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 			};
 			name = Debug;
 		};
@@ -879,7 +848,6 @@
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
-<<<<<<< HEAD
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -888,8 +856,6 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
 				);
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 			};
 			name = Release;
 		};
@@ -918,7 +884,6 @@
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DazzledDate-tvOS.app/DazzledDate-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
-<<<<<<< HEAD
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -927,8 +892,6 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
 				);
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 			};
 			name = Debug;
 		};
@@ -957,7 +920,6 @@
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DazzledDate-tvOS.app/DazzledDate-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
-<<<<<<< HEAD
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -966,8 +928,6 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-firebase\ios\RNFirebase/**",
 				);
-=======
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
 			};
 			name = Release;
 		};

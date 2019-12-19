@@ -3,7 +3,6 @@ export const changeReadFlag = payload => (
         type: 'CHANGE_READFLAG',
         payload: payload,
     }
-<<<<<<< HEAD
 );
 
 export const updateQuickBlox = payload => (
@@ -26,6 +25,3 @@ export const updateCallEvent = payload => (
         payload: payload
     }
 );
-=======
-)
->>>>>>> d560d4782725f6adaef8daaa058bfdb8f6d6ff8f
