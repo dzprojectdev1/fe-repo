@@ -71,21 +71,17 @@ class AppView extends React.Component {
     this.createNotificationListeners();
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const appSettings = {
       appId: '79590',
       authKey: 'cWKpVy9AHb4-JhX',
       authSecret: 'LA8uJHFz3cwyFnc',
       accountKey: 'tD9SBvimWv5_nu-hubhk'
     };
-    QB.settings
-      .init(appSettings)
-      .then(() => {
-        // SDK initialized successfully
-      }).catch((e) => {
-        // Some error occured, look at the exception message for more details
-        alert(JSON.stringify(e))
-      });
+    await QB.settings.init(appSettings).catch((e) => {
+      // Some error occured, look at the exception message for more details
+      alert(JSON.stringify(e))
+    });
 
     const emitter = Platform.select({
       android: DeviceEventEmitter,
@@ -98,6 +94,7 @@ class AppView extends React.Component {
   }
 
   eventHandler = (event) => {
+    alert(JSON.stringify(event));
     const { type, payload } = event;
     if (type === CALL) {
       whoosh.setNumberOfLoops(-1);
@@ -144,7 +141,6 @@ class AppView extends React.Component {
         case PEER_CONNECTION_STATE_CHANGED: //both
           break;
         case RECEIVED_VIDEO_TRACK:
-
           break;
         default: break;
       }

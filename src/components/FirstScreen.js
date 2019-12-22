@@ -14,15 +14,14 @@ import {
   Alert,
 } from "react-native";
 import nativeFirebase from 'react-native-firebase';
-import QB from 'quickblox-react-native-sdk';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { changeReadFlag, updateQuickBlox, updateFCMTocken } from '../../Action';
+import { changeReadFlag, updateUserData, updateFCMTocken, updateQuickBlox } from '../../Action';
 import DeviceInfo from 'react-native-device-info';
 import firstBg from '../assets/images/first_bg.jpg';
 import Global from './Global';
-
+import QB from 'quickblox-react-native-sdk';
 import { SERVER_URL } from '../config/constants';
 
 class FirstScreen extends Component {
@@ -42,145 +41,110 @@ class FirstScreen extends Component {
     return id;
   };
 
-  componentDidMount() {
-    nativeFirebase.messaging().getToken().then(fcmToken => {
-      if (fcmToken) {
-        this.getdeviceId().then(deviceId => {
-          if (deviceId) {
-            var details = {
-              'fcmId': fcmToken
-            };
-            var formBody = [];
-            for (var property in details) {
-              var encodedKey = encodeURIComponent(property);
-              var encodedValue = encodeURIComponent(details[property]);
-              formBody.push(encodedKey + "=" + encodedValue);
-            }
-            formBody = formBody.join("&");
-            fetch(`${SERVER_URL}/api/user/checkDeviceUniqueId/${deviceId}`, {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              body: formBody
-            }).then((response) => response.json())
-              .then((responseJson) => {
-                if (responseJson.error === false) {
-                  if (responseJson.user) {
-                    //logined
-                    QB.auth
-                      .login({
-                        login: responseJson.user.id,
-                        password: 'quickblox'
-                      }).then((info) => {
-                        // signed in successfully, handle info as necessary
-                        // info.user - user information
-                        // info.session - current session
-                        this.props.updateQuickBlox(info);
-                        this.props.updateFCMTocken(fcmToken);
-                        const subscription = { deviceToken: fcmToken }
-                        QB.subscriptions
-                          .create(subscription)
-                          .then(() => {
-                            /* subscription(s) created successfully */
-                            this.chatConnect(responseJson, info);
-                          }).catch(e => {
-                            /* handle error */
-                            alert(JSON.stringify(e.message))
-                          });
-                      }).catch((e) => {
-                        // handle error
-                        alert(JSON.stringify(e.message));
-                        if (e.message === "Unauthorized") {
-                          QB.users
-                            .create({
-                              email: responseJson.user.name + '@quickblox.com',
-                              fullName: responseJson.user.name,
-                              login: responseJson.user.id,
-                              password: 'quickblox',
-                              // phone: '404-388-5366',
-                              tags: ['#awesome', '#quickblox']
-                            }).then((user) => {
-                              // user created successfully
-                              this.props.updateQuickBlox(user);
-                              this.props.updateFCMTocken(fcmToken);
-                              const subscription = { deviceToken: fcmToken }
-                              QB.subscriptions
-                                .create(subscription)
-                                .then(() => {
-                                  /* subscription(s) created successfully */
-                                  this.chatConnect(responseJson, user);
-                                }).catch(e => {
-                                  /* handle error */
-                                  alert(JSON.stringify(e.message))
-                                });
-                            }).catch((e) => {
-                              alert(JSON.stringify(e.message));
-                            })
-                        }
-                      });
-                  } else {
-                    this.setState({
-                      isLoaded: false
-                    }, function () {
-                      this.props.navigation.navigate("Signup");
-                    });
-                  }
-                }
-              }).catch(error => {
-                alert(JSON.stringify(error));
-              });
-          } else {
-            this.setState({
-              isLoaded: false
-            })
-          }
-        });
+  async componentDidMount() {
+    let fcmToken = await nativeFirebase.messaging().getToken();
+    if (fcmToken) {
+      this.props.updateFCMTocken(fcmToken);
+      let deviceId = await this.getdeviceId();
+      var details = {
+        'fcmId': fcmToken
+      };
+      var formBody = [];
+      for (var property in details) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
       }
-    });
-  }
-
-  chatConnect = (responseJson, info) => {
-    QB.chat
-      .isConnected()
-      .then((connected) => { // boolean
-        // handle as necessary, i.e.
-        // if (connected === false) reconnect()
-        if (connected === true) {
-          this.initWebRTC(responseJson);
-        } else {
-          QB.chat
-            .connect({
-              userId: info.user.id,
-              password: 'quickblox'
-            }).then(() => {
-              // connected successfully
-              this.initWebRTC(responseJson);
+      formBody = formBody.join("&");
+      let responseJson = await fetch(`${SERVER_URL}/api/user/checkDeviceUniqueId/${deviceId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formBody
+      }).then((response) => response.json()).catch(e => alert(JSON.stringify(e.message)));
+      if (responseJson.error === false) {
+        if (responseJson.user) {
+          //logined
+          let info = await QB.auth.login({
+            login: responseJson.user.id,
+            password: 'quickblox'
+          }).catch((e) => {
+            // handle error
+            alert(JSON.stringify("my login = " + e.message));
+          });
+          if (!info) {
+            let user = await QB.users.create({
+              email: responseJson.user.name + '@quickblox.com',
+              fullName: responseJson.user.name,
+              login: responseJson.user.id,
+              password: 'quickblox',
+              // phone: '404-388-5366',
+              tags: ['#awesome', '#quickblox']
             }).catch((e) => {
-              // some error occurred
               alert(JSON.stringify(e.message));
             });
+            let info = await QB.auth.login({
+              login: user.login,
+              password: 'quickblox'
+            }).catch((e) => {
+              // handle error
+              alert(JSON.stringify("my login = " + e.message));
+            });
+            this.props.updateQuickBlox(info);
+            const subscription = { deviceToken: fcmToken };
+            await QB.subscriptions.create(subscription).catch(e => {
+              /* handle error */
+              alert(JSON.stringify("subscription = " + e.message));
+            });
+            let isConnected = await QB.chat.isConnected().catch((e) => {
+              alert(JSON.stringify('chat connect check = ' + e.message));
+            });
+            if (isConnected === false) {
+              await QB.chat.connect({ userId: info.user.id, password: 'quickblox' }).catch((e) => {
+                alert(JSON.stringify("new chat connect = " + e.message));
+              });
+            }
+            await QB.webrtc.init().catch((e) => {
+              /* handle error */
+              alert(JSON.stringify(e.message))
+            });
+            this.nextThrough(responseJson);
+          } else {
+            this.props.updateQuickBlox(info);
+            const subscription = { deviceToken: fcmToken };
+            await QB.subscriptions.create(subscription).catch(e => {
+              /* handle error */
+              alert(JSON.stringify("subscription = " + e.message));
+            });
+            let isConnected = await QB.chat.isConnected().catch((e) => {
+              alert(JSON.stringify('chat connect check = ' + e.message));
+            });
+            if (isConnected === false) {
+              await QB.chat.connect({ userId: info.user.id, password: 'quickblox' }).catch((e) => {
+                alert(JSON.stringify("new chat connect = " + e.message));
+              });
+            }
+            await QB.webrtc.init().catch((e) => {
+              /* handle error */
+              alert(JSON.stringify(e.message))
+            });
+            this.nextThrough(responseJson);
+          }
+        } else {
+          this.setState({
+            isLoaded: false
+          }, function () {
+            this.props.navigation.navigate("Signup");
+          });
         }
-      }).catch((e) => {
-        // handle error
-        alert(JSON.stringify(e.message));
-      });
-  }
-
-  initWebRTC = (responseJson) => {
-    QB.webrtc
-      .init()
-      .then(() => {
-        /* module is ready for calls processing */
-        this.nextThrough(responseJson);
-      }).catch((e) => {
-        /* handle error */
-        alert(JSON.stringify(e.message))
-      });
+      }
+    }
   }
 
   nextThrough = (responseJson) => {
     // connected successfully
+    this.props.updateUserData(responseJson.user);
     Global.saveData.token = responseJson.user.token;
     Global.saveData.u_id = responseJson.user.id;
     Global.saveData.u_name = responseJson.user.name;
@@ -279,7 +243,7 @@ class FirstScreen extends Component {
         }
       })
       .catch((error) => {
-        alert(JSON.stringify(error))
+        alert(JSON.stringify(error.message));
         return
       });
   }
@@ -290,7 +254,7 @@ class FirstScreen extends Component {
       return JSON.parse(value);
     } catch (error) {
       // Error retrieving data
-      console.log(error);
+      console.log(error.message);
     }
     return;
   };
@@ -340,15 +304,16 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-  const { unreadFlag, senders, quickBloxInfo, fcmID } = state.reducer
-  return { unreadFlag, senders, quickBloxInfo, fcmID }
+  const { unreadFlag, senders, fcmID, userData } = state.reducer
+  return { unreadFlag, senders, fcmID, userData }
 };
 
 const mapDispatchToProps = dispatch => (
   bindActionCreators({
     changeReadFlag,
-    updateQuickBlox,
-    updateFCMTocken
+    updateUserData,
+    updateFCMTocken,
+    updateQuickBlox
   }, dispatch)
 );
 

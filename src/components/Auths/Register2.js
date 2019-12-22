@@ -27,7 +27,7 @@ import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import { Dropdown } from 'react-native-material-dropdown';
 import Global from '../Global';
-import { updateQuickBlox, updateFCMTocken } from '../../../Action';
+import { updateFCMTocken, updateUserData, updateQuickBlox } from '../../../Action';
 import { SERVER_URL } from '../../config/constants';
 
 class Register2 extends Component {
@@ -205,374 +205,143 @@ class Register2 extends Component {
     var deviceInfo = { device_id: id, fcm_id: fcmToken };
     return deviceInfo;
   };
-  onRegister = () => {
+  createNewAccount = async (position) => {
+    let deviceInfo = await this.getdeviceId().catch((e) => {
+      alert(JSON.stringify('deviceinfo = ' + e.message))
+    });
+    this.props.updateFCMTocken(deviceInfo.fcm_id);
+    let language_index = 1;
+    this.state.languageData.forEach((item, index) => {
+      if (item.value === this.state.language)
+        language_index = item.id;
+    });
+    let country_index = 1;
+    this.state.countryData.forEach((item, index) => {
+      if (item.value === this.state.country)
+        country_index = item.id;
+    });
+    let city_index = 1;
+    this.state.cityData.forEach((item, index) => {
+      if (item.value === this.state.city)
+        city_index = item.id;
+    })
+    var details = {
+      'username': this.state.nickName,
+      // 'useremail': this.state.email,
+      // 'userpassword': this.state.password,
+      'usergender': this.state.gender,
+      'description': this.state.description,
+      'language': language_index,
+      'country': country_index,
+      'ethnicity': city_index,
+      'birth_date': this.state.birthday,
+      'lat_geo': position !== null ? position.coords.latitude : 0,
+      'long_geo': position !== null ? position.coords.longitude : 0,
+      'device_id': deviceInfo.device_id,
+      'fcm_id': deviceInfo.fcm_id
+    };
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    let responseJson = await fetch(`${SERVER_URL}/api/user/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: formBody,
+    }).then((response) => response.json()).catch((error) => {
+      alert(JSON.stringify("account create = " + error.message))
+    });
+    if (!responseJson.error) {
+      let user = await QB.users.create({
+        email: responseJson.user.name + '@quickblox.com',
+        fullName: responseJson.user.name,
+        login: responseJson.user.id,
+        password: 'quickblox',
+        // phone: '404-388-5366',
+        tags: ['#awesome', '#quickblox']
+      }).catch((e) => {
+        alert(JSON.stringify(e.message));
+      });
+      let info = await QB.auth.login({
+        login: user.login,
+        password: 'quickblox'
+      }).catch((e) => {
+        // handle error
+        alert(JSON.stringify("my login = " + e.message));
+      });
+      this.props.updateQuickBlox(info);
+      const subscription = { deviceToken: deviceInfo.fcm_id };
+      await QB.subscriptions.create(subscription).catch(e => {
+        /* handle error */
+        alert(JSON.stringify("subscription = " + e.message));
+      });
+      let isConnected = await QB.chat.isConnected().catch((e) => {
+        alert(JSON.stringify('chat connect check = ' + e.message));
+      });
+      if (isConnected === false) {
+        await QB.chat.connect({ userId: info.user.id, password: 'quickblox' }).catch((e) => {
+          alert(JSON.stringify("new chat connect = " + e.message));
+        });
+      }
+      await QB.webrtc.init().catch((e) => {
+        /* handle error */
+        alert(JSON.stringify(e.message))
+      });
+      this.nextThrough(responseJson);
+      this.registerLoadingBtn.showLoading(false);
+    }
+  }
+  onRegister = async () => {
+    this.registerLoadingBtn.showLoading(true);
     if (this.state.register_click_count === 0) {
       this.setState({
         register_click_count: 1,
       });
       if (Platform.OS === 'android') {
-        PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then(isPermission => {
-          if (isPermission) {
-            Geolocation.getCurrentPosition(
-              (position) => {
-                this.getdeviceId().then(deviceInfo => {
-                  let language_index = 1;
-                  this.state.languageData.forEach((item, index) => {
-                    if (item.value === this.state.language)
-                      language_index = item.id;
-                  });
-                  let country_index = 1;
-                  this.state.countryData.forEach((item, index) => {
-                    if (item.value === this.state.country)
-                      country_index = item.id;
-                  });
-                  let city_index = 1;
-                  this.state.cityData.forEach((item, index) => {
-                    if (item.value === this.state.city)
-                      city_index = item.id;
-                  })
-                  var details = {
-                    'username': this.state.nickName,
-                    // 'useremail': this.state.email,
-                    // 'userpassword': this.state.password,
-                    'usergender': this.state.gender,
-                    'description': this.state.description,
-                    'language': language_index,
-                    'country': country_index,
-                    'ethnicity': city_index,
-                    'birth_date': this.state.birthday,
-                    'lat_geo': position.coords.latitude,
-                    'long_geo': position.coords.longitude,
-                    'device_id': deviceInfo.device_id,
-                    'fcm_id': deviceInfo.fcm_id
-                  };
-                  var formBody = [];
-                  for (var property in details) {
-                    var encodedKey = encodeURIComponent(property);
-                    var encodedValue = encodeURIComponent(details[property]);
-                    formBody.push(encodedKey + "=" + encodedValue);
-                  }
-                  formBody = formBody.join("&");
-                  fetch(`${SERVER_URL}/api/user/signup`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: formBody,
-                  }).then((response) => response.json())
-                    .then((responseJson) => {
-                      if (!responseJson.error) {
-                        // this.onLogin();                        
-                        QB.users
-                          .create({
-                            email: responseJson.user.name + '@quickblox.com',
-                            fullName: responseJson.user.name,
-                            login: responseJson.user.id,
-                            password: 'quickblox',
-                            // phone: '404-388-5366',
-                            tags: ['#awesome', '#quickblox']
-                          })
-                          .then((user) => {
-                            // user created successfully
-                            alert(JSON.stringify(user));
-                            QB.auth
-                              .login({
-                                login: responseJson.user.id,
-                                password: 'quickblox'
-                              })
-                              .then((info) => {
-                                // signed in successfully, handle info as necessary
-                                // info.user - user information
-                                // info.session - current session
-                                this.props.updateQuickBlox(info);
-                                this.props.updateFCMTocken(deviceInfo.fcm_id);
-
-                                const subscription = { deviceToken: deviceInfo.fcm_id }
-                                QB.subscriptions
-                                  .create(subscription)
-                                  .then(() => {
-                                    /* subscription(s) created successfully */
-                                    alert(JSON.stringify(info));
-                                    QB.chat
-                                      .connect({
-                                        userId: info.user.id,
-                                        password: 'quickblox'
-                                      }).then(() => {
-                                        // connected successfully
-                                        Global.saveData.token = responseJson.user.token;
-                                        Global.saveData.u_id = responseJson.user.id
-                                        Global.saveData.u_name = responseJson.user.name
-                                        Global.saveData.u_age = responseJson.user.age
-                                        Global.saveData.u_gender = responseJson.user.gender
-                                        Global.saveData.u_language = responseJson.user.language
-                                        Global.saveData.u_city = responseJson.user.ethnicity
-                                        Global.saveData.u_country = responseJson.user.country
-                                        Global.saveData.u_description = responseJson.user.description;
-                                        Global.saveData.coin_count = responseJson.user.coin_count;
-                                        Global.saveData.account_status = responseJson.user.account_status;
-                                        Global.saveData.auto_block = responseJson.user.auto_block;
-                                        Global.saveData.is_admin = responseJson.user.is_admin;
-                                        Global.saveData.fan_count = responseJson.user.fan_count;
-                                        Global.saveData.coin_per_message = responseJson.user.coin_per_message;
-                                        Global.saveData.newUser = true;
-                                        this.registerLoadingBtn.showLoading(false);
-                                        this.props.navigation.navigate("BrowseList");
-                                      }).catch((e) => {
-                                        // some error occurred
-                                        alert(JSON.stringify(e.message));
-                                      });
-                                  }).catch(e => {
-                                    /* handle error */
-                                    alert(JSON.stringify(e.message))
-                                  });
-                              }).catch((e) => {
-                                // handle error
-                                alert(JSON.stringify(e.message));
-                              });
-                          }).catch((e) => {
-                            // handle as necessary
-                            alert(JSON.stringify(e.message))
-                          });
-                      }
-                      // this.registerLoadingBtn.showLoading(false);
-                    }).catch((error) => {
-                      alert(JSON.stringify(error.message))
-                    });
-                });
-              },
-              (error) => {
-                if (error.code == 2) {
-                  this.getdeviceId().then(deviceInfo => {
-                    let language_index = 1;
-                    this.state.languageData.forEach((item, index) => {
-                      if (item.value === this.state.language)
-                        language_index = item.id;
-                    });
-                    let country_index = 1;
-                    this.state.countryData.forEach((item, index) => {
-                      if (item.value === this.state.country)
-                        country_index = item.id;
-                    });
-                    let city_index = 1;
-                    this.state.cityData.forEach((item, index) => {
-                      if (item.value === this.state.city)
-                        city_index = item.id;
-                    })
-                    var details = {
-                      'username': this.state.nickName,
-                      // 'useremail': this.state.email,
-                      // 'userpassword': this.state.password,
-                      'usergender': this.state.gender,
-                      'description': this.state.description,
-                      'language': language_index,
-                      'country': country_index,
-                      'ethnicity': city_index,
-                      'birth_date': this.state.birthday,
-                      'lat_geo': 0,
-                      'long_geo': 0,
-                      'device_id': deviceInfo.device_id,
-                      'fcm_id': deviceInfo.fcm_id
-                    };
-                    var formBody = [];
-                    for (var property in details) {
-                      var encodedKey = encodeURIComponent(property);
-                      var encodedValue = encodeURIComponent(details[property]);
-                      formBody.push(encodedKey + "=" + encodedValue);
-                    }
-                    formBody = formBody.join("&");
-                    fetch(`${SERVER_URL}/api/user/signup`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                      },
-                      body: formBody,
-                    }).then((response) => response.json())
-                      .then((responseJson) => {
-                        if (!responseJson.error) {
-                          // this.onLogin();
-                          Global.saveData.token = responseJson.user.token;
-                          Global.saveData.u_id = responseJson.user.id
-                          Global.saveData.u_name = responseJson.user.name
-                          Global.saveData.u_age = responseJson.user.age
-                          Global.saveData.u_gender = responseJson.user.gender
-                          Global.saveData.u_language = responseJson.user.language
-                          Global.saveData.u_city = responseJson.user.ethnicity
-                          Global.saveData.u_country = responseJson.user.country
-                          Global.saveData.u_description = responseJson.user.description;
-                          Global.saveData.coin_count = responseJson.user.coin_count;
-                          Global.saveData.newUser = true;
-                          this.registerLoadingBtn.showLoading(false);
-                          this.props.navigation.navigate("BrowseList");
-                        }
-                        this.registerLoadingBtn.showLoading(false);
-                      })
-                      .catch((error) => {
-                        alert(error);
-                      });
-                  });
-                } else {
-                  // See error code charts below.
-                  alert(error.message);
-                  return null;
-                }
-              },
-              // { enableHighAccuracy: Platform.OS != 'android', timeout: 5000, }
-              { enableHighAccuracy: true, timeout: 15000 }
-            );
-          } else {
-            Alert.alert(
-              'Alert',
-              "DazzledDate requires access to this device's location. Please restart and grant location permissions.",
-              [
-                { text: 'Ok', onPress: () => console.log('Ok pressed.') },
-              ],
-              { cancelable: false },
-            );
-          }
+        let isPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).catch((e) => {
+          alert(JSON.stringify(e.message));
         });
+        if (isPermission) {
+          Geolocation.getCurrentPosition(
+            (position) => {
+              this.createNewAccount(position);
+            },
+            (error) => {
+              if (error.code == 2) {
+                this.createNewAccount(null);
+              } else {
+                // See error code charts below.
+                alert(error.message);
+                return null;
+              }
+            },
+            // { enableHighAccuracy: Platform.OS != 'android', timeout: 5000, }
+            { enableHighAccuracy: true, timeout: 15000 }
+          );
+        } else {
+          Alert.alert(
+            'Alert',
+            "DazzledDate requires access to this device's location. Please restart and grant location permissions.",
+            [
+              { text: 'Ok', onPress: () => console.log('Ok pressed.') },
+            ],
+            { cancelable: false },
+          );
+        }
       } else if (Platform.OS === 'ios') {
         Geolocation.requestAuthorization();
         Geolocation.getCurrentPosition(
           (position) => {
-            this.getdeviceId().then(deviceInfo => {
-              let language_index = 1;
-              this.state.languageData.forEach((item, index) => {
-                if (item.value === this.state.language)
-                  language_index = item.id;
-              });
-              let country_index = 1;
-              this.state.countryData.forEach((item, index) => {
-                if (item.value === this.state.country)
-                  country_index = item.id;
-              });
-              let city_index = 1;
-              this.state.cityData.forEach((item, index) => {
-                if (item.value === this.state.city)
-                  city_index = item.id;
-              })
-              var details = {
-                'username': this.state.nickName,
-                // 'useremail': this.state.email,
-                // 'userpassword': this.state.password,
-                'usergender': this.state.gender,
-                'description': this.state.description,
-                'language': language_index,
-                'country': country_index,
-                'ethnicity': city_index,
-                'birth_date': this.state.birthday,
-                'lat_geo': position.coords.latitude,
-                'long_geo': position.coords.longitude,
-                'device_id': deviceInfo.device_id,
-                'fcm_id': deviceInfo.fcm_id
-              };
-              var formBody = [];
-              for (var property in details) {
-                var encodedKey = encodeURIComponent(property);
-                var encodedValue = encodeURIComponent(details[property]);
-                formBody.push(encodedKey + "=" + encodedValue);
-              }
-              formBody = formBody.join("&");
-              fetch(`${SERVER_URL}/api/user/signup`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: formBody,
-              }).then((response) => response.json())
-                .then((responseJson) => {
-                  if (!responseJson.error) {
-                    // this.onLogin();
-                    Global.saveData.token = responseJson.user.token;
-                    Global.saveData.u_id = responseJson.user.id
-                    Global.saveData.u_name = responseJson.user.name
-                    Global.saveData.u_age = responseJson.user.age
-                    Global.saveData.u_gender = responseJson.user.gender
-                    Global.saveData.u_language = responseJson.user.language
-                    Global.saveData.u_city = responseJson.user.ethnicity
-                    Global.saveData.u_country = responseJson.user.country
-                    Global.saveData.u_description = responseJson.user.description;
-                    Global.saveData.coin_count = responseJson.user.coin_count;
-                    Global.saveData.newUser = true;
-                    this.registerLoadingBtn.showLoading(false);
-                    this.props.navigation.navigate("BrowseList");
-                  }
-                  this.registerLoadingBtn.showLoading(false);
-                })
-                .catch((error) => {
-                  alert(error);
-                });
-            });
+            this.createNewAccount(position);
           },
           (error) => {
             if (error.code == 2) {
-              this.getdeviceId().then(deviceInfo => {
-                let language_index = 1;
-                this.state.languageData.forEach((item, index) => {
-                  if (item.value === this.state.language)
-                    language_index = item.id;
-                });
-                let country_index = 1;
-                this.state.countryData.forEach((item, index) => {
-                  if (item.value === this.state.country)
-                    country_index = item.id;
-                });
-                let city_index = 1;
-                this.state.cityData.forEach((item, index) => {
-                  if (item.value === this.state.city)
-                    city_index = item.id;
-                })
-                var details = {
-                  'username': this.state.nickName,
-                  // 'useremail': this.state.email,
-                  // 'userpassword': this.state.password,
-                  'usergender': this.state.gender,
-                  'description': this.state.description,
-                  'language': language_index,
-                  'country': country_index,
-                  'ethnicity': city_index,
-                  'birth_date': this.state.birthday,
-                  'lat_geo': 0,
-                  'long_geo': 0,
-                  'device_id': deviceInfo.device_id,
-                  'fcm_id': deviceInfo.fcm_id
-                };
-                var formBody = [];
-                for (var property in details) {
-                  var encodedKey = encodeURIComponent(property);
-                  var encodedValue = encodeURIComponent(details[property]);
-                  formBody.push(encodedKey + "=" + encodedValue);
-                }
-                formBody = formBody.join("&");
-                fetch(`${SERVER_URL}/api/user/signup`, {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                  },
-                  body: formBody,
-                }).then((response) => response.json())
-                  .then((responseJson) => {
-                    if (!responseJson.error) {
-                      // this.onLogin();
-                      Global.saveData.token = responseJson.user.token;
-                      Global.saveData.u_id = responseJson.user.id
-                      Global.saveData.u_name = responseJson.user.name
-                      Global.saveData.u_age = responseJson.user.age
-                      Global.saveData.u_gender = responseJson.user.gender
-                      Global.saveData.u_language = responseJson.user.language
-                      Global.saveData.u_city = responseJson.user.ethnicity
-                      Global.saveData.u_country = responseJson.user.country
-                      Global.saveData.u_description = responseJson.user.description;
-                      Global.saveData.coin_count = responseJson.user.coin_count;
-                      Global.saveData.newUser = true;
-                      this.registerLoadingBtn.showLoading(false);
-                      this.props.navigation.navigate("BrowseList");
-                    }
-                    this.registerLoadingBtn.showLoading(false);
-                  })
-                  .catch((error) => {
-                    alert(error);
-                  });
-              });
+              this.createNewAccount(null);
             } else {
               // See error code charts below.
               alert(error.message);
@@ -584,7 +353,27 @@ class Register2 extends Component {
         );
       }
     }
-    this.registerLoadingBtn.showLoading(false);
+  }
+
+  nextThrough = (responseJson) => {
+    this.props.updateUserData(responseJson.user);
+    Global.saveData.token = responseJson.user.token;
+    Global.saveData.u_id = responseJson.user.id
+    Global.saveData.u_name = responseJson.user.name
+    Global.saveData.u_age = responseJson.user.age
+    Global.saveData.u_gender = responseJson.user.gender
+    Global.saveData.u_language = responseJson.user.language
+    Global.saveData.u_city = responseJson.user.ethnicity
+    Global.saveData.u_country = responseJson.user.country
+    Global.saveData.u_description = responseJson.user.description;
+    Global.saveData.coin_count = responseJson.user.coin_count;
+    Global.saveData.account_status = responseJson.user.account_status;
+    Global.saveData.auto_block = responseJson.user.auto_block;
+    Global.saveData.is_admin = responseJson.user.is_admin;
+    Global.saveData.fan_count = responseJson.user.fan_count;
+    Global.saveData.coin_per_message = responseJson.user.coin_per_message;
+    Global.saveData.newUser = true;
+    this.props.navigation.navigate("BrowseList");
   }
 
   render() {
@@ -707,8 +496,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => (
   bindActionCreators({
-    updateQuickBlox,
-    updateFCMTocken
+    updateUserData,
+    updateFCMTocken,
+    updateQuickBlox
   }, dispatch)
 );
 export default connect(mapStateToProps, mapDispatchToProps)(Register2);

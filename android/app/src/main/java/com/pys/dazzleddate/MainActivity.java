@@ -2,7 +2,6 @@ package com.pys.dazzleddate;
 
 import androidx.annotation.NonNull;
 
-import io.wazo.callkeep.RNCallKeepModule;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
@@ -27,16 +26,5 @@ public class MainActivity extends ReactActivity {
                 return new RNGestureHandlerEnabledRootView(MainActivity.this);
             }
         };
-    }
-
-    // Permission results
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case RNCallKeepModule.REQUEST_READ_PHONE_STATE:
-                RNCallKeepModule.onRequestPermissionsResult(requestCode, permissions, grantResults);
-                break;
-        }
     }
 }

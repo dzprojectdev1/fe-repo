@@ -17,17 +17,17 @@ import {
     Alert,
     Dimensions,
     Platform,
-    Modal,    
+    Modal,
 } from 'react-native';
 
-// import QB from 'quickblox-react-native-sdk';
+import QB from 'quickblox-react-native-sdk';
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { changeReadFlag } from '../../../Action';
+import { changeReadFlag, updateQuickBlox } from '../../../Action';
 import Global from '../Global';
 
 import hiddenMan from '../../assets/images/hidden_man.png';
@@ -40,7 +40,7 @@ import ban_black from '../../assets/images/ban_black.png';
 import notification_black from '../../assets/images/notification_black.png';
 
 import { SERVER_URL } from '../../config/constants';
- 
+
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
@@ -60,6 +60,7 @@ class ChatScreen extends React.Component {
                 coin_count: props.navigation.state.params.data.data.coin_count,
                 fan_count: props.navigation.state.params.data.data.fan_count,
             },
+            oppoentData: null,
             matchId: props.navigation.state.params.data.data.match_id,
             textMessage: '',
             messageList: [],
@@ -78,7 +79,7 @@ class ChatScreen extends React.Component {
         }
     }
 
-    _menu = null;    
+    _menu = null;
 
     componentWillMount() {
         Global.saveData.nowPage = 'ChatDetail';
@@ -715,93 +716,18 @@ class ChatScreen extends React.Component {
         }
     }
 
-    // ringCall = () => {
-    //     if (Global.saveData.coin_count < 30) {
-    //         Alert.alert(
-    //             '',
-    //             "You need 30 diamonds to start a voice call with " + this.state.other.name + ".",
-    //             [
-    //                 { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-    //                 { text: 'Buy Diamonds', onPress: () => this.gotoShop(), style: 'cancel' },
-    //             ],
-    //             { cancelable: false }
-    //         );
-    //     } else {
-    //         var details = {
-    //             'userName': Global.saveData.u_name,
-    //             'otherId': this.state.other.userId,
-    //             'otherUserName': this.state.other.name,
-    //             'callType': 1,
-    //         };
-    //         var formBody = [];
-    //         for (var property in details) {
-    //             var encodedKey = encodeURIComponent(property);
-    //             var encodedValue = encodeURIComponent(details[property]);
-    //             formBody.push(encodedKey + "=" + encodedValue);
-    //         }
-    //         formBody = formBody.join("&");
-    //         fetch(`${SERVER_URL}/api/call/initiate`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/x-www-form-urlencoded',
-    //                 'Authorization': Global.saveData.token
-    //             },
-    //             body: formBody,
-    //         }).then((response) => response.json())
-    //             .then((responseJson) => {
-    //                 if (!responseJson.error) {
-
-    //                     if (responseJson.data.call_available) {
-    //                         Global.saveData.call_id = responseJson.data.call_id;
-
-    //                         this.props.navigation.replace('CallOutgo', {
-    //                             data: {
-    //                                 userId: this.state.other.userId,
-    //                                 name: this.state.other.name,
-    //                                 imgUrl: this.state.other.imgUrl,
-    //                                 description: this.state.other.description,
-    //                                 matchId: this.state.matchId,
-    //                             },
-    //                         })
-    //                     } else {
-    //                         Alert.alert(
-    //                             '',
-    //                             responseJson.message,
-    //                             [
-    //                                 { text: 'OK', onPress: () => console.log('OK Pressed'), style: 'cancel' }
-    //                             ],
-    //                             { cancelable: false }
-    //                         );
-    //                     }
-    //                 }
-    //             })
-    //             .catch((error) => {
-    //                 return
-    //             });
-    //     }
-    // }
-
     ringCall = () => {
         this.props.navigation.push('VoiceCall', {
             data: {
-                opponent: this.state.other
+                opponentAppInfo: this.state.other,
             },
         });
     }
 
     ringVideo = () => {
-        // this.props.navigation.replace('CallIncome', {
-        //     data: {
-        //         userId: this.state.other.userId,
-        //         name: this.state.other.name,
-        //         imgUrl: this.state.other.imgUrl,
-        //         description: this.state.other.description,
-        //         matchId: this.state.matchId,
-        //     },
-        // })
         this.props.navigation.push('VideoCall', {
             data: {
-                opponent: this.state.other
+                opponentAppInfo: this.state.other,
             },
         });
     }
@@ -1414,13 +1340,14 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-    const { unreadFlag, senders } = state.reducer
-    return { unreadFlag, senders }
+    const { unreadFlag, senders, userData, fcmID } = state.reducer
+    return { unreadFlag, senders, userData, fcmID }
 };
 
 const mapDispatchToProps = dispatch => (
     bindActionCreators({
         changeReadFlag,
+        updateQuickBlox
     }, dispatch)
 );
 

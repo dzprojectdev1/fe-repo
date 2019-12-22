@@ -14,15 +14,29 @@ import {
 import { connect } from 'react-redux';
 import QB from 'quickblox-react-native-sdk';
 import WebRTCView from 'quickblox-react-native-sdk/RTCView';
-import Global from '../Global';
-
-// asset images
-import hiddenMan from '../../assets/images/hidden_man.png';
+import Sound from 'react-native-sound';
 import bg from '../../assets/images/back_1.jpeg';
+import hiddenMan from '../../assets/images/hidden_man.png';
 import call_end_reject from '../../assets/images/call_end_reject.png';
-import speaker from '../../assets/images/speaker.png';
-import speaker_mute from '../../assets/images/speaker_mute.png';
-import chat_icon from '../../assets/images/chat.png';
+import {
+    CALL,
+    CALL_END,
+    REJECT,
+    ACCEPT,
+    HANG_UP,
+    PEER_CONNECTION_STATE_CHANGED,
+    RECEIVED_VIDEO_TRACK, NOT_ANSWER
+} from '../../config/constants';
+Sound.setCategory('Playback');
+const whoosh = new Sound('happy_birthday_by_music_box.mp3', Sound.MAIN_BUNDLE, (error) => {
+    if (error) {
+        console.log('failed to load the sound', error);
+        return;
+    }
+    // loaded successfully
+    console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
+
+});
 
 class VideoCall extends React.Component {
     constructor(props) {
@@ -32,7 +46,7 @@ class VideoCall extends React.Component {
             videoSession: {},
             speaker: false,
             callStateStr: 'CALLING',
-            opponent: props.navigation.state.params.data.opponent,
+            opponentAppInfo: props.navigation.state.params.data.opponentAppInfo,
             hours: 0,
             minutes: 0,
             seconds: 0,
@@ -70,6 +84,28 @@ class VideoCall extends React.Component {
                 alert(JSON.stringify(e.message));
             });
 
+    }
+    componentWillReceiveProps(nextProps, nextContext) {
+        clearInterval(this.state.intervalId);
+        if (nextProps.callEvent !== null) {
+            const { type, payload } = nextProps.callEvent;
+            if (type !== CALL) {
+                whoosh.stop();
+            }
+            const callStatusStr = type === ACCEPT ? 'CALL STARTED' : (type === REJECT ? 'DECLINED' : (type === CALL_END ? 'CALL ENDED' : 'CALLING'))
+            this.setState({
+                callStateStr: callStatusStr
+            });
+            if (type === ACCEPT) {
+                //call STARTED
+                this.timeCounter();
+                this.setState({
+                    showTimer: true
+                })
+            } else if ( type !== ACCEPT && type !== PEER_CONNECTION_STATE_CHANGED ) {
+                this.callEndEvent();
+            }
+        }
     }
 
     timeCounter = () => {
@@ -114,33 +150,39 @@ class VideoCall extends React.Component {
     }
 
     initWebRTC = () => {
+        whoosh.setNumberOfLoops(-1);
+        whoosh.play((success) => {
+            if (success) {
+                console.log('successfully finished playing');
+            } else {
+                console.log('playback failed due to audio decoding errors');
+            }
+        });
         const filter = {
             field: QB.users.USERS_FILTER.FIELD.LOGIN,
             operator: QB.users.USERS_FILTER.OPERATOR.IN,
             type: QB.users.USERS_FILTER.TYPE.STRING,
-            value: this.state.opponent.userId
+            value: this.state.opponentAppInfo.userId
         };
         QB.users
             .getUsers({ filter: filter })
             .then((result) => {
                 // users found
                 let allUsers = result.users;
-                let otherUserData = allUsers.filter(user => user.login === JSON.stringify(this.state.opponent.userId));
+                let otherUserData = allUsers.filter(user => user.login === JSON.stringify(this.state.opponentAppInfo.userId));
                 if (otherUserData.length) {
                     const params = {
                         opponentsIds: [otherUserData[0].id],
                         type: QB.webrtc.RTC_SESSION_TYPE.VIDEO,
                         userInfo: {
-                            'callerName': Global.saveData.u_name,
-                            'receiverName': this.state.opponent.name,
+                            'callerName': this.props.userData.name,
+                            'receiverName': this.state.opponentAppInfo.name,
                         }
                     }
-
                     QB.webrtc
                         .call(params)
                         .then((session) => {
                             /* session created */
-                            alert(JSON.stringify(session));
                             this.setState({
                                 videoSession: session,
                                 isLoading: false
@@ -156,35 +198,41 @@ class VideoCall extends React.Component {
             });
     }
 
-    callEndEvent = () => {
+    callEndEvent = async () => {
         this.setState({
-            callStateStr: 'Call Ended'
+            callStateStr: 'CALL ENDED'
         });
         const userInfo = {
             // custom data can be passed using this object
             // only [string]: string type supported
         }
-
-        QB.webrtc
-            .hangUp({ sessionId: this.state.videoSession.id, userInfo })
-            .then((session) => {
-                /* handle session */
-                this.props.navigation.pop();
-            }).catch((e) => {
-                /* handle error */
-                alert(JSON.stringify(e.message))
-            });
-
+        await QB.webrtc.hangUp({ sessionId: this.state.videoSession.id, userInfo }).catch((e) => {
+            /* handle error */
+            alert(JSON.stringify(e.message))
+        });
+        this.setState({
+            videoSession: {}
+        }, () => {
+            this.props.navigation.pop();
+        });
     }
 
     render() {
         const { state } = this;
         return (
-            <View source={bg} style={styles.container}>
-                {state.isLoading && (
-                    <ActivityIndicator size="large" color="#0000ff" />
+            <ImageBackground source={bg} style={styles.container}>
+                {!state.showTimer && (
+                    <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+                        <Image source={state.opponentAppInfo.imgUrl ? { uri: state.opponentAppInfo.imgUrl } : hiddenMan} style={styles.avatarOtherUser} />
+                        <Text style={styles.userName}>{state.opponentAppInfo.name}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: DEVICE_WIDTH * 0.6, marginTop: DEVICE_HEIGHT * 0.1 }}>
+                            <TouchableOpacity style={{ width: 60 }} onPress={this.callEndEvent}>
+                                <Image source={call_end_reject} style={styles.call_end_rejct_button} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 )}
-                {!state.isLoading && (
+                {state.showTimer && (
                     <View style={{
                         width: DEVICE_WIDTH,
                         height: DEVICE_HEIGHT * 0.7,
@@ -197,11 +245,11 @@ class VideoCall extends React.Component {
                             sessionId={state.videoSession.id}
                             // add styles as necessary
                             style={{ width: '100%', height: '100%', }}
-                            userId={this.props.quickBloxInfo.user.id} // your user's Id for local video or occupantId for remote
+                            userId={state.videoSession.opponentsIds[0]} // your user's Id for local video or occupantId for remote
                         />
                     </View>
                 )}
-                {!state.isLoading && (
+                {state.showTimer && (
                     <View style={{
                         backgroundColor: '#FFF',
                         flexDirection: 'row',
@@ -227,37 +275,13 @@ class VideoCall extends React.Component {
                         </TouchableOpacity>
                     </View>
                 )}
-                {/* {state.isLoading && (
-                    <View style={{ justifyContent: 'center', alignItems: 'center', }}>
-                        <Image source={state.opponent.imgUrl ? { uri: state.opponent.imgUrl } : hiddenMan} style={styles.avatarOtherUser} />
-                        <Text style={styles.userName}>{state.opponent.name}</Text>
-                        <Text style={styles.dialling}>{state.callStateStr}</Text>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: DEVICE_WIDTH * 0.6, marginTop: DEVICE_HEIGHT * 0.3 }}>
-                            <TouchableOpacity style={{ width: 30 }} onPress={() => this.setState({ speaker: !state.speaker })}>
-                                <Image source={!state.speaker ? speaker : speaker_mute} style={styles.smallIcon} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ width: 60 }} onPress={this.callEndEvent}>
-                                <Image source={call_end_reject} style={styles.call_end_rejct_button} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ width: 30 }} onPress={() => { }}>
-                                <Image source={chat_icon} style={styles.smallIcon} />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                )} */}
-            </View>
+            </ImageBackground>
         )
     }
 }
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({
-    // container: {
-    //     flex: 1,
-    //     flexDirection: 'column',
-    //     justifyContent: 'center',
-    //     backgroundColor: 'white'
-    // },
     container: {
         flex: 1,
         backgroundColor: '#313131',
@@ -273,7 +297,7 @@ const styles = StyleSheet.create({
         zIndex: 1000
     },
     myvideo: {
-        width:  DEVICE_WIDTH * 0.25,
+        width: DEVICE_WIDTH * 0.25,
         height: DEVICE_HEIGHT * 0.3,
     },
     avatarOtherUser: {
@@ -305,8 +329,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-    const { quickBloxInfo } = state.reducer
-    return { quickBloxInfo }
+    const { quickBloxInfo, callEvent, userData } = state.reducer
+    return { quickBloxInfo, callEvent, userData }
 };
-
 export default connect(mapStateToProps)(VideoCall);

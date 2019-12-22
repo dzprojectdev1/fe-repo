@@ -21,7 +21,6 @@
     "react": "16.8.3",
     "react-native": "0.59.9",
     "react-native-animate-loading-button": "^1.0.3",
-    "react-native-callkeep": "^3.0.8",
     "react-native-camera": "^2.10.2",
     "react-native-date-picker": "^2.7.0",
     "react-native-device-info": "^2.3.2",

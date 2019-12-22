@@ -5,10 +5,8 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.quickblox.reactnative.RNQbReactnativePackage;
-import io.wazo.callkeep.RNCallKeepPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.zyu.ReactNativeWheelPickerPackage;
-import com.henninghall.date_picker.DatePickerPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.dooboolab.RNIap.RNIapPackage;
 import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
@@ -45,10 +43,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new RNSoundPackage(),
             new RNQbReactnativePackage(),
-            new RNCallKeepPackage(),
             new AsyncStoragePackage(),
             new ReactNativeWheelPickerPackage(),
-            new DatePickerPackage(),
             new FastImageViewPackage(),
             new RNIapPackage(),
             new RNFusedLocationPackage(),
@@ -59,10 +55,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFirebaseMessagingPackage(),
             new RNDeviceInfo(),
             new ReactVideoPackage(),
-            new ReactNativeWheelPickerPackage(),
             new RNFSPackage(),
             new RNCameraPackage(),
-            new AsyncStoragePackage(),
             new ImagePickerPackage()
       );
     }

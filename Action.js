@@ -1,3 +1,11 @@
+
+export const updateUserData = payload => (
+    {
+        type: 'CHANGE_USER_DATA',
+        payload: payload
+    }
+);
+
 export const changeReadFlag = payload => (
     {
         type: 'CHANGE_READFLAG',

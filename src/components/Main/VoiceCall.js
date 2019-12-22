@@ -51,7 +51,7 @@ class VoiceCall extends React.Component {
       videoSession: {},
       speaker: false,
       callStateStr: 'CALLING',
-      opponent: props.navigation.state.params.data.opponent,
+      opponentAppInfo: props.navigation.state.params.data.opponentAppInfo,
       hours: 0,
       minutes: 0,
       seconds: 0,
@@ -63,14 +63,6 @@ class VoiceCall extends React.Component {
   componentWillMount() {
     this.backHanlder = BackHandler.addEventListener('hardwareBackPress', this.backPressed);
     const { quickBloxInfo } = this.props;
-    whoosh.setNumberOfLoops(-1);
-    whoosh.play((success) => {
-      if (success) {
-        console.log('successfully finished playing');
-      } else {
-        console.log('playback failed due to audio decoding errors');
-      }
-    });
 
     QB.chat
       .isConnected()
@@ -80,19 +72,16 @@ class VoiceCall extends React.Component {
         if (connected === true) {
           this.initWebRTC();
         } else {
-          QB.chat
-            .connect({
-              userId: quickBloxInfo.user.id,
-              password: 'quickblox'
-            })
-            .then(() => {
-              // connected successfully
-              this.initWebRTC();
-            })
-            .catch((e) => {
-              // some error occurred
-              alert(JSON.stringify(e.message));
-            });
+          QB.chat.connect({
+            userId: quickBloxInfo.user.id,
+            password: 'quickblox'
+          }).then(() => {
+            // connected successfully
+            this.initWebRTC();
+          }).catch((e) => {
+            // some error occurred
+            alert(JSON.stringify(e.message));
+          });
         }
       }).catch((e) => {
         // handle error
@@ -167,30 +156,34 @@ class VoiceCall extends React.Component {
       field: QB.users.USERS_FILTER.FIELD.LOGIN,
       operator: QB.users.USERS_FILTER.OPERATOR.IN,
       type: QB.users.USERS_FILTER.TYPE.STRING,
-      value: this.state.opponent.userId
+      value: this.state.opponentAppInfo.userId
     };
-    QB.users
-      .getUsers({ filter: filter })
+    QB.users.getUsers({ filter: filter })
       .then((result) => {
         // users found
         let allUsers = result.users;
-        let otherUserData = allUsers.filter(user => user.login === JSON.stringify(this.state.opponent.userId));
+        let otherUserData = allUsers.filter(user => user.login === JSON.stringify(this.state.opponentAppInfo.userId));
         if (otherUserData.length) {
-
           const params = {
             opponentsIds: [otherUserData[0].id],
             type: QB.webrtc.RTC_SESSION_TYPE.AUDIO,
             userInfo: {
-              'callerName': Global.saveData.u_name,
-              'receiverName': this.state.opponent.name,
+              'callerName': this.props.userData.name,
+              'receiverName': this.state.opponentAppInfo.name,
             }
           }
-
           QB.webrtc
             .call(params)
             .then((session) => {
               /* session created */
-              alert(JSON.stringify(session));
+              whoosh.setNumberOfLoops(-1);
+              whoosh.play((success) => {
+                if (success) {
+                  console.log('successfully finished playing');
+                } else {
+                  console.log('playback failed due to audio decoding errors');
+                }
+              });
               this.setState({
                 videoSession: session,
                 isLoading: false
@@ -206,7 +199,7 @@ class VoiceCall extends React.Component {
       });
   }
 
-  callEndEvent = () => {
+  callEndEvent = async () => {
     this.setState({
       callStateStr: 'CALL ENDED'
     });
@@ -214,16 +207,10 @@ class VoiceCall extends React.Component {
       // custom data can be passed using this object
       // only [string]: string type supported
     }
-    QB.webrtc
-      .hangUp({ sessionId: this.state.videoSession.id, userInfo })
-      .then((session) => {
-        /* handle session */
-        // alert(JSON.stringify(session));
-        return;
-      }).catch((e) => {
-        /* handle error */
-        alert(JSON.stringify(e.message))
-      });
+    await QB.webrtc.hangUp({ sessionId: this.state.videoSession.id, userInfo }).catch((e) => {
+      /* handle error */
+      alert(JSON.stringify(e.message))
+    });
     this.setState({
       videoSession: {}
     }, () => {
@@ -236,8 +223,8 @@ class VoiceCall extends React.Component {
     return (
       <ImageBackground source={bg} style={styles.contentContainer}>
         <View style={{ justifyContent: 'center', alignItems: 'center', }}>
-          <Image source={state.opponent.imgUrl ? { uri: state.opponent.imgUrl } : hiddenMan} style={styles.avatarOtherUser} />
-          <Text style={styles.userName}>{state.opponent.name}</Text>
+          <Image source={state.opponentAppInfo.imgUrl ? { uri: state.opponentAppInfo.imgUrl } : hiddenMan} style={styles.avatarOtherUser} />
+          <Text style={styles.userName}>{state.opponentAppInfo.name}</Text>
           <View style={styles.dialling}>
             <Text style={{
               fontSize: 16,
@@ -315,8 +302,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-  const { quickBloxInfo, callEvent } = state.reducer
-  return { quickBloxInfo, callEvent }
+  const { quickBloxInfo, callEvent, userData } = state.reducer
+  return { quickBloxInfo, callEvent, userData }
 };
 
 export default connect(mapStateToProps)(VoiceCall);
