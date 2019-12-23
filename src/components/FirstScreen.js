@@ -12,6 +12,8 @@ import {
   AsyncStorage,
   ActivityIndicator,
   Alert,
+  PermissionsAndroid,
+  BackHandler
 } from "react-native";
 import nativeFirebase from 'react-native-firebase';
 import firebase from 'firebase';
@@ -41,104 +43,136 @@ class FirstScreen extends Component {
     return id;
   };
 
-  async componentDidMount() {
-    let fcmToken = await nativeFirebase.messaging().getToken();
-    if (fcmToken) {
-      this.props.updateFCMTocken(fcmToken);
-      let deviceId = await this.getdeviceId();
-      var details = {
-        'fcmId': fcmToken
-      };
-      var formBody = [];
-      for (var property in details) {
-        var encodedKey = encodeURIComponent(property);
-        var encodedValue = encodeURIComponent(details[property]);
-        formBody.push(encodedKey + "=" + encodedValue);
+  async checkMultiPermissions() {
+    try {
+      let result = await PermissionsAndroid.requestMultiple(
+        [PermissionsAndroid.PERMISSIONS.CAMERA,
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO]
+      ).catch(e => {
+        alert(JSON.stringify("request permission" + e.message))
+      });
+      if (result['android.permission.CAMERA']
+        && result['android.permission.RECORD_AUDIO'] === 'granted') {
+        return true;
       }
-      formBody = formBody.join("&");
-      let responseJson = await fetch(`${SERVER_URL}/api/user/checkDeviceUniqueId/${deviceId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: formBody
-      }).then((response) => response.json()).catch(e => alert(JSON.stringify(e.message)));
-      if (responseJson.error === false) {
-        if (responseJson.user) {
-          //logined
-          let info = await QB.auth.login({
-            login: responseJson.user.id,
-            password: 'quickblox'
-          }).catch((e) => {
-            // handle error
-            alert(JSON.stringify("my login = " + e.message));
-          });
-          if (!info) {
-            let user = await QB.users.create({
-              email: responseJson.user.name + '@quickblox.com',
-              fullName: responseJson.user.name,
-              login: responseJson.user.id,
-              password: 'quickblox',
-              // phone: '404-388-5366',
-              tags: ['#awesome', '#quickblox']
-            }).catch((e) => {
-              alert(JSON.stringify(e.message));
-            });
+      return false;
+    } catch (error) {
+      // Error retrieving data
+      alert(JSON.stringify("check permissions = " + error.message));
+      return false;
+    }
+  }
+
+  async componentDidMount() {
+    let isAllowed = await this.checkMultiPermissions();
+    alert(JSON.stringify("permission check = " + isAllowed))
+    if (isAllowed) {
+      let fcmToken = await nativeFirebase.messaging().getToken();
+      if (fcmToken) {
+        this.props.updateFCMTocken(fcmToken);
+        let deviceId = await this.getdeviceId();
+        var details = {
+          'fcmId': fcmToken
+        };
+        var formBody = [];
+        for (var property in details) {
+          var encodedKey = encodeURIComponent(property);
+          var encodedValue = encodeURIComponent(details[property]);
+          formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+        let responseJson = await fetch(`${SERVER_URL}/api/user/checkDeviceUniqueId/${deviceId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: formBody
+        }).then((response) => response.json()).catch(e => alert(JSON.stringify(e.message)));
+        if (responseJson.error === false) {
+          if (responseJson.user) {
+            //logined
             let info = await QB.auth.login({
-              login: user.login,
+              login: responseJson.user.id,
               password: 'quickblox'
             }).catch((e) => {
               // handle error
               alert(JSON.stringify("my login = " + e.message));
             });
-            this.props.updateQuickBlox(info);
-            const subscription = { deviceToken: fcmToken };
-            await QB.subscriptions.create(subscription).catch(e => {
-              /* handle error */
-              alert(JSON.stringify("subscription = " + e.message));
-            });
-            let isConnected = await QB.chat.isConnected().catch((e) => {
-              alert(JSON.stringify('chat connect check = ' + e.message));
-            });
-            if (isConnected === false) {
-              await QB.chat.connect({ userId: info.user.id, password: 'quickblox' }).catch((e) => {
-                alert(JSON.stringify("new chat connect = " + e.message));
+            if (!info) {
+              let user = await QB.users.create({
+                fullName: responseJson.user.name,
+                login: responseJson.user.id,
+                password: 'quickblox',
+                // phone: '404-388-5366',
+                tags: ['#awesome', '#quickblox']
+              }).catch((e) => {
+                alert(JSON.stringify(e.message));
               });
+              let info = await QB.auth.login({
+                login: user.login,
+                password: 'quickblox'
+              }).catch((e) => {
+                // handle error
+                alert(JSON.stringify("my login = " + e.message));
+              });
+              this.props.updateQuickBlox(info);
+              const subscription = { deviceToken: fcmToken };
+              await QB.subscriptions.create(subscription).catch(e => {
+                /* handle error */
+                alert(JSON.stringify("subscription = " + e.message));
+              });
+              let isConnected = await QB.chat.isConnected().catch((e) => {
+                alert(JSON.stringify('chat connect check = ' + e.message));
+              });
+              if (isConnected === false) {
+                await QB.chat.connect({ userId: info.user.id, password: 'quickblox' }).catch((e) => {
+                  alert(JSON.stringify("new chat connect = " + e.message));
+                });
+              }
+              await QB.webrtc.init().catch((e) => {
+                /* handle error */
+                alert(JSON.stringify(e.message))
+              });
+              this.nextThrough(responseJson);
+            } else {
+              this.props.updateQuickBlox(info);
+              const subscription = { deviceToken: fcmToken };
+              await QB.subscriptions.create(subscription).catch(e => {
+                /* handle error */
+                alert(JSON.stringify("subscription = " + e.message));
+              });
+              let isConnected = await QB.chat.isConnected().catch((e) => {
+                alert(JSON.stringify('chat connect check = ' + e.message));
+              });
+              if (isConnected === false) {
+                await QB.chat.connect({ userId: info.user.id, password: 'quickblox' }).catch((e) => {
+                  alert(JSON.stringify("new chat connect = " + e.message));
+                });
+              }
+              await QB.webrtc.init().catch((e) => {
+                /* handle error */
+                alert(JSON.stringify(e.message))
+              });
+              this.nextThrough(responseJson);
             }
-            await QB.webrtc.init().catch((e) => {
-              /* handle error */
-              alert(JSON.stringify(e.message))
-            });
-            this.nextThrough(responseJson);
           } else {
-            this.props.updateQuickBlox(info);
-            const subscription = { deviceToken: fcmToken };
-            await QB.subscriptions.create(subscription).catch(e => {
-              /* handle error */
-              alert(JSON.stringify("subscription = " + e.message));
+            this.setState({
+              isLoaded: false
+            }, function () {
+              this.props.navigation.navigate("Signup");
             });
-            let isConnected = await QB.chat.isConnected().catch((e) => {
-              alert(JSON.stringify('chat connect check = ' + e.message));
-            });
-            if (isConnected === false) {
-              await QB.chat.connect({ userId: info.user.id, password: 'quickblox' }).catch((e) => {
-                alert(JSON.stringify("new chat connect = " + e.message));
-              });
-            }
-            await QB.webrtc.init().catch((e) => {
-              /* handle error */
-              alert(JSON.stringify(e.message))
-            });
-            this.nextThrough(responseJson);
           }
-        } else {
-          this.setState({
-            isLoaded: false
-          }, function () {
-            this.props.navigation.navigate("Signup");
-          });
         }
       }
+    } else {
+      Alert.alert(
+        'Permission Required',
+        'This app requires some permissions, please restart app and make it to be granted.',
+        [
+          { text: 'OK', onPress: () => BackHandler.exitApp() },
+        ],
+        { cancelable: false },
+      );
     }
   }
 

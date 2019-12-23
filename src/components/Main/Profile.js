@@ -182,14 +182,52 @@ class Profile extends Component {
     var list_items = [];
     for (var i = 0; i < data.length; i++) {
       var value = Object.values(data[i]);
-      list_items.push({
-        index: i,
-        otherId: data[i].other_user_id,
-        imageUrl: GCS_BUCKET + value[0] + '-screenshot',
-        videoUrl: null,
-        name: 'NAME',
-        time: 'TIME'
-      });
+      if (data[i].cdn_id && data[i].content_type == 1) {
+        list_items.push({
+          index: i,
+          otherId: data[i].other_user_id,
+          imageUrl: GCS_BUCKET + value[0] + '-screenshot',
+          videoUrl: null,
+          content_type: 1,
+          name: 'NAME',
+          time: 'TIME'
+        });
+      } else if (data[i].cdn_id && data[i].content_type == 2) {
+
+        var v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + data[i].cdn_id;
+        await fetch(v_url, {
+            method: 'GET',
+            headers: { 
+                'Content-Type':'application/json',
+                'Authorization':Global.saveData.token
+            }
+        }).then((response) => response.json())
+            .then((responseJson) => {
+              list_items.push({
+                index: i,
+                otherId: data[i].other_user_id,
+                imageUrl: data[i].cdn_id_128,
+                videoUrl: responseJson.url,
+                content_type: 2,
+                name: 'NAME',
+                time: 'TIME'
+              });
+            })
+            .catch((error) => {
+                alert("There is error, please try again!")
+                return
+        });
+      } else {
+        list_items.push({
+          index: i,
+          otherId: data[i].other_user_id,
+          imageUrl: null,
+          videoUrl: null,
+          content_type: 0,
+          name: 'NAME',
+          time: 'TIME'
+        });
+      }
     }
     this.setState({
       datas: list_items,
@@ -223,6 +261,7 @@ class Profile extends Component {
         data: {
           imageUrl: this.state.otherData.imageUrl,
           isMatched: this.state.otherData.isMatched, 
+          videoUrl: this.state.otherData.videoUrl,
           detail: { 
             id: this.state.otherData.id, 
             name: this.state.otherData.name, 

@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   StatusBar,
   Alert,
+  BackAndroid,
   PermissionsAndroid,
   Linking
 } from "react-native";
@@ -138,28 +139,29 @@ class Register2 extends Component {
         return
       });
   }
-  async requestLocationPermission() {
+  
+  async checkMultiPermissions() {
     try {
-      const granted = await PermissionsAndroid.request(
+      let result = await PermissionsAndroid.requestMultiple(
+        [PermissionsAndroid.PERMISSIONS.CAMERA,
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Location Permissions',
-          message:
-            'App needs location permissions to be enabled',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        this.showAlert('Granted.', 'Please try registering again.');
-      } else {
-        this.showAlert('Location permission invalid', 'Location permissions are required to use this app.');
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO]
+      ).catch(e => {
+        alert(JSON.stringify("request permission" + e.message))
+      });
+      if (result[PermissionsAndroid.PERMISSIONS.CAMERA]
+        && result[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION]
+        && result[PermissionsAndroid.PERMISSIONS.RECORD_AUDIO] === 'granted') {
+        return true;
       }
+      return false;
     } catch (error) {
       // Error retrieving data
-      console.error(error);
+      alert(JSON.stringify("check permissions = " + error.message));
+      return false;
     }
   }
+
   showAlert(title, body) {
     Alert.alert(
       title,
@@ -175,29 +177,7 @@ class Register2 extends Component {
       { cancelable: false },
     );
   }
-  async checkLocationPermission() {
-    const isPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-    if (isPermission) {
-      Geolocation.getCurrentPosition(
-        (position) => {
-          const usergeo = {
-            lat_geo: position.coords.latitude,
-            long_geo: position.coords.longitude
-          };
-          return usergeo;
-        },
-        (error) => {
-          // See error code charts below.
-          alert(error.message);
-          return null;
-        },
-        // { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-        { enableHighAccuracy: true, timeout: 15000 }
-      );
-    } else {
-      await this.requestLocationPermission();
-    }
-  }
+
   getdeviceId = async () => {
     //Getting the Unique Id from here
     var fcmToken = await nativeFirebase.messaging().getToken();
@@ -205,6 +185,7 @@ class Register2 extends Component {
     var deviceInfo = { device_id: id, fcm_id: fcmToken };
     return deviceInfo;
   };
+
   createNewAccount = async (position) => {
     let deviceInfo = await this.getdeviceId().catch((e) => {
       alert(JSON.stringify('deviceinfo = ' + e.message))
@@ -258,7 +239,6 @@ class Register2 extends Component {
     });
     if (!responseJson.error) {
       let user = await QB.users.create({
-        email: responseJson.user.name + '@quickblox.com',
         fullName: responseJson.user.name,
         login: responseJson.user.id,
         password: 'quickblox',
@@ -296,6 +276,7 @@ class Register2 extends Component {
       this.registerLoadingBtn.showLoading(false);
     }
   }
+
   onRegister = async () => {
     this.registerLoadingBtn.showLoading(true);
     if (this.state.register_click_count === 0) {
@@ -303,9 +284,7 @@ class Register2 extends Component {
         register_click_count: 1,
       });
       if (Platform.OS === 'android') {
-        let isPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).catch((e) => {
-          alert(JSON.stringify(e.message));
-        });
+        let isPermission = await this.checkMultiPermissions();
         if (isPermission) {
           Geolocation.getCurrentPosition(
             (position) => {
@@ -326,9 +305,9 @@ class Register2 extends Component {
         } else {
           Alert.alert(
             'Alert',
-            "DazzledDate requires access to this device's location. Please restart and grant location permissions.",
+            "DazzledDate requires these permissions to be granted. please restart app and check that permissions.",
             [
-              { text: 'Ok', onPress: () => console.log('Ok pressed.') },
+              { text: 'Ok', onPress: () => BackAndroid.exitApp()},
             ],
             { cancelable: false },
           );
@@ -358,13 +337,13 @@ class Register2 extends Component {
   nextThrough = (responseJson) => {
     this.props.updateUserData(responseJson.user);
     Global.saveData.token = responseJson.user.token;
-    Global.saveData.u_id = responseJson.user.id
-    Global.saveData.u_name = responseJson.user.name
-    Global.saveData.u_age = responseJson.user.age
-    Global.saveData.u_gender = responseJson.user.gender
-    Global.saveData.u_language = responseJson.user.language
-    Global.saveData.u_city = responseJson.user.ethnicity
-    Global.saveData.u_country = responseJson.user.country
+    Global.saveData.u_id = responseJson.user.id;
+    Global.saveData.u_name = responseJson.user.name;
+    Global.saveData.u_age = responseJson.user.age;
+    Global.saveData.u_gender = responseJson.user.gender;
+    Global.saveData.u_language = responseJson.user.language;
+    Global.saveData.u_city = responseJson.user.ethnicity;
+    Global.saveData.u_country = responseJson.user.country;
     Global.saveData.u_description = responseJson.user.description;
     Global.saveData.coin_count = responseJson.user.coin_count;
     Global.saveData.account_status = responseJson.user.account_status;
@@ -452,11 +431,6 @@ class Register2 extends Component {
             </Text>
           </View>
           <View style={{ width: DEVICE_WIDTH, height: 50, alignItems: 'center', justifyContent: 'center', marginTop: 30 }}>
-            {/* <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.8, height: 40, borderRadius: 20, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center' }}
-              onPress={() => this.onRegister()}
-            >
-              <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>{"REGISTER"}</Text>             
-            </TouchableOpacity> */}
             <AnimateLoadingButton
               ref={c => (this.registerLoadingBtn = c)}
               width={DEVICE_WIDTH * 0.8}

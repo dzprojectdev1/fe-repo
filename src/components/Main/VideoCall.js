@@ -102,7 +102,7 @@ class VideoCall extends React.Component {
                 this.setState({
                     showTimer: true
                 })
-            } else if ( type !== ACCEPT && type !== PEER_CONNECTION_STATE_CHANGED ) {
+            } else if (type !== ACCEPT && type !== PEER_CONNECTION_STATE_CHANGED) {
                 this.callEndEvent();
             }
         }
@@ -151,6 +151,7 @@ class VideoCall extends React.Component {
 
     initWebRTC = () => {
         whoosh.setNumberOfLoops(-1);
+        whoosh.setVolume(1);
         whoosh.play((success) => {
             if (success) {
                 console.log('successfully finished playing');
@@ -210,11 +211,7 @@ class VideoCall extends React.Component {
             /* handle error */
             alert(JSON.stringify(e.message))
         });
-        this.setState({
-            videoSession: {}
-        }, () => {
-            this.props.navigation.pop();
-        });
+        this.props.navigation.pop();
     }
 
     render() {
@@ -232,7 +229,7 @@ class VideoCall extends React.Component {
                         </View>
                     </View>
                 )}
-                {state.showTimer && (
+                {state.showTimer && state.videoSession.opponentsIds && (
                     <View style={{
                         width: DEVICE_WIDTH,
                         height: DEVICE_HEIGHT * 0.7,
@@ -262,9 +259,6 @@ class VideoCall extends React.Component {
                         padding: 3,
                         zIndex: 1
                     }}>
-                        <TouchableOpacity style={{ width: 60, height: 60 }} onPress={this.callEndEvent}>
-                            <Image source={call_end_reject} style={styles.call_end_rejct_button} />
-                        </TouchableOpacity>
                         <WebRTCView
                             sessionId={state.videoSession.id}
                             style={styles.myvideo} // add styles as necessary

@@ -15,6 +15,7 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import QB from 'quickblox-react-native-sdk';
+import WebRTCView from 'quickblox-react-native-sdk/RTCView';
 import nativeFirebase from 'react-native-firebase';
 import firebase from 'firebase';
 import Global from './src/components/Global';
@@ -55,7 +56,8 @@ class AppView extends React.Component {
     super(props);
     this.state = {
       data: '',
-      modalVisible: false,
+      videoModalVisible: false,
+      voiceModalVisible: false,
       callStatusStr: 'INCOMING CALL',
       showTimer: false,
       callEvent: {},
@@ -98,6 +100,7 @@ class AppView extends React.Component {
     const { type, payload } = event;
     if (type === CALL) {
       whoosh.setNumberOfLoops(-1);
+      whoosh.setVolume(1);
       whoosh.play((success) => {
         if (success) {
           alert('successfully finished playing');
@@ -114,12 +117,11 @@ class AppView extends React.Component {
       switch (type) {
         case CALL: //receiver event
           this.setState({
-            modalVisible: false,
             callStatusStr: payload.session.type === SESSION_TYPE.AUDIO ? 'Incoming Audio Call' : 'Incoming Video Call',
             callerName: payload.userInfo ? payload.userInfo.callerName : 'UNKNOWN',
             showTimer: false,
           });
-          this.setModalVisible(true);
+          this.setModalVisible(payload.session.type, true);
           break;
         case CALL_END: //receiver
           this.props.updateCallEvent(event);
@@ -193,7 +195,8 @@ class AppView extends React.Component {
     clearInterval(this.state.intervalId);
     this.setState({
       showTimer: false,
-      modalVisible: false,
+      videoModalVisible: false,
+      voiceModalVisible: false,
       callStatusStr: 'CALL ENDED',
       hours: 0,
       minutes: 0,
@@ -215,7 +218,8 @@ class AppView extends React.Component {
         clearInterval(this.state.intervalId);
         this.setState({
           showTimer: false,
-          modalVisible: false,
+          voiceModalVisible: false,
+          videoModalVisible: false,
           callStatusStr: 'DECLINED',
           hours: 0,
           minutes: 0,
@@ -345,13 +349,20 @@ class AppView extends React.Component {
     firebase.database().ref().child('dz-chat-unread').update(updates);
   }
 
-  setModalVisible = (status) => {
-    this.setState({
-      modalVisible: status
-    });
+  setModalVisible = (sessionType, status) => {
+    if (sessionType === SESSION_TYPE.AUDIO) {
+      this.setState({
+        voiceModalVisible: status
+      });
+    } else if (sessionType === SESSION_TYPE.VIDEO) {
+      this.setState({
+        videoModalVisible: status
+      });
+    }
   }
 
   render() {
+    const { state } = this;
     return (
       <View style={{ flex: 1 }}>
         <Router />
@@ -360,7 +371,7 @@ class AppView extends React.Component {
             animationType="fade"
             animated
             transparent={false}
-            visible={this.state.modalVisible}
+            visible={this.state.voiceModalVisible}
             onRequestClose={() => {
               alert('Modal has been closed.');
             }}>
@@ -416,6 +427,79 @@ class AppView extends React.Component {
               </View>
             </ImageBackground>
           </Modal>
+          <Modal
+            animationType="fade"
+            animated
+            transparent={false}
+            visible={this.state.videoModalVisible}
+            onRequestClose={() => {
+              alert('Modal has been closed.');
+            }}>
+            <ImageBackground source={bg} style={styles.contentContainer}>
+              {!state.showTimer && (
+                <View style={{ justifyContent: 'center', alignItems: 'center', }}>
+                  <Image source={hiddenMan} style={styles.avatarOtherUser} />
+                  <Text style={styles.userName}>{this.state.callerName}</Text>
+                  {this.state.callStatusStr !== 'CALL STARTED' && (
+                    <View style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: DEVICE_WIDTH * 0.5,
+                      marginTop: DEVICE_HEIGHT * 0.1
+                    }}>
+                      <TouchableOpacity style={{ width: 60 }} onPress={() => this.callReject()}>
+                        <Image source={call_end_reject} style={styles.call_end_rejct_button} />
+                      </TouchableOpacity>
+                      <TouchableOpacity style={{ width: 60 }} onPress={() => this.callAccpet()}>
+                        <Image source={call_ring_accept} style={styles.call_end_rejct_button} />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              )}
+              {state.showTimer && state.callEvent.payload.session && (
+                <View style={{
+                  width: DEVICE_WIDTH,
+                  height: DEVICE_HEIGHT * 0.7,
+                  borderWidth: 3,
+                  borderColor: '#FFF',
+                  padding: 3,
+                  zIndex: -1
+                }}>
+                  <WebRTCView // opponent video
+                    sessionId={state.callEvent.payload.session.id}
+                    // add styles as necessary
+                    style={{ width: '100%', height: '100%', }}
+                    userId={state.callEvent.payload.session.userId} // your user's Id for local video or occupantId for remote
+                  />
+                </View>
+              )}
+              {state.showTimer && state.callEvent.payload.session && (
+                <View style={{
+                  backgroundColor: '#FFF',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: DEVICE_WIDTH,
+                  height: DEVICE_HEIGHT * 0.3,
+                  borderWidth: 3,
+                  borderColor: '#FFF',
+                  padding: 3,
+                  zIndex: 1
+                }}>
+                  <WebRTCView
+                    sessionId={state.callEvent.payload.session.id}
+                    style={styles.myvideo} // add styles as necessary
+                    userId={state.callEvent.payload.session.opponentsIds[0]} // your user's Id for local video or occupantId for remote
+                  />
+                  <TouchableOpacity style={{ width: 60, height: 60 }} onPress={() => this.callEnd()}>
+                    <Image source={call_end_reject} style={styles.call_end_rejct_button} />
+                  </TouchableOpacity>
+                </View>
+              )}
+            </ImageBackground>
+          </Modal>
         </View>
         <FlashMessage position="top" style={{ backgroundColor: '#B64F54' }} renderCustomContent={() => <NotificationView data={this.state.data} />} />
       </View>
@@ -469,7 +553,16 @@ const styles = StyleSheet.create({
     marginTop: 15,
     width: 30,
     height: 30,
-  }
+  },
+  video: {
+    width: DEVICE_WIDTH,
+    height: DEVICE_HEIGHT * 0.7,
+    zIndex: 1000
+  },
+  myvideo: {
+    width: DEVICE_WIDTH * 0.25,
+    height: DEVICE_HEIGHT * 0.3,
+  },
 });
 
 const mapStateToProps = (state) => {

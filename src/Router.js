@@ -39,7 +39,6 @@ import VoiceCallIncome from './components/Main/VoiceCallIncome';
 import screenGpay01 from './components/GPay/screenGpay01';
 
 export default Router = createStackNavigator({
-    // AppView: {screen: AppView},
     FirstScreen: { screen: FirstScreen },
     //Main
     Income: { screen: Income },

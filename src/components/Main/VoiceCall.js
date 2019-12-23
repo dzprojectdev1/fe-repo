@@ -152,6 +152,15 @@ class VoiceCall extends React.Component {
   }
 
   initWebRTC = () => {
+    whoosh.setNumberOfLoops(-1);
+    whoosh.setVolume(1);
+    whoosh.play((success) => {
+      if (success) {
+        console.log('successfully finished playing');
+      } else {
+        console.log('playback failed due to audio decoding errors');
+      }
+    });
     const filter = {
       field: QB.users.USERS_FILTER.FIELD.LOGIN,
       operator: QB.users.USERS_FILTER.OPERATOR.IN,
@@ -176,14 +185,6 @@ class VoiceCall extends React.Component {
             .call(params)
             .then((session) => {
               /* session created */
-              whoosh.setNumberOfLoops(-1);
-              whoosh.play((success) => {
-                if (success) {
-                  console.log('successfully finished playing');
-                } else {
-                  console.log('playback failed due to audio decoding errors');
-                }
-              });
               this.setState({
                 videoSession: session,
                 isLoading: false

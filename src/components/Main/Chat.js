@@ -20,9 +20,9 @@ import {
   Alert,
   ImageBackground
 } from "react-native";
-import { Badge } from 'react-native-elements';
-import FastImage from 'react-native-fast-image';
-import shorthash from 'shorthash';
+// import { Badge } from 'react-native-elements';
+// import FastImage from 'react-native-fast-image';
+// import shorthash from 'shorthash';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

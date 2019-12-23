@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   instructions: {
     textAlign: 'center',
     color: '#3333ff',
-    marginBottom: 5,
+    marginBottom: 5,  
   },
 });
 export default MyVideoDetail;
