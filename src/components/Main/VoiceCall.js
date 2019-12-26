@@ -80,12 +80,12 @@ class VoiceCall extends React.Component {
             this.initWebRTC();
           }).catch((e) => {
             // some error occurred
-            alert(JSON.stringify(e.message));
+            console.log(e.message);
           });
         }
       }).catch((e) => {
         // handle error
-        alert(JSON.stringify(e.message));
+        console.log(e.message);
       });
   }
 
@@ -191,12 +191,12 @@ class VoiceCall extends React.Component {
               });
             }).catch((e) => {
               /* handle error */
-              alert(JSON.stringify(e.message))
+              console.log(e.message)
             })
         }
       }).catch((e) => {
         // handle error
-        alert(JSON.stringify(e.message))
+        console.log(e.message)
       });
   }
 
@@ -210,7 +210,7 @@ class VoiceCall extends React.Component {
     }
     await QB.webrtc.hangUp({ sessionId: this.state.videoSession.id, userInfo }).catch((e) => {
       /* handle error */
-      alert(JSON.stringify(e.message))
+      console.log(e.message)
     });
     this.setState({
       videoSession: {}

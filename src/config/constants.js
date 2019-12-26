@@ -14,8 +14,8 @@ export const SESSION_TYPE = {
 };
 
 // export const SERVER_URL       = 'http://192.168.0.225:8080';
-export const SERVER_URL = 'https://dazzled-date-prod.appspot.com';
-export const GCS_BUCKET = 'https://storage.googleapis.com/dazzled-date-prod/';
-export const VIDEO_UPLOAD     = 'https://dazzled-date-prod.storage.googleapis.com';
-export const BUCKET           = 'dazzled-date-prod';
-export const GOOGLE_ACCESS_ID = 'dazzled-date-prod@appspot.gserviceaccount.com';
+export const SERVER_URL       = 'https://dazzled-date-dev.appspot.com';
+export const GCS_BUCKET       = 'https://storage.googleapis.com/dazzled-date-dev/';
+export const VIDEO_UPLOAD     = 'https://dazzled-date-dev.storage.googleapis.com';
+export const BUCKET           = 'dazzled-date-dev';
+export const GOOGLE_ACCESS_ID = 'dazzled-date-dev@appspot.gserviceaccount.com';

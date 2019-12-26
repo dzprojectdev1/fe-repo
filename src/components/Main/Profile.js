@@ -564,14 +564,14 @@ class Profile extends Component {
                   data: {
                     imageUrl: (row.imgUrl !== '' && row.imgUrl !== null) ? GCS_BUCKET + row.imgUrl + '-screenshot': null,
                     videoUrl: null,
-                    content_type: contentType,
+                    content_type: row.contentType,
                     detail: newData,
                   }
                 });
               }
             }
           }).catch((error) => {
-            alert(JSON.stringify(error));
+            console.log('error_go_to_browseDetail ', error);
             return
           });
     }

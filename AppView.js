@@ -74,15 +74,28 @@ class AppView extends React.Component {
   }
 
   async componentDidMount() {
+    /** Yang's */
+    // const appSettings = {
+    //   appId: '79590',
+    //   authKey: 'cWKpVy9AHb4-JhX',
+    //   authSecret: 'LA8uJHFz3cwyFnc',
+    //   accountKey: 'tD9SBvimWv5_nu-hubhk'
+    // };
+    /** Sam's */
+    // const appSettings = {
+    //   appId: '79653',
+    //   authKey: 'RBAjOFhyAPvYeZH',
+    //   authSecret: '8bFeJzqmDgcs8dz',
+    //   accountKey: '2qbJaHzhR7UNy89_8xwU'
+    // };
     const appSettings = {
-      appId: '79590',
-      authKey: 'cWKpVy9AHb4-JhX',
-      authSecret: 'LA8uJHFz3cwyFnc',
-      accountKey: 'tD9SBvimWv5_nu-hubhk'
+      appId: '79278',
+      authKey: 'puVfNHj673JPKvt',
+      authSecret: 'ayDRCLsuOJybc55',
+      accountKey: '3y4y6Kq7A7GtUfoFeB3u'
     };
     await QB.settings.init(appSettings).catch((e) => {
       // Some error occured, look at the exception message for more details
-      alert(JSON.stringify(e))
     });
 
     const emitter = Platform.select({
@@ -96,7 +109,6 @@ class AppView extends React.Component {
   }
 
   eventHandler = (event) => {
-    alert(JSON.stringify(event));
     const { type, payload } = event;
     if (type === CALL) {
       whoosh.setNumberOfLoops(-1);
@@ -166,7 +178,7 @@ class AppView extends React.Component {
         this.timeCounter();
       }).catch((e) => {
         /* handle error */
-        alert(JSON.stringify(e.message))
+        console.log('error ', e);
       });
   }
 
@@ -187,7 +199,7 @@ class AppView extends React.Component {
         this.callEnded();
       }).catch((e) => {
         /* handle error */
-        alert(JSON.stringify(e.message))
+        console.log('error ', e);
       });
   }
 
@@ -214,7 +226,6 @@ class AppView extends React.Component {
       .reject({ sessionId: callEvent.payload.session.id, userInfo })
       .then((session) => {
         /* handle session */
-        alert(JSON.stringify(session));
         clearInterval(this.state.intervalId);
         this.setState({
           showTimer: false,
@@ -227,7 +238,7 @@ class AppView extends React.Component {
         });
       }).catch((e) => {
         /* handle error */
-        alert(JSON.stringify(e.message))
+        console.log('error ', e);
       });
   }
 
@@ -289,7 +300,7 @@ class AppView extends React.Component {
 
     this.messageListener = nativeFirebase.messaging().onMessage((message) => {
       //process data message
-      alert(JSON.stringify(message));
+      console.log('message ', message);
     });
   }
 

@@ -45,8 +45,8 @@ class App extends React.Component {
   }
 
   componentWillUnmount() {
-    this.notificationListener();
-    this.notificationOpenedListener();
+    // this.notificationListener();
+    // this.notificationOpenedListener();
   }
   
   async checkDefaultPermissions() {
