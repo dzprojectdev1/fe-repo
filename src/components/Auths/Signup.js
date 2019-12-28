@@ -14,14 +14,14 @@ import {
   StatusBar,
   Alert
 } from "react-native";
-// import Picker from 'react-native-wheel-picker';
+import Picker from 'react-native-wheel-picker';
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 // import emailIcon from '../../assets/images/emailIcon.png';
 // import passswordIcon from '../../assets/images/passwordIcon.png';
 import userIcon from '../../assets/images/userIcon.png';
 
-// var PickerItem = Picker.Item;
+var PickerItem = Picker.Item;
 
 class Signup extends Component {
   constructor(props) {
@@ -167,15 +167,15 @@ class Signup extends Component {
               <Text style={{ color: '#808080', fontSize: 14, marginLeft: 10 }}>{"BIRTHDAY"}</Text>
             </View>
             <View style={{ width: DEVICE_WIDTH * 0.8, height: 60, marginTop: Platform.select({ 'android': 15, 'ios': 0 }), flexDirection: 'row', justifyContent: 'space-between' }}>
-              {/* <Picker style={{ width: 60, height: 60, backgroundColor: '#fff', tintColor: '#00f' }}
+              <Picker style={{ width: 60, height: 60, backgroundColor: '#fff', tintColor: '#00f' }}
                 selectedValue={this.state.selected_mItem}
                 itemStyle={{ color: "#000", fontSize: 16 }}
                 onValueChange={(index) => this.onmPickerSelect(index)}>
                 {this.state.mitemList.map((value, i) => (
                   <PickerItem label={value} value={i} key={"money" + value} />
                 ))}
-              </Picker> */}
-              {/* <Picker style={{ width: 60, height: 60, backgroundColor: '#fff', tintColor: '#00f' }}
+              </Picker>
+              <Picker style={{ width: 60, height: 60, backgroundColor: '#fff', tintColor: '#00f' }}
                 selectedValue={this.state.selected_dItem}
                 itemStyle={{ color: "#000", fontSize: 16, }}
                 onValueChange={(index) => this.ondPickerSelect(index)}>
@@ -190,7 +190,7 @@ class Signup extends Component {
                 {this.state.yitemList.map((value, i) => (
                   <PickerItem label={value} value={i} key={"money" + value} />
                 ))}
-              </Picker> */}
+              </Picker>
             </View>
           </View>
           {/* <View style={{ width: DEVICE_WIDTH * 0.8, marginLeft: DEVICE_WIDTH * 0.1, marginTop: 20 }}>

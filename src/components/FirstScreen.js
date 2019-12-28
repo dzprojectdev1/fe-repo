@@ -115,11 +115,11 @@ class FirstScreen extends Component {
                 console.log("my login = ", e.message);
               });
               this.props.updateQuickBlox(info);
-              const subscription = { deviceToken: fcmToken };
-              await QB.subscriptions.create(subscription).catch(e => {
-                /* handle error */
-                console.log("subscription = ", e.message);
-              });
+              // const subscription = { deviceToken: fcmToken };
+              // await QB.subscriptions.create(subscription).catch(e => {
+              //   /* handle error */
+              //   console.log("subscription = ", e.message);
+              // });
               let isConnected = await QB.chat.isConnected().catch((e) => {
                 console.log('chat connect check = ', e.message);
               });

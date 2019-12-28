@@ -780,7 +780,7 @@ class MyVideo extends Component {
           onPress={() => this.gotoExDiamonds()}>
           <Image source={dollar_sign} style={{width: 90, height: 90, }} />
         </TouchableOpacity>
-        <TouchableOpacity style={{
+        {/* <TouchableOpacity style={{
           position: 'absolute', right: 100,
           bottom: Platform.select({ 'android': 90, 'ios': 105 }),
           width: 70, height: 70,
@@ -789,7 +789,7 @@ class MyVideo extends Component {
         }}
           onPress={() => this.addVideo()}>
           <Image source={video_add} style={{width: 85, height: 85, }} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity style={{
           position: 'absolute', right: 15,
           bottom: Platform.select({ 'android': 90, 'ios': 105 }),

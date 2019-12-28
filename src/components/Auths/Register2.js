@@ -255,11 +255,11 @@ class Register2 extends Component {
         alert(JSON.stringify("my login = " + e.message));
       });
       this.props.updateQuickBlox(info);
-      const subscription = { deviceToken: deviceInfo.fcm_id };
-      await QB.subscriptions.create(subscription).catch(e => {
-        /* handle error */
-        alert(JSON.stringify("subscription = " + e.message));
-      });
+      // const subscription = { deviceToken: deviceInfo.fcm_id };
+      // await QB.subscriptions.create(subscription).catch(e => {
+      //   /* handle error */
+      //   alert(JSON.stringify("subscription = " + e.message));
+      // });
       let isConnected = await QB.chat.isConnected().catch((e) => {
         alert(JSON.stringify('chat connect check = ' + e.message));
       });

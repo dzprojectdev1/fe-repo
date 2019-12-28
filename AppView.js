@@ -482,7 +482,7 @@ class AppView extends React.Component {
                     sessionId={state.callEvent.payload.session.id}
                     // add styles as necessary
                     style={{ width: '100%', height: '100%', }}
-                    userId={state.callEvent.payload.session.userId} // your user's Id for local video or occupantId for remote
+                    userId={state.callEvent.payload.session.otherId} // your user's Id for local video or occupantId for remote
                   />
                 </View>
               )}

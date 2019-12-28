@@ -717,19 +717,101 @@ class ChatScreen extends React.Component {
     }
 
     ringCall = () => {
-        this.props.navigation.push('VoiceCall', {
-            data: {
-                opponentAppInfo: this.state.other,
+        var details = {
+            'userName': Global.saveData.u_name,
+            'otherId': this.state.other.userId,
+            'otherUserName': this.state.other.name,
+            'callType': 1
+        };
+        var formBody = [];
+        for (var property in details) {
+            var encodedKey = encodeURIComponent(property);
+            var encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+
+        fetch(`${SERVER_URL}/api/call/initiate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': Global.saveData.token
             },
-        });
+            body: formBody,
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                if (responseJson.error === false) {
+                    if (responseJson.data) {
+                        if (responseJson.data.call_available) {
+                            this.props.navigation.push('VoiceCall', {
+                                data: {
+                                    opponentAppInfo: this.state.other,
+                                },
+                            });
+                        } else {
+                            Alert.alert(
+                                responseJson.message,
+                                'You have to receive one message at least to call ' + this.state.other.name,
+                                [
+                                    { text: 'Ok', onPress: () => console.log('Ok pressed.') },
+                                ],
+                                { cancelable: false }
+                            );
+                        }
+                    }
+                }
+            }).catch((error) => {
+                return
+            });
     }
 
     ringVideo = () => {
-        this.props.navigation.push('VideoCall', {
-            data: {
-                opponentAppInfo: this.state.other,
+        var details = {
+            'userName': Global.saveData.u_name,
+            'otherId': this.state.other.userId,
+            'otherUserName': this.state.other.name,
+            'callType': 2
+        };
+        var formBody = [];
+        for (var property in details) {
+            var encodedKey = encodeURIComponent(property);
+            var encodedValue = encodeURIComponent(details[property]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+
+        fetch(`${SERVER_URL}/api/call/initiate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': Global.saveData.token
             },
-        });
+            body: formBody,
+        }).then((response) => response.json())
+            .then((responseJson) => {
+                if (responseJson.error === false) {
+                    if (responseJson.data) {
+                        if (responseJson.data.call_available) {
+                            this.props.navigation.push('VideoCall', {
+                                data: {
+                                    opponentAppInfo: this.state.other,
+                                },
+                            });
+                        } else {
+                            Alert.alert(
+                                responseJson.message,
+                                'You have to receive one message at least to video call ' + this.state.other.name,
+                                [
+                                    { text: 'Ok', onPress: () => console.log('Ok pressed.') },
+                                ],
+                                { cancelable: false }
+                            );
+                        }
+                    }
+                }
+            }).catch((error) => {
+                return
+            });
     }
 
     renderRow = ({ item }) => {
@@ -1199,14 +1281,14 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     ringIcon: {
-        width: 30,
-        height: 30,
+        width: 50,
+        height: 50,
         marginLeft: 10,
         marginTop: 5,
     },
     ringIconTouch: {
-        width: 30,
-        height: 30,
+        width: 50,
+        height: 50,
         marginLeft: 10,
         marginTop: 5,
     },
