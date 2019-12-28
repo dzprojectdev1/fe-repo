@@ -74,25 +74,12 @@ class AppView extends React.Component {
   }
 
   async componentDidMount() {
-    /** Yang's */
-    // const appSettings = {
-    //   appId: '79590',
-    //   authKey: 'cWKpVy9AHb4-JhX',
-    //   authSecret: 'LA8uJHFz3cwyFnc',
-    //   accountKey: 'tD9SBvimWv5_nu-hubhk'
-    // };
     /** Sam's */
-    // const appSettings = {
-    //   appId: '79653',
-    //   authKey: 'RBAjOFhyAPvYeZH',
-    //   authSecret: '8bFeJzqmDgcs8dz',
-    //   accountKey: '2qbJaHzhR7UNy89_8xwU'
-    // };
     const appSettings = {
-      appId: '79278',
-      authKey: 'puVfNHj673JPKvt',
-      authSecret: 'ayDRCLsuOJybc55',
-      accountKey: '3y4y6Kq7A7GtUfoFeB3u'
+      appId: '79653',
+      authKey: 'RBAjOFhyAPvYeZH',
+      authSecret: '8bFeJzqmDgcs8dz',
+      accountKey: '2qbJaHzhR7UNy89_8xwU'
     };
     await QB.settings.init(appSettings).catch((e) => {
       // Some error occured, look at the exception message for more details
