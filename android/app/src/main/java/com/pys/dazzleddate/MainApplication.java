@@ -2,30 +2,13 @@ package com.pys.dazzleddate;
 
 import android.app.Application;
 
+import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-import com.zmxv.RNSound.RNSoundPackage;
-import com.quickblox.reactnative.RNQbReactnativePackage;
-import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
-import com.zyu.ReactNativeWheelPickerPackage;
-import com.dylanvann.fastimage.FastImageViewPackage;
-import com.dooboolab.RNIap.RNIapPackage;
-import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.evollu.react.fcm.FIRMessagingPackage;
-import io.invertase.firebase.RNFirebasePackage;
-import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
-import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import com.brentvatne.react.ReactVideoPackage;
-import com.rnfs.RNFSPackage;
-import org.reactnative.camera.RNCameraPackage;
-import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
-import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
+import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.soloader.SoLoader;
-import java.util.Arrays;
+
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
@@ -38,32 +21,51 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new RNSoundPackage(),
-            new RNQbReactnativePackage(),
-            new AsyncStoragePackage(),
-            new ReactNativeWheelPickerPackage(),
-            new FastImageViewPackage(),
-            new RNIapPackage(),
-            new RNFusedLocationPackage(),
-            new RNGestureHandlerPackage(),
-            new FIRMessagingPackage(),
-            new RNFirebasePackage(),
-            new RNFirebaseNotificationsPackage(),
-            new RNFirebaseMessagingPackage(),
-            new RNDeviceInfo(),
-            new ReactVideoPackage(),
-            new RNFSPackage(),
-            new RNCameraPackage(),
-            new ImagePickerPackage()
-      );
+      @SuppressWarnings("UnnecessaryLocalVariable")
+      List<ReactPackage> packages = new PackageList(this).getPackages();
+      // Packages that cannot be autolinked yet can be added manually here, for example:
+      // packages.add(new MyReactNativePackage());
+      return packages;
     }
+
+//    @Override
+//    protected List<ReactPackage> getPackages() {
+//      return Arrays.<ReactPackage>asList(
+//          new MainReactPackage(),
+//            new RNSoundPackage(),
+//            new RNQbReactnativePackage(),
+//            //new AsyncStoragePackage(),
+//            new ReactNativeWheelPickerPackage(),
+//            new FastImageViewPackage(),
+//            new RNIapPackage(),
+//            new RNFusedLocationPackage(),
+//            new RNGestureHandlerPackage(),
+////            new FIRMessagingPackage(),
+////            new RNFirebasePackage(),
+////            new RNFirebaseNotificationsPackage(),
+////            new RNFirebaseMessagingPackage(),
+//            new RNDeviceInfo(),
+//            new ReactVideoPackage(),
+//            new RNFSPackage(),
+//            new RNCameraPackage(),
+//            new ImagePickerPackage()
+//      );
+//    }
 
     @Override
     protected String getJSMainModuleName() {
       return "index";
     }
+//
+//    @Override
+//    protected boolean isNewArchEnabled() {
+//      return BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
+//    }
+//
+//    @Override
+//    protected Boolean isHermesEnabled() {
+//      return BuildConfig.IS_HERMES_ENABLED;
+//    }
   };
 
   @Override
@@ -74,6 +76,11 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
-    SoLoader.init(this, /* native exopackage */ false);
+    SoLoader.init(this, false);
+    if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
+      // If you opted-in for the New Architecture, we load the native entry point for this app.
+      DefaultNewArchitectureEntryPoint.load();
+    }
+    ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
 }

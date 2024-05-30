@@ -17,8 +17,6 @@ import switching_camera from '../../assets/images/switching_camera.png';
 import Global from '../Global';
 
 import {SERVER_URL, GCS_BUCKET, VIDEO_UPLOAD, BUCKET, GOOGLE_ACCESS_ID} from '../../config/constants';
-import { uploadVideo } from '../../util/uploadVideo';
-import { TextInput } from "react-native-gesture-handler";
 import FlashMessage, { showMessage } from 'react-native-flash-message';
 
 class Record extends Component {

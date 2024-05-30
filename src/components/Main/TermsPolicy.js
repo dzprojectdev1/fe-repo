@@ -1,15 +1,13 @@
-import React, { Component } from 'react';
-import {
-  Icon,
-  Text
-} from "native-base";
+import React, {Component} from 'react';
+import {Icon, Text} from 'native-base';
 import {
   View,
   StyleSheet,
   StatusBar,
   WebView,
   Platform,
-  Dimensions, TouchableOpacity
+  Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import Global from '../Global';
 
@@ -29,8 +27,8 @@ class TermsPolicy extends Component {
       forwardButtonEnabled: false,
       loading: true,
       scalesPageToFit: true,
-      inputText: ''
-    }
+      inputText: '',
+    };
   }
   static navigationOptions = {
     header: null,
@@ -41,20 +39,36 @@ class TermsPolicy extends Component {
   }
 
   back() {
-    this.props.navigation.goBack(null)
+    this.props.navigation.goBack(null);
   }
   render() {
     this.inputText = this.state.url;
 
     return (
       <View style={[styles.container]}>
-        <StatusBar backgroundColor='#fff' barStyle='dark-content' />
-        <View style={{ backgroundColor: '#fff', flexDirection: 'row', height: 60, marginTop: Platform.select({ ios: 40, android: 10, }), alignItems: 'center', }}>
-          <TouchableOpacity style={{ marginTop: 10, marginLeft: 10, width: 40, height: 30 }} onPress={() => this.back()}>
-            <Icon type="Ionicons" name="md-arrow-round-back" style={{ color: '#EF7193', }} />
+        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+        <View
+          style={{
+            backgroundColor: '#fff',
+            flexDirection: 'row',
+            height: 60,
+            marginTop: Platform.select({ios: 40, android: 10}),
+            alignItems: 'center',
+          }}>
+          <TouchableOpacity
+            style={{marginTop: 10, marginLeft: 10, width: 40, height: 30}}
+            onPress={() => this.back()}>
+            <Icon
+              type="Ionicons"
+              name="md-arrow-round-back"
+              style={{color: '#EF7193'}}
+            />
           </TouchableOpacity>
-          <View style={{ width: DEVICE_WIDTH - 50, marginLeft: 10, marginTop: 5 }}>
-            <Text style={{ fontWeight: 'bold' }}>{"Terms and Conditions/Privacy Policy"}</Text>
+          <View
+            style={{width: DEVICE_WIDTH - 50, marginLeft: 10, marginTop: 5}}>
+            <Text style={{fontWeight: 'bold'}}>
+              {'Terms and Conditions/Privacy Policy'}
+            </Text>
           </View>
         </View>
         <WebView
@@ -74,26 +88,25 @@ class TermsPolicy extends Component {
 
   goBack = () => {
     this.refs[WEBVIEW_REF].goBack();
-  }
+  };
 
   goForward = () => {
     this.refs[WEBVIEW_REF].goForward();
-  }
+  };
 
   reload = () => {
     this.refs[WEBVIEW_REF].reload();
-  }
+  };
 
-  onShouldStartLoadWithRequest = (event) => {
+  onShouldStartLoadWithRequest = event => {
     // Implement any custom loading logic here, don't forget to return!
     return true;
-  }
-  onNavigationStateChange = (navState) => {
-  }
+  };
+  onNavigationStateChange = navState => {};
 
-  onSubmitEditing = (event) => {
+  onSubmitEditing = event => {
     this.pressGoButton();
-  }
+  };
 
   pressGoButton = () => {
     var url = this.inputText.toLowerCase();
@@ -106,15 +119,14 @@ class TermsPolicy extends Component {
     }
     // dismiss keyoard
     this.refs[TEXT_INPUT_REF].blur();
-  }
-
+  };
 }
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   addressBarRow: {
     flexDirection: 'row',

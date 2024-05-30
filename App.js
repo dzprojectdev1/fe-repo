@@ -1,60 +1,71 @@
-if (__DEV__) {
-  import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
-}
-import React from 'react';
-import {
-  AsyncStorage,
-  PermissionsAndroid,
-  Platform,
-} from 'react-native';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import React, {Component} from 'react';
+import {PermissionsAndroid, Platform} from 'react-native';
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
 import storeReducer from './Reducer';
-import DeviceInfo from 'react-native-device-info';
 import Geolocation from 'react-native-geolocation-service';
-import firebase from 'firebase';
-import nativeFirebase from 'react-native-firebase';
+import {getFirebaseApp} from '@react-native-firebase/app';
+import messaging from '@react-native-firebase/messaging';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import AppView from './AppView';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {NativeBaseProvider} from 'native-base';
+import {setup} from 'react-native-iap';
+// "react-native-firebase": "^5.5.4",
+//     "react-navigation": "^2.18.2",
+// "react-navigation-hooks": "^1.1.0",
 const store = createStore(storeReducer);
+setup({storekitMode: 'STOREKIT2_MODE'});
 
-class App extends React.Component {
-  async componentWillMount() {
-    console.disableYellowBox = true;
-    var firebaseConfig = {
-      apiKey: "AIzaSyBuJ1590DczIiuH7JA_Ls8Pido4IJ_GVT4",
-      authDomain: "dazzled-date-dev.firebaseapp.com",
-      databaseURL: "https://dazzled-date-dev.firebaseio.com",
-      projectId: "dazzled-date-dev",
-      storageBucket: "",
-      messagingSenderId: "725302073253",
-      appId: "1:725302073253:android:0aa373b87b7f562c2a3a4c"
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
     };
-    firebase.initializeApp(firebaseConfig);
-    this.setState({ loading: false });
   }
 
-  componentDidMount() {
-    if (Platform.OS === 'android') {
-      this.checkDefaultPermissions();
-    } else if (Platform.OS === 'ios') {
-      Geolocation.requestAuthorization();
+  async componentDidMount() {
+    console.disableYellowBox = true;
+    const firebaseConfig = {
+      apiKey: 'AIzaSyBuJ1590DczIiuH7JA_Ls8Pido4IJ_GVT4',
+      authDomain: 'dazzled-date-dev.firebaseapp.com',
+      databaseURL: 'https://dazzled-date-dev.firebaseio.com',
+      projectId: 'dazzled-date-dev',
+      storageBucket: '',
+      messagingSenderId: '725302073253',
+      appId: '1:725302073253:android:0aa373b87b7f562c2a3a4c',
+    };
+    console.log(getFirebaseApp().apps.length);
+    if (!getFirebaseApp().apps.length) {
+      await getFirebaseApp().initializeApp({});
     }
-    this.checkFirebasePermission();
-    // this.createNotificationListeners();
+    await getFirebaseApp().initializeApp(firebaseConfig);
+    this.setState({loading: false});
+
+    if (Platform.OS === 'android') {
+      await this.checkDefaultPermissions();
+    } else if (Platform.OS === 'ios') {
+      await Geolocation.requestAuthorization();
+    }
+    await this.checkFirebasePermission();
   }
 
   componentWillUnmount() {
     // this.notificationListener();
     // this.notificationOpenedListener();
   }
-  
+
   async checkDefaultPermissions() {
     try {
       var permissions = [];
       // const isCameraPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA);
-      const isStoragePermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-      const isAccessFineLocationPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+      const isStoragePermission = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      );
+      const isAccessFineLocationPermission = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
       // if (!isCameraPermission) {
       //   permissions.push(PermissionsAndroid.PERMISSIONS.CAMERA);
       // }
@@ -64,6 +75,11 @@ class App extends React.Component {
       if (!isAccessFineLocationPermission) {
         permissions.push(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
       }
+
+      const isNotificationPermission = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      );
+
       if (permissions.length === 0) {
         return;
       }
@@ -76,19 +92,18 @@ class App extends React.Component {
 
   async requestPermissions(permissions) {
     try {
-      const granted = await PermissionsAndroid.requestMultiple(
-        permissions,
-        {
-          title: 'Cool App Some Permissions',
-          message:
-            'Cool App needs access to your some permissions.',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
+      const granted = await PermissionsAndroid.requestMultiple(permissions, {
+        title: 'Cool App Some Permissions',
+        message: 'Cool App needs access to your some permissions.',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      });
 
-      if (granted['android.permission.WRITE_EXTERNAL_STORAGE']
-        && granted['android.permission.ACCESS_FINE_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED) {
+      if (
+        granted['android.permission.WRITE_EXTERNAL_STORAGE'] &&
+        granted['android.permission.ACCESS_FINE_LOCATION'] ===
+          PermissionsAndroid.RESULTS.GRANTED
+      ) {
         console.log('You can use the all');
       } else {
         console.log('all permission denied');
@@ -102,19 +117,24 @@ class App extends React.Component {
   }
 
   async checkFirebasePermission() {
-    const enabled = await nativeFirebase.messaging().hasPermission();
+    const authStatus = await messaging().requestPermission();
+
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
     if (enabled) {
-      this.getToken();
+      await this.getToken();
     } else {
-      this.requestPermission();
+      await this.requestPermission();
     }
   }
 
   async requestPermission() {
     try {
-      await nativeFirebase.messaging().requestPermission();
+      await messaging().requestPermission();
       // User has authorised
-      this.getToken();
+      await this.getToken();
     } catch (error) {
       // User has rejected permissions
       alert('Firebase permission rejected');
@@ -124,7 +144,7 @@ class App extends React.Component {
   async getToken() {
     let fcmToken = await AsyncStorage.getItem('fcmToken');
     if (!fcmToken) {
-      fcmToken = await nativeFirebase.messaging().getToken();
+      fcmToken = await messaging().getToken();
       if (fcmToken) {
         // user has a device token
         await AsyncStorage.setItem('fcmToken', fcmToken);
@@ -134,9 +154,13 @@ class App extends React.Component {
 
   render() {
     return (
-      <Provider store={store}>
-        <AppView />
-      </Provider>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <Provider store={store}>
+          <NativeBaseProvider>
+            <AppView />
+          </NativeBaseProvider>
+        </Provider>
+      </GestureHandlerRootView>
     );
   }
 }

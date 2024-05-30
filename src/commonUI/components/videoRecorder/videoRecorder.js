@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
-    Modal,
-    View,
-    TouchableWithoutFeedback,
-    TouchableOpacity,
-    Text,
-    InteractionManager,
+  Modal,
+  View,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  Text,
+  InteractionManager,
 } from 'react-native';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import Camera from 'react-native-camera';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -15,166 +15,184 @@ import RecordingButton from './RecordingButton';
 import styles from './style';
 
 export default class VideoRecorder extends Component {
-    static propTypes = {
-        isOpen: PropTypes.bool,
-    }
+  static propTypes = {
+    isOpen: PropTypes.bool,
+  };
 
-    static defaultProps = {
-        isOpen: false,
-    }
+  static defaultProps = {
+    isOpen: false,
+  };
 
-    constructor(...props) {
-        super(...props);
-        this.state = {
-            isOpen: this.props.isOpen,
-            loading: true,
-            time: 0,
-            recorded: false,
-            recordedData: null,
-        };
-    }
+  constructor(...props) {
+    super(...props);
+    this.state = {
+      isOpen: this.props.isOpen,
+      loading: true,
+      time: 0,
+      recorded: false,
+      recordedData: null,
+    };
+  }
 
-    componentDidMount() {
-        InteractionManager.runAfterInteractions(() => {
-            this.setState({ loading: false });
-        });
-    }
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({loading: false});
+    });
+  }
 
-    onSave = () => {
-        if (this.callback) this.callback(this.state.recordedData);
-        this.close();
+  onSave = () => {
+    if (this.callback) {
+      this.callback(this.state.recordedData);
     }
+    this.close();
+  };
 
-    open = (callback) => {
-        this.callback = callback;
+  open = callback => {
+    this.callback = callback;
+    this.setState({
+      isOpen: true,
+      isRecording: false,
+      time: 0,
+      recorded: false,
+      recordedData: null,
+    });
+  };
+
+  close = () => {
+    this.setState({isOpen: false});
+  };
+
+  startCapture = () => {
+    InteractionManager.runAfterInteractions(() => {
+      this.camera
+        .capture()
+        .then(data => {
+          console.log('video capture', data);
+          this.setState({
+            recorded: true,
+            recordedData: data,
+          });
+        })
+        .catch(err => console.error(err));
+      setTimeout(() => {
+        this.startTimer();
         this.setState({
-            isOpen: true,
-            isRecording: false,
-            time: 0,
-            recorded: false,
-            recordedData: null,
+          isRecording: true,
+          recorded: false,
+          recordedData: null,
+          time: 0,
         });
-    }
+      });
+    });
+  };
 
-    close = () => {
-        this.setState({ isOpen: false });
-    }
+  stopCapture = () => {
+    InteractionManager.runAfterInteractions(() => {
+      this.stopTimer();
+      this.camera.stopCapture();
+      this.setState({
+        isRecording: false,
+      });
+    });
+  };
 
-    startCapture = () => {
-        InteractionManager.runAfterInteractions(() => {
-            this.camera.capture()
-            .then((data) => {
-                console.log('video capture', data);
-                this.setState({
-                    recorded: true,
-                    recordedData: data,
-                });
-            }).catch(err => console.error(err));
-            setTimeout(() => {
-                this.startTimer();
-                this.setState({
-                    isRecording: true,
-                    recorded: false,
-                    recordedData: null,
-                    time: 0,
-                });
-            });
-        });
-    }
+  startTimer = () => {
+    this.timer = setInterval(() => {
+      this.setState({time: this.state.time + 1});
+    }, 1000);
+  };
 
-    stopCapture = () => {
-        InteractionManager.runAfterInteractions(() => {
-            this.stopTimer();
-            this.camera.stopCapture();
-            this.setState({
-                isRecording: false,
-            });
-        });
+  stopTimer = () => {
+    if (this.timer) {
+      clearInterval(this.timer);
     }
+  };
 
-    startTimer = () => {
-        this.timer = setInterval(() => {
-            this.setState({ time: this.state.time + 1 });
-        }, 1000);
-    }
+  convertTimeString = time => {
+    return moment().startOf('day').seconds(time).format('mm:ss');
+  };
 
-    stopTimer = () => {
-        if (this.timer) clearInterval(this.timer);
-    }
+  renderTimer() {
+    const {isRecording, time, recorded} = this.state;
+    return (
+      <View>
+        {(recorded || isRecording) && (
+          <Text style={styles.durationText}>
+            <Text style={styles.dotText}>●</Text> {this.convertTimeString(time)}
+          </Text>
+        )}
+      </View>
+    );
+  }
 
-    convertTimeString = (time) => {
-        return moment().startOf('day').seconds(time).format('mm:ss');
-    }
+  renderContent() {
+    const {isRecording, recorded} = this.state;
+    return (
+      <View style={styles.controlLayer}>
+        {this.renderTimer()}
+        <View style={[styles.controls]}>
+          <RecordingButton
+            style={styles.recodingButton}
+            isRecording={isRecording}
+            onStartPress={this.startCapture}
+            onStopPress={this.stopCapture}
+          />
+          {recorded && (
+            <TouchableOpacity onPress={this.onSave} style={styles.btnUse}>
+              <View style={styles.btnUseContainer}>
+                <Icon
+                  style={styles.btnUseText}
+                  name="done"
+                  size={24}
+                  color="white"
+                />
+              </View>
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+    );
+  }
 
-    renderTimer() {
-        const { isRecording, time, recorded } = this.state;
-        return (
-            <View>
-                {
-                    (recorded || isRecording) &&
-                    <Text style={styles.durationText}>
-                        <Text style={styles.dotText}>●</Text> {this.convertTimeString(time)}
-                    </Text>
-                }
-            </View>
-        );
-    }
+  renderCamera() {
+    return (
+      <Camera
+        ref={cam => {
+          this.camera = cam;
+        }}
+        style={styles.preview}
+        captureAudio
+        captureMode={Camera.constants.CaptureMode.video}
+        captureTarget={Camera.constants.CaptureTarget.temp}
+        aspect={Camera.constants.Aspect.fill}>
+        {this.renderContent()}
+      </Camera>
+    );
+  }
 
-    renderContent() {
-        const { isRecording, recorded } = this.state;
-        return (
-            <View style={styles.controlLayer}>
-                {this.renderTimer()}
-                <View style={[styles.controls]}>
-                    <RecordingButton style={styles.recodingButton} isRecording={isRecording} onStartPress={this.startCapture}
-                        onStopPress={this.stopCapture} />
-                    {
-                        recorded &&
-                            <TouchableOpacity onPress={this.onSave} style={styles.btnUse}>
-                                <View style={styles.btnUseContainer}>
-                                    <Icon style={styles.btnUseText} name="done" size={24} color="white" />
-                                </View>
-                            </TouchableOpacity>
-                    }
-                </View>
-            </View>
-        );
+  render() {
+    const {loading, isOpen} = this.state;
+    if (loading) {
+      return <View />;
     }
-
-    renderCamera() {
-        return (
-            <Camera
-                ref={(cam) => { this.camera = cam; }}
-                style={styles.preview}
-                captureAudio
-                captureMode={Camera.constants.CaptureMode.video}
-                captureTarget={Camera.constants.CaptureTarget.temp}
-                aspect={Camera.constants.Aspect.fill}>
-                {this.renderContent()}
-            </Camera>
-        );
-    }
-
-    render() {
-        const { loading, isOpen } = this.state;
-        if (loading) return <View />;
-        return (
-            <Modal visible={isOpen} transparent animationType="fade"
-                onRequestClose={this.close}>
-                <View style={styles.modal}>
-                    <TouchableWithoutFeedback onPress={this.close}>
-                        <View style={styles.backdrop} />
-                    </TouchableWithoutFeedback>
-                    <View style={styles.container}>
-                        <View style={styles.content}>
-                            {this.renderCamera()}
-                        </View>
-                        <TouchableOpacity onPress={this.close} style={styles.buttonClose}>
-                            <Icon name="close" size={32} color={'white'} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
-        );
-    }
+    return (
+      <Modal
+        visible={isOpen}
+        transparent
+        animationType="fade"
+        onRequestClose={this.close}>
+        <View style={styles.modal}>
+          <TouchableWithoutFeedback onPress={this.close}>
+            <View style={styles.backdrop} />
+          </TouchableWithoutFeedback>
+          <View style={styles.container}>
+            <View style={styles.content}>{this.renderCamera()}</View>
+            <TouchableOpacity onPress={this.close} style={styles.buttonClose}>
+              <Icon name="close" size={32} color={'white'} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
 }

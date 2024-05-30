@@ -1,10 +1,9 @@
-import { StyleSheet } from "react-native";
-
+import {StyleSheet} from 'react-native';
 
 const text = StyleSheet.create({
   style: {
     fontSize: 20,
-    textAlign: "center",
+    textAlign: 'center',
     margin: 10,
     borderRadius: 10,
   },

@@ -36,7 +36,7 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
-# BUCK
+# _BUCK
 buck-out/
 \.buckd/
 *.keystore
@@ -64,3 +64,4 @@ index.android.bundle
 package-lock.json
 
 .vscode
+.DS_Store

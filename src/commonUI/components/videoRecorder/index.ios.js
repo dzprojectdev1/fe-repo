@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Modal,
   View,
@@ -7,7 +7,7 @@ import {
   Text,
   InteractionManager,
 } from 'react-native';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import Camera from 'react-native-camera';
 import Compress from 'react-native-compress';
@@ -20,12 +20,12 @@ export default class VideoRecorder extends Component {
   static propTypes = {
     isOpen: PropTypes.bool,
     compressQuality: PropTypes.string,
-  }
+  };
 
   static defaultProps = {
     isOpen: false,
     compressQuality: 'medium',
-  }
+  };
 
   constructor(...props) {
     super(...props);
@@ -41,15 +41,18 @@ export default class VideoRecorder extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.setState({ loading: false });
+      this.setState({loading: false});
     });
   }
 
   onSave = () => {
-    const { compressQuality } = this.props;
+    const {compressQuality} = this.props;
     if (this.callback) {
-      this.setState({ converting: true }, () => {
-        Compress.compressVideo(this.state.recordedData.path, compressQuality).then((result) => {
+      this.setState({converting: true}, () => {
+        Compress.compressVideo(
+          this.state.recordedData.path,
+          compressQuality,
+        ).then(result => {
           console.log('New video path', result);
           this.callback({
             path: result.path,
@@ -58,10 +61,12 @@ export default class VideoRecorder extends Component {
           this.close();
         });
       });
-    } else this.close();
-  }
+    } else {
+      this.close();
+    }
+  };
 
-  open = (callback) => {
+  open = callback => {
     this.callback = callback;
     this.setState({
       isOpen: true,
@@ -71,22 +76,24 @@ export default class VideoRecorder extends Component {
       recordedData: null,
       converting: false,
     });
-  }
+  };
 
   close = () => {
-    this.setState({ isOpen: false });
-  }
+    this.setState({isOpen: false});
+  };
 
   startCapture = () => {
     InteractionManager.runAfterInteractions(() => {
-      this.camera.capture()
-      .then((data) => {
-        console.log('video capture', data);
-        this.setState({
-          recorded: true,
-          recordedData: data,
-        });
-      }).catch(err => console.error(err));
+      this.camera
+        .capture()
+        .then(data => {
+          console.log('video capture', data);
+          this.setState({
+            recorded: true,
+            recordedData: data,
+          });
+        })
+        .catch(err => console.error(err));
       setTimeout(() => {
         this.startTimer();
         this.setState({
@@ -97,7 +104,7 @@ export default class VideoRecorder extends Component {
         });
       });
     });
-  }
+  };
 
   stopCapture = () => {
     InteractionManager.runAfterInteractions(() => {
@@ -107,52 +114,61 @@ export default class VideoRecorder extends Component {
         isRecording: false,
       });
     });
-  }
+  };
 
   startTimer = () => {
     this.timer = setInterval(() => {
-      this.setState({ time: this.state.time + 1 });
+      this.setState({time: this.state.time + 1});
     }, 1000);
-  }
+  };
 
   stopTimer = () => {
-    if (this.timer) clearInterval(this.timer);
-  }
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
+  };
 
-  convertTimeString = (time) => {
+  convertTimeString = time => {
     return moment().startOf('day').seconds(time).format('mm:ss');
-  }
+  };
 
   renderTimer() {
-    const { isRecording, time, recorded } = this.state;
+    const {isRecording, time, recorded} = this.state;
     return (
       <View>
-        {
-          (recorded || isRecording) &&
+        {(recorded || isRecording) && (
           <Text style={styles.durationText}>
             <Text style={styles.dotText}>●</Text> {this.convertTimeString(time)}
           </Text>
-        }
+        )}
       </View>
     );
   }
 
   renderContent() {
-    const { isRecording, recorded } = this.state;
+    const {isRecording, recorded} = this.state;
     return (
       <View style={styles.controlLayer}>
         {this.renderTimer()}
         <View style={[styles.controls]}>
-          <RecordingButton style={styles.recodingButton} isRecording={isRecording} onStartPress={this.startCapture}
-            onStopPress={this.stopCapture} />
-          {
-            recorded &&
-              <TouchableOpacity onPress={this.onSave} style={styles.btnUse}>
-                <View style={styles.btnUseContainer}>
-                  <Icon style={styles.btnUseText} name="done" size={24} color="white" />
-                </View>
-              </TouchableOpacity>
-          }
+          <RecordingButton
+            style={styles.recodingButton}
+            isRecording={isRecording}
+            onStartPress={this.startCapture}
+            onStopPress={this.stopCapture}
+          />
+          {recorded && (
+            <TouchableOpacity onPress={this.onSave} style={styles.btnUse}>
+              <View style={styles.btnUseContainer}>
+                <Icon
+                  style={styles.btnUseText}
+                  name="done"
+                  size={24}
+                  color="white"
+                />
+              </View>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     );
@@ -161,7 +177,9 @@ export default class VideoRecorder extends Component {
   renderCamera() {
     return (
       <Camera
-        ref={(cam) => { this.camera = cam; }}
+        ref={cam => {
+          this.camera = cam;
+        }}
         style={styles.preview}
         captureAudio
         captureMode={Camera.constants.CaptureMode.video}
@@ -184,10 +202,15 @@ export default class VideoRecorder extends Component {
   }
 
   render() {
-    const { loading, isOpen } = this.state;
-    if (loading) return <View />;
+    const {loading, isOpen} = this.state;
+    if (loading) {
+      return <View />;
+    }
     return (
-      <Modal visible={isOpen} transparent animationType="fade"
+      <Modal
+        visible={isOpen}
+        transparent
+        animationType="fade"
         onRequestClose={this.close}>
         <View style={styles.modal}>
           <TouchableWithoutFeedback onPress={this.close}>

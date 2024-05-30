@@ -1,17 +1,17 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
+import {Text, Content} from 'native-base';
 import {
-  Text, Content,
-} from "native-base"
-import { Image, 
-  ImageBackground, 
-  Platform, 
-  Dimensions, 
-  TextInput, 
-  View, 
-  StyleSheet, 
-  TouchableOpacity, 
-  StatusBar, 
-  Alert } from "react-native";
+  Image,
+  ImageBackground,
+  Platform,
+  Dimensions,
+  TextInput,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  StatusBar,
+  Alert,
+} from 'react-native';
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import Global from '../Global';
@@ -28,7 +28,7 @@ class EmailConfirm extends Component {
   }
 
   static navigationOptions = {
-    header: null
+    header: null,
   };
   componentDidMount() {
     this.sendCode();
@@ -38,99 +38,168 @@ class EmailConfirm extends Component {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': Global.saveData.token
-      }
-    }).then((response) => response.json())
-      .then((responseJson) => {
+        Authorization: Global.saveData.token,
+      },
+    })
+      .then(response => response.json())
+      .then(responseJson => {
         if (!responseJson.error) {
           Alert.alert(
             '',
-            "Email has been sent!  Please check your spam folder if you dont see in your inbox.",
-            [
-              { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ],
-            { cancelable: false },
+            'Email has been sent!  Please check your spam folder if you dont see in your inbox.',
+            [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+            {cancelable: false},
           );
         } else {
           alert(responseJson.message);
         }
       })
-      .catch((error) => {
-        return
-      }
-    );
+      .catch(error => {
+        return;
+      });
   }
   onConfirm() {
     if (this.state.code !== '') {
       var details = {
-        'confirmCode': this.state.code
+        confirmCode: this.state.code,
       };
 
       var formBody = [];
       for (var property in details) {
         var encodedKey = encodeURIComponent(property);
         var encodedValue = encodeURIComponent(details[property]);
-        formBody.push(encodedKey + "=" + encodedValue);
+        formBody.push(encodedKey + '=' + encodedValue);
       }
-      formBody = formBody.join("&");
+      formBody = formBody.join('&');
 
       fetch(`${SERVER_URL}/api/user/emailVerify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': Global.saveData.token
+          Authorization: Global.saveData.token,
         },
         body: formBody,
-      }).then((response) => response.json())
-        .then((responseJson) => {
+      })
+        .then(response => response.json())
+        .then(responseJson => {
           if (!responseJson.error) {
-            this.props.navigation.replace("Browse");
+            this.props.navigation.replace('Browse');
           } else {
-            alert(responseJson.message ? responseJson.message : 'Something went wrong. Please try again.');
+            alert(
+              responseJson.message
+                ? responseJson.message
+                : 'Something went wrong. Please try again.',
+            );
           }
         })
-        .catch((error) => {
-          return
+        .catch(error => {
+          return;
         });
     } else {
-      alert("Please provide your confirmation code.");
+      alert('Please provide your confirmation code.');
     }
   }
   render() {
     return (
       <View style={styles.contentContainer}>
-        <StatusBar backgroundColor='#fff' barStyle='dark-content' />
-        <ImageBackground source={slogo} style={{ width: DEVICE_WIDTH, height: 150, marginTop: Platform.select({ 'android': 0, 'ios': 30 }), alignItems: 'center', justifyContent: 'center' }}>
-          <Image source={logo} style={{ width: 205, height: 83, tintColor: '#DE5859' }} />
+        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+        <ImageBackground
+          source={slogo}
+          style={{
+            width: DEVICE_WIDTH,
+            height: 150,
+            marginTop: Platform.select({android: 0, ios: 30}),
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Image
+            source={logo}
+            style={{width: 205, height: 83, tintColor: '#DE5859'}}
+          />
         </ImageBackground>
         <Content>
-          <View style={{ width: DEVICE_WIDTH, alignItems: 'center', justifyContent: 'center', marginTop: 50 }}>
-            <Text style={{ color: '#000', fontSize: 16, fontWeight: 'bold' }}>{"Please enter the confirmation code"}</Text>
-            <Text style={{ color: '#000', fontSize: 16, fontWeight: 'bold' }}>{"that was sent to your email."}</Text>
+          <View
+            style={{
+              width: DEVICE_WIDTH,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 50,
+            }}>
+            <Text style={{color: '#000', fontSize: 16, fontWeight: 'bold'}}>
+              {'Please enter the confirmation code'}
+            </Text>
+            <Text style={{color: '#000', fontSize: 16, fontWeight: 'bold'}}>
+              {'that was sent to your email.'}
+            </Text>
           </View>
-          <View style={{ width: DEVICE_WIDTH * 0.6, marginLeft: DEVICE_WIDTH * 0.2, marginTop: 50 }}>
+          <View
+            style={{
+              width: DEVICE_WIDTH * 0.6,
+              marginLeft: DEVICE_WIDTH * 0.2,
+              marginTop: 50,
+            }}>
             <View>
               <TextInput
-                style={{ backgroundColor: 'transparent', width: DEVICE_WIDTH * 0.6, height: 40, paddingLeft: 10, color: '#000', borderWidth: 1, borderColor: '#000' }}
+                style={{
+                  backgroundColor: 'transparent',
+                  width: DEVICE_WIDTH * 0.6,
+                  height: 40,
+                  paddingLeft: 10,
+                  color: '#000',
+                  borderWidth: 1,
+                  borderColor: '#000',
+                }}
                 selectionColor="#009788"
                 keyboardType="number-pad"
-                onChangeText={code => this.setState({ code })}
+                onChangeText={code => this.setState({code})}
                 autoCapitalize="none"
                 underlineColorAndroid="transparent"
               />
             </View>
           </View>
-          <View style={{ width: DEVICE_WIDTH, height: 40, alignItems: 'center', justifyContent: 'center', marginTop: 50 }}>
-            <TouchableOpacity style={{ width: DEVICE_WIDTH * 0.7, height: 40, borderRadius: 25, backgroundColor: '#DE5859', alignItems: 'center', justifyContent: 'center' }}
+          <View
+            style={{
+              width: DEVICE_WIDTH,
+              height: 40,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 50,
+            }}>
+            <TouchableOpacity
+              style={{
+                width: DEVICE_WIDTH * 0.7,
+                height: 40,
+                borderRadius: 25,
+                backgroundColor: '#DE5859',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
               onPress={() => this.onConfirm()}>
-              <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>{"CONFIRM"}</Text>
+              <Text style={{color: '#fff', fontSize: 16, fontWeight: 'bold'}}>
+                {'CONFIRM'}
+              </Text>
             </TouchableOpacity>
           </View>
 
-          <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 30 }}>
-            <Text style={{ color: '#000', fontSize: 12, }}>{"Didn't get an email?"}</Text>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 30,
+            }}>
+            <Text style={{color: '#000', fontSize: 12}}>
+              {"Didn't get an email?"}
+            </Text>
             <TouchableOpacity onPress={() => this.sendCode()}>
-              <Text style={{ color: '#DE5859', fontSize: 14, fontWeight: 'bold', marginTop: 15 }}>{"Send email again"}</Text>
+              <Text
+                style={{
+                  color: '#DE5859',
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                  marginTop: 15,
+                }}>
+                {'Send email again'}
+              </Text>
             </TouchableOpacity>
           </View>
         </Content>

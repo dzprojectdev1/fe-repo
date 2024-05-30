@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 
 const INITIAL_STATE = {
   userData: null,
@@ -7,7 +7,7 @@ const INITIAL_STATE = {
   quickBloxInfo: {},
   fcmID: '',
   callEvent: null,
-}
+};
 
 const reducer = (state = INITIAL_STATE, action) => {
   let data;
@@ -21,8 +21,8 @@ const reducer = (state = INITIAL_STATE, action) => {
         senders: state.senders,
         quickBloxInfo: state.quickBloxInfo,
         fcmID: state.fcmID,
-        callEvent: state.callEvent
-      }
+        callEvent: state.callEvent,
+      };
       return newState;
     case 'CHANGE_READFLAG':
       data = action.payload;
@@ -33,7 +33,7 @@ const reducer = (state = INITIAL_STATE, action) => {
         senders: data.senders,
         quickBloxInfo: state.quickBloxInfo,
         fcmID: state.fcmID,
-        callEvent: state.callEvent
+        callEvent: state.callEvent,
       };
       return newState;
     case 'QUICKBLOX_ACTION':
@@ -45,7 +45,7 @@ const reducer = (state = INITIAL_STATE, action) => {
         senders: state.senders,
         quickBloxInfo: data,
         fcmID: state.fcmID,
-        callEvent: state.callEvent
+        callEvent: state.callEvent,
       };
       return newState;
     case 'FCMTOKEN_UPDATE':
@@ -56,7 +56,7 @@ const reducer = (state = INITIAL_STATE, action) => {
         senders: state.senders,
         quickBloxInfo: state.quickBloxInfo,
         fcmID: data,
-        callEvent: state.callEvent
+        callEvent: state.callEvent,
       };
       return newState;
     case 'CALL_EVENT_CHANGE':
@@ -67,7 +67,7 @@ const reducer = (state = INITIAL_STATE, action) => {
         senders: state.senders,
         quickBloxInfo: state.quickBloxInfo,
         fcmID: state.fcmID,
-        callEvent: data
+        callEvent: data,
       };
       return newState;
     default:
