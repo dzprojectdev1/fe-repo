@@ -26,8 +26,9 @@ import collapse from '../../assets/images/collapse.png';
 import expand from '../../assets/images/expand.png';
 import yellow_heart_black from '../../assets/images/yellow_heart_black.png';
 import yellow_star_black from '../../assets/images/yellow_star_black.png';
-import {SERVER_URL, GCS_BUCKET} from '../../config/constants';
+import {SERVER_URL, GCS_BUCKET, capitalizeWords} from '../../config/constants';
 import listData from 'react-native-simple-store';
+import {TopBar} from '../../commonUI/components/topbar';
 
 class MyFans extends Component {
   constructor(props) {
@@ -277,7 +278,9 @@ class MyFans extends Component {
     } else if (Global.saveData.nowPage == 'ProfileSetting') {
       this.props.navigation.replace('MyVideo');
     } else {
-      this.props.navigation.navigate(Global.saveData.prevpage ? Global.saveData.prevpage : 'BrowseList');
+      this.props.navigation.navigate(
+        Global.saveData.prevpage ? Global.saveData.prevpage : 'BrowseList',
+      );
     }
   };
 
@@ -325,6 +328,7 @@ class MyFans extends Component {
   render() {
     return (
       <View style={styles.contentContainer}>
+        <TopBar title={'Stars and Fans'} onBack={this.goBack.bind(this)} />
         <Dialog
           visible={this.state.showTip}
           dialogAnimation={
@@ -373,52 +377,49 @@ class MyFans extends Component {
             </View>
           </View>
         </Dialog>
-        <StatusBar
-          translucent={true}
-          backgroundColor="#fff"
-          barStyle="dark-content"
-        />
-        <View
-          style={{
-            alignItems: 'center',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            height: 40,
-            backgroundColor: '#fff',
-          }}>
-          <TouchableOpacity style={{width: 20, height: 20, tintColor: '#000', marginLeft: 20}} onPress={() => this.goBack()}>
-            <ArrowBackIcon size="5" />
-          </TouchableOpacity>
-          <View
-            style={{
-              width: DEVICE_WIDTH - 130,
-              height: 40,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginLeft: -60,
-            }}>
-            <Text
-              style={{
-                color: '#000',
-                fontSize: 15,
-                fontWeight: 'bold',
-                marginLeft: 20,
-                textAlign: 'left',
-                justifyContent: 'center',
-              }}>
-              {'Stars and Fans'}
-            </Text>
-          </View>
-          <View
-            style={{
-              width: 40,
-              height: 40,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Text>{''}</Text>
-          </View>
-        </View>
+        {/*<View*/}
+        {/*  style={{*/}
+        {/*    alignItems: 'center',*/}
+        {/*    flexDirection: 'row',*/}
+        {/*    justifyContent: 'space-between',*/}
+        {/*    height: 40,*/}
+        {/*    backgroundColor: '#fff',*/}
+        {/*  }}>*/}
+        {/*  <TouchableOpacity*/}
+        {/*    style={{width: 20, height: 20, tintColor: '#000', marginLeft: 20}}*/}
+        {/*    onPress={() => this.goBack()}>*/}
+        {/*    <ArrowBackIcon size="5" />*/}
+        {/*  </TouchableOpacity>*/}
+        {/*  <View*/}
+        {/*    style={{*/}
+        {/*      width: DEVICE_WIDTH - 130,*/}
+        {/*      height: 40,*/}
+        {/*      alignItems: 'center',*/}
+        {/*      justifyContent: 'center',*/}
+        {/*      marginLeft: -60,*/}
+        {/*    }}>*/}
+        {/*    <Text*/}
+        {/*      style={{*/}
+        {/*        color: '#000',*/}
+        {/*        fontSize: 15,*/}
+        {/*        fontWeight: 'bold',*/}
+        {/*        marginLeft: 20,*/}
+        {/*        textAlign: 'left',*/}
+        {/*        justifyContent: 'center',*/}
+        {/*      }}>*/}
+        {/*      {'Stars and Fans'}*/}
+        {/*    </Text>*/}
+        {/*  </View>*/}
+        {/*  <View*/}
+        {/*    style={{*/}
+        {/*      width: 40,*/}
+        {/*      height: 40,*/}
+        {/*      alignItems: 'center',*/}
+        {/*      justifyContent: 'center',*/}
+        {/*    }}>*/}
+        {/*    <Text>{''}</Text>*/}
+        {/*  </View>*/}
+        {/*</View>*/}
         <ScrollView
           style={{backgroundColor: '#FFF', marginTop: 1}}
           removeClippedSubviews={true}>
@@ -976,7 +977,6 @@ const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   contentContainer: {
-    marginTop: 40,
     width: '100%',
     height: '100%',
     backgroundColor: '#eee',

@@ -25,7 +25,6 @@ import Dialog, {
   SlideAnimation,
 } from 'react-native-popup-dialog';
 import FlashMessage, {showMessage} from 'react-native-flash-message';
-
 import search_photo from '../../assets/images/search_photo.png';
 import bg from '../../assets/images/bg.jpg';
 import ban_user from '../../assets/images/ban_user.png';
@@ -43,7 +42,8 @@ import expand from '../../assets/images/expand.png';
 import video_player from '../../assets/images/video_player.png';
 import Global from '../Global';
 
-import {SERVER_URL, GCS_BUCKET} from '../../config/constants';
+import {SERVER_URL, GCS_BUCKET, capitalizeWords} from '../../config/constants';
+import {TopBar} from '../../commonUI/components/topbar';
 
 class Profile extends Component {
   constructor(props) {
@@ -659,6 +659,14 @@ class Profile extends Component {
   render() {
     return (
       <ImageBackground source={bg} style={{width: '100%', height: '100%'}}>
+        <TopBar
+          title={capitalizeWords(this.state.name)}
+          onBack={this.onBack.bind(this)}
+          style={{
+            borderBottomWidth: 2,
+            borderBottomColor: 'rgba(140,128,127,0.25)',
+          }}
+        />
         <Modal
           transparent={false}
           visible={this.state.fullImage}
@@ -687,7 +695,9 @@ class Profile extends Component {
                 {`You have ${Global.saveData.coin_count} diamonds`}
               </Text>
               <View style={{flexDirection: 'row'}}>
-                <Text style={[styles.bodyFont, {color: '#000'}]}>{'Send '}</Text>
+                <Text style={[styles.bodyFont, {color: '#000'}]}>
+                  {'Send '}
+                </Text>
                 <View style={styles.SectionStyle}>
                   <Image source={diamond} style={{width: 25, height: 25}} />
                   <TextInput
@@ -696,7 +706,9 @@ class Profile extends Component {
                     onChangeText={value => this.checkCount(value)}
                   />
                 </View>
-                <Text style={[styles.bodyFont, {color: '#000'}]}>{' Diamonds'}</Text>
+                <Text style={[styles.bodyFont, {color: '#000'}]}>
+                  {' Diamonds'}
+                </Text>
               </View>
               {this.state.errorMsg && (
                 <Text style={[styles.requiredSent, {color: '#000'}]}>
@@ -726,7 +738,9 @@ class Profile extends Component {
                         fanUserVisible: !this.state.fanUserVisible,
                       })
                     }>
-                    <Text style={[styles.cancelButtonText, {color: '#000'}]}>{'Cancel'}</Text>
+                    <Text style={[styles.cancelButtonText, {color: '#000'}]}>
+                      {'Cancel'}
+                    </Text>
                   </TouchableOpacity>
                   <View style={styles.buttonsDivider} />
                   <TouchableOpacity
@@ -741,7 +755,9 @@ class Profile extends Component {
                         },
                       )
                     }>
-                    <Text style={[styles.submitButtonText, {color: '#000'}]}>{'Send'}</Text>
+                    <Text style={[styles.submitButtonText, {color: '#000'}]}>
+                      {'Send'}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -772,7 +788,9 @@ class Profile extends Component {
                 {`You have ${Global.saveData.coin_count} diamonds`}
               </Text>
               <View style={{flexDirection: 'row'}}>
-                <Text style={[styles.bodyFont, {color: '#000'}]}>{'Send '}</Text>
+                <Text style={[styles.bodyFont, {color: '#000'}]}>
+                  {'Send '}
+                </Text>
                 <View style={styles.SectionStyle}>
                   <Image source={diamond} style={{width: 25, height: 25}} />
                   <TextInput
@@ -781,7 +799,9 @@ class Profile extends Component {
                     onChangeText={value => this.checkCount(value)}
                   />
                 </View>
-                <Text style={[styles.bodyFont, {color: '#000'}]}>{' Diamonds'}</Text>
+                <Text style={[styles.bodyFont, {color: '#000'}]}>
+                  {' Diamonds'}
+                </Text>
               </View>
               {this.state.errorMsg && (
                 <Text style={[styles.requiredSent, {color: '#000'}]}>
@@ -811,7 +831,9 @@ class Profile extends Component {
                         noFanUserVisible: !this.state.noFanUserVisible,
                       })
                     }>
-                    <Text style={[styles.cancelButtonText, {color: '#000'}]}>{'Cancel'}</Text>
+                    <Text style={[styles.cancelButtonText, {color: '#000'}]}>
+                      {'Cancel'}
+                    </Text>
                   </TouchableOpacity>
                   <View style={styles.buttonsDivider} />
                   <TouchableOpacity
@@ -826,7 +848,9 @@ class Profile extends Component {
                         },
                       )
                     }>
-                    <Text style={[styles.submitButtonText, {color: '#000'}]}>{'Send'}</Text>
+                    <Text style={[styles.submitButtonText, {color: '#000'}]}>
+                      {'Send'}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -875,19 +899,15 @@ class Profile extends Component {
                         showTip: !this.state.showTip,
                       })
                     }>
-                    <Text style={[styles.submitButtonText, {color: '#000'}]}>{'Ok'}</Text>
+                    <Text style={[styles.submitButtonText, {color: '#000'}]}>
+                      {'Ok'}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
             </View>
           </View>
         </Dialog>
-
-        <StatusBar
-          translucent={true}
-          backgroundColor="transparent"
-          barStyle="dark-content"
-        />
         {this.state.flash_ban ? (
           <View>
             <Image
@@ -905,140 +925,165 @@ class Profile extends Component {
         ) : null}
         <View
           style={{
-            height: this.state.otherData.imageUrl ? 220 : 140,
-            marginTop: Platform.select({ios: '10%', android: '10%'}),
+            height: this.state.otherData.imageUrl ? 220 : 170,
+            marginTop: Platform.select({ios: '5%', android: '5%'}),
             marginBottom: 5,
             flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-          <TouchableOpacity
-            style={{
-              width: 40,
-              height: 40,
-              marginLeft: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-            onPress={() => this.onBack()}>
-            <ArrowBackIcon size="5" color= '#B64F54'/>
-          </TouchableOpacity>
           <View
             style={{
               width: DEVICE_WIDTH - 90,
-              height: this.state.otherData.imageUrl ? 220 : 140,
+              height: this.state.otherData.imageUrl ? 220 : 170,
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            {this.state.otherData.imageUrl && (
-              <View style={{flexDirection: 'row'}}>
-                <TouchableOpacity
-                  style={{width: 120, height: 120, marginLeft: 90}}
-                  onPress={() =>
-                    this.showUserVideo(
-                      0,
-                      this.state.otherData.imageUrl,
-                      this.state.otherData.id,
-                      this.state.datas,
-                    )
-                  }>
-                  <Image
-                    source={{uri: this.state.otherData.imageUrl}}
-                    style={{width: 120, height: 120, borderRadius: 60}}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    marginLeft: 20,
-                    width: 60,
-                    height: 50,
-                    borderWidth: 1.5,
-                    borderRadius: 7,
-                    borderColor: '#B64F54',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: 40,
-                  }}
-                  onPress={() => this.becomeFan()}>
-                  <Image source={yellow_star} style={{width: 35, height: 35}} />
-                </TouchableOpacity>
-              </View>
-            )}
-            {!this.state.otherData.imageUrl && (
-              <View style={{flexDirection: 'row'}}>
-                <TouchableOpacity
-                  style={{
-                    width: 60,
-                    height: 50,
-                    borderWidth: 1.5,
-                    borderRadius: 7,
-                    borderColor: '#B64F54',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  onPress={() => this.becomeFan()}>
-                  <Image source={yellow_star} style={{width: 35, height: 35}} />
-                </TouchableOpacity>
-              </View>
-            )}
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity
+                style={{width: 120, height: 120}}
+                onPress={() =>
+                  this.showUserVideo(
+                    0,
+                    this.state.otherData.imageUrl,
+                    this.state.otherData.id,
+                    this.state.datas,
+                  )
+                }>
+                <Image
+                  source={
+                    this.state.otherData.imageUrl
+                      ? {uri: this.state.otherData.imageUrl}
+                      : hiddenMan
+                  }
+                  style={{width: 120, height: 120, borderRadius: 60}}
+                />
+              </TouchableOpacity>
+            </View>
+
+            {/*{this.state.otherData.imageUrl && (*/}
+            {/*  <View style={{flexDirection: 'row'}}>*/}
+            {/*    <TouchableOpacity*/}
+            {/*      style={{width: 120, height: 120}}*/}
+            {/*      onPress={() =>*/}
+            {/*        this.showUserVideo(*/}
+            {/*          0,*/}
+            {/*          this.state.otherData.imageUrl,*/}
+            {/*          this.state.otherData.id,*/}
+            {/*          this.state.datas,*/}
+            {/*        )*/}
+            {/*      }>*/}
+            {/*      <Image*/}
+            {/*        source={{uri: this.state.otherData.imageUrl}}*/}
+            {/*        style={{width: 120, height: 120, borderRadius: 60}}*/}
+            {/*      />*/}
+            {/*    </TouchableOpacity>*/}
+            {/*<TouchableOpacity*/}
+            {/*  style={{*/}
+            {/*    marginLeft: 20,*/}
+            {/*    width: 60,*/}
+            {/*    height: 50,*/}
+            {/*    borderWidth: 1.5,*/}
+            {/*    borderRadius: 7,*/}
+            {/*    borderColor: '#B64F54',*/}
+            {/*    alignItems: 'center',*/}
+            {/*    justifyContent: 'center',*/}
+            {/*    marginTop: 40,*/}
+            {/*  }}*/}
+            {/*  onPress={() => this.becomeFan()}>*/}
+            {/*  <Image source={yellow_star} style={{width: 35, height: 35}} />*/}
+            {/*</TouchableOpacity>*/}
+            {/*  </View>*/}
+            {/*)}*/}
+            {/*{!this.state.otherData.imageUrl && (*/}
+            {/*  <View style={{flexDirection: 'row'}}>*/}
+            {/*    <TouchableOpacity*/}
+            {/*      style={{*/}
+            {/*        width: 60,*/}
+            {/*        height: 50,*/}
+            {/*        borderWidth: 1.5,*/}
+            {/*        borderRadius: 7,*/}
+            {/*        borderColor: '#B64F54',*/}
+            {/*        alignItems: 'center',*/}
+            {/*        justifyContent: 'center',*/}
+            {/*      }}*/}
+            {/*      onPress={() => this.becomeFan()}>*/}
+            {/*      <Image source={yellow_star} style={{width: 35, height: 35}} />*/}
+            {/*    </TouchableOpacity>*/}
+            {/*  </View>*/}
+            {/*)}*/}
+            {/*<View*/}
+            {/*  style={{*/}
+            {/*    // flex: 3,*/}
+            {/*    flex: 1,*/}
+            {/*    height: 30,*/}
+            {/*    flexDirection: 'row',*/}
+            {/*    justifyContent: 'space-around',*/}
+            {/*    alignItems: 'center',*/}
+            {/*  }}>*/}
+            {/* <Text style={{ fontSize: 16, }}>{((this.state.name).length > 6) ? (((this.state.name).substring(0, 6)) + '...') : this.state.name}</Text> */}
+            {/*<Text style={{fontSize: 16, color: '#000'}}>*/}
+            {/*  {this.state.name}*/}
+            {/*</Text>*/}
+            {/*<Image*/}
+            {/*  source={diamond}*/}
+            {/*  style={{width: 20, height: 20, marginTop: 3, marginLeft: 10}}*/}
+            {/*/>*/}
+            {/*<Text style={{fontSize: 14, marginTop: 3, color: '#000'}}>*/}
+            {/*  {this.state.coin_count}*/}
+            {/*</Text>*/}
+            {/*<Image*/}
+            {/*  source={yellow_star}*/}
+            {/*  style={{width: 17, height: 17, marginTop: 4, marginLeft: 10}}*/}
+            {/*/>*/}
+            {/*<Text style={{fontSize: 14, marginTop: 3, color: '#000'}}>*/}
+            {/*  {this.state.fan_count}*/}
+            {/*</Text>*/}
+            {/*</View>*/}
+            {/*<Text*/}
+            {/*  style={{*/}
+            {/*    fontSize: 12,*/}
+            {/*    color: '#7d7d7d',*/}
+            {/*  }}>*/}
+            {/*  {this.state.otherData.age +*/}
+            {/*    ' years old, ' +*/}
+            {/*    (this.state.otherData.gender === 1 ? 'Male, ' : 'Female, ') +*/}
+            {/*    ((parseInt(this.state.otherData.distance) != 0*/}
+            {/*      ? parseInt(this.state.otherData.distance)*/}
+            {/*      : 'unknown') +*/}
+            {/*      ' miles away, ')}*/}
+            {/*</Text>*/}
+            {/*<Text*/}
+            {/*  style={{*/}
+            {/*    fontSize: 12,*/}
+            {/*    color: '#7d7d7d',*/}
+            {/*  }}>*/}
+            {/*  {this.state.otherData.country_name +*/}
+            {/*    ', ' +*/}
+            {/*    this.state.otherData.ethnicity_name +*/}
+            {/*    ', speaks ' +*/}
+            {/*    this.state.otherData.language_name +*/}
+            {/*    ', '}*/}
+            {/*</Text>*/}
+            {/*<Text*/}
+            {/*  style={{*/}
+            {/*    fontSize: 12,*/}
+            {/*    color: '#7d7d7d',*/}
+            {/*  }}>*/}
+            {/*  {'active ' + this.state.otherData.last_loggedin_date}*/}
+            {/*</Text>*/}
+            <Text style={{fontSize: 16, color: '#000', marginVertical: 10}}>
+              {this.state.name}
+            </Text>
             <View
               style={{
-                flex: 3,
-                height: 30,
                 flexDirection: 'row',
-                justifyContent: 'space-around',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}>
-              {/* <Text style={{ fontSize: 16, }}>{((this.state.name).length > 6) ? (((this.state.name).substring(0, 6)) + '...') : this.state.name}</Text> */}
-              <Text style={{fontSize: 16, color: '#000'}}>{this.state.name}</Text>
               <Image
                 source={diamond}
-                style={{width: 20, height: 20, marginTop: 3, marginLeft: 10}}
-              />
-              <Text style={{fontSize: 14, marginTop: 3, color: '#000'}}>
-                {this.state.coin_count}
-              </Text>
-              <Image
-                source={yellow_star}
-                style={{width: 17, height: 17, marginTop: 4, marginLeft: 10}}
-              />
-              <Text style={{fontSize: 14, marginTop: 3, color: '#000'}}>
-                {this.state.fan_count}
-              </Text>
-            </View>
-            <Text
-              style={{
-                fontSize: 12,
-                color: '#7d7d7d',
-              }}>
-              {this.state.otherData.age +
-                ' years old, ' +
-                (this.state.otherData.gender === 1 ? 'Male, ' : 'Female, ') +
-                ((parseInt(this.state.otherData.distance) != 0
-                  ? parseInt(this.state.otherData.distance)
-                  : 'unknown') +
-                  ' miles away, ')}
-            </Text>
-            <Text
-              style={{
-                fontSize: 12,
-                color: '#7d7d7d',
-              }}>
-              {this.state.otherData.country_name +
-                ', ' +
-                this.state.otherData.ethnicity_name +
-                ', speaks ' +
-                this.state.otherData.language_name +
-                ', '}
-            </Text>
-            <Text
-              style={{
-                fontSize: 12,
-                color: '#7d7d7d',
-              }}>
-              {'active ' + this.state.otherData.last_loggedin_date}
-            </Text>
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-              <Image
-                source={diamond}
-                style={{width: 15, height: 15, marginTop: 2, marginRight: 3}}
+                style={{width: 15, height: 15, marginRight: 5}}
               />
               <Text
                 style={{
@@ -1470,7 +1515,7 @@ class Profile extends Component {
               renderItem={({item: rowData, index}) => {
                 return (
                   <TouchableOpacity
-                    style={{width: DEVICE_WIDTH / 2}}
+                    style={{width: DEVICE_WIDTH / 2 - 4, margin: 2}}
                     onPress={() =>
                       this.showUserVideo(
                         index,
@@ -1483,8 +1528,8 @@ class Profile extends Component {
                       source={{uri: rowData.imageUrl}}
                       resizeMethod="resize"
                       style={{
-                        width: DEVICE_WIDTH / 2,
-                        height: (DEVICE_WIDTH / 2) * 1.5,
+                        width: DEVICE_WIDTH / 2 - 4,
+                        height: (DEVICE_WIDTH / 2 - 4) * 1.5,
                         backgroundColor: '#5A5A5A',
                       }}>
                       {rowData.content_type == 2 && (
@@ -1494,8 +1539,8 @@ class Profile extends Component {
                             position: 'absolute',
                             width: 30,
                             height: 30,
-                            top: (DEVICE_WIDTH / 4) * 1.5 - 15,
-                            left: DEVICE_WIDTH / 4 - 15,
+                            top: ((DEVICE_WIDTH / 2 - 10) * 1.5) / 2 - 15,
+                            left: (DEVICE_WIDTH / 2 - 10) / 2 - 15,
                           }}
                         />
                       )}
@@ -1506,7 +1551,7 @@ class Profile extends Component {
               keyExtractor={(item, index) => index}
             />
           )}
-          <View style={{height: 50}} />
+          <View style={{height: 10}} />
         </ScrollView>
         <FlashMessage
           ref="fmLocalInstance"

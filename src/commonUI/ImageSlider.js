@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Image,
   View,
@@ -19,7 +19,7 @@ class ImageSlider extends Component {
 
   _ref = null;
 
-  _onRef = (ref) => {
+  _onRef = ref => {
     this._ref = ref;
     if (ref && this.state.position !== this._getPosition()) {
       this._move(this._getPosition());
@@ -28,22 +28,32 @@ class ImageSlider extends Component {
 
   _popHelperView = () =>
     !this.props.loopBothSides &&
-    this._getPosition() === 0 && <View style={{ position: 'absolute', width: 50, height: '100%' }} />;
+    this._getPosition() === 0 && (
+      <View style={{position: 'absolute', width: 50, height: '100%'}} />
+    );
 
   _move = (index, animated = true, autoCalled = true) => {
     if (!this.props.autoPlayFlag && autoCalled) {
       return;
     }
     const isUpdating = index !== this._getPosition();
-    const x = (this.props.imagesWidth ? this.props.imagesWidth : Dimensions.get('window').width) * index;
+    const x =
+      (this.props.imagesWidth
+        ? this.props.imagesWidth
+        : Dimensions.get('window').width) * index;
 
-    this._ref && this._ref.scrollTo({ y: 0, x, animated });
+    this._ref && this._ref.scrollTo({y: 0, x, animated});
 
-    this.setState({ position: index });
+    this.setState({position: index});
 
-    if (isUpdating && this.props.onPositionChanged && index < this.props.images.length && index > -1) {
+    if (
+      isUpdating &&
+      this.props.onPositionChanged &&
+      index < this.props.images.length &&
+      index > -1
+    ) {
       this.props.onPositionChanged(index);
-      this.setState({ onPositionChangedCalled: true });
+      this.setState({onPositionChangedCalled: true});
     }
 
     this._setInterval();
@@ -57,37 +67,39 @@ class ImageSlider extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { position, autoPlayFlag } = this.props;
+    const {position, autoPlayFlag} = this.props;
     if (position && prevProps.position !== position) {
       this._move(position);
     }
   }
 
-  _clearInterval = () => this.state.interval && clearInterval(this.state.interval);
+  _clearInterval = () =>
+    this.state.interval && clearInterval(this.state.interval);
 
   _setInterval = () => {
     this._clearInterval();
-    const { autoPlayWithInterval, images, loop, loopBothSides } = this.props;
+    const {autoPlayWithInterval, images, loop, loopBothSides} = this.props;
 
     if (autoPlayWithInterval) {
       this.setState({
         interval: setInterval(
           () =>
             this._move(
-              !(loop || loopBothSides) && this.state.position === images.length - 1
+              !(loop || loopBothSides) &&
+                this.state.position === images.length - 1
                 ? 0
-                : this.state.position + 1
+                : this.state.position + 1,
             ),
-          autoPlayWithInterval
+          autoPlayWithInterval,
         ),
       });
     }
   };
 
-  _handleScroll = (event) => {
-    const { position, width } = this.state;
-    const { loop, loopBothSides, images, onPositionChanged } = this.props;
-    const { x } = event.nativeEvent.contentOffset;
+  _handleScroll = event => {
+    const {position, width} = this.state;
+    const {loop, loopBothSides, images, onPositionChanged} = this.props;
+    const {x} = event.nativeEvent.contentOffset;
 
     if ((loop || loopBothSides) && x >= width * images.length) {
       return this._move(0, false);
@@ -99,13 +111,18 @@ class ImageSlider extends Component {
 
     if (position !== -1 && position !== images.length) {
       newPosition = Math.round(event.nativeEvent.contentOffset.x / width);
-      this.setState({ position: newPosition });
+      this.setState({position: newPosition});
     }
 
-    if (onPositionChanged && !this.state.onPositionChangedCalled && newPosition < images.length && newPosition > -1) {
+    if (
+      onPositionChanged &&
+      !this.state.onPositionChangedCalled &&
+      newPosition < images.length &&
+      newPosition > -1
+    ) {
       onPositionChanged(newPosition);
     } else {
-      this.setState({ onPositionChangedCalled: false });
+      this.setState({onPositionChangedCalled: false});
     }
 
     this._setInterval();
@@ -120,34 +137,37 @@ class ImageSlider extends Component {
   }
 
   _onLayout = () => {
-    this.setState({ width: Dimensions.get('window').width });
+    this.setState({width: Dimensions.get('window').width});
     this._move(this.state.position, false);
   };
 
   _renderImage = (image, index) => {
-    const { width } = Dimensions.get('window');
-    const { onPress, customSlide } = this.props;
-    const offset = { marginLeft: index === -1 ? -width : 0 };
-    const imageStyle = [styles.image, { width }, offset];
-    
+    const {width} = Dimensions.get('window');
+    const {onPress, customSlide} = this.props;
+    const offset = {marginLeft: index === -1 ? -width : 0};
+    const imageStyle = [styles.image, {width}, offset];
+
     if (customSlide) {
-      return customSlide({ item: image, style: imageStyle, index, width });
+      return customSlide({item: image, style: imageStyle, index, width});
     }
-    
-    const imageObject = typeof image === 'string' ? { uri: image } : image;
+
+    const imageObject = typeof image === 'string' ? {uri: image} : image;
     const imageComponent = (
-      <Image key={index} source={imageObject} style={imageStyle} onError={(e) => console.log('Image load error:', e)} />
+      <Image
+        key={index}
+        source={imageObject}
+        style={imageStyle}
+        onError={e => console.log('Image load error:', e)}
+      />
     );
-    
+
     if (onPress) {
-        console.log(imageStyle, offset);
       return (
         <TouchableOpacity
           key={index}
           style={[imageStyle, offset]}
-          onPress={() => onPress && onPress({ image, index })}
-          delayPressIn={200}
-        >
+          onPress={() => onPress && onPress({image, index})}
+          delayPressIn={200}>
           {imageComponent}
         </TouchableOpacity>
       );
@@ -156,7 +176,8 @@ class ImageSlider extends Component {
     return imageComponent;
   };
 
-  _scrollEnabled = (position) => position !== -1 && position !== this.props.images.length;
+  _scrollEnabled = position =>
+    position !== -1 && position !== this.props.images.length;
 
   moveNext = () => {
     const next = (this.state.position + 1) % this.props.images.length;
@@ -164,12 +185,14 @@ class ImageSlider extends Component {
   };
 
   movePrev = () => {
-    const prev = (this.state.position + this.props.images.length - 1) % this.props.images.length;
+    const prev =
+      (this.state.position + this.props.images.length - 1) %
+      this.props.images.length;
     this._move(prev, true, false);
   };
 
   render() {
-    const { customButtons, style, loop, images, loopBothSides } = this.props;
+    const {customButtons, style, loop, images, loopBothSides} = this.props;
     const position = this._getPosition();
     const scrollEnabled = this._scrollEnabled(position);
 
@@ -182,15 +205,15 @@ class ImageSlider extends Component {
           scrollEventThrottle={16}
           pagingEnabled={true}
           bounces={loopBothSides}
-          contentInset={loopBothSides ? { left: this.state.width } : {}}
+          contentInset={loopBothSides ? {left: this.state.width} : {}}
           horizontal={true}
           scrollEnabled={scrollEnabled}
           showsHorizontalScrollIndicator={false}
-          style={[styles.scrollViewContainer, style]}
-        >
+          style={[styles.scrollViewContainer, style]}>
           {loopBothSides && this._renderImage(images[images.length - 1], -1)}
           {images.map(this._renderImage)}
-          {(loop || loopBothSides) && this._renderImage(images[0], images.length)}
+          {(loop || loopBothSides) &&
+            this._renderImage(images[0], images.length)}
         </ScrollView>
         {customButtons ? (
           customButtons(position, this._move)
@@ -201,8 +224,10 @@ class ImageSlider extends Component {
                 key={index}
                 underlayColor="#ccc"
                 onPress={() => this._move(index)}
-                style={[styles.button, position === index && styles.buttonSelected]}
-              >
+                style={[
+                  styles.button,
+                  position === index && styles.buttonSelected,
+                ]}>
                 <View />
               </TouchableHighlight>
             ))}

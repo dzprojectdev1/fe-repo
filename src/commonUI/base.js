@@ -1,3 +1,5 @@
+import {Dimensions} from "react-native";
+
 export const colors = {
   primary: '#2288ea',
   primaryBackground: '#046390',
@@ -13,7 +15,6 @@ export const colors = {
   buttonDisabled: '#aaa',
 };
 
-import Dimensions from 'Dimensions';
 export const W = Dimensions.get('window').width;
 export const H = Dimensions.get('window').height;
 export const em = W / 720;

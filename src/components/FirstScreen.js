@@ -137,7 +137,7 @@ class FirstScreen extends Component {
                 //   console.log("subscription = ", e.message);
                 // });
                 let isConnected = await QB.chat.isConnected().catch(e => {
-                  console.log('chat connect check = ', e.message);
+                  //console.log('chat connect check = ', e.message);
                 });
                 if (isConnected === false) {
                   await QB.chat
@@ -200,7 +200,7 @@ class FirstScreen extends Component {
 
   nextThrough = responseJson => {
     // connected successfully
-    console.log(responseJson);
+    console.log("responseJson Frst Screen", responseJson);
     this.props.updateUserData(responseJson.user);
     Global.saveData.token = responseJson.user.token;
     Global.saveData.u_id = responseJson.user.id;

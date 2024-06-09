@@ -155,7 +155,7 @@ class Chat extends Component {
       alertMsg: 'There is no chat list.',
     });
 
-    console.log(JSON.stringify(this.state.datas));
+    //console.log(JSON.stringify(this.state.datas));
   };
 
   toggle() {
@@ -192,6 +192,7 @@ class Chat extends Component {
         {cancelable: false},
       );
     } else {
+      //  console.log("ChatDetail", data);
       this.props.navigation.replace('ChatDetail', {data: data});
     }
   }
@@ -339,10 +340,10 @@ class Chat extends Component {
             <TouchableOpacity
               style={{width: 80, height: 40}}
               onPress={() => this.gotoShop()}>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image
                   source={diamond}
-                  style={{width: 25, height: 25, marginLeft: 15, marginTop: 10}}
+                  style={{width: 18, height: 18, marginLeft: 15, marginTop: 10}}
                 />
                 <Text
                   style={{

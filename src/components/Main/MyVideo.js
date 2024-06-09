@@ -347,7 +347,7 @@ class MyVideo extends Component {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log('responseJson.url ', responseJson.url);
+        // console.log('responseJson.url ', responseJson.url);
         this.props.navigation.navigate('MyVideoDetail', {
           cdn_id: cdn_id,
           otherId: user_id,
@@ -838,10 +838,10 @@ class MyVideo extends Component {
             <TouchableOpacity
               style={{width: 60, height: 40, marginRight: 15}}
               onPress={() => this.gotoShop()}>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image
                   source={diamond}
-                  style={{width: 25, height: 25, marginLeft: 15, marginTop: 10}}
+                  style={{width: 18, height: 18, marginLeft: 15, marginTop: 10}}
                 />
                 <Text
                   style={{
@@ -855,26 +855,26 @@ class MyVideo extends Component {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{width: 80, height: 40}}
-              onPress={() => this.gotoMyFans()}>
-              <View style={{flexDirection: 'row'}}>
-                <Image
-                  source={yellow_star}
-                  style={{width: 20, height: 20, marginLeft: 15, marginTop: 12}}
-                />
-                <Text
-                  style={{
-                    marginLeft: 7,
-                    color: '#000',
-                    fontSize: 12,
-                    fontWeight: 'bold',
-                    marginTop: 14,
-                  }}>
-                  {this.state.fanCount}
-                </Text>
-              </View>
-            </TouchableOpacity>
+            {/*<TouchableOpacity*/}
+            {/*  style={{width: 80, height: 40}}*/}
+            {/*  onPress={() => this.gotoMyFans()}>*/}
+            {/*  <View style={{flexDirection: 'row'}}>*/}
+            {/*    <Image*/}
+            {/*      source={yellow_star}*/}
+            {/*      style={{width: 20, height: 20, marginLeft: 15, marginTop: 12}}*/}
+            {/*    />*/}
+            {/*    <Text*/}
+            {/*      style={{*/}
+            {/*        marginLeft: 7,*/}
+            {/*        color: '#000',*/}
+            {/*        fontSize: 12,*/}
+            {/*        fontWeight: 'bold',*/}
+            {/*        marginTop: 14,*/}
+            {/*      }}>*/}
+            {/*      {this.state.fanCount}*/}
+            {/*    </Text>*/}
+            {/*  </View>*/}
+            {/*</TouchableOpacity>*/}
           </View>
           <Text
             style={{
@@ -1053,20 +1053,20 @@ class MyVideo extends Component {
           )}
           <View style={{height: 20}} />
         </ScrollView>
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            left: 15,
-            bottom: Platform.select({android: 90, ios: 105}),
-            width: 70,
-            height: 70,
-            borderRadius: 35,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          onPress={() => this.gotoExDiamonds()}>
-          <Image source={dollar_sign} style={{width: 90, height: 90}} />
-        </TouchableOpacity>
+        {/*<TouchableOpacity*/}
+        {/*  style={{*/}
+        {/*    position: 'absolute',*/}
+        {/*    left: 15,*/}
+        {/*    bottom: Platform.select({android: 90, ios: 105}),*/}
+        {/*    width: 70,*/}
+        {/*    height: 70,*/}
+        {/*    borderRadius: 35,*/}
+        {/*    alignItems: 'center',*/}
+        {/*    justifyContent: 'center',*/}
+        {/*  }}*/}
+        {/*  onPress={() => this.gotoExDiamonds()}>*/}
+        {/*  <Image source={dollar_sign} style={{width: 90, height: 90}} />*/}
+        {/*</TouchableOpacity>*/}
         {/* <TouchableOpacity style={{
           position: 'absolute', right: 100,
           bottom: Platform.select({ 'android': 90, 'ios': 105 }),

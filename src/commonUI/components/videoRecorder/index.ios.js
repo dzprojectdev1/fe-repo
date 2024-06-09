@@ -53,7 +53,6 @@ export default class VideoRecorder extends Component {
           this.state.recordedData.path,
           compressQuality,
         ).then(result => {
-          console.log('New video path', result);
           this.callback({
             path: result.path,
             mime: 'video/mp4',
@@ -87,7 +86,6 @@ export default class VideoRecorder extends Component {
       this.camera
         .capture()
         .then(data => {
-          console.log('video capture', data);
           this.setState({
             recorded: true,
             recordedData: data,

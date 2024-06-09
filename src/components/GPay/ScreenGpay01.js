@@ -56,6 +56,7 @@ import vip_diamond_trans from '../../assets/images/vip_diamond_trans.png';
 import pass_day from '../../assets/images/pass_day.png';
 import Global from '../Global';
 import {SERVER_URL} from '../../config/constants';
+import {TopBar} from '../../commonUI/components/topbar';
 
 class ScreenGpay01 extends Component {
   constructor(props) {
@@ -500,25 +501,7 @@ class ScreenGpay01 extends Component {
 
     return (
       <View style={styles.contentContainer}>
-        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
-        <View style={styles.top_title}>
-          <TouchableOpacity
-            style={{width: 20, height: 20, tintColor: '#000', marginLeft: 20}}
-            onPress={() => this.goBack()}>
-            <ArrowBackIcon size="5" />
-          </TouchableOpacity>
-          <Text
-            style={{
-              color: '#000',
-              fontSize: 15,
-              fontWeight: 'bold',
-              marginLeft: 20,
-              textAlign: 'left',
-              justifyContent: 'center',
-            }}>
-            {'Diamond shop'}
-          </Text>
-        </View>
+        <TopBar title={'Diamond Shop'} onBack={this.goBack.bind(this)} />
         <View>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
             <View
@@ -702,7 +685,7 @@ const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   contentContainer: {
-    marginTop: 25,
+    // marginTop: 25,
     width: '100%',
     height: '100%',
     backgroundColor: '#eee',

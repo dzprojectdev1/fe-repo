@@ -238,7 +238,6 @@ class Register2 extends Component {
       .catch(error => {
         alert(JSON.stringify('account create = ' + error.message));
       });
-    console.log(responseJson);
     if (!responseJson.error) {
       if (isQBOn()) {
         let user = await QB.users

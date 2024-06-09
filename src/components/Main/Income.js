@@ -94,7 +94,7 @@ class Income extends Component {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        //console.log(responseJson);
         if (!responseJson.error) {
           this.getTumbnails(responseJson.data);
         } else if (responseJson.detail) {
@@ -263,7 +263,7 @@ class Income extends Component {
   };
 
   gotoMyFans = () => {
-    console.log('inside');
+  //  console.log('inside');
     Global.saveData.prevpage = 'Income';
     this.props.navigation.replace('MyFans');
   };
@@ -287,14 +287,14 @@ class Income extends Component {
             <TouchableOpacity
               style={{width: 70, height: 40}}
               onPress={() => this.gotoShop()}>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image
                   source={diamond}
-                  style={{width: 25, height: 25, marginLeft: 10, marginTop: 10}}
+                  style={{width: 18, height: 18, marginLeft: 10, marginTop: 10}}
                 />
                 <Text
                   style={{
-                    marginLeft: 2,
+                    marginLeft: 10,
                     color: '#000',
                     fontSize: 12,
                     fontWeight: 'bold',

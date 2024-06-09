@@ -19,3 +19,9 @@ export const GCS_BUCKET = 'https://storage.googleapis.com/dazzled-date-dev/';
 export const VIDEO_UPLOAD = 'https://dazzled-date-dev.storage.googleapis.com';
 export const BUCKET = 'dazzled-date-dev';
 export const GOOGLE_ACCESS_ID = 'dazzled-date-dev@appspot.gserviceaccount.com';
+
+export function capitalizeWords(sentence) {
+  return sentence.trim().replace(/\b\w/g, function (char) {
+    return char.toUpperCase();
+  });
+}

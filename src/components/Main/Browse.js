@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ArrowBackIcon, FavouriteIcon, Icon} from 'native-base';
+import {ArrowBackIcon, FavouriteIcon} from 'native-base';
 import {
   BackHandler,
   Image,
@@ -8,12 +8,12 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  StatusBar,
   Alert,
   TextInput,
   Platform,
   Keyboard,
   Text,
+  StatusBar,
 } from 'react-native';
 import {Button} from 'react-native-elements';
 import Dialog, {
@@ -41,6 +41,9 @@ import Global from '../Global';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {SERVER_URL, GCS_BUCKET} from '../../config/constants';
+import {TopBar} from '../../commonUI/components/topbar';
+import {colors} from '../../commonUI/base';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class Browse extends Component {
   constructor(props) {
@@ -63,6 +66,8 @@ class Browse extends Component {
       flash_ban: false,
       coin_count: data.detail.coin_count,
       fan_count: data.detail.fan_count,
+      ai_friend: data.detail.ai_friend,
+      ai_personality: data.detail.ai_personality,
       fanUserVisible: false,
       noFanUserVisible: false,
       errorMsg: false,
@@ -454,6 +459,8 @@ class Browse extends Component {
         country_name: this.state.otherData.detail.country_name,
         coin_count: this.state.coin_count,
         fan_count: this.state.fan_count,
+        ai_friend: this.state.ai_friend,
+        ai_personality: this.state.ai_personality,
         coin_per_message: this.state.otherData.detail.coin_per_message,
         matchId: 0,
       },
@@ -617,6 +624,8 @@ class Browse extends Component {
         match_id: this.state.matchId,
         coin_count: this.state.coin_count,
         fan_count: this.state.fan_count,
+        ai_friend: this.state.ai_friend,
+        ai_personality: this.state.ai_personality,
       },
     };
     Global.saveData.prevpage = 'BrowseList';
@@ -651,7 +660,7 @@ class Browse extends Component {
       .then(response => response.json())
       .then(responseJson => {
         if (!responseJson.error) {
-          console.log(responseJson);
+          //console.log(responseJson);
           if (responseJson.is_fan) {
             this.setState({
               fanUserVisible: true,
@@ -766,7 +775,7 @@ class Browse extends Component {
         })
           .then(response => response.json())
           .then(responseJson => {
-            console.log('OCOCO ', responseJson);
+            // console.log('OCOCO ', responseJson);
             if (!responseJson.error) {
               if (responseJson.data.account_status == 1) {
                 if (responseJson.data.sending_available) {
@@ -811,10 +820,9 @@ class Browse extends Component {
   render() {
     return (
       <View style={styles.contentContainer}>
-        <StatusBar
-          translucent={true}
-          backgroundColor="transparent"
-          barStyle="dark-content"
+        <TopBar
+          title={this.state.otherData.detail.name}
+          onBack={this.backPressed.bind(this)}
         />
         {this.state.flash_heart ? (
           <View>
@@ -1099,7 +1107,12 @@ class Browse extends Component {
                 <TouchableOpacity onPress={this.gotoProfile}>
                   <Image
                     source={{uri: this.state.otherData.imageUrl}}
-                    style={{height: DEVICE_HEIGHT, width: DEVICE_WIDTH}}
+                    style={{
+                      height: DEVICE_HEIGHT,
+                      width: DEVICE_WIDTH,
+                      //resizeMode: 'center',
+                    }}
+                    resizeMethod={'scale'}
                   />
                 </TouchableOpacity>
               )}
@@ -1109,7 +1122,6 @@ class Browse extends Component {
                 <TouchableOpacity onPress={this.gotoProfile}>
                   <View
                     style={{
-                      // flex: 1,
                       backgroundColor: '#989392',
                       height: DEVICE_HEIGHT,
                       alignItems: 'center',
@@ -1122,128 +1134,119 @@ class Browse extends Component {
                         alignSelf: 'center',
                         width: 200,
                         height: 183,
+                        marginBottom: 200,
                       }}
                     />
                   </View>
                 </TouchableOpacity>
               )}
-            <View style={{position: 'absolute', left: 10, top: 30}}>
-              <TouchableOpacity
-                style={{
-                  width: 30,
-                  height: 60,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onPress={() => this.backPressed()}>
-                <ArrowBackIcon size="5" />
-              </TouchableOpacity>
-            </View>
-            <View style={{position: 'absolute', left: 20, top: 40}}>
-              <Dialog
-                visible={this.state.visible}
-                dialogAnimation={
-                  new SlideAnimation({
-                    slideFrom: 'bottom',
-                  })
-                }
-                footer={
-                  <DialogFooter>
-                    <DialogButton
-                      text="Cancel"
-                      onPress={() => {
-                        this.setState({visible: false});
-                      }}
-                      textStyle={{
-                        color: '#000',
-                        fontSize: 14,
-                        fontWeight: 'thin',
-                      }}
-                    />
-                    <DialogButton
-                      text="Buy Diamonds"
-                      onPress={() => this.gotoShop()}
-                      textStyle={{
-                        color: '#000',
-                        fontSize: 14,
-                        fontWeight: 'thin',
-                      }}
-                    />
-                  </DialogFooter>
-                }>
-                <DialogContent>
-                  <Text style={{color: '#000', fontSize: 18, marginTop: 20}}>
-                    {'You need 1 diamond to send a heart.'}
-                  </Text>
-                </DialogContent>
-              </Dialog>
-              <View
-                style={{
-                  width: DEVICE_WIDTH * 0.8,
-                  marginLeft: DEVICE_WIDTH * 0.1,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <TouchableOpacity
-                  style={{
-                    width: 60,
-                    height: 50,
-                    borderWidth: 1.5,
-                    borderRadius: 7,
-                    borderColor: '#B64F54',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  onPress={() => this.gotoReport()}>
-                  <Image
-                    source={b_notification}
-                    style={{width: 25, height: 25}}
+
+            <Dialog
+              visible={this.state.visible}
+              dialogAnimation={
+                new SlideAnimation({
+                  slideFrom: 'bottom',
+                })
+              }
+              footer={
+                <DialogFooter>
+                  <DialogButton
+                    text="Cancel"
+                    onPress={() => {
+                      this.setState({visible: false});
+                    }}
+                    textStyle={{
+                      color: '#000',
+                      fontSize: 14,
+                      fontWeight: 'thin',
+                    }}
                   />
-                </TouchableOpacity>
-                {/* <TouchableOpacity style={{ width: 40, height: 40}}
+                  <DialogButton
+                    text="Buy Diamonds"
+                    onPress={() => this.gotoShop()}
+                    textStyle={{
+                      color: '#000',
+                      fontSize: 14,
+                      fontWeight: 'thin',
+                    }}
+                  />
+                </DialogFooter>
+              }>
+              <DialogContent>
+                <Text style={{color: '#000', fontSize: 18, marginTop: 20}}>
+                  {'You need 1 diamond to send a heart.'}
+                </Text>
+              </DialogContent>
+            </Dialog>
+
+            <View style={{position: 'absolute', left: 20, top: 40}}>
+              {/*<View*/}
+              {/*  style={{*/}
+              {/*    width: DEVICE_WIDTH * 0.8,*/}
+              {/*    marginLeft: DEVICE_WIDTH * 0.1,*/}
+              {/*    flexDirection: 'row',*/}
+              {/*    justifyContent: 'space-between',*/}
+              {/*  }}>*/}
+              {/*<TouchableOpacity*/}
+              {/*  style={{*/}
+              {/*    width: 60,*/}
+              {/*    height: 50,*/}
+              {/*    borderWidth: 1.5,*/}
+              {/*    borderRadius: 7,*/}
+              {/*    borderColor: '#B64F54',*/}
+              {/*    alignItems: 'center',*/}
+              {/*    justifyContent: 'center',*/}
+              {/*  }}*/}
+              {/*  onPress={() => this.gotoReport()}>*/}
+              {/*  <Image*/}
+              {/*    source={b_notification}*/}
+              {/*    style={{width: 25, height: 25}}*/}
+              {/*  />*/}
+              {/*</TouchableOpacity>*/}
+              {/* <TouchableOpacity style={{ width: 40, height: 40}}
                     onPress={() => this.gotoShop()}>
                     <View style={{ flexDirection: 'row' }}>
                       <Image source={diamond} style={{ width: 25, height: 25, marginLeft: -15, marginTop: 10 }} />
                       <Text style={{ marginLeft: 10, color: '#fff', fontSize: 12, fontWeight: 'bold', marginTop: 15 }}>{this.state.coinCount}</Text>
                     </View>
                   </TouchableOpacity> */}
-                <TouchableOpacity
-                  style={{
-                    width: 60,
-                    height: 50,
-                    borderWidth: 1.5,
-                    borderRadius: 7,
-                    borderColor: '#B64F54',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  onPress={() => this.gotoFilter()}>
-                  <Image source={b_filters} style={{width: 25, height: 25}} />
-                </TouchableOpacity>
-              </View>
-              <View
-                style={{
-                  width: DEVICE_WIDTH * 0.8,
-                  marginLeft: DEVICE_WIDTH * 0.1,
-                  marginTop: 20,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View />
-                <TouchableOpacity
-                  style={{
-                    width: 60,
-                    height: 50,
-                    borderWidth: 1.5,
-                    borderRadius: 7,
-                    borderColor: '#B64F54',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  onPress={() => this.becomeFan()}>
-                  <Image source={yellow_star} style={{width: 35, height: 35}} />
-                </TouchableOpacity>
-              </View>
+              {/*<TouchableOpacity*/}
+              {/*  style={{*/}
+              {/*    width: 60,*/}
+              {/*    height: 50,*/}
+              {/*    borderWidth: 1.5,*/}
+              {/*    borderRadius: 7,*/}
+              {/*    borderColor: '#B64F54',*/}
+              {/*    alignItems: 'center',*/}
+              {/*    justifyContent: 'center',*/}
+              {/*  }}*/}
+              {/*  onPress={() => this.gotoFilter()}>*/}
+              {/*  <Image source={b_filters} style={{width: 25, height: 25}} />*/}
+              {/*</TouchableOpacity>*/}
+              {/*</View>*/}
+              {/*<View*/}
+              {/*  style={{*/}
+              {/*    width: DEVICE_WIDTH * 0.8,*/}
+              {/*    marginLeft: DEVICE_WIDTH * 0.1,*/}
+              {/*    marginTop: 20,*/}
+              {/*    flexDirection: 'row',*/}
+              {/*    justifyContent: 'space-between',*/}
+              {/*  }}>*/}
+              {/*  <View />*/}
+              {/*  <TouchableOpacity*/}
+              {/*    style={{*/}
+              {/*      width: 60,*/}
+              {/*      height: 50,*/}
+              {/*      borderWidth: 1.5,*/}
+              {/*      borderRadius: 7,*/}
+              {/*      borderColor: '#B64F54',*/}
+              {/*      alignItems: 'center',*/}
+              {/*      justifyContent: 'center',*/}
+              {/*    }}*/}
+              {/*    onPress={() => this.becomeFan()}>*/}
+              {/*    <Image source={yellow_star} style={{width: 35, height: 35}} />*/}
+              {/*  </TouchableOpacity>*/}
+              {/*</View>*/}
               {Global.saveData.is_admin === 1 && (
                 <View
                   style={{
@@ -1270,72 +1273,83 @@ class Browse extends Component {
                 </View>
               )}
             </View>
-            <View style={{position: 'absolute', left: 0, bottom: 40}}>
-              <View style={{marginLeft: DEVICE_WIDTH * 0.1, marginBottom: 20}}>
-                <View style={{flexDirection: 'row'}}>
-                  <Image source={b_name} style={{width: 15, height: 15}} />
+
+            <View style={{position: 'absolute', left: 0, right: 0, bottom: 80}}>
+              <View
+                style={{
+                  marginHorizontal: 10,
+                  marginBottom: 25,
+                  backgroundColor: 'rgba(255,255,255,0.50)',
+                  borderRadius: 10,
+                  padding: 20,
+                }}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  {/*<Image source={b_name} style={{width: 15, height: 15}} />*/}
+                  <Icon name={'person'} size={24} color={colors.inputLabel} />
                   <Text
                     style={{
                       marginLeft: 10,
-                      color: '#fff',
+                      color: colors.inputLabel,
                       fontSize: 12,
                       fontWeight: 'bold',
                     }}>
                     {this.state.otherData.detail.name}
                   </Text>
-                  <Image
-                    source={diamond}
-                    style={{
-                      marginLeft: 10,
-                      width: 15,
-                      height: 15,
-                      marginTop: 2,
-                    }}
-                  />
-                  <Text
-                    style={{color: '#fff', fontSize: 12, fontWeight: 'bold'}}>
-                    {this.state.coin_count}
-                  </Text>
-                  <Image
-                    source={yellow_star}
-                    style={{
-                      marginLeft: 10,
-                      width: 15,
-                      height: 15,
-                      marginTop: 2,
-                    }}
-                  />
-                  <Text
-                    style={{
-                      color: '#fff',
-                      fontSize: 12,
-                      fontWeight: 'bold',
-                      marginTop: 2,
-                    }}>
-                    {this.state.fan_count}
-                  </Text>
+                  {/*<Image*/}
+                  {/*  source={diamond}*/}
+                  {/*  style={{*/}
+                  {/*    marginLeft: 10,*/}
+                  {/*    width: 15,*/}
+                  {/*    height: 15,*/}
+                  {/*    marginTop: 2,*/}
+                  {/*  }}*/}
+                  {/*/>*/}
+                  {/*<Text*/}
+                  {/*  style={{color: '#fff', fontSize: 12, fontWeight: 'bold'}}>*/}
+                  {/*  {this.state.coin_count}*/}
+                  {/*</Text>*/}
+                  {/*<Image*/}
+                  {/*  source={yellow_star}*/}
+                  {/*  style={{*/}
+                  {/*    marginLeft: 10,*/}
+                  {/*    width: 15,*/}
+                  {/*    height: 15,*/}
+                  {/*    marginTop: 2,*/}
+                  {/*  }}*/}
+                  {/*/>*/}
+                  {/*<Text*/}
+                  {/*  style={{*/}
+                  {/*    color: '#fff',*/}
+                  {/*    fontSize: 12,*/}
+                  {/*    fontWeight: 'bold',*/}
+                  {/*    marginTop: 2,*/}
+                  {/*  }}>*/}
+                  {/*  {this.state.fan_count}*/}
+                  {/*</Text>*/}
                 </View>
-                <View style={{flexDirection: 'row', marginTop: 5}}>
-                  <Image source={b_age} style={{width: 15, height: 16}} />
+                {/*<View style={{flexDirection: 'row', marginTop: 5}}>*/}
+                {/*  <Image source={b_age} style={{width: 15, height: 16}} />*/}
+                {/*  <Text*/}
+                {/*    style={{*/}
+                {/*      marginLeft: 10,*/}
+                {/*      color: '#fff',*/}
+                {/*      fontSize: 12,*/}
+                {/*      fontWeight: 'bold',*/}
+                {/*    }}>*/}
+                {/*    {this.state.otherData.detail.age + ' years old'}*/}
+                {/*  </Text>*/}
+                {/*</View>*/}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: 5,
+                    alignItems: 'center',
+                  }}>
+                  <Image source={diamond} style={{width: 22, height: 22}} />
                   <Text
                     style={{
                       marginLeft: 10,
-                      color: '#fff',
-                      fontSize: 12,
-                      fontWeight: 'bold',
-                    }}>
-                    {this.state.otherData.detail.age + ' years old'}
-                  </Text>
-                </View>
-                <View style={{flexDirection: 'row', marginTop: 5}}>
-                  <Image
-                    source={diamond}
-                    style={{width: 15, height: 15, marginTop: 3}}
-                  />
-                  <Text
-                    style={{
-                      marginLeft: 10,
-                      color: '#fff',
+                      color: colors.inputLabel,
                       fontSize: 12,
                       fontWeight: 'bold',
                     }}>
@@ -1343,73 +1357,73 @@ class Browse extends Component {
                       ' per message'}
                   </Text>
                 </View>
-                <View style={{flexDirection: 'row', marginTop: 5}}>
-                  <Image source={b_distance} style={{width: 15, height: 15}} />
-                  <Text
-                    style={{
-                      marginLeft: 10,
-                      color: '#fff',
-                      fontSize: 12,
-                      fontWeight: 'bold',
-                    }}>
-                    {(parseInt(this.state.otherData.detail.distance) != 0
-                      ? parseInt(this.state.otherData.detail.distance)
-                      : 'unknown') + ' mile'}
-                  </Text>
-                </View>
-                <View style={{flexDirection: 'column', marginTop: 5}}>
-                  <Text>
-                    <Text
-                      style={{
-                        marginTop: 5,
-                        color: '#fff',
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                      }}>
-                      {this.state.otherData.detail.gender === 1
-                        ? 'Male, '
-                        : 'Female, '}
-                    </Text>
-                    <Text
-                      style={{
-                        marginTop: 5,
-                        color: '#fff',
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                      }}>
-                      {this.state.otherData.detail.ethnicity_name}
-                    </Text>
-                    <Text
-                      style={{
-                        marginTop: 5,
-                        color: '#fff',
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                      }}>
-                      {', speaks ' + this.state.otherData.detail.language_name}
-                    </Text>
-                  </Text>
-                  <Text
-                    style={{
-                      marginTop: 5,
-                      color: '#fff',
-                      fontSize: 12,
-                      fontWeight: 'bold',
-                    }}>
-                    {this.state.otherData.detail.last_loggedin_date +
-                      ', ' +
-                      this.state.otherData.detail.country_name}
-                  </Text>
-                </View>
-                <View style={{marginTop: 10, marginRight: 20}}>
+                {/*<View style={{flexDirection: 'row', marginTop: 5}}>*/}
+                {/*  <Image source={b_distance} style={{width: 15, height: 15}} />*/}
+                {/*  <Text*/}
+                {/*    style={{*/}
+                {/*      marginLeft: 10,*/}
+                {/*      color: '#fff',*/}
+                {/*      fontSize: 12,*/}
+                {/*      fontWeight: 'bold',*/}
+                {/*    }}>*/}
+                {/*    {(parseInt(this.state.otherData.detail.distance) != 0*/}
+                {/*      ? parseInt(this.state.otherData.detail.distance)*/}
+                {/*      : 'unknown') + ' mile'}*/}
+                {/*  </Text>*/}
+                {/*</View>*/}
+                {/*<View style={{flexDirection: 'column', marginTop: 5}}>*/}
+                {/*  <Text>*/}
+                {/*    <Text*/}
+                {/*      style={{*/}
+                {/*        marginTop: 5,*/}
+                {/*        color: '#fff',*/}
+                {/*        fontSize: 12,*/}
+                {/*        fontWeight: 'bold',*/}
+                {/*      }}>*/}
+                {/*      {this.state.otherData.detail.gender === 1*/}
+                {/*        ? 'Male, '*/}
+                {/*        : 'Female, '}*/}
+                {/*    </Text>*/}
+                {/*    <Text*/}
+                {/*      style={{*/}
+                {/*        marginTop: 5,*/}
+                {/*        color: '#fff',*/}
+                {/*        fontSize: 12,*/}
+                {/*        fontWeight: 'bold',*/}
+                {/*      }}>*/}
+                {/*      {this.state.otherData.detail.ethnicity_name}*/}
+                {/*    </Text>*/}
+                {/*    <Text*/}
+                {/*      style={{*/}
+                {/*        marginTop: 5,*/}
+                {/*        color: '#fff',*/}
+                {/*        fontSize: 12,*/}
+                {/*        fontWeight: 'bold',*/}
+                {/*      }}>*/}
+                {/*      {', speaks ' + this.state.otherData.detail.language_name}*/}
+                {/*    </Text>*/}
+                {/*  </Text>*/}
+                {/*  <Text*/}
+                {/*    style={{*/}
+                {/*      marginTop: 5,*/}
+                {/*      color: '#fff',*/}
+                {/*      fontSize: 12,*/}
+                {/*      fontWeight: 'bold',*/}
+                {/*    }}>*/}
+                {/*    {this.state.otherData.detail.last_loggedin_date +*/}
+                {/*      ', ' +*/}
+                {/*      this.state.otherData.detail.country_name}*/}
+                {/*  </Text>*/}
+                {/*</View>*/}
+                <View style={{marginTop: 10}}>
                   <ScrollView
-                    contentContainerStyle={{paddingVertical: 20}}
+                    contentContainerStyle={{paddingVertical: 10}}
                     style={{maxHeight: DEVICE_HEIGHT * 0.3}}>
                     <Text
                       style={{
                         fontSize: 12,
                         fontWeight: 'bold',
-                        color: '#fff',
+                        color: colors.inputLabel,
                       }}>
                       {this.state.otherData.detail.description}
                     </Text>
@@ -1487,7 +1501,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: '#989392',
   },
   instructions: {
     textAlign: 'center',
@@ -1508,7 +1522,6 @@ const styles = StyleSheet.create({
   },
   ringIconTouch: {
     width: 40,
-    height: 40,
     marginLeft: 10,
     marginTop: 5,
     height: 45,

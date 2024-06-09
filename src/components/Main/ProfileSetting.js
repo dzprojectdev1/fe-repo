@@ -17,7 +17,8 @@ import {Button} from 'react-native-elements';
 import Global from '../Global';
 import diamond from '../../assets/images/red_diamond_trans.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {SERVER_URL} from '../../config/constants';
+import {capitalizeWords, SERVER_URL} from '../../config/constants';
+import {TopBar} from '../../commonUI/components/topbar';
 
 class ProfileSetting extends Component {
   constructor(props) {
@@ -508,36 +509,36 @@ class ProfileSetting extends Component {
   render() {
     return (
       <View style={styles.contentContainer}>
-        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
-        <View style={{flexDirection: 'row', height: 40, alignItems: 'center'}}>
-          <TouchableOpacity
-            style={{
-              height: 40,
-              width: 40,
-              marginLeft: 10,
-              marginTop: 30,
-              alignItems: 'center',
-            }}
-            onPress={() => this.onBack()}>
-            <ArrowBackIcon />
-          </TouchableOpacity>
-          <View
-            style={{
-              width: DEVICE_WIDTH - 80,
-              height: 40,
-              alignItems: 'center',
-              marginTop: 8,
-              justifyContent: 'center',
-            }}>
-            <Text style={{fontWeight: 'bold'}}>{'ACCOUNT SETTING'}</Text>
-          </View>
-        </View>
+        <TopBar title={'Account Setting'} onBack={this.onBack.bind(this)} />
+        {/*<View style={{flexDirection: 'row', height: 40, alignItems: 'center'}}>*/}
+        {/*  <TouchableOpacity*/}
+        {/*    style={{*/}
+        {/*      height: 40,*/}
+        {/*      width: 40,*/}
+        {/*      marginLeft: 10,*/}
+        {/*      marginTop: 30,*/}
+        {/*      alignItems: 'center',*/}
+        {/*    }}*/}
+        {/*    onPress={() => this.onBack()}>*/}
+        {/*    <ArrowBackIcon />*/}
+        {/*  </TouchableOpacity>*/}
+        {/*  <View*/}
+        {/*    style={{*/}
+        {/*      width: DEVICE_WIDTH - 80,*/}
+        {/*      height: 40,*/}
+        {/*      alignItems: 'center',*/}
+        {/*      marginTop: 8,*/}
+        {/*      justifyContent: 'center',*/}
+        {/*    }}>*/}
+        {/*    <Text style={{fontWeight: 'bold'}}>{'ACCOUNT SETTING'}</Text>*/}
+        {/*  </View>*/}
+        {/*</View>*/}
         <ScrollView>
           <View
             style={{
               width: DEVICE_WIDTH * 0.8,
               marginLeft: DEVICE_WIDTH * 0.1,
-              marginTop: 50,
+              marginTop: 15,
             }}>
             <TextInput
               style={{
@@ -622,6 +623,13 @@ class ProfileSetting extends Component {
                 dropdownPosition={-4}
               />
             </View>
+            <View
+              style={{
+                height: 1,
+                width: DEVICE_WIDTH * 0.8,
+                backgroundColor: '#808080',
+              }}
+            />
           </View>
           <View
             style={{
@@ -648,6 +656,13 @@ class ProfileSetting extends Component {
                 dropdownPosition={-4}
               />
             </View>
+            <View
+              style={{
+                height: 1,
+                width: DEVICE_WIDTH * 0.8,
+                backgroundColor: '#808080',
+              }}
+            />
           </View>
           <View
             style={{
@@ -675,6 +690,13 @@ class ProfileSetting extends Component {
                 dropdownPosition={-4}
               />
             </View>
+            <View
+              style={{
+                height: 1,
+                width: DEVICE_WIDTH * 0.8,
+                backgroundColor: '#808080',
+              }}
+            />
           </View>
           <View
             style={{
@@ -707,6 +729,13 @@ class ProfileSetting extends Component {
                 dropdownPosition={-4}
               />
             </View>
+            <View
+              style={{
+                height: 1,
+                width: DEVICE_WIDTH * 0.8,
+                backgroundColor: '#808080',
+              }}
+            />
           </View>
           <View
             style={{
@@ -844,7 +873,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: '#fff',
-    marginTop: 40,
+    // marginTop: 40,
   },
   instructions: {
     textAlign: 'center',

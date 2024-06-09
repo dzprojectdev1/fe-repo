@@ -1,5 +1,4 @@
 import React from 'react';
-import {ArrowBackIcon} from 'native-base';
 import {
   View,
   TextInput,
@@ -15,6 +14,8 @@ import {
   Alert,
   Dimensions,
   Platform,
+  ImageBackground,
+  StatusBar,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
@@ -43,6 +44,8 @@ import notification_black from '../../assets/images/notification_black.png';
 import {SERVER_URL} from '../../config/constants';
 import firebase from '@react-native-firebase/app';
 import database from '@react-native-firebase/database';
+import {colors, em} from '../../commonUI/base';
+import bg from '../../assets/images/bg.jpg';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
@@ -63,11 +66,14 @@ class ChatScreen extends React.Component {
         description: data.data.description,
         coin_count: data.data.coin_count,
         fan_count: data.data.fan_count,
+        ai_friend: data.data.ai_friend,
+        ai_personality: data.data.ai_personality,
       },
       oppoentData: null,
       matchId: data.data.match_id,
       textMessage: '',
       messageList: [],
+      tempmessageList: [{role: 'system', content: data.data.ai_personality}],
       coinCount: Global.saveData.coin_count,
       visible: false,
       fanUserVisible: false,
@@ -81,7 +87,12 @@ class ChatScreen extends React.Component {
       statusByMatchId: 0,
       msgCoinPerMessage: 0,
       menu: false,
+      isLoading: true,
+      isInitialRender: false,
     };
+    this.flatListRef = React.createRef();
+    this.scrollViewRef = React.createRef();
+    this.lastMessageRef = React.createRef();
   }
 
   _menu = null;
@@ -90,47 +101,53 @@ class ChatScreen extends React.Component {
     Global.saveData.nowPage = 'ChatDetail';
     const u_id = Global.saveData.u_id;
     const userId = this.state.other.userId;
-    // let isexist = false;
-    // const databaseRef = database()
+
+    // database()
     //   .ref()
     //   .child('dz-chat-data')
     //   .child(u_id.toString())
-    //   .child(userId.toString());
+    //   .child(userId.toString())
+    //   .on('child_added', value => {
+    //     if (this.state.other.ai_friend === 1) {
+    //       let conversationHistory = {
+    //         role: value.val().from === u_id ? 'user' : 'assistant',
+    //         content:
+    //           value.val().from === u_id
+    //             ? 'Response/Reply should be less then 200 character only for \n' +
+    //               value.val().message
+    //             : value.val().message,
+    //       };
     //
-    // databaseRef
-    //   .once('value')
-    //   .then(snapshot => {
-    //     if (snapshot.exists()) {
-    //       isexist = true;
-    //     } else {
-    //       database()
-    //         .ref()
-    //         .child('dz-chat-data')
-    //         .child(u_id.toString())
-    //         .child(userId.toString())
-    //         .push().key;
-    //       isexist = false;
+    //       this.setState(prevState => {
+    //         return {
+    //           messageList: [...prevState.messageList, value.val()],
+    //         };
+    //       });
+    //       this.setState(prevState => {
+    //         return {
+    //           tempmessageList: [
+    //             ...prevState.tempmessageList,
+    //             conversationHistory,
+    //           ],
+    //         };
+    //       });
     //     }
-    //   })
-    //   .catch(error => {
-    //     console.error('Error checking path existence:', error);
+    //     if (
+    //       this.state.other.ai_friend === 0 &&
+    //       this.state.other.ai_personality == null
+    //     ) {
+    //       this.setState(prevState => {
+    //         return {
+    //           messageList: [...prevState.messageList, value.val()],
+    //         };
+    //       });
+    //     }
+    //     // if (this.scrollView) {
+    //     //   setTimeout(() => {
+    //     //     this.scrollView.scrollToEnd({animated: true});
+    //     //   }, 200);
+    //     // }
     //   });
-    // console.log(isexist);
-    database()
-      .ref()
-      .child('dz-chat-data')
-      .child(u_id.toString())
-      .child(userId.toString())
-      .on('child_added', value => {
-        this.setState(prevState => {
-          return {
-            messageList: [...prevState.messageList, value.val()],
-          };
-        });
-        if (this.scrollView) {
-          this.scrollView.scrollToEnd({animated: true});
-        }
-      });
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       this.keyboardDidShow.bind(this),
@@ -185,9 +202,104 @@ class ChatScreen extends React.Component {
       menu: false,
     });
     this._mounted = true;
-    if (this._mounted && this.scrollView) {
-      this.scrollView.scrollToEnd({animated: true});
-    }
+    // if (this._mounted && this.scrollView) {
+    //   this.scrollView.scrollToEnd({animated: true});
+    // }
+
+    Global.saveData.nowPage = 'ChatDetail';
+    const u_id = Global.saveData.u_id;
+    const userId = this.state.other.userId;
+    this.chatRef = database()
+      .ref()
+      .child('dz-chat-data')
+      .child(u_id.toString())
+      .child(userId.toString());
+
+    // Fetch initial chat messages once
+    this.chatRef.once('value', snapshot => {
+      let messages = snapshot.val() ? Object.values(snapshot.val()) : [];
+      messages.sort((a, b) => a.time - b.time);
+      if (this.state.other.ai_friend === 1) {
+        this.setState(prevState => {
+          return {
+            messageList: messages,
+          };
+        });
+
+        let temp = this.state.tempmessageList;
+        messages.map((message, index) =>
+          temp.push({
+            role: message.from === u_id ? 'user' : 'assistant',
+            content:
+              message.from === u_id
+                ? 'Response/Reply should be less then 200 character only for \n' +
+                  message.message
+                : message.message,
+          }),
+        );
+
+        this.setState(prevState => {
+          return {
+            tempmessageList: temp,
+          };
+        });
+      }
+      if (
+        this.state.other.ai_friend === 0 &&
+        this.state.other.ai_personality == null
+      ) {
+        this.setState(prevState => {
+          return {
+            messageList: messages,
+          };
+        });
+      }
+    });
+
+    // Register child_added listener after the initial load
+    this.chatRef.on('child_added', value => {
+      console.log('child_added', this.state.isLoading);
+      if (!this.state.isLoading) {
+        console.log('child_added 1', value.val());
+        if (this.state.other.ai_friend === 1) {
+          let conversationHistory = {
+            role: value.val().from === u_id ? 'user' : 'assistant',
+            content:
+              value.val().from === u_id
+                ? 'Response/Reply should be less then 200 character only for \n' +
+                  value.val().message
+                : value.val().message,
+          };
+
+          this.setState(prevState => {
+            return {
+              messageList: [...prevState.messageList, value.val()],
+            };
+          });
+          this.setState(prevState => {
+            return {
+              tempmessageList: [
+                ...prevState.tempmessageList,
+                conversationHistory,
+              ],
+            };
+          });
+        }
+        if (
+          this.state.other.ai_friend === 0 &&
+          this.state.other.ai_personality == null
+        ) {
+          this.setState(prevState => {
+            return {
+              messageList: [...prevState.messageList, value.val()],
+            };
+          });
+        }
+        if (this.scrollView) {
+          this.scrollView.scrollToEnd({animated: true});
+        }
+      }
+    });
 
     fetch(`${SERVER_URL}/api/transaction/getDiamondCount`, {
       method: 'POST',
@@ -214,7 +326,29 @@ class ChatScreen extends React.Component {
 
     Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
     Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+    // if (this.scrollView) {
+    //   setTimeout(() => {
+    //     this.scrollView.scrollToEnd({animated: true});
+    //   }, 200);
+    // }
   }
+
+  scrollToBottom = () => {
+    if (this.scrollView) {
+      this.scrollView.scrollToEnd({animated: true});
+    }
+  };
+
+  onLastMessageLayout = () => {
+    // Check if loading is still ongoing and the last message has been rendered
+    if (this.state.isLoading && this.state.messageList.length > 0) {
+      this.scrollToBottom();
+      this.setState({isLoading: false}); // Stop loading and scroll to bottom
+    }
+    if (this.state.isLoading && this.state.messageList.length == 0) {
+      this.setState({isLoading: false});
+    }
+  };
 
   _keyboardDidShow = () => {
     this.setState({
@@ -286,6 +420,9 @@ class ChatScreen extends React.Component {
       menu: false,
     });
     this._mounted = false;
+    if (this.chatRef) {
+      this.chatRef.off('child_added');
+    }
     // firebase.database().ref().child(Global.saveData.u_id).child(this.state.other.userId).remove();
     // firebase.database().ref().child(this.state.other.userId).child(Global.saveData.u_id).remove();
     this.keyboardDidShowListener.remove();
@@ -503,6 +640,108 @@ class ChatScreen extends React.Component {
     }
   };
 
+  callbackChat = () => {
+    const {textMessage, matchId} = this.state;
+    console.log('here', this.state.tempmessageList);
+    fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization:
+          'Bearer sk-my-service-account-OcVwpHabIqoDlDYTtTLuT3BlbkFJOsnTUJjvEiuTd2sUQyDK',
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: this.state.tempmessageList,
+        max_tokens: 150,
+        temperature: 0.7,
+        top_p: 0.9,
+        frequency_penalty: 0.5,
+        presence_penalty: 0.6,
+        n: 1,
+        stop: ['\n'],
+      }),
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        const messageOfChat = responseJson.choices[0].message.content.trim();
+        console.log('responseJson => ', JSON.stringify(responseJson));
+        const details = {
+          matchId: matchId,
+          messageText: responseJson.choices[0].message.content.trim(),
+        };
+        let formBody = [];
+        for (const property in details) {
+          const encodedKey = encodeURIComponent(property);
+          const encodedValue = encodeURIComponent(details[property]);
+          formBody.push(encodedKey + '=' + encodedValue);
+        }
+        formBody = formBody.join('&');
+        fetch(`${SERVER_URL}/api/chat/create`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: Global.saveData.token,
+          },
+          body: formBody,
+        })
+          .then(response => response.json())
+          .then(responseJson => {
+            if (responseJson.data.account_status == 1) {
+              const u_id = this.state.other.userId;
+              const userId = Global.saveData.u_id;
+              let msgId = database()
+                .ref()
+                .child('dz-chat-data')
+                .child(u_id.toString())
+                .child(userId.toString())
+                .push().key;
+              let updates = {};
+              let senderMessage = {
+                message: messageOfChat,
+                time: firebase.database.ServerValue.TIMESTAMP,
+                from: u_id,
+                read: true,
+              };
+              updates[
+                this.state.other.userId +
+                  '/' +
+                  Global.saveData.u_id +
+                  '/' +
+                  msgId
+              ] = senderMessage;
+              let receiverMessage = {
+                message: messageOfChat,
+                time: firebase.database.ServerValue.TIMESTAMP,
+                from: u_id,
+                read: false,
+              };
+              updates[
+                Global.saveData.u_id +
+                  '/' +
+                  this.state.other.userId +
+                  '/' +
+                  msgId
+              ] = receiverMessage;
+              database().ref().child('dz-chat-data').update(updates);
+              if (this.scrollView) {
+                this.scrollView.scrollToEnd({animated: true});
+              }
+            } else {
+              Alert.alert('', responseJson.message, [], {cancelable: false});
+            }
+          })
+          .catch(error => {
+            // alert(JSON.stringify(error))
+            return;
+          });
+      })
+      .catch(error => {
+        console.log(error);
+        return;
+      });
+  };
+
   createNewMessage = () => {
     const {textMessage, matchId} = this.state;
 
@@ -538,6 +777,7 @@ class ChatScreen extends React.Component {
             );
             const u_id = Global.saveData.u_id;
             const userId = this.state.other.userId;
+
             let msgId = database()
               .ref()
               .child('dz-chat-data')
@@ -567,6 +807,16 @@ class ChatScreen extends React.Component {
 
             if (this.scrollView) {
               this.scrollView.scrollToEnd({animated: true});
+            }
+
+            if (
+              this.state.other.ai_friend === 1 &&
+              this.state.other.ai_personality != null &&
+              this.state.other.ai_personality !== ''
+            ) {
+              setTimeout(() => {
+                this.callbackChat();
+              }, 100);
             }
           } else {
             if (!responseJson.data.diamonds_enough) {
@@ -980,9 +1230,13 @@ class ChatScreen extends React.Component {
       });
   };
 
-  renderRow = ({item}) => {
+  renderRow = ({item, index}) => {
+    const isLastMessage = index === this.state.messageList.length - 1;
     return (
       <View
+        key={index}
+        ref={isLastMessage ? this.lastMessageRef : null}
+        onLayout={isLastMessage ? this.onLastMessageLayout : null}
         style={{
           flexDirection: 'column',
           justifyContent: 'space-between',
@@ -1060,6 +1314,11 @@ class ChatScreen extends React.Component {
   render() {
     return (
       <View style={styles.outer}>
+        <StatusBar
+          backgroundColor="transparent"
+          barStyle="light-content"
+          translucent={true}
+        />
         <Dialog
           visible={this.state.fanUserVisible}
           dialogAnimation={
@@ -1073,7 +1332,9 @@ class ChatScreen extends React.Component {
                 {`You have ${Global.saveData.coin_count} diamonds`}
               </Text>
               <View style={{flexDirection: 'row'}}>
-                <Text style={[styles.bodyFont, {color: '#000'}]}>{'Send '}</Text>
+                <Text style={[styles.bodyFont, {color: '#000'}]}>
+                  {'Send '}
+                </Text>
                 <View style={styles.SectionStyle}>
                   <Image source={diamond} style={{width: 25, height: 25}} />
                   <TextInput
@@ -1082,7 +1343,9 @@ class ChatScreen extends React.Component {
                     onChangeText={value => this.checkCount(value)}
                   />
                 </View>
-                <Text style={[styles.bodyFont, {color: '#000'}]}>{' Diamonds'}</Text>
+                <Text style={[styles.bodyFont, {color: '#000'}]}>
+                  {' Diamonds'}
+                </Text>
               </View>
               {this.state.errorMsg && (
                 <Text style={[styles.requiredSent, {color: '#000'}]}>
@@ -1117,7 +1380,9 @@ class ChatScreen extends React.Component {
                         },
                       )
                     }>
-                    <Text style={[styles.cancelButtonText, {color: '#000'}]}>{'Cancel'}</Text>
+                    <Text style={[styles.cancelButtonText, {color: '#000'}]}>
+                      {'Cancel'}
+                    </Text>
                   </TouchableOpacity>
                   <View style={styles.buttonsDivider} />
                   <TouchableOpacity
@@ -1133,7 +1398,9 @@ class ChatScreen extends React.Component {
                         },
                       )
                     }>
-                    <Text style={[styles.submitButtonText, {color: '#000'}]}>{'Send'}</Text>
+                    <Text style={[styles.submitButtonText, {color: '#000'}]}>
+                      {'Send'}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -1164,7 +1431,9 @@ class ChatScreen extends React.Component {
                 {`You have ${Global.saveData.coin_count} diamonds`}
               </Text>
               <View style={{flexDirection: 'row'}}>
-                <Text style={[styles.bodyFont, {color: '#000'}]}>{'Send '}</Text>
+                <Text style={[styles.bodyFont, {color: '#000'}]}>
+                  {'Send '}
+                </Text>
                 <View style={styles.SectionStyle}>
                   <Image source={diamond} style={{width: 25, height: 25}} />
                   <TextInput
@@ -1173,7 +1442,9 @@ class ChatScreen extends React.Component {
                     onChangeText={value => this.checkCount(value)}
                   />
                 </View>
-                <Text style={[styles.bodyFont, {color: '#000'}]}>{' Diamonds'}</Text>
+                <Text style={[styles.bodyFont, {color: '#000'}]}>
+                  {' Diamonds'}
+                </Text>
               </View>
               {this.state.errorMsg && (
                 <Text style={[styles.requiredSent, {color: '#000'}]}>
@@ -1208,7 +1479,9 @@ class ChatScreen extends React.Component {
                         },
                       )
                     }>
-                    <Text style={[styles.cancelButtonText, {color: '#000'}]}>{'Cancel'}</Text>
+                    <Text style={[styles.cancelButtonText, {color: '#000'}]}>
+                      {'Cancel'}
+                    </Text>
                   </TouchableOpacity>
                   <View style={styles.buttonsDivider} />
                   <TouchableOpacity
@@ -1224,7 +1497,9 @@ class ChatScreen extends React.Component {
                         },
                       )
                     }>
-                    <Text style={[styles.submitButtonText, {color: '#000'}]}>{'Send'}</Text>
+                    <Text style={[styles.submitButtonText, {color: '#000'}]}>
+                      {'Send'}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -1232,34 +1507,49 @@ class ChatScreen extends React.Component {
           </View>
         </Dialog>
 
-        <View
+        <ImageBackground
+          source={bg}
           style={{
-            width: DEVICE_WIDTH,
-            height: 60,
-            flexDirection: 'row',
+            width: '100%',
+            height: 150 * em,
+            position: 'relative',
             justifyContent: 'flex-start',
-            marginTop: Platform.select({android: 10, ios: 40}),
-            alignItems: 'center',
           }}>
-          <TouchableOpacity
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 40,
-              height: 60,
-              zIndex: 1000,
-              marginLeft: 10,
-            }}
-            onPress={this.backPressed}>
-            <ArrowBackIcon size="5" />
-          </TouchableOpacity>
           <View
             style={{
+              position: 'absolute',
+              left: 20 * em,
+              top: 70 * em,
+              alignSelf: 'center',
+              zIndex: 2,
+            }}>
+            <TouchableHighlight
+              style={{
+                height: 75 * em,
+                width: 75 * em,
+                borderRadius: 5, // Make it circular for better touch area
+                backgroundColor: 'transparent', // Background color should be transparent
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              underlayColor="rgba(0,0,0,0.2)" // Slight darkening effect when pressed
+              onPress={this.backPressed}>
+              <Icon
+                name="keyboard-arrow-left"
+                size={36}
+                color={colors.inputLabel}
+              />
+            </TouchableHighlight>
+          </View>
+          <View
+            style={{
+              position: 'absolute',
+              left: 65,
+              top: 70 * em,
+              width: '100%',
               alignItems: 'flex-start',
-              justifyContent: 'flex-start',
-              width: DEVICE_WIDTH - 100,
-              flexDirection: 'row',
-              marginLeft: 10,
+              justifyContent: 'center',
+              zIndex: 0,
             }}>
             <TouchableOpacity
               style={styles.avatarOtherUserBtn}
@@ -1269,6 +1559,7 @@ class ChatScreen extends React.Component {
                   flexDirection: 'row',
                   flex: 1,
                   flexWrap: 'wrap',
+                  alignItems: 'center',
                 }}>
                 <Image
                   style={styles.avatarOtherUser}
@@ -1291,161 +1582,323 @@ class ChatScreen extends React.Component {
                     ? this.state.other.name.substring(0, 6)
                     : this.state.other.name}
                 </Text>
-                <Image
-                  source={diamond}
-                  style={{width: 20, height: 20, marginLeft: 15, marginTop: 12}}
-                />
-                <Text
-                  style={{
-                    marginLeft: 1,
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    marginTop: 12,
-                    color: '#000',
-                  }}>
-                  {this.state.other.coin_count}
-                </Text>
-                {/* <Image source={yellow_star} style={{ width: 20, height: 20, marginLeft: 15, marginTop: 12 }} /> */}
-                {/* <Text style={{ marginLeft: 1, fontSize: 14, fontWeight: 'bold', marginTop: 12 }}>{this.state.other.fan_count}</Text> */}
               </View>
             </TouchableOpacity>
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity
-                style={styles.ringIconTouch}
-                onPress={() => this.ringCall()}>
-                <Image style={styles.ringIcon} source={call_ring} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.ringIconTouch, {marginLeft: 5}]}
-                onPress={() => this.ringVideo()}>
-                <Image style={styles.ringIcon} source={call_video} />
-              </TouchableOpacity>
-
-              <View style={styles.menuIcon}>
-                <Menu
-                  visible={this.state.menu}
-                  anchor={
-                    <TouchableOpacity
-                      onPress={() => {
-                        this.setState({
-                          menu: true,
-                        });
-                      }}>
-                      <Text><Icon name="more-vert" size={30} color="black"/></Text>
-                    </TouchableOpacity>
-                  }
-                  onRequestClose={() => {
+          </View>
+          <View style={styles.menuIcon}>
+            <Menu
+              visible={this.state.menu}
+              anchor={
+                <TouchableOpacity
+                  onPress={() => {
                     this.setState({
-                      menu: false,
+                      menu: true,
                     });
                   }}>
-                  <MenuItem onPress={this.setBlock}>
-                    <Image
-                      source={ban_black}
-                      style={{width: 20, height: 20, marginRight: 30}}
-                    />
-                    <Text style={{color: '#000'}} >{'   Leave Chat Room'}</Text>
-                  </MenuItem>
-                  <MenuDivider />
-                  <MenuItem onPress={this.setReport}>
-                    <Image
-                      source={notification_black}
-                      style={{width: 20, height: 20, marginRight: 30}}
-                    />
-                    <Text style={{color: '#000'}} >{'   Report & Leave Chat Room'}</Text>
-                  </MenuItem>
-                  <MenuDivider />
-                  <MenuItem onPress={this.showSendDiamondsModal}>
-                    <Image
-                      source={yellow_star}
-                      style={{width: 20, height: 20, marginRight: 30}}
-                    />
-                    <Text style={{color: '#000'}} >{this.state.is_fan ? '   Send Diamonds' : '   Become A Fan'}</Text>
-                  </MenuItem>
-                </Menu>
-              </View>
-            </View>
+                  <Text>
+                    <Icon name="more-vert" size={30} color="black" />
+                  </Text>
+                </TouchableOpacity>
+              }
+              onRequestClose={() => {
+                this.setState({
+                  menu: false,
+                });
+              }}>
+              <MenuItem onPress={this.setBlock}>
+                <Image
+                  source={ban_black}
+                  style={{width: 20, height: 20, marginRight: 30}}
+                />
+                <Text style={{color: '#000'}}>{'   Leave Chat Room'}</Text>
+              </MenuItem>
+              <MenuDivider />
+              <MenuItem onPress={this.setReport}>
+                <Image
+                  source={notification_black}
+                  style={{width: 20, height: 20, marginRight: 30}}
+                />
+                <Text style={{color: '#000'}}>
+                  {'   Report & Leave Chat Room'}
+                </Text>
+              </MenuItem>
+              <MenuDivider />
+              <MenuItem onPress={this.showSendDiamondsModal}>
+                <Image
+                  source={yellow_star}
+                  style={{width: 20, height: 20, marginRight: 30}}
+                />
+                <Text style={{color: '#000'}}>
+                  {this.state.is_fan ? '   Send Diamonds' : '   Become A Fan'}
+                </Text>
+              </MenuItem>
+            </Menu>
           </View>
-        </View>
-        <View
-          style={{
-            width: DEVICE_WIDTH,
-            height: 60,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginTop: 20,
-            alignItems: 'center',
-          }}>
-          {this.state.statusByMatchId == 6 && (
+        </ImageBackground>
+
+        {/*<View*/}
+        {/*  style={{*/}
+        {/*    width: DEVICE_WIDTH,*/}
+        {/*    height: 60,*/}
+        {/*    flexDirection: 'row',*/}
+        {/*    justifyContent: 'flex-start',*/}
+        {/*    marginTop: Platform.select({android: 10, ios: 40}),*/}
+        {/*    alignItems: 'center',*/}
+        {/*  }}>*/}
+        {/*  <TouchableOpacity*/}
+        {/*    style={{*/}
+        {/*      alignItems: 'center',*/}
+        {/*      justifyContent: 'center',*/}
+        {/*      width: 40,*/}
+        {/*      height: 60,*/}
+        {/*      zIndex: 1000,*/}
+        {/*      marginLeft: 10,*/}
+        {/*    }}*/}
+        {/*    onPress={this.backPressed}>*/}
+        {/*    <Icon*/}
+        {/*      name="keyboard-arrow-left"*/}
+        {/*      size={36}*/}
+        {/*      color={colors.inputLabel}*/}
+        {/*    />*/}
+        {/*  </TouchableOpacity>*/}
+        {/*  <View*/}
+        {/*    style={{*/}
+        {/*      alignItems: 'flex-start',*/}
+        {/*      justifyContent: 'space-between',*/}
+        {/*      width: DEVICE_WIDTH - 80,*/}
+        {/*      flexDirection: 'row',*/}
+        {/*      marginLeft: 10,*/}
+        {/*    }}>*/}
+        {/*    <TouchableOpacity*/}
+        {/*      style={styles.avatarOtherUserBtn}*/}
+        {/*      onPress={() => this.gotoProfilePage()}>*/}
+        {/*      <View*/}
+        {/*        style={{*/}
+        {/*          flexDirection: 'row',*/}
+        {/*          flex: 1,*/}
+        {/*          flexWrap: 'wrap',*/}
+        {/*        }}>*/}
+        {/*        <Image*/}
+        {/*          style={styles.avatarOtherUser}*/}
+        {/*          source={*/}
+        {/*            this.state.other.imgUrl*/}
+        {/*              ? {uri: this.state.other.imgUrl}*/}
+        {/*              : hiddenMan*/}
+        {/*          }*/}
+        {/*        />*/}
+        {/*        <Text*/}
+        {/*          style={{*/}
+        {/*            textAlign: 'center',*/}
+        {/*            fontWeight: 'bold',*/}
+        {/*            fontSize: 16,*/}
+        {/*            marginLeft: 5,*/}
+        {/*            marginTop: 10,*/}
+        {/*            color: '#000',*/}
+        {/*          }}>*/}
+        {/*          {this.state.other.name.length > 6*/}
+        {/*            ? this.state.other.name.substring(0, 6)*/}
+        {/*            : this.state.other.name}*/}
+        {/*        </Text>*/}
+        {/*<Image*/}
+        {/*  source={diamond}*/}
+        {/*  style={{width: 20, height: 20, marginLeft: 15, marginTop: 12}}*/}
+        {/*/>*/}
+        {/*<Text*/}
+        {/*  style={{*/}
+        {/*    marginLeft: 1,*/}
+        {/*    fontSize: 14,*/}
+        {/*    fontWeight: 'bold',*/}
+        {/*    marginTop: 12,*/}
+        {/*    color: '#000',*/}
+        {/*  }}>*/}
+        {/*  {this.state.other.coin_count}*/}
+        {/*</Text>*/}
+        {/* <Image source={yellow_star} style={{ width: 20, height: 20, marginLeft: 15, marginTop: 12 }} /> */}
+        {/* <Text style={{ marginLeft: 1, fontSize: 14, fontWeight: 'bold', marginTop: 12 }}>{this.state.other.fan_count}</Text> */}
+        {/*  </View>*/}
+        {/*</TouchableOpacity>*/}
+        {/*<View style={styles.menuIcon}>*/}
+        {/*  <Menu*/}
+        {/*    visible={this.state.menu}*/}
+        {/*    anchor={*/}
+        {/*      <TouchableOpacity*/}
+        {/*        onPress={() => {*/}
+        {/*          this.setState({*/}
+        {/*            menu: true,*/}
+        {/*          });*/}
+        {/*        }}>*/}
+        {/*        <Text>*/}
+        {/*          <Icon name="more-vert" size={30} color="black" />*/}
+        {/*        </Text>*/}
+        {/*      </TouchableOpacity>*/}
+        {/*    }*/}
+        {/*    onRequestClose={() => {*/}
+        {/*      this.setState({*/}
+        {/*        menu: false,*/}
+        {/*      });*/}
+        {/*    }}>*/}
+        {/*    <MenuItem onPress={this.setBlock}>*/}
+        {/*      <Image*/}
+        {/*        source={ban_black}*/}
+        {/*        style={{width: 20, height: 20, marginRight: 30}}*/}
+        {/*      />*/}
+        {/*      <Text style={{color: '#000'}}>{'   Leave Chat Room'}</Text>*/}
+        {/*    </MenuItem>*/}
+        {/*    <MenuDivider />*/}
+        {/*    <MenuItem onPress={this.setReport}>*/}
+        {/*      <Image*/}
+        {/*        source={notification_black}*/}
+        {/*        style={{width: 20, height: 20, marginRight: 30}}*/}
+        {/*      />*/}
+        {/*      <Text style={{color: '#000'}}>*/}
+        {/*        {'   Report & Leave Chat Room'}*/}
+        {/*      </Text>*/}
+        {/*    </MenuItem>*/}
+        {/*    <MenuDivider />*/}
+        {/*    <MenuItem onPress={this.showSendDiamondsModal}>*/}
+        {/*      <Image*/}
+        {/*        source={yellow_star}*/}
+        {/*        style={{width: 20, height: 20, marginRight: 30}}*/}
+        {/*      />*/}
+        {/*      <Text style={{color: '#000'}}>*/}
+        {/*        {this.state.is_fan ? '   Send Diamonds' : '   Become A Fan'}*/}
+        {/*      </Text>*/}
+        {/*    </MenuItem>*/}
+        {/*  </Menu>*/}
+        {/*</View>*/}
+        {/*<View style={{flexDirection: 'row'}}>*/}
+        {/*<TouchableOpacity*/}
+        {/*  style={styles.ringIconTouch}*/}
+        {/*  onPress={() => this.ringCall()}>*/}
+        {/*  <Image style={styles.ringIcon} source={call_ring} />*/}
+        {/*</TouchableOpacity>*/}
+        {/*<TouchableOpacity*/}
+        {/*  style={[styles.ringIconTouch, {marginLeft: 5}]}*/}
+        {/*  onPress={() => this.ringVideo()}>*/}
+        {/*  <Image style={styles.ringIcon} source={call_video} />*/}
+        {/*</TouchableOpacity>*/}
+        {/*</View>*/}
+        {/*  </View>*/}
+        {/*</View>*/}
+        {/*<View*/}
+        {/*  style={{*/}
+        {/*    width: DEVICE_WIDTH,*/}
+        {/*    height: 60,*/}
+        {/*    flexDirection: 'row',*/}
+        {/*    justifyContent: 'center',*/}
+        {/*    marginTop: 20,*/}
+        {/*    alignItems: 'center',*/}
+        {/*  }}>*/}
+        {/*{this.state.statusByMatchId == 6 && (*/}
+        {/*  <View*/}
+        {/*    style={{*/}
+        {/*      justifyContent: 'center',*/}
+        {/*      borderColor: '#d9d9d9',*/}
+        {/*      borderWidth: 0.5,*/}
+        {/*      padding: 20,*/}
+        {/*    }}>*/}
+        {/*    <Text style={{color: '#000'}}>*/}
+        {/*      {`Everytime you receive a message from ${this.state.other.name}, `}*/}
+        {/*    </Text>*/}
+        {/*    <View style={{flexDirection: 'row', justifyContent: 'center'}}>*/}
+        {/*      <Text style={{color: '#000'}}>{'you will receive '}</Text>*/}
+        {/*      <Image*/}
+        {/*        source={diamond}*/}
+        {/*        style={{*/}
+        {/*          width: 15,*/}
+        {/*          height: 15,*/}
+        {/*          marginTop: 3,*/}
+        {/*          marginRight: 2,*/}
+        {/*        }}*/}
+        {/*      />*/}
+        {/*      <Text style={{color: '#000'}}>*/}
+        {/*        {`${this.state.msgCoinPerMessage} from ${this.state.other.name}`}*/}
+        {/*      </Text>*/}
+        {/*    </View>*/}
+        {/*  </View>*/}
+        {/*)}*/}
+        {/*{this.state.statusByMatchId == 7 && (*/}
+        {/*  <View*/}
+        {/*    style={{*/}
+        {/*      justifyContent: 'center',*/}
+        {/*      borderColor: '#d9d9d9',*/}
+        {/*      borderWidth: 0.5,*/}
+        {/*      padding: 20,*/}
+        {/*    }}>*/}
+        {/*    <Text style={{color: '#000'}}>*/}
+        {/*      {`Everytime you send a message to ${this.state.other.name}, `}*/}
+        {/*    </Text>*/}
+        {/*    <View style={{flexDirection: 'row', justifyContent: 'center'}}>*/}
+        {/*      <Text style={{color: '#000'}}>{'you will send '}</Text>*/}
+        {/*      <Image*/}
+        {/*        source={diamond}*/}
+        {/*        style={{*/}
+        {/*          width: 15,*/}
+        {/*          height: 15,*/}
+        {/*          marginTop: 3,*/}
+        {/*          marginRight: 2,*/}
+        {/*        }}*/}
+        {/*      />*/}
+        {/*      <Text style={{color: '#000'}}>*/}
+        {/*        {`${this.state.msgCoinPerMessage} to ${this.state.other.name}`}*/}
+        {/*      </Text>*/}
+        {/*    </View>*/}
+        {/*  </View>*/}
+        {/*)}*/}
+        {/*</View>*/}
+
+        {this.state.isLoading && (
+          <View
+            style={{
+              backgroundColor: 'rgba(0,0,0,0.25)',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%',
+              width: '100%',
+            }}>
+            <Text style={{color: '#FFF'}}>
+              {'Please wait while loading chat...'}
+            </Text>
+          </View>
+        )}
+
+        {this.state.other.ai_personality != '' &&
+          this.state.other.ai_personality != null && (
             <View
               style={{
                 justifyContent: 'center',
                 borderColor: '#d9d9d9',
                 borderWidth: 0.5,
-                padding: 20,
+                padding: 10,
               }}>
-              <Text style={{color: '#000'}}>
-                {`Everytime you receive a message from ${this.state.other.name}, `}
+              <Text style={{color: '#000', fontSize: 8}}>
+                {this.state.other.ai_personality}
               </Text>
-              <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                <Text style={{color: '#000'}}>{'you will receive '}</Text>
-                <Image
-                  source={diamond}
-                  style={{
-                    width: 15,
-                    height: 15,
-                    marginTop: 3,
-                    marginRight: 2,
-                  }}
-                />
-                <Text style={{color: '#000'}}>
-                  {`${this.state.msgCoinPerMessage} from ${this.state.other.name}`}
-                </Text>
-              </View>
             </View>
           )}
-          {this.state.statusByMatchId == 7 && (
-            <View
-              style={{
-                justifyContent: 'center',
-                borderColor: '#d9d9d9',
-                borderWidth: 0.5,
-                padding: 20,
-              }}>
-              <Text style={{color: '#000'}}>
-                {`Everytime you send a message to ${this.state.other.name}, `}
-              </Text>
-              <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                <Text style={{color: '#000'}}>{'you will send '}</Text>
-                <Image
-                  source={diamond}
-                  style={{
-                    width: 15,
-                    height: 15,
-                    marginTop: 3,
-                    marginRight: 2,
-                  }}
-                />
-                <Text style={{color: '#000'}}>
-                  {`${this.state.msgCoinPerMessage} to ${this.state.other.name}`}
-                </Text>
-              </View>
-            </View>
-          )}
-        </View>
         <ScrollView
-          style={{marginTop: 15}}
           ref={ref => {
             this.scrollView = ref;
           }}
-          onContentSizeChange={(contentWidth, contentHeight) => {
-            this.scrollView.scrollToEnd({animated: true});
-          }}>
+          nestedScrollEnabled={true}
+          // onContentSizeChange={(contentWidth, contentHeight) => {
+          //   if (this.scrollView) {
+          //     setTimeout(() => {
+          //       this.scrollView.scrollToEnd({animated: true});
+          //     }, 200);
+          //   }
+          //   // this.scrollView.scrollToEnd({animated: true});
+          // }}
+        >
           <FlatList
+            ref={this.flatListRef}
             style={{padding: 10}}
             data={this.state.messageList}
             renderItem={this.renderRow}
             keyExtractor={(item, index) => index.toString()}
+            // onContentSizeChange={() =>
+            //   this.flatListRef.current.scrollToEnd({animated: true})
+            // }
           />
         </ScrollView>
         <View style={styles.inputBar}>
@@ -1472,11 +1925,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     backgroundColor: 'white',
-    marginTop: 40,
   },
   menuIcon: {
-    justifyContent: 'center',
-    marginLeft: 20,
+    position: 'absolute',
+    right: 15,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginTop: 40,
     height: 40,
     width: 40,
   },
@@ -1491,29 +1946,46 @@ const styles = StyleSheet.create({
   inputBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 5,
   },
   sendButton: {
+    // position: 'absolute',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // paddingLeft: 15,
+    // right: 15,
+    // paddingRight: 15,
+    // borderRadius: 400,
+    // height: 50,
+    // width: 50,
+    // top: 5,
+    // bottom: 0,
+    // backgroundColor: '#B64F54',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingLeft: 15,
-    paddingTop: 5,
-    paddingBottom: 5,
-    marginLeft: -35,
-    paddingRight: 15,
-    borderRadius: 400,
+    borderRadius: 25,
     height: 50,
+    width: 50,
     backgroundColor: '#B64F54',
+    marginLeft: 10,
   },
   textBox: {
+    // borderRadius: 25,
+    // borderWidth: 1,
+    // borderColor: '#8C807F',
+    // flex: 1,
+    // fontSize: 15,
+    // paddingHorizontal: 8,
+    // paddingRight: 50,
     borderRadius: 25,
     borderWidth: 1,
     borderColor: '#8C807F',
     flex: 1,
     fontSize: 15,
     paddingHorizontal: 8,
-    paddingRight: 30,
+    paddingRight: 8,
   },
   chatbox: {
     flexDirection: 'row',
@@ -1559,8 +2031,9 @@ const styles = StyleSheet.create({
   //     flexWrap: 'wrap-reverse',
   // },
   avatarOtherUserBtn: {
-    maxWidth: DEVICE_WIDTH - 115,
-    height: 45,
+    // maxWidth: DEVICE_WIDTH - 115,
+    // height: 45,
+    // alignItems: 'center',
   },
   // avatarOtherUserBtn: {
   //     flexDirection: 'row',

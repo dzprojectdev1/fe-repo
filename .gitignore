@@ -65,3 +65,5 @@ package-lock.json
 
 .vscode
 .DS_Store
+android/app/release/chatGPT app-release.apk
+*.apk

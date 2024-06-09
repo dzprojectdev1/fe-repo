@@ -228,6 +228,8 @@ class Match extends Component {
               coin_count: newData.coin_count,
               fan_count: newData.fan_count,
               coin_per_message: newData.coin_per_message,
+              ai_friend: newData.ai_friend,
+              ai_personality: newData.ai_personality,
             });
           }
         })
@@ -296,15 +298,14 @@ class Match extends Component {
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}>
-          <View
-            style={{width: 140, flexDirection: 'row'}}>
+          <View style={{width: 140, flexDirection: 'row'}}>
             <TouchableOpacity
               style={{width: 80, height: 40}}
               onPress={() => this.gotoShop()}>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image
                   source={diamond}
-                  style={{width: 25, height: 25, marginLeft: 15, marginTop: 10}}
+                  style={{width: 18, height: 18, marginLeft: 15, marginTop: 10}}
                 />
                 <Text
                   style={{
@@ -355,7 +356,7 @@ class Match extends Component {
               fontSize: 12,
               marginTop: 5,
               color: '#000',
-                marginLeft: 40,
+              marginLeft: 40,
             }}>
             {'MATCH'}
           </Text>

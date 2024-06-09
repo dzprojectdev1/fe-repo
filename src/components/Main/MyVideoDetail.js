@@ -11,7 +11,8 @@ import {
 import Video from 'react-native-video';
 import Global from '../Global';
 
-import {SERVER_URL, GCS_BUCKET} from '../../config/constants';
+import {SERVER_URL, GCS_BUCKET, capitalizeWords} from '../../config/constants';
+import {TopBar} from '../../commonUI/components/topbar';
 
 class MyVideoDetail extends Component {
   constructor(props) {
@@ -58,7 +59,7 @@ class MyVideoDetail extends Component {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log('responseJson.url ', responseJson.url);
+        // console.log('responseJson.url ', responseJson.url);
         this.setState({
           vUrl: responseJson.url,
         });
@@ -93,11 +94,7 @@ class MyVideoDetail extends Component {
   render() {
     return (
       <View style={styles.contentContainer}>
-        <StatusBar
-          translucent={true}
-          backgroundColor="transparent"
-          barStyle="dark-content"
-        />
+        <TopBar onBack={this.onBack.bind(this)} />
         <View>
           {this.state.content_type == 2 && (
             <Video
@@ -118,19 +115,6 @@ class MyVideoDetail extends Component {
             />
           )}
         </View>
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 30,
-            width: 60,
-            height: 60,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          onPress={() => this.onBack()}>
-          <ArrowBackIcon size="7" mt="0.5" color="#fff" />
-        </TouchableOpacity>
         {this.state.primary != 1 && (
           <View style={{position: 'absolute', left: 0, bottom: 70}}>
             <TouchableOpacity

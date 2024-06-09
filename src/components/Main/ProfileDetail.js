@@ -16,13 +16,14 @@ import ImageSlider from '../../commonUI/ImageSlider';
 import Video from 'react-native-video';
 import video_player from '../../assets/images/video_player.png';
 import Global from '../Global';
-import { SliderBox } from '../../commonUI/slider/SliderBox';
+import {SliderBox} from '../../commonUI/slider/SliderBox';
+import {capitalizeWords} from '../../config/constants';
+import {TopBar} from '../../commonUI/components/topbar';
 
 class ProfileDetail extends Component {
   constructor(props) {
     super(props);
     const {datas, index} = props.route.params;
-    console.log(props.route.params);
     this.state = {
       paused: false,
       vUrl: '',
@@ -53,14 +54,14 @@ class ProfileDetail extends Component {
 
     var images = [];
     var custom_datas = this.state.datas;
-    
+
     var {video_indexes} = this.state;
 
     let swap = custom_datas[this.state.index];
     custom_datas[this.state.index] = custom_datas[0];
     custom_datas[0] = swap;
 
-    for (var i = 0; i < custom_datas.length; i++ ){
+    for (var i = 0; i < custom_datas.length; i++) {
       images.push(custom_datas[i].imageUrl);
       if (custom_datas[i].content_type == 2) {
         video_indexes.push(i);
@@ -74,7 +75,8 @@ class ProfileDetail extends Component {
       },
       function () {
         console.log('video_indexes', this.state.video_indexes);
-      })
+      },
+    );
   }
 
   componentDidMount() {
@@ -100,14 +102,12 @@ class ProfileDetail extends Component {
     });
   }
 
-  
   render() {
     return (
       <View style={styles.contentContainer}>
-        <StatusBar
-          translucent={true}
-          backgroundColor="transparent"
-          barStyle="dark-content"
+        <TopBar
+          title={capitalizeWords(this.state.username)}
+          onBack={this.onReject.bind(this)}
         />
         <View>
           {/* {(this.state.vUrl != "") && ( */}
@@ -129,38 +129,43 @@ class ProfileDetail extends Component {
               source={{ uri: this.state.vUrl }}
               style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
             /> */}
-            <SliderBox
-          ImageComponent={FastImage}
-          images={this.state.changedData}
-          sliderBoxHeight={DEVICE_HEIGHT}
-          onCurrentImagePressed={index => this.onReject()}
-          dotColor="#FFEE58"
-          inactiveDotColor="#90A4AE"
-          paginationBoxVerticalPadding={20}
-          paginationBoxStyle={{
-            position: 'absolute',
-            bottom: 0,
-            padding: 0,
-            alignItems: 'center',
-            alignSelf: 'center',
-            justifyContent: 'center',
-            paddingVertical: 10,
-          }}
-          dotStyle={{
-            width: 10,
-            height: 10,
-            borderRadius: 5,
-            marginHorizontal: 0,
-            padding: 0,
-            margin: 0,
-            backgroundColor: 'rgba(128, 128, 128, 0.92)',
-          }}
-          autoplay
-          circleLoop
-          autoplayInterval={4000}
-          ImageComponentStyle={{borderRadius: 15, width: '97%', marginTop: 5}}
-          imageLoadingColor="#2196F3"
-        />
+          <SliderBox
+            ImageComponent={FastImage}
+            images={this.state.changedData}
+            sliderBoxHeight={DEVICE_HEIGHT}
+            onCurrentImagePressed={index => this.onReject()}
+            dotColor="#B64F54"
+            inactiveDotColor="#90A4AE"
+            paginationBoxVerticalPadding={20}
+            paginationBoxStyle={{
+              position: 'absolute',
+              bottom: 0,
+              padding: 0,
+              alignItems: 'center',
+              alignSelf: 'center',
+              justifyContent: 'center',
+              paddingVertical: 10,
+            }}
+            dotStyle={{
+              width: 10,
+              height: 10,
+              borderRadius: 5,
+              marginHorizontal: 0,
+              padding: 0,
+              margin: 0,
+              backgroundColor: 'rgba(128, 128, 128, 0.92)',
+            }}
+            autoplay
+            circleLoop
+            autoplayInterval={4000}
+            ImageComponentStyle={{
+              borderRadius: 15,
+              height: DEVICE_HEIGHT - 50,
+              width: '97%',
+              marginTop: 0,
+            }}
+            imageLoadingColor="#2196F3"
+          />
           {/* <ImageSlider
             loopBothSides
             // autoPlayWithInterval={3000}
@@ -213,19 +218,19 @@ class ProfileDetail extends Component {
           /> */}
           {/* )} */}
         </View>
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 30,
-            width: 60,
-            height: 60,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          onPress={() => this.onReject()}>
-          <ArrowBackIcon size="5" color = '#B64F54'/>
-        </TouchableOpacity>
+        {/*<TouchableOpacity*/}
+        {/*  style={{*/}
+        {/*    position: 'absolute',*/}
+        {/*    left: 0,*/}
+        {/*    top: 30,*/}
+        {/*    width: 60,*/}
+        {/*    height: 60,*/}
+        {/*    alignItems: 'center',*/}
+        {/*    justifyContent: 'center',*/}
+        {/*  }}*/}
+        {/*  onPress={() => this.onReject()}>*/}
+        {/*  <ArrowBackIcon size="5" color = '#B64F54'/>*/}
+        {/*</TouchableOpacity>*/}
       </View>
     );
   }
@@ -236,7 +241,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     width: '100%',
     height: '100%',
-    flex: 1,
+    // flex: 1,
     backgroundColor: '#fff',
   },
   instructions: {

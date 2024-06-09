@@ -36,7 +36,7 @@ class App extends Component {
       messagingSenderId: '725302073253',
       appId: '1:725302073253:android:0aa373b87b7f562c2a3a4c',
     };
-    console.log(getFirebaseApp().apps.length);
+
     if (!getFirebaseApp().apps.length) {
       await getFirebaseApp().initializeApp({});
     }

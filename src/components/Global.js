@@ -43,7 +43,7 @@ module.exports.saveData = {
   gem_number: 0,
   coin_count: 0,
   account_status: 0,
-  auto_block: 1,
+  auto_block: 0,
   is_admin: 0,
   call_id: 0,
   fan_count: 0,
