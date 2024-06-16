@@ -76,6 +76,8 @@ class Profile extends Component {
       showFanUsers: false,
       showMutualUsers: false,
       dialogStyle: {},
+      ai_friend: data.ai_friend,
+      ai_personality: data.ai_personality,
     };
   }
 
@@ -243,12 +245,14 @@ class Profile extends Component {
   };
 
   showUserVideo(index, url, otherId, datas) {
-    this.props.navigation.navigate('ProfileDetail', {
-      index: index,
-      url: url,
-      otherId: otherId,
-      datas: datas,
-    });
+    if (url) {
+      this.props.navigation.navigate('ProfileDetail', {
+        index: index,
+        url: url,
+        otherId: otherId,
+        datas: datas,
+      });
+    }
   }
 
   onBack() {
@@ -264,6 +268,8 @@ class Profile extends Component {
             coin_count: this.state.coin_count,
             fan_count: this.state.fan_count,
             coin_per_message: this.state.coin_per_message,
+            ai_friend: this.state.ai_friend,
+            ai_personality: this.state.ai_personality,
           },
         },
       });
@@ -1106,36 +1112,39 @@ class Profile extends Component {
             </TouchableOpacity>
           )}
         </View>
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            backgroundColor: '#FFF',
-            width: DEVICE_WIDTH,
-            height: 40,
-            marginTop: 10,
-            paddingTop: 10,
-          }}
-          onPress={() => this.showFanUsersList()}>
-          <Image
-            source={yellow_star_black}
-            style={{width: 20, height: 20, marginRight: 15}}
-          />
-          <Text
-            style={{
-              fontSize: 16,
-              marginRight: 20,
-              color: '#7d7d7d',
-            }}>{`Biggest Fans for ${this.state.otherData.name} (${this.state.fanUsersCount})`}</Text>
-          <Image
-            source={this.state.showFanUsers ? collapse : expand}
-            style={{width: 15, height: 15, marginTop: 3}}
-          />
-        </TouchableOpacity>
+        {Global.saveData.is_admin === 1 &&
+            <TouchableOpacity
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  backgroundColor: '#FFF',
+                  width: DEVICE_WIDTH,
+                  height: 40,
+                  marginTop: 10,
+                  paddingTop: 10,
+                }}
+                onPress={() => this.showFanUsersList()}>
+              <Image
+                  source={yellow_star_black}
+                  style={{width: 20, height: 20, marginRight: 15}}
+              />
+              <Text
+                  style={{
+                    fontSize: 16,
+                    marginRight: 20,
+                    color: '#7d7d7d',
+                  }}>{`Biggest Fans for ${this.state.otherData.name} (${this.state.fanUsersCount})`}</Text>
+              <Image
+                  source={this.state.showFanUsers ? collapse : expand}
+                  style={{width: 15, height: 15, marginTop: 3}}
+              />
+            </TouchableOpacity>
+        }
+
         <ScrollView
           style={{backgroundColor: '#FFF', marginTop: 1}}
           removeClippedSubviews={true}>
-          {this.state.fanUsersCount != 0 && this.state.showFanUsers && (
+          {Global.saveData.is_admin === 1 && this.state.fanUsersCount != 0 && this.state.showFanUsers && (
             <FlatList
               numColumns={1}
               style={{flex: 0, marginTop: 10}}

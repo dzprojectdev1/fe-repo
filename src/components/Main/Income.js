@@ -263,7 +263,7 @@ class Income extends Component {
   };
 
   gotoMyFans = () => {
-  //  console.log('inside');
+    //  console.log('inside');
     Global.saveData.prevpage = 'Income';
     this.props.navigation.replace('MyFans');
   };
@@ -304,26 +304,33 @@ class Income extends Component {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{width: 70, height: 40}}
-              onPress={() => this.gotoMyFans()}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Image
-                  source={yellow_star}
-                  style={{width: 20, height: 20, marginLeft: 15, marginTop: 10}}
-                />
-                <Text
-                  style={{
-                    marginLeft: 7,
-                    color: '#000',
-                    fontSize: 12,
-                    fontWeight: 'bold',
-                    marginTop: 12,
-                  }}>
-                  {this.state.fanCount}
-                </Text>
-              </View>
-            </TouchableOpacity>
+            {Global.saveData.is_admin === 1 && (
+              <TouchableOpacity
+                style={{width: 70, height: 40}}
+                onPress={() => this.gotoMyFans()}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Image
+                    source={yellow_star}
+                    style={{
+                      width: 20,
+                      height: 20,
+                      marginLeft: 15,
+                      marginTop: 10,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      marginLeft: 7,
+                      color: '#000',
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      marginTop: 12,
+                    }}>
+                    {this.state.fanCount}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
 
           <Text
@@ -445,25 +452,29 @@ class Income extends Component {
                           numberOfLines={1}>
                           {rowData.name}
                         </Text>
-                        <Image
-                          source={diamond}
-                          style={{
-                            width: 15,
-                            height: 15,
-                            marginTop: 2,
-                            marginLeft: 5,
-                          }}
-                        />
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            fontWeight: 'bold',
-                            color: '#B64F54',
-                          }}
-                          ellipsizeMode="tail"
-                          numberOfLines={1}>
-                          {rowData.coin_count}
-                        </Text>
+                        {Global.saveData.is_admin === 1 && (
+                          <>
+                            <Image
+                              source={diamond}
+                              style={{
+                                width: 15,
+                                height: 15,
+                                marginTop: 2,
+                                marginLeft: 5,
+                              }}
+                            />
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                fontWeight: 'bold',
+                                color: '#B64F54',
+                              }}
+                              ellipsizeMode="tail"
+                              numberOfLines={1}>
+                              {rowData.coin_count}
+                            </Text>
+                          </>
+                        )}
                         {/* <Image source={yellow_star} style={{ width: 15, height: 15, marginLeft: 5, }} />
                         <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.fan_count}</Text> */}
                       </View>
@@ -512,34 +523,36 @@ class Income extends Component {
                 {'BROWSE'}
               </Text>
             </Button>
-            <Button
-              badge
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingVertical: 5,
-                position: 'relative',
-                backgroundColor: '#222F3F',
-                borderRadius: 0,
-                margin: 0,
-                padding: 0,
-              }}
-              transparent>
-              <Image
-                source={b_incoming}
-                style={{width: 25, height: 25, tintColor: '#B64F54'}}
-              />
-              <Text
+            {Global.saveData.is_admin === 1 && (
+              <Button
+                badge
                 style={{
-                  color: '#B64F54',
-                  fontSize: 6,
-                  fontWeight: 'bold',
-                  marginTop: 3,
-                }}>
-                {'INCOMING'}
-              </Text>
-            </Button>
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingVertical: 5,
+                  position: 'relative',
+                  backgroundColor: '#222F3F',
+                  borderRadius: 0,
+                  margin: 0,
+                  padding: 0,
+                }}
+                transparent>
+                <Image
+                  source={b_incoming}
+                  style={{width: 25, height: 25, tintColor: '#B64F54'}}
+                />
+                <Text
+                  style={{
+                    color: '#B64F54',
+                    fontSize: 6,
+                    fontWeight: 'bold',
+                    marginTop: 3,
+                  }}>
+                  {'INCOMING'}
+                </Text>
+              </Button>
+            )}
             <Button
               badge
               style={{
@@ -608,7 +621,11 @@ class Income extends Component {
                 borderRadius: 0,
               }}
               transparent
-              onPress={() => this.gotoMainMenu('MyVideo')}>
+              onPress={() =>
+                this.gotoMainMenu(
+                  Global.saveData.is_admin === 1 ? 'MyVideo' : 'ProfileSetting',
+                )
+              }>
               <Image source={b_myvideo} style={{width: 25, height: 25}} />
               <Text
                 style={{

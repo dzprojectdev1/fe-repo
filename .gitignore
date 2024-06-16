@@ -67,3 +67,6 @@ package-lock.json
 .DS_Store
 android/app/release/chatGPT app-release.apk
 *.apk
+.DS_Store
+android/app/release/output-metadata.json
+android/app/release/output-metadata.json

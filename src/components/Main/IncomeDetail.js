@@ -100,6 +100,7 @@ class IncomeDetail extends Component {
       content_type,
       ai_friend,
       ai_personality,
+      img_message,
     } = this.props.route.params;
 
     BackHandler.addEventListener('hardwareBackPress', this.back);
@@ -140,6 +141,7 @@ class IncomeDetail extends Component {
         content_type: content_type,
         ai_friend: ai_friend,
         ai_personality: ai_personality,
+        img_message: img_message,
       });
     }
   }
@@ -212,6 +214,7 @@ class IncomeDetail extends Component {
         coin_per_message: this.state.coin_per_message,
         ai_friend: this.state.ai_friend,
         ai_personality: this.state.ai_personality,
+        img_message: this.state.img_message,
       },
     };
     Global.saveData.prevpage = 'IncomeDetail';
@@ -349,7 +352,6 @@ class IncomeDetail extends Component {
         .then(responseJson => {
           if (!responseJson.error) {
             let newData = responseJson.data;
-
             this.setState({
               age: newData.age,
               gender: newData.gender,
@@ -363,6 +365,7 @@ class IncomeDetail extends Component {
               coin_per_message: newData.coin_per_message,
               ai_friend: newData.ai_friend,
               ai_personality: newData.ai_personality,
+              img_message: newData.img_message,
             });
 
             this.props.navigation.replace('Profile', {
@@ -387,6 +390,7 @@ class IncomeDetail extends Component {
                 content_type: this.state.content_type,
                 ai_friend: this.state.ai_friend,
                 ai_personality: this.state.ai_personality,
+                img_message: this.state.img_message,
               },
             });
           }
@@ -1005,43 +1009,47 @@ class IncomeDetail extends Component {
                 }}>
                 {this.state.username}
               </Text>
-              <Image
-                source={diamond}
-                style={{
-                  marginLeft: 10,
-                  width: 15,
-                  height: 15,
-                  marginTop: 2,
-                  tintColor: colors.inputLabel,
-                }}
-              />
-              <Text
-                style={{
-                  marginLeft: 10,
-                  color: colors.inputLabel,
-                  fontSize: 12,
-                  fontWeight: 'bold',
-                }}>
-                {this.state.coin_count}
-              </Text>
-              <Image
-                source={yellow_star}
-                style={{
-                  marginLeft: 10,
-                  width: 15,
-                  height: 15,
-                  tintColor: colors.inputLabel,
-                }}
-              />
-              <Text
-                style={{
-                  marginLeft: 10,
-                  color: colors.inputLabel,
-                  fontSize: 12,
-                  fontWeight: 'bold',
-                }}>
-                {this.state.fan_count}
-              </Text>
+              {Global.saveData.is_admin === 1 && (
+                <>
+                  <Image
+                    source={diamond}
+                    style={{
+                      marginLeft: 10,
+                      width: 15,
+                      height: 15,
+                      marginTop: 2,
+                      tintColor: colors.inputLabel,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: colors.inputLabel,
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                    }}>
+                    {this.state.coin_count}
+                  </Text>
+                  <Image
+                    source={yellow_star}
+                    style={{
+                      marginLeft: 10,
+                      width: 15,
+                      height: 15,
+                      tintColor: colors.inputLabel,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: colors.inputLabel,
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                    }}>
+                    {this.state.fan_count}
+                  </Text>
+                </>
+              )}
             </View>
             <View
               style={{
@@ -1063,28 +1071,30 @@ class IncomeDetail extends Component {
                 {this.state.userage + ' years old'}
               </Text>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: 5,
-                alignItems: 'center',
-              }}>
-              <Image
-                source={b_distance}
-                style={{width: 15, height: 15, tintColor: colors.inputLabel}}
-              />
-              <Text
+            {Global.saveData.is_admin === 1 && (
+              <View
                 style={{
-                  marginLeft: 10,
-                  color: colors.inputLabel,
-                  fontSize: 12,
-                  fontWeight: 'bold',
+                  flexDirection: 'row',
+                  marginTop: 5,
+                  alignItems: 'center',
                 }}>
-                {(this.state.userdistance != 0
-                  ? this.state.userdistance
-                  : 'unknown') + ' mile'}
-              </Text>
-            </View>
+                <Image
+                  source={b_distance}
+                  style={{width: 15, height: 15, tintColor: colors.inputLabel}}
+                />
+                <Text
+                  style={{
+                    marginLeft: 10,
+                    color: colors.inputLabel,
+                    fontSize: 12,
+                    fontWeight: 'bold',
+                  }}>
+                  {(this.state.userdistance != 0
+                    ? this.state.userdistance
+                    : 'unknown') + ' mile'}
+                </Text>
+              </View>
+            )}
             <View
               style={{
                 flexDirection: 'row',

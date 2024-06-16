@@ -47,7 +47,7 @@ class Register1 extends Component {
     if (description === '') {
       Alert.alert(
         '',
-        'Introduction is required',
+        'Interests description is required',
         [{text: 'OK', onPress: () => console.log('OK Pressed')}],
         {cancelable: false},
       );
@@ -90,7 +90,7 @@ class Register1 extends Component {
               marginTop: 50,
             }}>
             <Text style={{color: '#808080', fontSize: 12, marginLeft: 10}}>
-              {'INTRODUCTION'}
+              {'What are your interests?'}
             </Text>
           </View>
           <View

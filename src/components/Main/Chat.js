@@ -357,26 +357,33 @@ class Chat extends Component {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{width: 60, height: 40}}
-              onPress={() => this.gotoMyFans()}>
-              <View style={{flexDirection: 'row'}}>
-                <Image
-                  source={yellow_star}
-                  style={{width: 20, height: 20, marginLeft: 15, marginTop: 10}}
-                />
-                <Text
-                  style={{
-                    marginLeft: 7,
-                    color: '#000',
-                    fontSize: 12,
-                    fontWeight: 'bold',
-                    marginTop: 10,
-                  }}>
-                  {this.state.fanCount}
-                </Text>
-              </View>
-            </TouchableOpacity>
+            {Global.saveData.is_admin === 1 && (
+              <TouchableOpacity
+                style={{width: 60, height: 40}}
+                onPress={() => this.gotoMyFans()}>
+                <View style={{flexDirection: 'row'}}>
+                  <Image
+                    source={yellow_star}
+                    style={{
+                      width: 20,
+                      height: 20,
+                      marginLeft: 15,
+                      marginTop: 10,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      marginLeft: 7,
+                      color: '#000',
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      marginTop: 10,
+                    }}>
+                    {this.state.fanCount}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
           <View
             style={{
@@ -499,50 +506,54 @@ class Chat extends Component {
                                   : 'Unavailable user'}
                               </Text>
                               {/* <Text numberOfLines={1} style={{ color: '#808080' }}>{(rowData.data.publish == 1) ? rowData.data.name: 'Unavailable user'}</Text> */}
-                              {rowData.data.publish == 1 && (
-                                <Image
-                                  source={diamond}
-                                  style={{
-                                    width: 15,
-                                    height: 15,
-                                    marginTop: 5,
-                                    marginLeft: 5,
-                                  }}
-                                />
+                              {Global.saveData.is_admin === 1 && (
+                                <>
+                                  {rowData.data.publish == 1 && (
+                                    <Image
+                                      source={diamond}
+                                      style={{
+                                        width: 15,
+                                        height: 15,
+                                        marginTop: 5,
+                                        marginLeft: 5,
+                                      }}
+                                    />
+                                  )}
+                                  <Text
+                                    numberOfLines={1}
+                                    style={{
+                                      color: '#808080',
+                                      marginTop: 3,
+                                      fontSize: 12,
+                                    }}>
+                                    {rowData.data.publish == 1
+                                      ? rowData.data.coin_count
+                                      : ''}
+                                  </Text>
+                                  {rowData.data.publish == 1 && (
+                                    <Image
+                                      source={yellow_star}
+                                      style={{
+                                        width: 13,
+                                        height: 13,
+                                        marginTop: 5,
+                                        marginLeft: 5,
+                                      }}
+                                    />
+                                  )}
+                                  <Text
+                                    numberOfLines={1}
+                                    style={{
+                                      color: '#808080',
+                                      marginTop: 3,
+                                      fontSize: 12,
+                                    }}>
+                                    {rowData.data.publish == 1
+                                      ? rowData.data.fan_count
+                                      : ''}
+                                  </Text>
+                                </>
                               )}
-                              <Text
-                                numberOfLines={1}
-                                style={{
-                                  color: '#808080',
-                                  marginTop: 3,
-                                  fontSize: 12,
-                                }}>
-                                {rowData.data.publish == 1
-                                  ? rowData.data.coin_count
-                                  : ''}
-                              </Text>
-                              {rowData.data.publish == 1 && (
-                                <Image
-                                  source={yellow_star}
-                                  style={{
-                                    width: 13,
-                                    height: 13,
-                                    marginTop: 5,
-                                    marginLeft: 5,
-                                  }}
-                                />
-                              )}
-                              <Text
-                                numberOfLines={1}
-                                style={{
-                                  color: '#808080',
-                                  marginTop: 3,
-                                  fontSize: 12,
-                                }}>
-                                {rowData.data.publish == 1
-                                  ? rowData.data.fan_count
-                                  : ''}
-                              </Text>
                             </View>
                             <Text
                               numberOfLines={1}
@@ -629,32 +640,34 @@ class Chat extends Component {
                 {'BROWSE'}
               </Text>
             </Button>
-            <Button
-              badge
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingVertical: 5,
-                position: 'relative',
-                backgroundColor: '#222F3F',
-                borderRadius: 0,
-                margin: 0,
-                padding: 0,
-              }}
-              transparent
-              onPress={() => this.gotoMainMenu('Income')}>
-              <Image source={b_incoming} style={{width: 25, height: 25}} />
-              <Text
+            {Global.saveData.is_admin === 1 && (
+              <Button
+                badge
                 style={{
-                  color: '#fff',
-                  fontSize: 6,
-                  fontWeight: 'bold',
-                  marginTop: 3,
-                }}>
-                {'INCOMING'}
-              </Text>
-            </Button>
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingVertical: 5,
+                  position: 'relative',
+                  backgroundColor: '#222F3F',
+                  borderRadius: 0,
+                  margin: 0,
+                  padding: 0,
+                }}
+                transparent
+                onPress={() => this.gotoMainMenu('Income')}>
+                <Image source={b_incoming} style={{width: 25, height: 25}} />
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontSize: 6,
+                    fontWeight: 'bold',
+                    marginTop: 3,
+                  }}>
+                  {'INCOMING'}
+                </Text>
+              </Button>
+            )}
             <Button
               badge
               style={{
@@ -725,7 +738,11 @@ class Chat extends Component {
                 borderRadius: 0,
               }}
               transparent
-              onPress={() => this.gotoMainMenu('MyVideo')}>
+              onPress={() =>
+                this.gotoMainMenu(
+                  Global.saveData.is_admin === 1 ? 'MyVideo' : 'ProfileSetting',
+                )
+              }>
               <Image source={b_myvideo} style={{width: 25, height: 25}} />
               <Text
                 style={{

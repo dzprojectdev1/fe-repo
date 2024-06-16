@@ -154,6 +154,7 @@ class BrowserList extends Component {
         .then(response => response.json())
         .then(responseJson => {
           if (!responseJson.error) {
+            // console.log('responseJson.data => ', responseJson.data);
             if (responseJson.data) {
               let newData = responseJson.data;
               this.getUserAvatar(newData);
@@ -254,43 +255,45 @@ class BrowserList extends Component {
   getUserAvatar = async data => {
     let listData = [];
     for (let i = 0; i < data.length; i++) {
-      if (data[i].cdn_id && data[i].content_type == 1) {
-        listData.push({
-          index: i,
-          imageUrl: GCS_BUCKET + data[i].cdn_id + '-screenshot',
-          videoUrl: null,
-          detail: data[i],
-        });
-      } else if (data[i].cdn_id && data[i].content_type == 2) {
-        const v_url =
-          `${SERVER_URL}/api/storage/videoLink?fileId=` + data[i].cdn_id;
-        await fetch(v_url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: Global.saveData.token,
-          },
-        })
-          .then(response => response.json())
-          .then(responseJson => {
-            listData.push({
-              index: i,
-              imageUrl: null,
-              videoUrl: responseJson.url,
-              detail: data[i],
-            });
-          })
-          .catch(error => {
-            alert('There is error, please try again!');
-            return;
+      if (data[i].ai_friend === 1) {
+        if (data[i].cdn_id && data[i].content_type == 1) {
+          listData.push({
+            index: i,
+            imageUrl: GCS_BUCKET + data[i].cdn_id + '-screenshot',
+            videoUrl: null,
+            detail: data[i],
           });
-      } else {
-        listData.push({
-          index: i,
-          imageUrl: null,
-          videoUrl: null,
-          detail: data[i],
-        });
+        } else if (data[i].cdn_id && data[i].content_type == 2) {
+          const v_url =
+            `${SERVER_URL}/api/storage/videoLink?fileId=` + data[i].cdn_id;
+          await fetch(v_url, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: Global.saveData.token,
+            },
+          })
+            .then(response => response.json())
+            .then(responseJson => {
+              listData.push({
+                index: i,
+                imageUrl: null,
+                videoUrl: responseJson.url,
+                detail: data[i],
+              });
+            })
+            .catch(error => {
+              alert('There is error, please try again!');
+              return;
+            });
+        } else {
+          listData.push({
+            index: i,
+            imageUrl: null,
+            videoUrl: null,
+            detail: data[i],
+          });
+        }
       }
     }
     let oldData = this.state.discoveredList;
@@ -431,46 +434,58 @@ class BrowserList extends Component {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{width: 50, height: 40}}
-              onPress={() => this.gotoMyFans()}>
-              <View style={{flexDirection: 'row'}}>
-                <Image
-                  source={yellow_star}
-                  style={{width: 20, height: 20, marginLeft: 15, marginTop: 12}}
-                />
-                <Text
-                  style={{
-                    marginLeft: 7,
-                    color: '#000',
-                    fontSize: 12,
-                    fontWeight: 'bold',
-                    marginTop: 14,
-                  }}>
-                  {this.state.fanCount}
-                </Text>
-              </View>
-            </TouchableOpacity>
+            {Global.saveData.is_admin === 1 && (
+              <TouchableOpacity
+                style={{width: 50, height: 40}}
+                onPress={() => this.gotoMyFans()}>
+                <View style={{flexDirection: 'row'}}>
+                  <Image
+                    source={yellow_star}
+                    style={{
+                      width: 20,
+                      height: 20,
+                      marginLeft: 15,
+                      marginTop: 12,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      marginLeft: 7,
+                      color: '#000',
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      marginTop: 14,
+                    }}>
+                    {this.state.fanCount}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
-          <Text style={{justifyContent: 'center', marginLeft: -50}}>
+          <Text style={{justifyContent: 'center', marginLeft: -100}}>
             {'BROWSE'}
           </Text>
-          <TouchableOpacity
-            style={{
-              width: 25,
-              height: 25,
-              borderWidth: 1.5,
-              borderRadius: 7,
-              borderColor: '#B64F54',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              marginRight: 15,
-            }}
-            onPress={() => this.props.navigation.navigate('Filter')}>
-            <Image source={b_filters} style={{width: 20, height: 20}} />
-          </TouchableOpacity>
+          {Global.saveData.is_admin === 1 ? (
+            <TouchableOpacity
+              style={{
+                width: 25,
+                height: 25,
+                borderWidth: 1.5,
+                borderRadius: 7,
+                borderColor: '#B64F54',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                marginRight: 15,
+              }}
+              onPress={() => this.props.navigation.navigate('Filter')}>
+              <Image source={b_filters} style={{width: 20, height: 20}} />
+            </TouchableOpacity>
+          ) : (
+            <View />
+          )}
         </View>
-        {this.state.discoveredList.length === 0 &&
+        {Global.saveData.is_admin === 1 &&
+          this.state.discoveredList.length === 0 &&
           !this.state.isLoading &&
           !this.state.isRefreshing && (
             <View
@@ -489,6 +504,14 @@ class BrowserList extends Component {
                 onPress={() => this.props.navigation.navigate('Filter')}>
                 <Text style={{color: '#fff'}}>Edit Condition</Text>
               </TouchableOpacity>
+            </View>
+          )}
+        {this.state.discoveredList.length === 0 &&
+          !this.state.isLoading &&
+          !this.state.isRefreshing && (
+            <View
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Text> Sorry, we cannot find anyone you want!</Text>
             </View>
           )}
         <ScrollView
@@ -551,36 +574,40 @@ class BrowserList extends Component {
                           }}>
                           {item.detail.name}
                         </Text>
-                        <Image
-                          source={diamond}
-                          style={{width: 15, height: 15, marginTop: 5}}
-                        />
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            alignItems: 'center',
-                            color: '#000',
-                            fontWeight: 'normal',
-                            marginRight: 10,
-                            marginTop: 2,
-                          }}>
-                          {item.detail.coin_count}
-                        </Text>
-                        <Image
-                          source={yellow_star}
-                          style={{width: 15, height: 15, marginTop: 4}}
-                        />
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            alignItems: 'center',
-                            color: '#000',
-                            fontWeight: 'normal',
-                            marginRight: 10,
-                            marginTop: 2,
-                          }}>
-                          {item.detail.fan_count}
-                        </Text>
+                        {Global.saveData.is_admin === 1 && (
+                          <>
+                            <Image
+                              source={diamond}
+                              style={{width: 15, height: 15, marginTop: 5}}
+                            />
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                alignItems: 'center',
+                                color: '#000',
+                                fontWeight: 'normal',
+                                marginRight: 10,
+                                marginTop: 2,
+                              }}>
+                              {item.detail.coin_count}
+                            </Text>
+                            <Image
+                              source={yellow_star}
+                              style={{width: 15, height: 15, marginTop: 4}}
+                            />
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                alignItems: 'center',
+                                color: '#000',
+                                fontWeight: 'normal',
+                                marginRight: 10,
+                                marginTop: 2,
+                              }}>
+                              {item.detail.fan_count}
+                            </Text>
+                          </>
+                        )}
                         <Image
                           source={diamond}
                           style={{width: 15, height: 15, marginTop: 5}}
@@ -602,12 +629,14 @@ class BrowserList extends Component {
                           fontSize: 12,
                           color: '#7d7d7d',
                         }}>
-                        {(item.detail.gender === 1 ? 'Male , ' : 'Female , ') +
-                          (item.detail.age + ' years old, ') +
-                          ((parseInt(item.detail.distance) != 0
-                            ? parseInt(item.detail.distance)
-                            : 'unknown') +
-                            ' miles away ')}
+                        {
+                          (item.detail.gender === 1 ? 'Male , ' : 'Female , ') +
+                            (item.detail.age + ' years old, ')
+                          // + ((parseInt(item.detail.distance) != 0
+                          // ? parseInt(item.detail.distance)
+                          // : 'unknown') +
+                          // ' miles away ')
+                        }
                       </Text>
                       <Text
                         style={{
@@ -642,17 +671,19 @@ class BrowserList extends Component {
                             ? item.detail.description
                             : 'No Introduction'}
                         </Text>
-                        <View>
-                          <Text
-                            style={{
-                              justifyContent: 'flex-end',
-                              fontSize: 12,
-                              alignItems: 'center',
-                              color: '#7d7d7d',
-                            }}>
-                            {item.detail.last_loggedin_date}
-                          </Text>
-                        </View>
+                        {Global.saveData.is_admin === 1 && (
+                          <View>
+                            <Text
+                              style={{
+                                justifyContent: 'flex-end',
+                                fontSize: 12,
+                                alignItems: 'center',
+                                color: '#7d7d7d',
+                              }}>
+                              {item.detail.last_loggedin_date}
+                            </Text>
+                          </View>
+                        )}
                       </View>
                     </View>
                   </View>
@@ -721,32 +752,34 @@ class BrowserList extends Component {
                 {'BROWSE'}
               </Text>
             </Button>
-            <Button
-              badge
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingVertical: 5,
-                position: 'relative',
-                backgroundColor: '#222F3F',
-                borderRadius: 0,
-                margin: 0,
-                padding: 0,
-              }}
-              transparent
-              onPress={() => this.gotoMainMenu('Income')}>
-              <Image source={b_incoming} style={{width: 25, height: 25}} />
-              <Text
+            {Global.saveData.is_admin === 1 && (
+              <Button
+                badge
                 style={{
-                  color: '#fff',
-                  fontSize: 6,
-                  fontWeight: 'bold',
-                  marginTop: 3,
-                }}>
-                {'INCOMING'}
-              </Text>
-            </Button>
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingVertical: 5,
+                  position: 'relative',
+                  backgroundColor: '#222F3F',
+                  borderRadius: 0,
+                  margin: 0,
+                  padding: 0,
+                }}
+                transparent
+                onPress={() => this.gotoMainMenu('Income')}>
+                <Image source={b_incoming} style={{width: 25, height: 25}} />
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontSize: 6,
+                    fontWeight: 'bold',
+                    marginTop: 3,
+                  }}>
+                  {'INCOMING'}
+                </Text>
+              </Button>
+            )}
             <Button
               badge
               style={{
@@ -815,7 +848,11 @@ class BrowserList extends Component {
                 borderRadius: 0,
               }}
               transparent
-              onPress={() => this.gotoMainMenu('MyVideo')}>
+              onPress={() =>
+                this.gotoMainMenu(
+                  Global.saveData.is_admin === 1 ? 'MyVideo' : 'ProfileSetting',
+                )
+              }>
               <Image source={b_myvideo} style={{width: 25, height: 25}} />
               <Text
                 style={{

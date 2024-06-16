@@ -15,6 +15,7 @@ import {
   StatusBar,
   Alert,
   Text,
+  PermissionsAndroid,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {Badge} from 'react-native-elements';
@@ -363,7 +364,29 @@ class MyVideo extends Component {
       });
   };
 
-  addImage() {
+  async checkMultiPermissions() {
+    try {
+      let result = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      ]).catch(e => {
+        console.log('request permission', e.message);
+      });
+      if (
+        result['android.permission.CAMERA'] &&
+        result['android.permission.RECORD_AUDIO'] === 'granted'
+      ) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      // Error retrieving data
+      console.log('check permissions = ', error.message);
+      return false;
+    }
+  }
+
+  async addImage() {
     // More info on all the options is below in the API Reference... just some common use cases shown here
     // const options = {
     //   title: 'Select Picture',
@@ -372,6 +395,8 @@ class MyVideo extends Component {
     //     path: 'images',
     //   },
     // };
+    let isAllowed = await this.checkMultiPermissions();
+
     const options = {
       title: 'Select Picture',
       type: 'library',
@@ -383,23 +408,25 @@ class MyVideo extends Component {
       },
     };
 
-    ImagePicker.launchImageLibrary(options, imagePickerResponse => {
-      if (imagePickerResponse.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (imagePickerResponse.error) {
-        console.log('ImagePicker Error: ', imagePickerResponse.error);
-      } else if (imagePickerResponse.customButton) {
-        console.log(
-          'User tapped custom button: ',
-          imagePickerResponse.customButton,
-        );
-      } else {
-        uploadPhoto(imagePickerResponse).then(() => {
-          this.getVideos();
-        });
-      }
-    });
-    
+    if (isAllowed) {
+      ImagePicker.launchImageLibrary(options, imagePickerResponse => {
+        if (imagePickerResponse.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (imagePickerResponse.error) {
+          console.log('ImagePicker Error: ', imagePickerResponse.error);
+        } else if (imagePickerResponse.customButton) {
+          console.log(
+            'User tapped custom button: ',
+            imagePickerResponse.customButton,
+          );
+        } else {
+          uploadPhoto(imagePickerResponse).then(() => {
+            this.getVideos();
+          });
+        }
+      });
+    }
+
     // ImagePicker.showImagePicker(options, imagePickerResponse => {
     //   if (imagePickerResponse.didCancel) {
     //     console.log('User cancelled image picker');
@@ -429,7 +456,7 @@ class MyVideo extends Component {
     //     path: 'images',
     //   },
     // };
-    
+
     const options = {
       title: 'Select Video',
       type: 'library',
@@ -553,8 +580,8 @@ class MyVideo extends Component {
       uri: this.state.recordedUri,
     });
 
-    console.log('formData', formData);
-    console.log('VIDEO_UPLOAD', VIDEO_UPLOAD);
+    // console.log('formData', formData);
+    // console.log('VIDEO_UPLOAD', VIDEO_UPLOAD);
 
     fetch(VIDEO_UPLOAD, {
       method: 'POST',
@@ -610,7 +637,7 @@ class MyVideo extends Component {
       .then(response => response.json())
       .then(responseJson => {
         if (!responseJson.error) {
-          console.log('Response ', responseJson);
+          // console.log('Response ', responseJson);
           // this.props.navigation.replace('MyVideo');
           this.getVideos();
         }
@@ -894,7 +921,12 @@ class MyVideo extends Component {
               marginRight: 10,
             }}
             onPress={() => this.gotoProfileSetting()}>
-            <Icon name="menu" size={30} color="black" style={{color: '#000', marginTop: 5}} />
+            <Icon
+              name="menu"
+              size={30}
+              color="black"
+              style={{color: '#000', marginTop: 5}}
+            />
           </TouchableOpacity>
         </View>
         {this.state.isLoading && (
@@ -1077,21 +1109,23 @@ class MyVideo extends Component {
           onPress={() => this.addVideo()}>
           <Image source={video_add} style={{width: 85, height: 85, }} />
         </TouchableOpacity> */}
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            right: 15,
-            bottom: Platform.select({android: 90, ios: 105}),
-            width: 70,
-            height: 70,
-            backgroundColor: '#f00',
-            borderRadius: 35,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          onPress={() => this.addImage()}>
-          <Icon name="add" size={40} style={{color: '#fff'}} />
-        </TouchableOpacity>
+        {Global.saveData.is_admin === 1 && (
+          <TouchableOpacity
+            style={{
+              position: 'absolute',
+              right: 15,
+              bottom: Platform.select({android: 90, ios: 105}),
+              width: 70,
+              height: 70,
+              backgroundColor: '#f00',
+              borderRadius: 35,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onPress={() => this.addImage()}>
+            <Icon name="add" size={40} style={{color: '#fff'}} />
+          </TouchableOpacity>
+        )}
 
         <View
           style={{
@@ -1128,32 +1162,34 @@ class MyVideo extends Component {
                 {'BROWSE'}
               </Text>
             </Button>
-            <Button
-              badge
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingVertical: 5,
-                position: 'relative',
-                backgroundColor: '#222F3F',
-                borderRadius: 0,
-                margin: 0,
-                padding: 0,
-              }}
-              transparent
-              onPress={() => this.gotoMainMenu('Income')}>
-              <Image source={b_incoming} style={{width: 25, height: 25}} />
-              <Text
+            {Global.saveData.is_admin === 1 && (
+              <Button
+                badge
                 style={{
-                  color: '#fff',
-                  fontSize: 6,
-                  fontWeight: 'bold',
-                  marginTop: 3,
-                }}>
-                {'INCOMING'}
-              </Text>
-            </Button>
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingVertical: 5,
+                  position: 'relative',
+                  backgroundColor: '#222F3F',
+                  borderRadius: 0,
+                  margin: 0,
+                  padding: 0,
+                }}
+                transparent
+                onPress={() => this.gotoMainMenu('Income')}>
+                <Image source={b_incoming} style={{width: 25, height: 25}} />
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontSize: 6,
+                    fontWeight: 'bold',
+                    marginTop: 3,
+                  }}>
+                  {'INCOMING'}
+                </Text>
+              </Button>
+            )}
             <Button
               badge
               style={{

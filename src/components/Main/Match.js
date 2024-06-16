@@ -209,6 +209,7 @@ class Match extends Component {
         .then(responseJson => {
           if (!responseJson.error) {
             let newData = responseJson.data;
+            // console.log(newData);
             this.props.navigation.replace('IncomeDetail', {
               url: null,
               mid: mid,
@@ -230,6 +231,7 @@ class Match extends Component {
               coin_per_message: newData.coin_per_message,
               ai_friend: newData.ai_friend,
               ai_personality: newData.ai_personality,
+              img_message: newData.img_message,
             });
           }
         })
@@ -319,26 +321,33 @@ class Match extends Component {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={{width: 80, height: 40}}
-              onPress={() => this.gotoMyFans()}>
-              <View style={{flexDirection: 'row'}}>
-                <Image
-                  source={yellow_star}
-                  style={{width: 20, height: 20, marginLeft: 15, marginTop: 10}}
-                />
-                <Text
-                  style={{
-                    marginLeft: 7,
-                    color: '#000',
-                    fontSize: 12,
-                    fontWeight: 'bold',
-                    marginTop: 12,
-                  }}>
-                  {this.state.fanCount}
-                </Text>
-              </View>
-            </TouchableOpacity>
+            {Global.saveData.is_admin === 1 && (
+              <TouchableOpacity
+                style={{width: 80, height: 40}}
+                onPress={() => this.gotoMyFans()}>
+                <View style={{flexDirection: 'row'}}>
+                  <Image
+                    source={yellow_star}
+                    style={{
+                      width: 20,
+                      height: 20,
+                      marginLeft: 15,
+                      marginTop: 10,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      marginLeft: 7,
+                      color: '#000',
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      marginTop: 12,
+                    }}>
+                    {this.state.fanCount}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
           {/*<View*/}
           {/*  style={{*/}
@@ -471,25 +480,29 @@ class Match extends Component {
                         numberOfLines={1}>
                         {rowData.name}
                       </Text>
-                      <Image
-                        source={diamond}
-                        style={{
-                          width: 15,
-                          height: 15,
-                          marginTop: 2,
-                          marginLeft: 5,
-                        }}
-                      />
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 'bold',
-                          color: '#B64F54',
-                        }}
-                        ellipsizeMode="tail"
-                        numberOfLines={1}>
-                        {rowData.coin_count}
-                      </Text>
+                      {Global.saveData.is_admin === 1 && (
+                        <>
+                          <Image
+                            source={diamond}
+                            style={{
+                              width: 15,
+                              height: 15,
+                              marginTop: 2,
+                              marginLeft: 5,
+                            }}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 'bold',
+                              color: '#B64F54',
+                            }}
+                            ellipsizeMode="tail"
+                            numberOfLines={1}>
+                            {rowData.coin_count}
+                          </Text>
+                        </>
+                      )}
                       {/* <Image source={yellow_star} style={{ width: 15, height: 15, marginLeft: 5 }} />
                     <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{rowData.fan_count}</Text> */}
                     </View>
@@ -537,32 +550,34 @@ class Match extends Component {
                 {'BROWSE'}
               </Text>
             </Button>
-            <Button
-              badge
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingVertical: 5,
-                position: 'relative',
-                backgroundColor: '#222F3F',
-                borderRadius: 0,
-                margin: 0,
-                padding: 0,
-              }}
-              transparent
-              onPress={() => this.gotoMainMenu('Income')}>
-              <Image source={b_incoming} style={{width: 25, height: 25}} />
-              <Text
+            {Global.saveData.is_admin === 1 && (
+              <Button
+                badge
                 style={{
-                  color: '#fff',
-                  fontSize: 6,
-                  fontWeight: 'bold',
-                  marginTop: 3,
-                }}>
-                {'INCOMING'}
-              </Text>
-            </Button>
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingVertical: 5,
+                  position: 'relative',
+                  backgroundColor: '#222F3F',
+                  borderRadius: 0,
+                  margin: 0,
+                  padding: 0,
+                }}
+                transparent
+                onPress={() => this.gotoMainMenu('Income')}>
+                <Image source={b_incoming} style={{width: 25, height: 25}} />
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontSize: 6,
+                    fontWeight: 'bold',
+                    marginTop: 3,
+                  }}>
+                  {'INCOMING'}
+                </Text>
+              </Button>
+            )}
             <Button
               badge
               style={{
@@ -633,7 +648,11 @@ class Match extends Component {
                 borderRadius: 0,
               }}
               transparent
-              onPress={() => this.gotoMainMenu('MyVideo')}>
+              onPress={() =>
+                this.gotoMainMenu(
+                  Global.saveData.is_admin === 1 ? 'MyVideo' : 'ProfileSetting',
+                )
+              }>
               <Image source={b_myvideo} style={{width: 25, height: 25}} />
               <Text
                 style={{

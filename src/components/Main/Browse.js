@@ -68,6 +68,7 @@ class Browse extends Component {
       fan_count: data.detail.fan_count,
       ai_friend: data.detail.ai_friend,
       ai_personality: data.detail.ai_personality,
+      img_message: data.detail.img_message,
       fanUserVisible: false,
       noFanUserVisible: false,
       errorMsg: false,
@@ -461,6 +462,7 @@ class Browse extends Component {
         fan_count: this.state.fan_count,
         ai_friend: this.state.ai_friend,
         ai_personality: this.state.ai_personality,
+        img_message: this.state.img_message,
         coin_per_message: this.state.otherData.detail.coin_per_message,
         matchId: 0,
       },
@@ -547,6 +549,7 @@ class Browse extends Component {
     const details = {
       otherId: this.state.otherData.detail.id,
     };
+
     let formBody = [];
     for (const property in details) {
       const encodedKey = encodeURIComponent(property);
@@ -554,6 +557,8 @@ class Browse extends Component {
       formBody.push(encodedKey + '=' + encodedValue);
     }
     formBody = formBody.join('&');
+    // console.log(formBody);
+    // console.log(formBody);
     fetch(`${SERVER_URL}/api/match/requestInstantMatch`, {
       method: 'POST',
       headers: {
@@ -564,6 +569,7 @@ class Browse extends Component {
     })
       .then(response => response.json())
       .then(responseJson => {
+        // console.log(responseJson.data);
         if (!responseJson.error) {
           if (responseJson.data.account_status == 1) {
             if (!responseJson.data.ability) {
@@ -608,6 +614,7 @@ class Browse extends Component {
         }
       })
       .catch(error => {
+        console.log(error);
         return;
       });
   };
@@ -626,6 +633,7 @@ class Browse extends Component {
         fan_count: this.state.fan_count,
         ai_friend: this.state.ai_friend,
         ai_personality: this.state.ai_personality,
+        img_message: this.state.img_message,
       },
     };
     Global.saveData.prevpage = 'BrowseList';
@@ -1435,27 +1443,28 @@ class Browse extends Component {
                   width: DEVICE_WIDTH * 0.8,
                   marginLeft: DEVICE_WIDTH * 0.1,
                   flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  // justifyContent: 'space-between',
+                  justifyContent: 'center',
                 }}>
-                <Button
-                  icon={
-                    <FavouriteIcon
-                      size="7"
-                      name={this.state.heartIcon}
-                      color="#B64F54"
-                    />
-                  }
-                  buttonStyle={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: 50,
-                    backgroundColor: '#fff',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  loading={this.state.isLoading}
-                  onPress={() => this.onReject()}
-                />
+                {/*<Button*/}
+                {/*  icon={*/}
+                {/*    <FavouriteIcon*/}
+                {/*      size="7"*/}
+                {/*      name={this.state.heartIcon}*/}
+                {/*      color="#B64F54"*/}
+                {/*    />*/}
+                {/*  }*/}
+                {/*  buttonStyle={{*/}
+                {/*    width: 60,*/}
+                {/*    height: 60,*/}
+                {/*    borderRadius: 50,*/}
+                {/*    backgroundColor: '#fff',*/}
+                {/*    alignItems: 'center',*/}
+                {/*    justifyContent: 'center',*/}
+                {/*  }}*/}
+                {/*  loading={this.state.isLoading}*/}
+                {/*  onPress={() => this.onReject()}*/}
+                {/*/>*/}
                 <TouchableOpacity
                   style={{
                     width: 60,
@@ -1468,25 +1477,25 @@ class Browse extends Component {
                   onPress={() => this.instantChat()}>
                   <Image source={b_chat} style={{width: 30, height: 30}} />
                 </TouchableOpacity>
-                <Button
-                  icon={
-                    <FavouriteIcon
-                      size="7"
-                      name={this.state.heartIcon}
-                      color="#fff"
-                    />
-                  }
-                  buttonStyle={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: 50,
-                    backgroundColor: '#B64F54',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  loading={this.state.isLoading}
-                  onPress={() => this.onHeart()}
-                />
+                {/*<Button*/}
+                {/*  icon={*/}
+                {/*    <FavouriteIcon*/}
+                {/*      size="7"*/}
+                {/*      name={this.state.heartIcon}*/}
+                {/*      color="#fff"*/}
+                {/*    />*/}
+                {/*  }*/}
+                {/*  buttonStyle={{*/}
+                {/*    width: 60,*/}
+                {/*    height: 60,*/}
+                {/*    borderRadius: 50,*/}
+                {/*    backgroundColor: '#B64F54',*/}
+                {/*    alignItems: 'center',*/}
+                {/*    justifyContent: 'center',*/}
+                {/*  }}*/}
+                {/*  loading={this.state.isLoading}*/}
+                {/*  onPress={() => this.onHeart()}*/}
+                {/*/>*/}
               </View>
             </View>
           </View>

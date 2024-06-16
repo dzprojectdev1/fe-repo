@@ -69,7 +69,8 @@ class FirstScreen extends Component {
   }
 
   async componentDidMount() {
-    let isAllowed = await this.checkMultiPermissions();
+    // let isAllowed = await this.checkMultiPermissions();
+    let isAllowed = true;
     if (isAllowed) {
       let fcmToken = await messaging().getToken();
       if (fcmToken) {
@@ -200,7 +201,7 @@ class FirstScreen extends Component {
 
   nextThrough = responseJson => {
     // connected successfully
-    console.log("responseJson Frst Screen", responseJson);
+    // console.log("responseJson First Screen", responseJson);
     this.props.updateUserData(responseJson.user);
     Global.saveData.token = responseJson.user.token;
     Global.saveData.u_id = responseJson.user.id;

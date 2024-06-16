@@ -185,7 +185,7 @@ class ProfileSetting extends Component {
     });
   };
   onBack() {
-    this.props.navigation.navigate(Global.saveData.prevpage);
+    this.props.navigation.navigate(Global.saveData.prevpage ? Global.saveData.prevpage : 'BrowseList');
   }
   gotoTermofService() {
     this.props.navigation.navigate('TermsPolicy');
@@ -737,38 +737,44 @@ class ProfileSetting extends Component {
               }}
             />
           </View>
-          <View
-            style={{
-              width: DEVICE_WIDTH * 0.8,
-              marginLeft: DEVICE_WIDTH * 0.1,
-              marginTop: 10,
-            }}>
-            <View>
-              <Text style={{color: '#808080', fontSize: 12}}>
-                {'DIAMONDS PER MESSAGE'}
-              </Text>
-              <Text
-                style={{
-                  color: '#808080',
-                  fontSize: 10,
-                  marginTop: 10,
-                  flexWrap: 'wrap',
-                }}>
-                {'Number of diamonds received per message for Incoming Hearts'}
-              </Text>
+          {Global.saveData.is_admin === 1 && (
+            <View
+              style={{
+                width: DEVICE_WIDTH * 0.8,
+                marginLeft: DEVICE_WIDTH * 0.1,
+                marginTop: 10,
+              }}>
+              <View>
+                <Text style={{color: '#808080', fontSize: 12}}>
+                  {'DIAMONDS PER MESSAGE'}
+                </Text>
+                <Text
+                  style={{
+                    color: '#808080',
+                    fontSize: 10,
+                    marginTop: 10,
+                    flexWrap: 'wrap',
+                  }}>
+                  {
+                    'Number of diamonds received per message for Incoming Hearts'
+                  }
+                </Text>
+              </View>
+              <View style={styles.SectionStyle}>
+                <Image source={diamond} style={{width: 20, height: 20}} />
+                <TextInput
+                  style={{color: '#808080', fontSize: 10, width: '100%'}}
+                  onChangeText={value => this.checkCount(value)}
+                  value={'' + this.state.coin_per_message}
+                />
+              </View>
+              {this.state.errorMsg && (
+                <Text style={styles.requiredSent}>
+                  * {this.state.msgError}{' '}
+                </Text>
+              )}
             </View>
-            <View style={styles.SectionStyle}>
-              <Image source={diamond} style={{width: 20, height: 20}} />
-              <TextInput
-                style={{color: '#808080', fontSize: 10, width: '100%'}}
-                onChangeText={value => this.checkCount(value)}
-                value={'' + this.state.coin_per_message}
-              />
-            </View>
-            {this.state.errorMsg && (
-              <Text style={styles.requiredSent}>* {this.state.msgError} </Text>
-            )}
-          </View>
+          )}
           <View
             style={{
               width: DEVICE_WIDTH * 0.8,

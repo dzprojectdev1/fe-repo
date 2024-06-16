@@ -206,6 +206,20 @@ class Register2 extends Component {
         city_index = item.id;
       }
     });
+    // const details = {
+    //   username: this.state.nickName.trim(),
+    //   usergender: this.state.gender,
+    //   description: this.state.description.trim(),
+    //   language: language_index,
+    //   country: country_index,
+    //   ethnicity: city_index,
+    //   birth_date: this.state.birthday,
+    //   lat_geo: position !== null ? position.coords.latitude : 0,
+    //   long_geo: position !== null ? position.coords.longitude : 0,
+    //   device_id: deviceInfo.device_id,
+    //   fcm_id: deviceInfo.fcm_id,
+    // };
+
     const details = {
       username: this.state.nickName.trim(),
       usergender: this.state.gender,
@@ -214,8 +228,8 @@ class Register2 extends Component {
       country: country_index,
       ethnicity: city_index,
       birth_date: this.state.birthday,
-      lat_geo: position !== null ? position.coords.latitude : 0,
-      long_geo: position !== null ? position.coords.longitude : 0,
+      lat_geo: 0,
+      long_geo: 0,
       device_id: deviceInfo.device_id,
       fcm_id: deviceInfo.fcm_id,
     };
@@ -296,27 +310,29 @@ class Register2 extends Component {
         register_click_count: 1,
       });
       if (Platform.OS === 'android') {
-        let isPermission = await this.checkMultiPermissions();
+        // let isPermission = await this.checkMultiPermissions();
+        let isPermission = true;
         if (isPermission) {
-          Geolocation.getCurrentPosition(
-            position => {
-              this.createNewAccount(position);
-            },
-            error => {
-              console.error(error);
-              console.error(error.code);
-              console.error(error.message);
-              if (error.code == 2) {
-                this.createNewAccount(null);
-              } else {
-                // See error code charts below.
-                alert(error.message);
-                return null;
-              }
-            },
-            // { enableHighAccuracy: Platform.OS != 'android', timeout: 5000, }
-            {enableHighAccuracy: false, timeout: 25000, maximumAge: 3600000},
-          );
+          this.createNewAccount(null);
+          // Geolocation.getCurrentPosition(
+          //   position => {
+          //     this.createNewAccount(position);
+          //   },
+          //   error => {
+          //     console.error(error);
+          //     console.error(error.code);
+          //     console.error(error.message);
+          //     if (error.code == 2) {
+          //       this.createNewAccount(null);
+          //     } else {
+          //       // See error code charts below.
+          //       alert(error.message);
+          //       return null;
+          //     }
+          //   },
+          //   // { enableHighAccuracy: Platform.OS != 'android', timeout: 5000, }
+          //   {enableHighAccuracy: false, timeout: 25000, maximumAge: 3600000},
+          // );
         } else {
           Alert.alert(
             'Alert',
@@ -326,23 +342,24 @@ class Register2 extends Component {
           );
         }
       } else if (Platform.OS === 'ios') {
-        await Geolocation.requestAuthorization();
-        Geolocation.getCurrentPosition(
-          position => {
-            this.createNewAccount(position);
-          },
-          error => {
-            if (error.code == 2) {
-              this.createNewAccount(null);
-            } else {
-              // See error code charts below.
-              alert(error.message);
-              return null;
-            }
-          },
-          // { enableHighAccuracy: Platform.OS != 'android', timeout: 5000, }
-          {enableHighAccuracy: true, timeout: 15000},
-        );
+        this.createNewAccount(null);
+        // await Geolocation.requestAuthorization();
+        // Geolocation.getCurrentPosition(
+        //   position => {
+        //     this.createNewAccount(position);
+        //   },
+        //   error => {
+        //     if (error.code == 2) {
+        //       this.createNewAccount(null);
+        //     } else {
+        //       // See error code charts below.
+        //       alert(error.message);
+        //       return null;
+        //     }
+        //   },
+        //   // { enableHighAccuracy: Platform.OS != 'android', timeout: 5000, }
+        //   {enableHighAccuracy: true, timeout: 15000},
+        // );
       }
     }
   };

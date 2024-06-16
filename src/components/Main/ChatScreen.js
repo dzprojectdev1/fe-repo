@@ -16,6 +16,7 @@ import {
   Platform,
   ImageBackground,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
@@ -36,6 +37,7 @@ import hiddenMan from '../../assets/images/hidden_man.png';
 import call_ring from '../../assets/images/call_ring_accept.png';
 import call_video from '../../assets/images/call_video.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
+import icClose from '../../assets/images/ic_close.png';
 import shooting_star from '../../assets/images/shooting_star.png';
 import yellow_star from '../../assets/images/yellow_star.png';
 import ban_black from '../../assets/images/ban_black.png';
@@ -54,10 +56,31 @@ class ChatScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
+
+  replacePlaceholders = (template, replacements) => {
+    return template.replace(/#(\w+)#/g, (match, p1) => {
+      return replacements[p1] || match;
+    });
+  };
+
   constructor(props) {
     super(props);
     const {data} = props.route.params;
-
+    const template =
+      'My name is #name#, who is #age# year old #gender# living in the #country#. #description#. I know only #language#.';
+    const template1 =
+      ' #name#, who is #age# year old #gender# living in the #country#. #description#. I know only #language#.';
+    const replacements = {
+      name: Global.saveData.u_name,
+      age: Global.saveData.u_age,
+      gender: Global.saveData.u_gender === 1 ? 'Male' : 'Female',
+      country: Global.saveData.u_country,
+      description: Global.saveData.u_description,
+      language: Global.saveData.u_language,
+    };
+    const result = this.replacePlaceholders(template, replacements);
+    const result1 = this.replacePlaceholders(template1, replacements);
+    this.onEndReachedCalledDuringMomentum = true;
     this.state = {
       other: {
         userId: data.data.other_user_id,
@@ -68,16 +91,29 @@ class ChatScreen extends React.Component {
         fan_count: data.data.fan_count,
         ai_friend: data.data.ai_friend,
         ai_personality: data.data.ai_personality,
+        img_message: data.data.img_message,
       },
       oppoentData: null,
       matchId: data.data.match_id,
       textMessage: '',
       messageList: [],
-      tempmessageList: [{role: 'system', content: data.data.ai_personality}],
+      orgAiPersonality: data.data.ai_personality,
+      orgAiPersonalities: result1,
+      tempmessageList: [
+        {
+          role: 'system',
+          content: data.data.ai_personality
+            ? data.data.ai_personality.replace('#userdata#', result1)
+            : '',
+        },
+        {role: 'user', content: result},
+      ],
       coinCount: Global.saveData.coin_count,
       visible: false,
       fanUserVisible: false,
       noFanUserVisible: false,
+      imagLarge: false,
+      imagLargeUrl: '',
       errorMsg: false,
       msgError: '',
       sendDiamondsCount: 0,
@@ -89,6 +125,14 @@ class ChatScreen extends React.Component {
       menu: false,
       isLoading: true,
       isInitialRender: false,
+      ai_images_data: [],
+      ai_image_id: 0,
+      ai_image_sent: 0,
+      dimensions: {adjustedWidth: 628 / 2.5, adjustedHeight: 1120 / 2.5},
+      limit: 10,
+      lastFetchedIndex: 0,
+      lastKey: null,
+      allMessageList: [],
     };
     this.flatListRef = React.createRef();
     this.scrollViewRef = React.createRef();
@@ -164,6 +208,81 @@ class ChatScreen extends React.Component {
     this.getStatusByMatchId();
   }
 
+  getUserImagesData = () => {
+    const userId = this.state.other.userId;
+    fetch(`${SERVER_URL}/api/chat/getChatAIImageUrl/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: Global.saveData.token,
+      },
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        if (!responseJson.error) {
+          this.setState({
+            ai_images_data: responseJson.data,
+          });
+        }
+      })
+      .catch(error => {
+        return;
+      });
+  };
+
+  getUserImageLastData = () => {
+    const userId = this.state.other.userId;
+    const details = {
+      user_sent: userId,
+      user_received: Global.saveData.u_id,
+    };
+    let formBody = [];
+    for (const property in details) {
+      const encodedKey = encodeURIComponent(property);
+      const encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + '=' + encodedValue);
+    }
+    formBody = formBody.join('&');
+    fetch(`${SERVER_URL}/api/chat/getChatAIImageUrlId/${userId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: Global.saveData.token,
+      },
+      body: formBody,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        if (!responseJson.error) {
+          if (responseJson.data === undefined && responseJson.content === '') {
+            this.setState({
+              ai_image_id: 0,
+            });
+          } else if (responseJson.data) {
+            this.setState({
+              ai_image_id: responseJson.data[0].image_id,
+            });
+            let tdata = '';
+            if (
+              this.state.ai_images_data != undefined &&
+              this.state.ai_images_data.length > 0
+            ) {
+              tdata = this.state.ai_images_data.find(
+                item => (item.id = responseJson.data[0].image_id),
+              );
+            }
+            const temp = this.state.orgAiPersonality
+              .replace('#userdata#', this.state.orgAiPersonalities)
+              .replace('#currentaction#', tdata.user_current_action);
+            this.state.tempmessageList[0].content = temp;
+          }
+        }
+      })
+      .catch(error => {
+        return;
+      });
+  };
+
   getStatusByMatchId = () => {
     var details = {
       matchId: this.state.matchId,
@@ -215,19 +334,35 @@ class ChatScreen extends React.Component {
       .child(u_id.toString())
       .child(userId.toString());
 
+    // this.fetchMessages();
     // Fetch initial chat messages once
     this.chatRef.once('value', snapshot => {
       let messages = snapshot.val() ? Object.values(snapshot.val()) : [];
       messages.sort((a, b) => a.time - b.time);
       if (this.state.other.ai_friend === 1) {
-        this.setState(prevState => {
-          return {
-            messageList: messages,
-          };
-        });
+        // this.setState(prevState => {
+        //   return {
+        //     messageList: messages,
+        //   };
+        // });
+        this.setState(
+          {
+            allMessageList: messages,
+          },
+          this.loadInitialMessages,
+        );
 
         let temp = this.state.tempmessageList;
-        messages.map((message, index) =>
+        messages.map((message, index) => {
+          if (message?.user_image_url) {
+            const temp = this.state.orgAiPersonality
+              .replace('#userdata#', this.state.orgAiPersonalities)
+              .replace('#currentaction#', message?.user_current_action);
+            temp.push({
+              role: 'assistant',
+              content: temp,
+            });
+          }
           temp.push({
             role: message.from === u_id ? 'user' : 'assistant',
             content:
@@ -235,8 +370,12 @@ class ChatScreen extends React.Component {
                 ? 'Response/Reply should be less then 200 character only for \n' +
                   message.message
                 : message.message,
-          }),
-        );
+          });
+        });
+
+        if (messages.length === 0) {
+          this.setState({isLoading: false});
+        }
 
         this.setState(prevState => {
           return {
@@ -258,9 +397,7 @@ class ChatScreen extends React.Component {
 
     // Register child_added listener after the initial load
     this.chatRef.on('child_added', value => {
-      console.log('child_added', this.state.isLoading);
       if (!this.state.isLoading) {
-        console.log('child_added 1', value.val());
         if (this.state.other.ai_friend === 1) {
           let conversationHistory = {
             role: value.val().from === u_id ? 'user' : 'assistant',
@@ -270,9 +407,14 @@ class ChatScreen extends React.Component {
                   value.val().message
                 : value.val().message,
           };
-
+          // this.setState(prevState => {
+          //   return {
+          //     messageList: [...prevState.messageList, value.val()],
+          //   };
+          // });
           this.setState(prevState => {
             return {
+              allMessageList: [...prevState.allMessageList, value.val()],
               messageList: [...prevState.messageList, value.val()],
             };
           });
@@ -295,8 +437,14 @@ class ChatScreen extends React.Component {
             };
           });
         }
-        if (this.scrollView) {
-          this.scrollView.scrollToEnd({animated: true});
+        // if (this.scrollView) {
+        //   this.scrollView.scrollToEnd({animated: true});
+        // }
+        if (this.flatListRef.current) {
+          // setTimeout(() => {
+          //   this.flatListRef.current.scrollToEnd({animated: true});
+          // }, 10);
+          this.scrollToBottom();
         }
       }
     });
@@ -331,11 +479,68 @@ class ChatScreen extends React.Component {
     //     this.scrollView.scrollToEnd({animated: true});
     //   }, 200);
     // }
+    if (
+      this.state.other.ai_friend === 1 &&
+      this.state.other.ai_personality !== '' &&
+      this.state.other.ai_personality !== null
+    ) {
+      this.getUserImagesData();
+      this.getUserImageLastData();
+    }
+    // setTimeout(() => {
+    //   this.loadInitialMessages();
+    // }, 200);
   }
 
+  loadInitialMessages = () => {
+    const {limit, allMessageList} = this.state;
+    const lastMessages = allMessageList.slice(-limit);
+    this.setState({
+      messageList: lastMessages,
+      lastFetchedIndex: allMessageList.length - limit,
+    });
+  };
+
+  loadMoreMessages = () => {
+    const {lastFetchedIndex, limit, allMessageList, messageList} = this.state;
+    if (this.state.isLoading || lastFetchedIndex <= 0) {
+      return;
+    }
+
+    this.setState({isLoading: true}, () => {
+      const newLastFetchedIndex = Math.max(lastFetchedIndex - limit, 0);
+      const moreMessages = allMessageList.slice(
+        newLastFetchedIndex,
+        lastFetchedIndex,
+      );
+      this.setState(prevState => ({
+        messageList: [...moreMessages, ...prevState.messageList],
+        lastFetchedIndex: newLastFetchedIndex,
+        isLoading: false,
+      }));
+    });
+  };
+
+  handleScroll = ({nativeEvent}) => {
+    const {contentOffset, layoutMeasurement, contentSize} = nativeEvent;
+    const threshold = 20;
+    if (contentOffset.y <= threshold) {
+      if (!this.onEndReachedCalledDuringMomentum) {
+        this.loadMoreMessages();
+        this.onEndReachedCalledDuringMomentum = true;
+      }
+    }
+  };
+
   scrollToBottom = () => {
-    if (this.scrollView) {
-      this.scrollView.scrollToEnd({animated: true});
+    // if (this.scrollView) {
+    // this.scrollView.scrollToEnd({animated: true});
+    // }
+
+    if (this.flatListRef.current && this.state.messageList.length > 0) {
+      setTimeout(() => {
+        this.flatListRef.current.scrollToEnd({animated: true});
+      }, 50);
     }
   };
 
@@ -374,11 +579,7 @@ class ChatScreen extends React.Component {
   checkUnReadMessage = () => {
     const u_id = Global.saveData.u_id;
     const userId = this.state.other.userId;
-    console.log(
-      'ChatDetail checkUnReadMessage => ',
-      u_id,
-      typeof u_id.toString(),
-    );
+
     database()
       .ref()
       .child('dz-chat-unread')
@@ -433,7 +634,10 @@ class ChatScreen extends React.Component {
   backPressed = () => {
     this.setState({
       menu: false,
+      messageList: [],
+      lastKey: null,
     });
+
     if (
       Global.saveData.prevpage == 'Chat' ||
       Global.saveData.prevpage == 'ChatDetail' ||
@@ -451,21 +655,31 @@ class ChatScreen extends React.Component {
   };
 
   keyboardDidShow(e) {
-    if (this._mounted && this.scrollView) {
-      this.scrollView.scrollToEnd({animated: true});
+    // if (this._mounted && this.scrollView) {
+    //   this.scrollView.scrollToEnd({animated: true});
+    // }
+    if (this._mounted && this.flatListRef.current) {
+      // setTimeout(() => {
+      //   this.flatListRef.current.scrollToEnd({animated: true});
+      // }, 10);
+      this.scrollToBottom();
     }
   }
 
   keyboardDidHide(e) {
-    if (this._mounted && this.scrollView) {
-      this.scrollView.scrollToEnd({animated: true});
+    if (this._mounted && this.flatListRef.current) {
+      // setTimeout(() => {
+      //   this.flatListRef.current.scrollToEnd({animated: true});
+      // }, 10);
+      this.scrollToBottom();
     }
+    // if (this._mounted && this.scrollView) {
+    //   this.scrollView.scrollToEnd({animated: true});
+    // }
   }
 
   setMenuRef = ref => {
-    console.log(ref);
     this._menu = ref;
-    console.log(this._menu);
   };
 
   hideMenu = () => {
@@ -480,7 +694,6 @@ class ChatScreen extends React.Component {
   showMenu = () => {
     this.checkFanUser();
     this._menu.show();
-    console.log(this._menu.current);
     // this.setState({
     //   menu: true,
     // });
@@ -532,11 +745,6 @@ class ChatScreen extends React.Component {
       .then(response => response.json())
       .then(responseJson => {
         if (responseJson.error === false) {
-          console.log(
-            'ChatDetail requestBlock => ',
-            Global.saveData.u_id,
-            this.state.other.userId,
-          );
           const u_id = Global.saveData.u_id;
           const userId = this.state.other.userId;
           database()
@@ -640,9 +848,79 @@ class ChatScreen extends React.Component {
     }
   };
 
+  updateChatImageHistory = (chat_id, id, tempcontent) => {
+    const details = {
+      ai_user_id: this.state.other.userId,
+      ai_user_name: this.state.other.name,
+      real_user_id: Global.saveData.u_id,
+      real_user_name: Global.saveData.u_name,
+      chat_id: chat_id,
+      image_id: id,
+      user_current_action: tempcontent,
+    };
+
+    let formBody = [];
+    for (const property in details) {
+      const encodedKey = encodeURIComponent(property);
+      const encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + '=' + encodedValue);
+    }
+    formBody = formBody.join('&');
+    fetch(`${SERVER_URL}/api/chat/chatHistoryUpdate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: Global.saveData.token,
+      },
+      body: formBody,
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        if (!responseJson.error) {
+          this.setState(prevState => {
+            return {
+              ai_image_id: id,
+            };
+          });
+        }
+      })
+      .catch(error => {
+        // alert(JSON.stringify(error))
+        return;
+      });
+  };
+
   callbackChat = () => {
-    const {textMessage, matchId} = this.state;
-    console.log('here', this.state.tempmessageList);
+    const {matchId} = this.state;
+    let img = '';
+    let tempcontent = '';
+    let imgid = 0;
+
+    if (
+      this.state.ai_image_sent == this.state.other.img_message &&
+      this.state.ai_images_data != undefined &&
+      this.state.ai_images_data.length > 0
+    ) {
+      const filteredArray =
+        this.state.ai_image_id === 0
+          ? this.state.ai_images_data[0]
+          : this.state.ai_images_data.find(
+              item => item.id > this.state.ai_image_id,
+            );
+
+      img = filteredArray.user_image_url;
+      tempcontent = filteredArray.user_current_action;
+      imgid = filteredArray.id;
+      const temp = this.state.orgAiPersonality
+        .replace('#userdata#', this.state.orgAiPersonalities)
+        .replace('#currentaction#', tempcontent);
+      this.state.tempmessageList[0].content = temp;
+      this.state.tempmessageList.push({
+        role: 'assistant',
+        content: temp,
+      });
+    }
+
     fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -665,10 +943,15 @@ class ChatScreen extends React.Component {
       .then(response => response.json())
       .then(responseJson => {
         const messageOfChat = responseJson.choices[0].message.content.trim();
-        console.log('responseJson => ', JSON.stringify(responseJson));
         const details = {
           matchId: matchId,
           messageText: responseJson.choices[0].message.content.trim(),
+          user_image_url:
+            this.state.ai_image_sent == this.state.other.img_message ? img : '',
+          user_current_action:
+            this.state.ai_image_sent == this.state.other.img_message
+              ? tempcontent
+              : '',
         };
         let formBody = [];
         for (const property in details) {
@@ -688,6 +971,13 @@ class ChatScreen extends React.Component {
           .then(response => response.json())
           .then(responseJson => {
             if (responseJson.data.account_status == 1) {
+              if (this.state.ai_image_sent == this.state.other.img_message) {
+                this.updateChatImageHistory(
+                  responseJson.data.receiveResult.insertId,
+                  imgid,
+                  tempcontent,
+                );
+              }
               const u_id = this.state.other.userId;
               const userId = Global.saveData.u_id;
               let msgId = database()
@@ -701,6 +991,18 @@ class ChatScreen extends React.Component {
                 message: messageOfChat,
                 time: firebase.database.ServerValue.TIMESTAMP,
                 from: u_id,
+                user_image_id:
+                  this.state.ai_image_sent == this.state.other.img_message
+                    ? imgid
+                    : null,
+                user_image_url:
+                  this.state.ai_image_sent == this.state.other.img_message
+                    ? img
+                    : null,
+                user_current_action:
+                  this.state.ai_image_sent == this.state.other.img_message
+                    ? tempcontent
+                    : null,
                 read: true,
               };
               updates[
@@ -714,6 +1016,18 @@ class ChatScreen extends React.Component {
                 message: messageOfChat,
                 time: firebase.database.ServerValue.TIMESTAMP,
                 from: u_id,
+                user_image_id:
+                  this.state.ai_image_sent == this.state.other.img_message
+                    ? imgid
+                    : null,
+                user_image_url:
+                  this.state.ai_image_sent == this.state.other.img_message
+                    ? img
+                    : null,
+                user_current_action:
+                  this.state.ai_image_sent == this.state.other.img_message
+                    ? tempcontent
+                    : null,
                 read: false,
               };
               updates[
@@ -724,8 +1038,19 @@ class ChatScreen extends React.Component {
                   msgId
               ] = receiverMessage;
               database().ref().child('dz-chat-data').update(updates);
-              if (this.scrollView) {
-                this.scrollView.scrollToEnd({animated: true});
+              // if (this.scrollView) {
+              //   this.scrollView.scrollToEnd({animated: true});
+              // }
+              if (this.flatListRef.current) {
+                // this.flatListRef.current.scrollToEnd({ animated: true });
+                this.scrollToBottom();
+              }
+              if (this.state.ai_image_sent == this.state.other.img_message) {
+                this.setState(prevState => {
+                  return {
+                    ai_image_sent: 0,
+                  };
+                });
               }
             } else {
               Alert.alert('', responseJson.message, [], {cancelable: false});
@@ -746,6 +1071,20 @@ class ChatScreen extends React.Component {
     const {textMessage, matchId} = this.state;
 
     this.setState({textMessage: ''});
+    if (
+      this.state.other.ai_friend === 1 &&
+      this.state.other.ai_personality !== '' &&
+      this.state.other.ai_personality !== null
+    ) {
+      this.setState(prevState => {
+        return {
+          ai_image_sent:
+            prevState.ai_image_sent >= this.state.ai_image_sent
+              ? prevState.ai_image_sent + 1
+              : 0,
+        };
+      });
+    }
 
     var details = {
       matchId: matchId,
@@ -770,11 +1109,6 @@ class ChatScreen extends React.Component {
       .then(responseJson => {
         if (responseJson.data.account_status == 1) {
           if (responseJson.data.sending_available) {
-            console.log(
-              'ChatDetail createNewMessage => ',
-              Global.saveData.u_id,
-              this.state.other.userId,
-            );
             const u_id = Global.saveData.u_id;
             const userId = this.state.other.userId;
 
@@ -805,8 +1139,12 @@ class ChatScreen extends React.Component {
             ] = receiverMessage;
             database().ref().child('dz-chat-data').update(updates);
 
-            if (this.scrollView) {
-              this.scrollView.scrollToEnd({animated: true});
+            // if (this.scrollView) {
+            //   this.scrollView.scrollToEnd({animated: true});
+            // }
+            if (this.flatListRef.current) {
+              // this.flatListRef.current.scrollToEnd({ animated: true });
+              this.scrollToBottom();
             }
 
             if (
@@ -891,15 +1229,17 @@ class ChatScreen extends React.Component {
               coin_count: newData.coin_count,
               fan_count: newData.fan_count,
               coin_per_message: newData.coin_per_message,
+              ai_friend: this.state.other.ai_friend,
+              ai_personality: this.state.other.ai_personality,
             },
           });
         }
       })
       .catch(error => {
-        //   alert(JSON.stringify(error));
         return;
       });
   };
+
   gotoShop = () => {
     this.setState({
       visible: false,
@@ -1230,84 +1570,178 @@ class ChatScreen extends React.Component {
       });
   };
 
+  handleMomentumScrollBegin = () => {
+    this.onEndReachedCalledDuringMomentum = false;
+  };
+
   renderRow = ({item, index}) => {
     const isLastMessage = index === this.state.messageList.length - 1;
     return (
-      <View
-        key={index}
-        ref={isLastMessage ? this.lastMessageRef : null}
-        onLayout={isLastMessage ? this.onLastMessageLayout : null}
-        style={{
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}>
-        {/* <View style={{alignSelf: 'center', paddingLeft: 10, paddingRight: 10}}>
+      <>
+        {item?.user_image_url != '' && item?.user_image_url != null && (
+          <View
+            key={`${index}_0${index}`}
+            style={{
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}>
+            {/* <View style={{alignSelf: 'center', paddingLeft: 10, paddingRight: 10}}>
                     <Text style={{color: '#000', fontSize: 14}}>{this.setChatDate(item)}</Text>
                 </View> */}
+            <View
+              style={{
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                alignSelf:
+                  item.from === Global.saveData.u_id
+                    ? 'flex-end'
+                    : 'flex-start',
+                margin: 10,
+                marginLeft: 15,
+                maxWidth: '70%',
+              }}>
+              <Text
+                style={{
+                  padding: 3,
+                  fontSize: 12,
+                  color: '#000',
+                  alignSelf: 'flex-end',
+                }}>
+                {this.formatAMPM(item.time)}
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  backgroundColor:
+                    item.from === Global.saveData.u_id ? '#D5d5d5' : '#B64F54',
+                  borderRadius: 20,
+                  padding: 8,
+                  paddingLeft: item.from === Global.saveData.u_id ? 10 : 5,
+                  shadowColor: '#efefef',
+                  shadowOpacity: 0.8,
+                  shadowRadius: 2,
+                  shadowOffset: {
+                    height: 1,
+                    width: 1,
+                  },
+                }}
+                elevation={5}>
+                {item.from === this.state.other.userId && (
+                  <TouchableHighlight
+                    style={styles.avatarBtn}
+                    onPress={() => this.gotoProfilePage()}>
+                    <Image
+                      style={styles.avatar}
+                      source={
+                        this.state.other.imgUrl
+                          ? {uri: this.state.other.imgUrl}
+                          : hiddenMan
+                      }
+                    />
+                  </TouchableHighlight>
+                )}
+                <View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({
+                        imagLargeUrl: item?.user_image_url,
+                      });
+                      this.setState({
+                        imagLarge: true,
+                      });
+                    }}>
+                    <Image
+                      style={{
+                        width: this.state.dimensions?.adjustedWidth,
+                        height: this.state.dimensions?.adjustedHeight,
+                        borderRadius: 10,
+                      }}
+                      resizeMode="contain"
+                      source={{uri: item?.user_image_url}}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
         <View
+          key={index}
+          ref={isLastMessage ? this.lastMessageRef : null}
+          onLayout={isLastMessage ? this.onLastMessageLayout : null}
           style={{
             flexDirection: 'column',
             justifyContent: 'space-between',
-            alignSelf:
-              item.from === Global.saveData.u_id ? 'flex-end' : 'flex-start',
-            margin: 10,
-            marginLeft: 15,
-            maxWidth: '70%',
           }}>
-          <Text
-            style={{
-              padding: 3,
-              fontSize: 12,
-              color: '#000',
-              alignSelf: 'flex-end',
-            }}>
-            {this.formatAMPM(item.time)}
-          </Text>
+          {/* <View style={{alignSelf: 'center', paddingLeft: 10, paddingRight: 10}}>
+                    <Text style={{color: '#000', fontSize: 14}}>{this.setChatDate(item)}</Text>
+                </View> */}
           <View
             style={{
-              flexDirection: 'row',
+              flexDirection: 'column',
               justifyContent: 'space-between',
-              backgroundColor:
-                item.from === Global.saveData.u_id ? '#D5d5d5' : '#B64F54',
-              borderRadius: 20,
-              padding: 8,
-              paddingLeft: item.from === Global.saveData.u_id ? 10 : 35,
-              shadowColor: '#efefef',
-              shadowOpacity: 0.8,
-              shadowRadius: 2,
-              shadowOffset: {
-                height: 1,
-                width: 1,
-              },
-            }}
-            elevation={5}>
-            {item.from === this.state.other.userId && (
-              <TouchableHighlight
-                style={styles.avatarBtn}
-                onPress={() => this.gotoProfilePage()}>
-                <Image
-                  style={styles.avatar}
-                  source={
-                    this.state.other.imgUrl
-                      ? {uri: this.state.other.imgUrl}
-                      : hiddenMan
-                  }
-                />
-              </TouchableHighlight>
-            )}
-            <View>
-              <Text
-                style={{
-                  padding: 7,
-                  fontSize: 15,
-                  color: item.from === Global.saveData.u_id ? '#000' : '#FFF',
-                }}>
-                {item.message}
-              </Text>
+              alignSelf:
+                item.from === Global.saveData.u_id ? 'flex-end' : 'flex-start',
+              margin: 10,
+              marginLeft: 15,
+              maxWidth: '70%',
+            }}>
+            <Text
+              style={{
+                padding: 3,
+                fontSize: 12,
+                color: '#000',
+                alignSelf: 'flex-end',
+              }}>
+              {this.formatAMPM(item.time)}
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                backgroundColor:
+                  item.from === Global.saveData.u_id ? '#D5d5d5' : '#B64F54',
+                borderRadius: 20,
+                padding: 8,
+                paddingLeft: item.from === Global.saveData.u_id ? 10 : 35,
+                shadowColor: '#efefef',
+                shadowOpacity: 0.8,
+                shadowRadius: 2,
+                shadowOffset: {
+                  height: 1,
+                  width: 1,
+                },
+              }}
+              elevation={5}>
+              {item.from === this.state.other.userId && (
+                <TouchableHighlight
+                  style={styles.avatarBtn}
+                  onPress={() => this.gotoProfilePage()}>
+                  <Image
+                    style={styles.avatar}
+                    source={
+                      this.state.other.imgUrl
+                        ? {uri: this.state.other.imgUrl}
+                        : hiddenMan
+                    }
+                  />
+                </TouchableHighlight>
+              )}
+              <View>
+                <Text
+                  style={{
+                    padding: 7,
+                    fontSize: 15,
+                    color: item.from === Global.saveData.u_id ? '#000' : '#FFF',
+                  }}>
+                  {item.message}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
+      </>
     );
   };
 
@@ -1404,6 +1838,42 @@ class ChatScreen extends React.Component {
                   </TouchableOpacity>
                 </View>
               </View>
+            </View>
+          </View>
+        </Dialog>
+
+        <Dialog
+          visible={this.state.imagLarge}
+          dialogAnimation={
+            new SlideAnimation({
+              slideFrom: 'top',
+            })
+          }>
+          <View style={[styles.screenOverlay]}>
+            <View style={{position: 'absolute', right: 30, top: 20}}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({
+                    imagLarge: false,
+                  });
+                }}>
+                <Image style={{width: 24, height: 24}} source={icClose} />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={[
+                styles.dialogPrompt,
+                {backgroundColor: '#000', marginTop: 50},
+              ]}>
+              <Image
+                style={{
+                  width: Dimensions.get('window').width - 20,
+                  height: Dimensions.get('window').height - 75,
+                  borderRadius: 10,
+                  resizeMode: 'cover',
+                }}
+                source={{uri: this.state.imagLargeUrl}}
+              />
             </View>
           </View>
         </Dialog>
@@ -1585,55 +2055,57 @@ class ChatScreen extends React.Component {
               </View>
             </TouchableOpacity>
           </View>
-          <View style={styles.menuIcon}>
-            <Menu
-              visible={this.state.menu}
-              anchor={
-                <TouchableOpacity
-                  onPress={() => {
-                    this.setState({
-                      menu: true,
-                    });
-                  }}>
-                  <Text>
-                    <Icon name="more-vert" size={30} color="black" />
+          {Global.saveData.is_admin === 1 && (
+            <View style={styles.menuIcon}>
+              <Menu
+                visible={this.state.menu}
+                anchor={
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({
+                        menu: true,
+                      });
+                    }}>
+                    <Text>
+                      <Icon name="more-vert" size={30} color="black" />
+                    </Text>
+                  </TouchableOpacity>
+                }
+                onRequestClose={() => {
+                  this.setState({
+                    menu: false,
+                  });
+                }}>
+                <MenuItem onPress={this.setBlock}>
+                  <Image
+                    source={ban_black}
+                    style={{width: 20, height: 20, marginRight: 30}}
+                  />
+                  <Text style={{color: '#000'}}>{'   Leave Chat Room'}</Text>
+                </MenuItem>
+                <MenuDivider />
+                <MenuItem onPress={this.setReport}>
+                  <Image
+                    source={notification_black}
+                    style={{width: 20, height: 20, marginRight: 30}}
+                  />
+                  <Text style={{color: '#000'}}>
+                    {'   Report & Leave Chat Room'}
                   </Text>
-                </TouchableOpacity>
-              }
-              onRequestClose={() => {
-                this.setState({
-                  menu: false,
-                });
-              }}>
-              <MenuItem onPress={this.setBlock}>
-                <Image
-                  source={ban_black}
-                  style={{width: 20, height: 20, marginRight: 30}}
-                />
-                <Text style={{color: '#000'}}>{'   Leave Chat Room'}</Text>
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem onPress={this.setReport}>
-                <Image
-                  source={notification_black}
-                  style={{width: 20, height: 20, marginRight: 30}}
-                />
-                <Text style={{color: '#000'}}>
-                  {'   Report & Leave Chat Room'}
-                </Text>
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem onPress={this.showSendDiamondsModal}>
-                <Image
-                  source={yellow_star}
-                  style={{width: 20, height: 20, marginRight: 30}}
-                />
-                <Text style={{color: '#000'}}>
-                  {this.state.is_fan ? '   Send Diamonds' : '   Become A Fan'}
-                </Text>
-              </MenuItem>
-            </Menu>
-          </View>
+                </MenuItem>
+                <MenuDivider />
+                <MenuItem onPress={this.showSendDiamondsModal}>
+                  <Image
+                    source={yellow_star}
+                    style={{width: 20, height: 20, marginRight: 30}}
+                  />
+                  <Text style={{color: '#000'}}>
+                    {this.state.is_fan ? '   Send Diamonds' : '   Become A Fan'}
+                  </Text>
+                </MenuItem>
+              </Menu>
+            </View>
+          )}
         </ImageBackground>
 
         {/*<View*/}
@@ -1847,20 +2319,20 @@ class ChatScreen extends React.Component {
         {/*)}*/}
         {/*</View>*/}
 
-        {this.state.isLoading && (
-          <View
-            style={{
-              backgroundColor: 'rgba(0,0,0,0.25)',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100%',
-              width: '100%',
-            }}>
-            <Text style={{color: '#FFF'}}>
-              {'Please wait while loading chat...'}
-            </Text>
-          </View>
-        )}
+        {/*{this.state.isLoading && (*/}
+        {/*  <View*/}
+        {/*    style={{*/}
+        {/*      backgroundColor: 'rgba(0,0,0,0.25)',*/}
+        {/*      justifyContent: 'center',*/}
+        {/*      alignItems: 'center',*/}
+        {/*      height: '100%',*/}
+        {/*      width: '100%',*/}
+        {/*    }}>*/}
+        {/*    <Text style={{color: '#FFF'}}>*/}
+        {/*      {'Please wait while loading chat...'}*/}
+        {/*    </Text>*/}
+        {/*  </View>*/}
+        {/*)}*/}
 
         {this.state.other.ai_personality != '' &&
           this.state.other.ai_personality != null && (
@@ -1872,35 +2344,52 @@ class ChatScreen extends React.Component {
                 padding: 10,
               }}>
               <Text style={{color: '#000', fontSize: 8}}>
-                {this.state.other.ai_personality}
+                {this.state.tempmessageList[0].content}
               </Text>
             </View>
           )}
-        <ScrollView
-          ref={ref => {
-            this.scrollView = ref;
-          }}
-          nestedScrollEnabled={true}
-          // onContentSizeChange={(contentWidth, contentHeight) => {
-          //   if (this.scrollView) {
-          //     setTimeout(() => {
-          //       this.scrollView.scrollToEnd({animated: true});
-          //     }, 200);
-          //   }
-          //   // this.scrollView.scrollToEnd({animated: true});
-          // }}
-        >
-          <FlatList
-            ref={this.flatListRef}
-            style={{padding: 10}}
-            data={this.state.messageList}
-            renderItem={this.renderRow}
-            keyExtractor={(item, index) => index.toString()}
-            // onContentSizeChange={() =>
-            //   this.flatListRef.current.scrollToEnd({animated: true})
-            // }
-          />
-        </ScrollView>
+        {/*<ScrollView*/}
+        {/*  ref={ref => {*/}
+        {/*    this.scrollView = ref;*/}
+        {/*  }}*/}
+        {/*  nestedScrollEnabled={true}*/}
+        {/*  // onScroll={({nativeEvent}) => {*/}
+        {/*  //   if (*/}
+        {/*  //     nativeEvent.contentOffset.y === 0 &&*/}
+        {/*  //     !this.state.isLoading &&*/}
+        {/*  //     this.state.lastFetchedIndex > 0*/}
+        {/*  //   ) {*/}
+        {/*  //     this.loadMoreMessages();*/}
+        {/*  //     // this.setState({isLoading: true}, () =>*/}
+        {/*  //     //   this.fetchMessages(this.state.lastKey),*/}
+        {/*  //     // );*/}
+        {/*  //   }*/}
+        {/*  // }}*/}
+        {/*  // onContentSizeChange={(contentWidth, contentHeight) => {*/}
+        {/*  //   if (this.scrollView) {*/}
+        {/*  //     setTimeout(() => {*/}
+        {/*  //       this.scrollView.scrollToEnd({animated: true});*/}
+        {/*  //     }, 200);*/}
+        {/*  //   }*/}
+        {/*  //   // this.scrollView.scrollToEnd({animated: true});*/}
+        {/*  // }}*/}
+        {/*>*/}
+        <FlatList
+          ref={this.flatListRef}
+          style={{padding: 10}}
+          data={this.state.messageList}
+          renderItem={this.renderRow}
+          keyExtractor={(item, index) => index.toString()}
+          onScroll={this.handleScroll}
+          onMomentumScrollBegin={this.handleMomentumScrollBegin}
+          ListHeaderComponent={() =>
+            this.state.isLoading && <ActivityIndicator />
+          }
+          // onContentSizeChange={() =>
+          //   this.flatListRef.current.scrollToEnd({animated: true})
+          // }
+        />
+        {/*</ScrollView>*/}
         <View style={styles.inputBar}>
           <TextInput
             multiline
@@ -2009,6 +2498,7 @@ const styles = StyleSheet.create({
     borderRadius: 22.5,
     left: -15,
     top: 1,
+    zIndex: 2,
   },
   avatar: {
     width: 45,
