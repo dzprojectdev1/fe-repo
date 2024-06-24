@@ -73,11 +73,18 @@ class FirstScreen extends Component {
   async componentDidMount() {
     // let isAllowed = await this.checkMultiPermissions();
     let isAllowed = true;
+    if (!auth().currentUser) {
+      await auth().signInWithEmailAndPassword(
+        'admin@dorry.ai',
+        'dorry.ai#&T^%^%#UIUG',
+      );
+    }
     if (isAllowed) {
       let fcmToken = await messaging().getToken();
       if (fcmToken) {
         this.props.updateFCMTocken(fcmToken);
-        let deviceId = await this.getdeviceId(); //'dbbe280a087b5d52';
+        let deviceId = await this.getdeviceId();
+        // let deviceId = 'd2c73df212bf1e4f';
         const details = {fcmId: fcmToken};
 
         let formBody = [];
@@ -273,30 +280,26 @@ class FirstScreen extends Component {
   };
 
   checkUnreadMessage = () => {
-    auth()
-      .signInWithEmailAndPassword('admin@dorry.ai', 'dorry.ai#&T^%^%#UIUG')
-      .then(async res => {
-        database()
-          .ref()
-          .child('dz-chat-unread')
-          .child(Global.saveData.u_id + '/')
-          .on('value', value => {
-            let newPayload = {};
-            let senderIdArr = value.toJSON();
-            if (senderIdArr) {
-              senderIdArr = senderIdArr.split(',');
-              newPayload = {
-                unreadFlag: true,
-                senders: senderIdArr,
-              };
-            } else {
-              newPayload = {
-                unreadFlag: false,
-                senders: senderIdArr,
-              };
-            }
-            this.props.changeReadFlag(newPayload);
-          });
+    database()
+      .ref()
+      .child('dz-chat-unread')
+      .child(Global.saveData.u_id + '/')
+      .on('value', value => {
+        let newPayload = {};
+        let senderIdArr = value.toJSON();
+        if (senderIdArr) {
+          senderIdArr = senderIdArr.split(',');
+          newPayload = {
+            unreadFlag: true,
+            senders: senderIdArr,
+          };
+        } else {
+          newPayload = {
+            unreadFlag: false,
+            senders: senderIdArr,
+          };
+        }
+        this.props.changeReadFlag(newPayload);
       });
   };
 

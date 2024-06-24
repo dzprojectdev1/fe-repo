@@ -88,6 +88,10 @@ class AppView extends Component {
     //   authSecret: '8bFeJzqmDgcs8dz',
     //   accountKey: '2qbJaHzhR7UNy89_8xwU',
     // };
+    await auth().signInWithEmailAndPassword(
+      'admin@dorry.ai',
+      'dorry.ai#&T^%^%#UIUG',
+    );
     const appSettings = {
       appId: '103472',
       authKey: 'ak_BpmaurRacApwSu2',
@@ -431,15 +435,12 @@ class AppView extends Component {
     // let msgId = nativeFirebase.database().ref('dz-chat-unread').child(Global.saveData.u_id).push().key;
     let updates = {};
     updates[Global.saveData.u_id] = senderIdArr.toString();
-    auth()
-      .signInWithEmailAndPassword('admin@dorry.ai', 'dorry.ai#&T^%^%#UIUG')
-      .then(async res => {
-        database()
-          .ref()
-          .child('dz-chat-unread')
-          .update(updates)
-          .then(() => console.log('Data updated.'));
-      });
+
+    database()
+      .ref()
+      .child('dz-chat-unread')
+      .update(updates)
+      .then(() => console.log('Data updated.'));
   };
 
   setModalVisible = (sessionType, status) => {

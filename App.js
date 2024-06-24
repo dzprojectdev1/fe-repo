@@ -53,7 +53,7 @@ class App extends Component {
     firebase.auth();
     Instabug.init({
       token: 'ff3b8a4fe0671f532e00d66118749a2d',
-      invocationEvents: [InvocationEvent.shake],
+      invocationEvents: [InvocationEvent.none],
     });
 
     LogBox.ignoreLogs([
