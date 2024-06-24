@@ -336,7 +336,7 @@ class Register2 extends Component {
         } else {
           Alert.alert(
             'Alert',
-            'DazzledDate requires these permissions to be granted. please restart app and check that permissions.',
+            'Dorry.ai requires these permissions to be granted. please restart app and check that permissions.',
             [{text: 'Ok', onPress: () => BackAndroid.exitApp()}],
             {cancelable: false},
           );
@@ -400,7 +400,7 @@ class Register2 extends Component {
           }}>
           <Image
             source={logo}
-            style={{width: 205, height: 83, tintColor: '#DE5859'}}
+            style={{width: 255, height: 150, resizeMode: 'contain'}}
           />
         </ImageBackground>
         <View>
@@ -488,7 +488,7 @@ class Register2 extends Component {
               marginTop: 30,
             }}>
             <Text style={{color: '#808080', fontSize: 12, textAlign: 'center'}}>
-              {'BY SIGNING UP, YOU AFREE TO'}
+              {'BY SIGNING UP, YOU AGREE TO'}
             </Text>
             <Text style={{marginTop: 10}}>
               <Text
@@ -503,9 +503,7 @@ class Register2 extends Component {
                   textDecorationLine: 'underline',
                 }}
                 onPress={() => {
-                  Linking.openURL(
-                    'https://dazzleddate.com/terms_and_conditions.html',
-                  );
+                  Linking.openURL('https://dorry.ai/terms-and-conditions/');
                 }}>
                 {' TERMS OF SERVICE '}
               </Text>
@@ -521,9 +519,7 @@ class Register2 extends Component {
                   textDecorationLine: 'underline',
                 }}
                 onPress={() => {
-                  Linking.openURL(
-                    'https://dazzleddate.com/privacy_policy.html',
-                  );
+                  Linking.openURL('https://dorry.ai/privacy-policy/');
                 }}>
                 {' PRIVACY POLICY '}
               </Text>

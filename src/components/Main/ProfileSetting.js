@@ -185,7 +185,9 @@ class ProfileSetting extends Component {
     });
   };
   onBack() {
-    this.props.navigation.navigate(Global.saveData.prevpage ? Global.saveData.prevpage : 'BrowseList');
+    this.props.navigation.navigate(
+      Global.saveData.prevpage ? Global.saveData.prevpage : 'BrowseList',
+    );
   }
   gotoTermofService() {
     this.props.navigation.navigate('TermsPolicy');
@@ -405,7 +407,7 @@ class ProfileSetting extends Component {
           var resultData = responseJson.data;
 
           let alert_str =
-            'Your account is closed. Please send an email to admin@dazzleddate.com if this was done in error. Please include the following information in your email ';
+            'Your account is closed. Please send an email to contact@dorry.ai if this was done in error. Please include the following information in your email ';
           alert_str +=
             'User ID : ' +
             resultData.user_id +
@@ -812,18 +814,14 @@ class ProfileSetting extends Component {
               <Text
                 style={{fontSize: 16, fontWeight: 'bold'}}
                 onPress={() => {
-                  Linking.openURL(
-                    'https://dazzleddate.com/terms_and_conditions.html',
-                  );
+                  Linking.openURL('https://dorry.ai/terms-and-conditions/');
                 }}>
                 {'Term and Conditions / '}
               </Text>
               <Text
                 style={{fontSize: 16, fontWeight: 'bold'}}
                 onPress={() => {
-                  Linking.openURL(
-                    'https://dazzleddate.com/privacy_policy.html',
-                  );
+                  Linking.openURL('https://dorry.ai/privacy-policy/');
                 }}>
                 {'Privacy Policy'}
               </Text>
@@ -863,8 +861,8 @@ class ProfileSetting extends Component {
               marginBottom: 20,
             }}>
             <Text>
-              For support, please contact us at admin@dazzleddate.com for any
-              issues, questions or feedback.
+              For support, please contact us at contact@dorry.ai for any issues,
+              questions or feedback.
             </Text>
           </View>
         </ScrollView>

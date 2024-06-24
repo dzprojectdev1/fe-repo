@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.pys.dazzleddate",
+  "applicationId": "com.pys.dorry.ai",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1,
-      "versionName": "1.0.5",
+      "versionCode": 8,
+      "versionName": "1.0.8",
       "outputFile": "app-release.apk"
     }
   ],

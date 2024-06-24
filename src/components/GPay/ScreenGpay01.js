@@ -21,42 +21,79 @@ import * as RNIap from 'react-native-iap';
 //   purchaseUpdatedListener,
 // } from 'react-native-iap';
 
+// const itemSkus = Platform.select({
+//   android: [
+//     '50_diamonds',
+//     '100_diamonds',
+//     '250_diamonds',
+//     '300_diamonds',
+//     '750_diamonds',
+//     '2500_diamonds',
+//     '7500_diamonds',
+//     '1_day_pass',
+//     '3_day_pass',
+//     '7_day_pass',
+//   ],
+// });
+
 const itemSkus = Platform.select({
   android: [
-    '100_diamonds',
-    '250_diamonds',
-    '750_diamonds',
-    '2500_diamonds',
-    '7500_diamonds',
+    '500_diamonds',
+    '1600_diamonds',
+    '3500_diamonds',
     '1_day_pass',
     '3_day_pass',
     '7_day_pass',
   ],
 });
 
+// const valProductId = [
+//   '50_diamonds',
+//   '100_diamonds',
+//   '250_diamonds',
+//   '300_diamonds',
+//   '750_diamonds',
+//   '2500_diamonds',
+//   '7500_diamonds',
+//   '1_day_pass',
+//   '3_day_pass',
+//   '7_day_pass',
+// ];
+
 const valProductId = [
-  '100_diamonds',
-  '250_diamonds',
-  '750_diamonds',
-  '2500_diamonds',
-  '7500_diamonds',
+  '500_diamonds',
+  '1600_diamonds',
+  '3500_diamonds',
   '1_day_pass',
   '3_day_pass',
   '7_day_pass',
 ];
-const diamondCount = [100, 250, 750, 2500, 7500, 0, 0, 0];
-const diamondPrice = [0.99, 1.99, 4.99, 9.99, 24.99, 4.99, 11.99, 14.99];
+// const diamondCount = [100, 250, 750, 2500, 7500, 0, 0, 0];
+// const diamondPrice = [0.99, 1.99, 4.99, 9.99, 24.99, 4.99, 11.99, 14.99];
+
+const diamondCount = [500, 1600, 3500, 0, 0, 0];
+const diamondPrice = [2.99, 7.99, 14.99, 4.99, 11.99, 14.99];
 
 let purchaseUpdateSubscription;
 let purchaseErrorSubscription;
 
-import goback from '../../assets/images/BackOther.png';
 import diamond_trans from '../../assets/images/red_diamond_trans.png';
 import vip_diamond_trans from '../../assets/images/vip_diamond_trans.png';
 import pass_day from '../../assets/images/pass_day.png';
 import Global from '../Global';
 import {SERVER_URL} from '../../config/constants';
 import {TopBar} from '../../commonUI/components/topbar';
+import {
+  endConnection,
+  finishTransaction,
+  flushFailedPurchasesCachedAsPendingAndroid,
+  initConnection,
+  PurchaseError,
+  purchaseErrorListener,
+  purchaseUpdatedListener,
+} from 'react-native-iap';
+import {SubscriptionPurchase} from 'react-native-iap';
+import {ProductPurchase} from 'react-native-iap';
 
 class ScreenGpay01 extends Component {
   constructor(props) {
@@ -77,56 +114,114 @@ class ScreenGpay01 extends Component {
       remainMinutes: 0,
       remainSeconds: 0,
     };
+    purchaseUpdateSubscription = null;
+    purchaseErrorSubscription = null;
   }
 
   static navigationOptions = {
     header: null,
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     Global.saveData.nowPage = 'ScreenGpay01';
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
 
-    try {
-      const result = await RNIap.initConnection();
-      // await RNIap.consumeAllItemsAndroid();
-      if (Platform.OS === 'android') {
-        await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
-      }
-      if (result) {
-        await this.getItems();
-      }
+    initConnection().then(async () => {
+      // we make sure that "ghost" pending payment are removed
+      // (ghost = failed pending payment that are still marked as pending in Google's native Vending module cache)
+      await this.getItems();
+      flushFailedPurchasesCachedAsPendingAndroid()
+        .catch(err => {
+          console.warn(err.code, err.message);
+        })
+        .then(() => {
+          this.purchaseUpdateSubscription = purchaseUpdatedListener(
+            async (purchase: SubscriptionPurchase | ProductPurchase) => {
+              console.log('purchaseUpdatedListener', purchase);
+              const receipt = purchase.transactionReceipt;
+              if (receipt) {
+                this.setState({receipt: purchase.transactionReceipt}, () =>
+                  this.goNext(),
+                );
+                await finishTransaction({purchase, isConsumable: true});
+              }
+            },
+          );
 
-      console.log('result', result);
-    } catch (err) {
-      console.warn(err.code, err.message);
-    }
-
-    purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(
-      async purchase => {
-        if (
-          purchase.purchaseStateAndroid === 1 &&
-          !purchase.isAcknowledgedAndroid
-        ) {
-          try {
-            const ackResult = await RNIap.acknowledgePurchaseAndroid(
-              purchase.purchaseToken,
-            );
-            console.log('ackResult', ackResult);
-          } catch (ackErr) {
-            console.warn('ackErr', ackErr);
-          }
-        }
-        this.setState({receipt: purchase.transactionReceipt}, () =>
-          this.goNext(),
-        );
-      },
-    );
-
-    purchaseErrorSubscription = RNIap.purchaseErrorListener(error => {
-      console.log('purchaseErrorListener', error);
-      Alert.alert('purchase error', JSON.stringify(error));
+          this.purchaseErrorSubscription = purchaseErrorListener(
+            (error: PurchaseError) => {
+              console.warn('purchaseErrorListener', error);
+            },
+          );
+        });
     });
+
+    // try {
+    //   const result = await RNIap.initConnection();
+    //   // await RNIap.consumeAllItemsAndroid();
+    //   if (Platform.OS === 'android') {
+    //     await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
+    //   }
+    //   if (result) {
+    //     await this.getItems();
+    //   }
+    //   const availablePurchases = await RNIap.getAvailablePurchases();
+    //
+    //   if (availablePurchases.length > 0) {
+    //     for (const purchase of availablePurchases) {
+    //       console.log(purchase);
+    //       const dt = await finishTransaction({
+    //         purchase: purchase,
+    //         isConsumable: false,
+    //         developerPayloadAndroid: purchase.developerPayloadAndroid,
+    //       });
+    //       console.log(dt);
+    //     }
+    //   }
+    //
+    //   console.log('result', result);
+    // } catch (err) {
+    //   console.warn(err.code, err.message);
+    // }
+
+    // purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(
+    //   async purchase => {
+    //     if (
+    //       purchase.purchaseStateAndroid === 1 &&
+    //       !purchase.isAcknowledgedAndroid
+    //     ) {
+    //       try {
+    //         if (purchase.purchaseToken) {
+    //           const acknowledgeResult = await finishTransaction({
+    //             purchase: purchase,
+    //             isConsumable: false,
+    //             developerPayloadAndroid: purchase.developerPayloadAndroid,
+    //           });
+    //           console.info('acknowledgeResult', acknowledgeResult);
+    //           // const ackResult = await RNIap.acknowledgePurchaseAndroid({
+    //           //   token: purchase.purchaseToken,
+    //           //   developerPayload: purchase.developerPayloadAndroid,
+    //           // });
+    //           //
+    //           // console.log('ackResult', ackResult);
+    //         }
+    //       } catch (ackErr) {
+    //         console.warn('ackErr', ackErr);
+    //       }
+    //     }
+    //     this.setState({receipt: purchase.transactionReceipt}, () =>
+    //       this.goNext(),
+    //     );
+    //   },
+    // );
+    //
+    // purchaseErrorSubscription = RNIap.purchaseErrorListener(error => {
+    //   console.log('purchaseErrorListener', error);
+    //   Alert.alert(
+    //     'Purchase Error',
+    //     'Opps! there is some error while purchase please try again.',
+    //   );
+    // });
 
     // Verify validation for unlimited instant chat permission
     const userId = Global.saveData.u_id;
@@ -185,16 +280,17 @@ class ScreenGpay01 extends Component {
   };
 
   componentWillUnmount() {
-    if (purchaseUpdateSubscription) {
-      purchaseUpdateSubscription.remove();
-      purchaseUpdateSubscription = null;
+    if (this.purchaseUpdateSubscription) {
+      this.purchaseUpdateSubscription.remove();
+      this.purchaseUpdateSubscription = null;
     }
-    if (purchaseErrorSubscription) {
-      purchaseErrorSubscription.remove();
-      purchaseErrorSubscription = null;
+
+    if (this.purchaseErrorSubscription) {
+      this.purchaseErrorSubscription.remove();
+      this.purchaseErrorSubscription = null;
     }
     BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
-
+    endConnection();
     clearInterval(this.state.intervalId);
   }
 
@@ -208,7 +304,7 @@ class ScreenGpay01 extends Component {
     if (responseOrderId.indexOf('GPA.') == -1) {
       Alert.alert(
         'Purchase Error',
-        'Please retry with invalide Payment information',
+        'Please retry with invalid Payment information',
         [{text: 'OK', onPress: () => console.log('OK Pressed')}],
         {cancelable: false},
       );
@@ -318,7 +414,7 @@ class ScreenGpay01 extends Component {
   getItems = async () => {
     try {
       const products = await RNIap.getProducts({skus: itemSkus});
-
+      console.log(products);
       let diamondProducts = [];
       let passProducts = [];
       if (products.length > 0) {
@@ -379,9 +475,10 @@ class ScreenGpay01 extends Component {
   };
 
   // Version 3 apis
-  requestPurchase = async sku => {
+  requestPurchases = async sku => {
     try {
-      await RNIap.requestPurchase({sku});
+      console.log(sku);
+      await RNIap.requestPurchase({skus: [sku]});
     } catch (err) {
       console.warn(err.code, err.message);
     }
@@ -402,7 +499,7 @@ class ScreenGpay01 extends Component {
 
   treatProductTitle = title => {
     let split_title = title.split(' (Random');
-    return split_title[0];
+    return split_title[0].replace('(com.pys.dorry.ai (unreviewed))', '');
   };
 
   goBack() {
@@ -537,12 +634,12 @@ class ScreenGpay01 extends Component {
               </Text>
             </View>
 
-            {productListPass.length > 0 ? (
+            {productListPass.length > 0 && Global.saveData.is_admin === 1 ? (
               productListPass.map((product, i) => {
                 return (
                   <TouchableOpacity
                     style={styles.list_item_normal}
-                    onPress={() => this.requestPurchase(product.productId)}>
+                    onPress={() => this.requestPurchases(product.productId)}>
                     <View style={{flexDirection: 'row', paddingTop: 18}}>
                       <Image
                         source={pass_day}
@@ -578,7 +675,7 @@ class ScreenGpay01 extends Component {
                 return (
                   <TouchableOpacity
                     style={styles.list_item_normal}
-                    onPress={() => this.requestPurchase(product.productId)}>
+                    onPress={() => this.requestPurchases(product.productId)}>
                     <View style={{flexDirection: 'row', paddingTop: 18}}>
                       <Image
                         source={diamond_trans}

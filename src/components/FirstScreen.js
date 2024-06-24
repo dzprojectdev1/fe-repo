@@ -21,7 +21,8 @@ import {
   updateQuickBlox,
 } from '../../Action';
 import DeviceInfo from 'react-native-device-info';
-import firstBg from '../assets/images/first_bg.jpg';
+import firstBg from '../assets/images/splash.png';
+import logo from '../assets/images/logo.png';
 import Global from './Global';
 import QB from 'quickblox-react-native-sdk';
 import {SERVER_URL} from '../config/constants';
@@ -29,6 +30,7 @@ import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import database from '@react-native-firebase/database';
 import {isQBOn} from '../config';
+import auth from '@react-native-firebase/auth';
 
 class FirstScreen extends Component {
   constructor(props) {
@@ -75,7 +77,7 @@ class FirstScreen extends Component {
       let fcmToken = await messaging().getToken();
       if (fcmToken) {
         this.props.updateFCMTocken(fcmToken);
-        let deviceId = await this.getdeviceId();
+        let deviceId = await this.getdeviceId(); //'dbbe280a087b5d52';
         const details = {fcmId: fcmToken};
 
         let formBody = [];
@@ -224,7 +226,7 @@ class FirstScreen extends Component {
 
     if (responseJson.user.account_status == 3) {
       let alert_str =
-        'Your account is closed. Please send an email to admin@dazzleddate.com if this was done in error. Please include the following information in your email ';
+        'Your account is closed. Please send an email to contact@dorry.ai if this was done in error. Please include the following information in your email ';
       alert_str +=
         'User ID : ' +
         responseJson.user.id +
@@ -247,7 +249,7 @@ class FirstScreen extends Component {
       responseJson.user.account_status == 10
     ) {
       let alert_str =
-        'Your account was banned for violating terms of use. Please send an email to admin@dazzleddate.com if this was done in error. Please include the following information in your email ';
+        'Your account was banned for violating terms of use. Please send an email to contact@dorry.ai if this was done in error. Please include the following information in your email ';
       alert_str +=
         'User ID : ' +
         responseJson.user.id +
@@ -271,26 +273,30 @@ class FirstScreen extends Component {
   };
 
   checkUnreadMessage = () => {
-    database()
-      .ref()
-      .child('dz-chat-unread')
-      .child(Global.saveData.u_id + '/')
-      .on('value', value => {
-        let newPayload = {};
-        let senderIdArr = value.toJSON();
-        if (senderIdArr) {
-          senderIdArr = senderIdArr.split(',');
-          newPayload = {
-            unreadFlag: true,
-            senders: senderIdArr,
-          };
-        } else {
-          newPayload = {
-            unreadFlag: false,
-            senders: senderIdArr,
-          };
-        }
-        this.props.changeReadFlag(newPayload);
+    auth()
+      .signInWithEmailAndPassword('admin@dorry.ai', 'dorry.ai#&T^%^%#UIUG')
+      .then(async res => {
+        database()
+          .ref()
+          .child('dz-chat-unread')
+          .child(Global.saveData.u_id + '/')
+          .on('value', value => {
+            let newPayload = {};
+            let senderIdArr = value.toJSON();
+            if (senderIdArr) {
+              senderIdArr = senderIdArr.split(',');
+              newPayload = {
+                unreadFlag: true,
+                senders: senderIdArr,
+              };
+            } else {
+              newPayload = {
+                unreadFlag: false,
+                senders: senderIdArr,
+              };
+            }
+            this.props.changeReadFlag(newPayload);
+          });
       });
   };
 
@@ -335,14 +341,30 @@ class FirstScreen extends Component {
   render() {
     return (
       <View style={styles.contentContainer}>
-        <ImageBackground
-          source={firstBg}
+        <View
           style={{
+            backgroundColor: '#E06869',
             width: '100%',
-            height: '100%',
             alignItems: 'center',
             justifyContent: 'center',
+            zIndex: 10,
           }}>
+          <View
+            style={{
+              flex: 1,
+              width: 300,
+              height: 300,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <ImageBackground
+              source={logo}
+              style={{
+                width: 250,
+                height: 250,
+              }}
+            />
+          </View>
           <StatusBar backgroundColor="#ED6164" barStyle="dark-content" />
           {this.state.isLoaded === false && (
             <View
@@ -390,7 +412,63 @@ class FirstScreen extends Component {
               <ActivityIndicator size="large" color="#FFFFFF" />
             </View>
           )}
-        </ImageBackground>
+        </View>
+        {/*<ImageBackground*/}
+        {/*  source={firstBg}*/}
+        {/*  style={{*/}
+        {/*    width: '100%',*/}
+        {/*    height: '100%',*/}
+        {/*    alignItems: 'center',*/}
+        {/*    justifyContent: 'center',*/}
+        {/*  }}>*/}
+        {/*  <StatusBar backgroundColor="#ED6164" barStyle="dark-content" />*/}
+        {/*  {this.state.isLoaded === false && (*/}
+        {/*    <View*/}
+        {/*      style={{*/}
+        {/*        position: 'absolute',*/}
+        {/*        width: DEVICE_WIDTH,*/}
+        {/*        height: 40,*/}
+        {/*        bottom: 60,*/}
+        {/*        left: 0,*/}
+        {/*        flexDirection: 'row',*/}
+        {/*        alignItems: 'center',*/}
+        {/*        justifyContent: 'center',*/}
+        {/*      }}>*/}
+        {/*      /!* <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', width: 150, height: 40, borderWidth: 1, borderRadius: 20, borderColor: '#fff' }}*/}
+        {/*        onPress={() => this.gotoLogin()}>*/}
+        {/*        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 14 }}>{"Login"}</Text>*/}
+        {/*      </TouchableOpacity> *!/*/}
+        {/*      <TouchableOpacity*/}
+        {/*        style={{*/}
+        {/*          alignItems: 'center',*/}
+        {/*          justifyContent: 'center',*/}
+        {/*          width: 150,*/}
+        {/*          height: 40,*/}
+        {/*          borderWidth: 1,*/}
+        {/*          borderRadius: 20,*/}
+        {/*          borderColor: '#fff',*/}
+        {/*          marginLeft: 5,*/}
+        {/*        }}*/}
+        {/*        onPress={() => this.gotoSignUp()}>*/}
+        {/*        <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 14}}>*/}
+        {/*          {'REGISTER'}*/}
+        {/*        </Text>*/}
+        {/*      </TouchableOpacity>*/}
+        {/*    </View>*/}
+        {/*  )}*/}
+        {/*  {this.state.isLoaded === true && (*/}
+        {/*    <View*/}
+        {/*      style={{*/}
+        {/*        flex: 1,*/}
+        {/*        alignSelf: 'center',*/}
+        {/*        justifyContent: 'center',*/}
+        {/*        justifyContent: 'space-around',*/}
+        {/*        padding: 10,*/}
+        {/*      }}>*/}
+        {/*      <ActivityIndicator size="large" color="#FFFFFF" />*/}
+        {/*    </View>*/}
+        {/*  )}*/}
+        {/*</ImageBackground>*/}
       </View>
     );
   }
@@ -401,7 +479,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#ED6164',
+    backgroundColor: '#E06869',
     alignItems: 'center',
     justifyContent: 'center',
   },

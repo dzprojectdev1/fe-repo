@@ -77,6 +77,7 @@ class Profile extends Component {
       showMutualUsers: false,
       dialogStyle: {},
       ai_friend: data.ai_friend,
+      chat_type: data.chat_type,
       ai_personality: data.ai_personality,
     };
   }
@@ -269,6 +270,7 @@ class Profile extends Component {
             fan_count: this.state.fan_count,
             coin_per_message: this.state.coin_per_message,
             ai_friend: this.state.ai_friend,
+            chat_type: this.state.chat_type,
             ai_personality: this.state.ai_personality,
           },
         },

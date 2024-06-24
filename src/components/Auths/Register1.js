@@ -79,7 +79,7 @@ class Register1 extends Component {
           }}>
           <Image
             source={logo}
-            style={{width: 205, height: 83, tintColor: '#DE5859'}}
+            style={{width: 255, height: 150, resizeMode: 'contain'}}
           />
         </ImageBackground>
         <View>

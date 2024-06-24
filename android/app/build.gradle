@@ -99,14 +99,14 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    namespace "com.pys.dazzleddate"
+    namespace "com.pys.dorry.ai"
     defaultConfig {
-        applicationId "com.pys.dazzleddate"
+        applicationId "com.pys.dorry.ai"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
-        versionCode 1
-        versionName "1.0.5"
+        versionCode 8
+        versionName "1.0.8"
         missingDimensionStrategy ('store', 'play')
         missingDimensionStrategy 'react-native-camera', 'general'
     }
@@ -184,7 +184,7 @@ dependencies {
 // Run this once to be able to run the application with BUCK
 // puts all compile dependencies into folder libs for BUCK to use
 tasks.register('copyDownloadableDepsToLibs', Copy) {
-    from configurations.compile
+    from configurations.implementation
     into 'libs'
 }
 

@@ -38,6 +38,8 @@ import check from '../../assets/images/check_unread.png';
 import yellow_star from '../../assets/images/yellow_star.png';
 import Global from '../Global';
 import database from '@react-native-firebase/database';
+import firebase from '@react-native-firebase/app';
+import auth from '@react-native-firebase/auth';
 
 class Chat extends Component {
   constructor(props) {
@@ -62,12 +64,17 @@ class Chat extends Component {
     Global.saveData.prevpage = 'Chat';
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
     this.getChatData();
-    database()
-      .ref()
-      .child('dz-chat-data')
-      .child(Global.saveData.u_id + '/')
-      .on('value', value => {
-        this.getChatData();
+
+    auth()
+      .signInWithEmailAndPassword('admin@dorry.ai', 'dorry.ai#&T^%^%#UIUG')
+      .then(async res => {
+        database()
+          .ref()
+          .child('dz-chat-data')
+          .child(Global.saveData.u_id + '/')
+          .on('value', value => {
+            this.getChatData();
+          });
       });
 
     fetch(`${SERVER_URL}/api/transaction/getDiamondCount`, {
@@ -198,48 +205,54 @@ class Chat extends Component {
   }
 
   checkUnReadMessage = data => {
-    database()
-      .ref()
-      .child('dz-chat-unread')
-      .child(Global.saveData.u_id + '/')
-      .once('value', value => {
-        let senderIdArr = value.toJSON();
-        let newPayload = {};
-        let updates = {};
-        if (senderIdArr) {
-          senderIdArr = senderIdArr.split(',');
-          let index = senderIdArr.indexOf(data.data.other_user_id.toString());
-          if (index !== -1) {
-            senderIdArr.splice(index, 1);
-          }
-          newPayload = {
-            unreadFlag: true,
-            senders: senderIdArr,
-          };
-          if (senderIdArr.length) {
-            // newPayload = {
-            //     unreadFlag: true,
-            //     senders: senderIdArr
-            // }
-            newPayload.unreadFlag = true;
-            updates[Global.saveData.u_id] = senderIdArr.toString();
-            database().ref().child('dz-chat-unread').update(updates);
-          } else {
-            // newPayload = {
-            //     unreadFlag: false,
-            //     senders: []
-            // }
-            newPayload.unreadFlag = false;
-            database()
-              .ref()
-              .child('dz-chat-unread')
-              .child(Global.saveData.u_id + '/')
-              .remove();
-          }
+    auth()
+      .signInWithEmailAndPassword('admin@dorry.ai', 'dorry.ai#&T^%^%#UIUG')
+      .then(res => {
+        database()
+          .ref()
+          .child('dz-chat-unread')
+          .child(Global.saveData.u_id + '/')
+          .once('value', value => {
+            let senderIdArr = value.toJSON();
+            let newPayload = {};
+            let updates = {};
+            if (senderIdArr) {
+              senderIdArr = senderIdArr.split(',');
+              let index = senderIdArr.indexOf(
+                data.data.other_user_id.toString(),
+              );
+              if (index !== -1) {
+                senderIdArr.splice(index, 1);
+              }
+              newPayload = {
+                unreadFlag: true,
+                senders: senderIdArr,
+              };
+              if (senderIdArr.length) {
+                // newPayload = {
+                //     unreadFlag: true,
+                //     senders: senderIdArr
+                // }
+                newPayload.unreadFlag = true;
+                updates[Global.saveData.u_id] = senderIdArr.toString();
+                database().ref().child('dz-chat-unread').update(updates);
+              } else {
+                // newPayload = {
+                //     unreadFlag: false,
+                //     senders: []
+                // }
+                newPayload.unreadFlag = false;
+                database()
+                  .ref()
+                  .child('dz-chat-unread')
+                  .child(Global.saveData.u_id + '/')
+                  .remove();
+              }
 
-          this.props.changeReadFlag(newPayload);
-          this.props.navigation.replace('Chat');
-        }
+              this.props.changeReadFlag(newPayload);
+              this.props.navigation.replace('Chat');
+            }
+          });
       });
   };
 
@@ -256,25 +269,29 @@ class Chat extends Component {
   };
 
   readAllAsRead = () => {
-    database()
-      .ref()
-      .child('dz-chat-unread')
-      .child(Global.saveData.u_id + '/')
-      .once('value', value => {
-        let newPayload = {};
-        newPayload = {
-          unreadFlag: false,
-          senders: [],
-        };
-        // newPayload.unreadFlag = false;
+    auth()
+      .signInWithEmailAndPassword('admin@dorry.ai', 'dorry.ai#&T^%^%#UIUG')
+      .then(res => {
         database()
           .ref()
           .child('dz-chat-unread')
           .child(Global.saveData.u_id + '/')
-          .remove();
+          .once('value', value => {
+            let newPayload = {};
+            newPayload = {
+              unreadFlag: false,
+              senders: [],
+            };
+            // newPayload.unreadFlag = false;
+            database()
+              .ref()
+              .child('dz-chat-unread')
+              .child(Global.saveData.u_id + '/')
+              .remove();
 
-        this.props.changeReadFlag(newPayload);
-        this.props.navigation.replace('Chat');
+            this.props.changeReadFlag(newPayload);
+            this.props.navigation.replace('Chat');
+          });
       });
   };
 

@@ -15,6 +15,7 @@ export const SESSION_TYPE = {
 
 // export const SERVER_URL       = 'http://192.168.0.225:8080';
 export const SERVER_URL = 'http://34.66.27.152:8080';
+export const SERVER_URL_Production = 'http://34.172.47.245:8080';
 export const GCS_BUCKET = 'https://storage.googleapis.com/dazzled-date-dev/';
 export const VIDEO_UPLOAD = 'https://dazzled-date-dev.storage.googleapis.com';
 export const BUCKET = 'dazzled-date-dev';

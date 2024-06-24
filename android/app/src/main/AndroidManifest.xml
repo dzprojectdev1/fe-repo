@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.pys.dazzleddate">
+    package="com.pys.dorry.ai">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -43,37 +43,37 @@
 
       <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@mipmap/ic_launcher" tools:replace="android:resource"/>
       <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="@string/default_notification_channel_id" tools:replace="android:value"/>
-      <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService"
-          tools:ignore="MissingClass" />
+<!--      <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService"-->
+<!--          tools:ignore="MissingClass" />-->
     
-      <service android:name="com.evollu.react.fcm.InstanceIdService" android:exported="false"
-          tools:ignore="MissingClass">
-        <intent-filter>
-          <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-        </intent-filter>
-      </service>
-      <service android:name="io.wazo.callkeep.VoiceConnectionService"
-          android:exported="true"
-          android:label="Wazo"
-        android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE"
-          tools:ignore="MissingClass">
-        <intent-filter>
-            <action android:name="android.telecom.ConnectionService" />
-        </intent-filter>
-      </service>
-      <service android:name="io.wazo.callkeep.RNCallKeepBackgroundMessagingService"
-          tools:ignore="MissingClass" />
-      <receiver android:name="com.evollu.react.fcm.FIRLocalMessagingPublisher"
-          tools:ignore="MissingClass" />
-      <receiver android:enabled="true" android:exported="true"  android:name="com.evollu.react.fcm.FIRSystemBootEventReceiver"
-          tools:ignore="MissingClass">
-          <intent-filter>
-              <action android:name="android.intent.action.BOOT_COMPLETED"/>
-              <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
-              <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
-              <category android:name="android.intent.category.DEFAULT" />
-          </intent-filter>
-      </receiver>
+<!--      <service android:name="com.evollu.react.fcm.InstanceIdService" android:exported="false"-->
+<!--          tools:ignore="MissingClass">-->
+<!--        <intent-filter>-->
+<!--          <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>-->
+<!--        </intent-filter>-->
+<!--      </service>-->
+<!--      <service android:name="io.wazo.callkeep.VoiceConnectionService"-->
+<!--          android:exported="true"-->
+<!--          android:label="Wazo"-->
+<!--        android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE"-->
+<!--          tools:ignore="MissingClass">-->
+<!--        <intent-filter>-->
+<!--            <action android:name="android.telecom.ConnectionService" />-->
+<!--        </intent-filter>-->
+<!--      </service>-->
+<!--      <service android:name="io.wazo.callkeep.RNCallKeepBackgroundMessagingService"-->
+<!--          tools:ignore="MissingClass" />-->
+<!--      <receiver android:name="com.evollu.react.fcm.FIRLocalMessagingPublisher"-->
+<!--          tools:ignore="MissingClass" />-->
+<!--      <receiver android:enabled="true" android:exported="true"  android:name="com.evollu.react.fcm.FIRSystemBootEventReceiver"-->
+<!--          tools:ignore="MissingClass">-->
+<!--          <intent-filter>-->
+<!--              <action android:name="android.intent.action.BOOT_COMPLETED"/>-->
+<!--              <action android:name="android.intent.action.QUICKBOOT_POWERON"/>-->
+<!--              <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>-->
+<!--              <category android:name="android.intent.category.DEFAULT" />-->
+<!--          </intent-filter>-->
+<!--      </receiver>-->
       <activity
         android:name=".MainActivity"
           android:exported="true"

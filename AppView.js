@@ -39,6 +39,8 @@ import call_ring_accept from './src/assets/images/call_ring_accept.png';
 import messaging from '@react-native-firebase/messaging';
 import database from '@react-native-firebase/database';
 import {isQBOn} from './src/config';
+import firebase from '@react-native-firebase/app';
+import auth from '@react-native-firebase/auth';
 
 Sound.setCategory('Playback');
 const whoosh = new Sound(
@@ -429,11 +431,15 @@ class AppView extends Component {
     // let msgId = nativeFirebase.database().ref('dz-chat-unread').child(Global.saveData.u_id).push().key;
     let updates = {};
     updates[Global.saveData.u_id] = senderIdArr.toString();
-    database()
-      .ref()
-      .child('dz-chat-unread')
-      .update(updates)
-      .then(() => console.log('Data updated.'));
+    auth()
+      .signInWithEmailAndPassword('admin@dorry.ai', 'dorry.ai#&T^%^%#UIUG')
+      .then(async res => {
+        database()
+          .ref()
+          .child('dz-chat-unread')
+          .update(updates)
+          .then(() => console.log('Data updated.'));
+      });
   };
 
   setModalVisible = (sessionType, status) => {

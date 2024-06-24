@@ -30,6 +30,49 @@
             {
               "client_id": "725302073253-h65ldlp3k4bl7g624j7ukbk3a0egaqd5.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "725302073253-mom5ch1mh70q5ji87fcqlduuvp1e2v84.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.pys.dazzleddate"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:725302073253:android:a9487c6a70d4a2e62a3a4c",
+        "android_client_info": {
+          "package_name": "com.pys.dorry.ai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "725302073253-h65ldlp3k4bl7g624j7ukbk3a0egaqd5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAABNffZJBDOs6WMblX4wWLX9jlo2HA_hA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "725302073253-h65ldlp3k4bl7g624j7ukbk3a0egaqd5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "725302073253-mom5ch1mh70q5ji87fcqlduuvp1e2v84.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.pys.dazzleddate"
+              }
             }
           ]
         }

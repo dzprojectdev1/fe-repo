@@ -1,5 +1,5 @@
 {
-  "name": "DazzledDate",
+  "name": "Dorry.ai",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -15,12 +15,14 @@
     "@react-native-async-storage/async-storage": "^1.19.0",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-firebase/app": "^20.0.0",
+    "@react-native-firebase/auth": "^20.0.0",
     "@react-native-firebase/database": "^20.0.0",
     "@react-native-firebase/messaging": "^20.0.0",
     "@react-navigation/native": "^6.0.14",
     "@react-navigation/stack": "^6.3.29",
     "deprecated-react-native-prop-types": "^5.0.0",
     "firebase": "^9.9.2",
+    "instabug-reactnative": "^13.1.1",
     "jetifier": "^2.0.0",
     "native-base": "^3.4.25",
     "prop-types": "^15.8.1",

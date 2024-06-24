@@ -67,6 +67,7 @@ class Browse extends Component {
       coin_count: data.detail.coin_count,
       fan_count: data.detail.fan_count,
       ai_friend: data.detail.ai_friend,
+      chat_type: data.detail.chat_type,
       ai_personality: data.detail.ai_personality,
       img_message: data.detail.img_message,
       fanUserVisible: false,
@@ -461,6 +462,7 @@ class Browse extends Component {
         coin_count: this.state.coin_count,
         fan_count: this.state.fan_count,
         ai_friend: this.state.ai_friend,
+        chat_type: this.state.chat_type,
         ai_personality: this.state.ai_personality,
         img_message: this.state.img_message,
         coin_per_message: this.state.otherData.detail.coin_per_message,
@@ -529,21 +531,22 @@ class Browse extends Component {
     this.props.navigation.navigate('ScreenGpay01');
   };
   instantChat = () => {
-    if (this.state.unlimitedInstant) {
-      this.gotoInstantChat();
-    } else {
-      Alert.alert(
-        '',
-        'Send instant messages to ' +
-          this.state.otherData.detail.name +
-          ' for 50 diamonds. Continue?',
-        [
-          {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
-          {text: 'OK', onPress: () => this.gotoInstantChat()},
-        ],
-        {cancelable: false},
-      );
-    }
+    this.gotoInstantChat();
+    // if (this.state.unlimitedInstant) {
+    //   this.gotoInstantChat();
+    // } else {
+    //   Alert.alert(
+    //     '',
+    //     'Send instant messages to ' +
+    //       this.state.otherData.detail.name +
+    //       ' for 50 diamonds. Continue?',
+    //     [
+    //       {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+    //       {text: 'OK', onPress: () => this.gotoInstantChat()},
+    //     ],
+    //     {cancelable: false},
+    //   );
+    // }
   };
   gotoInstantChat = () => {
     const details = {
@@ -557,8 +560,6 @@ class Browse extends Component {
       formBody.push(encodedKey + '=' + encodedValue);
     }
     formBody = formBody.join('&');
-    // console.log(formBody);
-    // console.log(formBody);
     fetch(`${SERVER_URL}/api/match/requestInstantMatch`, {
       method: 'POST',
       headers: {
@@ -572,31 +573,31 @@ class Browse extends Component {
         // console.log(responseJson.data);
         if (!responseJson.error) {
           if (responseJson.data.account_status == 1) {
-            if (!responseJson.data.ability) {
-              Alert.alert(
-                '',
-                '50 diamonds are required to start a chat with ' +
-                  this.state.otherData.detail.name +
-                  ' immediately.',
-                [
-                  {
-                    text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed'),
-                  },
-                  {text: 'Buy Diamonds', onPress: () => this.gotoShop()},
-                ],
-                {cancelable: false},
-              );
-            } else {
-              this.setState({
-                matchId: responseJson.data.match_id,
-                coinCount: responseJson.data.coin_count,
-              });
+            // if (!responseJson.data.ability) {
+            //   Alert.alert(
+            //     '',
+            //     '50 diamonds are required to start a chat with ' +
+            //       this.state.otherData.detail.name +
+            //       ' immediately.',
+            //     [
+            //       {
+            //         text: 'Cancel',
+            //         onPress: () => console.log('Cancel Pressed'),
+            //       },
+            //       {text: 'Buy Diamonds', onPress: () => this.gotoShop()},
+            //     ],
+            //     {cancelable: false},
+            //   );
+            // } else {
+            this.setState({
+              matchId: responseJson.data.match_id,
+              coinCount: responseJson.data.coin_count,
+            });
 
-              Global.saveData.coin_count = responseJson.data.coin_count;
+            Global.saveData.coin_count = responseJson.data.coin_count;
 
-              this.gotoChat();
-            }
+            this.gotoChat();
+            // }
           } else {
             Alert.alert('', responseJson.message, [], {cancelable: false});
           }
@@ -632,6 +633,7 @@ class Browse extends Component {
         coin_count: this.state.coin_count,
         fan_count: this.state.fan_count,
         ai_friend: this.state.ai_friend,
+        chat_type: this.state.chat_type,
         ai_personality: this.state.ai_personality,
         img_message: this.state.img_message,
       },
@@ -1437,66 +1439,88 @@ class Browse extends Component {
                     </Text>
                   </ScrollView>
                 </View>
-              </View>
-              <View
-                style={{
-                  width: DEVICE_WIDTH * 0.8,
-                  marginLeft: DEVICE_WIDTH * 0.1,
-                  flexDirection: 'row',
-                  // justifyContent: 'space-between',
-                  justifyContent: 'center',
-                }}>
-                {/*<Button*/}
-                {/*  icon={*/}
-                {/*    <FavouriteIcon*/}
-                {/*      size="7"*/}
-                {/*      name={this.state.heartIcon}*/}
-                {/*      color="#B64F54"*/}
-                {/*    />*/}
-                {/*  }*/}
-                {/*  buttonStyle={{*/}
-                {/*    width: 60,*/}
-                {/*    height: 60,*/}
-                {/*    borderRadius: 50,*/}
-                {/*    backgroundColor: '#fff',*/}
-                {/*    alignItems: 'center',*/}
-                {/*    justifyContent: 'center',*/}
-                {/*  }}*/}
-                {/*  loading={this.state.isLoading}*/}
-                {/*  onPress={() => this.onReject()}*/}
-                {/*/>*/}
-                <TouchableOpacity
+                <View
                   style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: 30,
-                    backgroundColor: '#cc2e48',
-                    alignItems: 'center',
+                    width: '100%',
+                    height: 40,
                     justifyContent: 'center',
-                  }}
-                  onPress={() => this.instantChat()}>
-                  <Image source={b_chat} style={{width: 30, height: 30}} />
-                </TouchableOpacity>
-                {/*<Button*/}
-                {/*  icon={*/}
-                {/*    <FavouriteIcon*/}
-                {/*      size="7"*/}
-                {/*      name={this.state.heartIcon}*/}
-                {/*      color="#fff"*/}
-                {/*    />*/}
-                {/*  }*/}
-                {/*  buttonStyle={{*/}
-                {/*    width: 60,*/}
-                {/*    height: 60,*/}
-                {/*    borderRadius: 50,*/}
-                {/*    backgroundColor: '#B64F54',*/}
-                {/*    alignItems: 'center',*/}
-                {/*    justifyContent: 'center',*/}
-                {/*  }}*/}
-                {/*  loading={this.state.isLoading}*/}
-                {/*  onPress={() => this.onHeart()}*/}
-                {/*/>*/}
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity
+                    style={{
+                      width: DEVICE_WIDTH * 0.5,
+                      height: 40,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#B64F54',
+                      borderRadius: DEVICE_WIDTH * 0.25,
+                    }}
+                    onPress={() => this.instantChat()}>
+                    <Text style={{color: '#fff', fontSize: 16}}>
+                      {'Start Chat'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
+              {/*<View*/}
+              {/*  style={{*/}
+              {/*    width: DEVICE_WIDTH * 0.8,*/}
+              {/*    marginLeft: DEVICE_WIDTH * 0.1,*/}
+              {/*    flexDirection: 'row',*/}
+              {/*    // justifyContent: 'space-between',*/}
+              {/*    justifyContent: 'center',*/}
+              {/*  }}>*/}
+              {/*<Button*/}
+              {/*  icon={*/}
+              {/*    <FavouriteIcon*/}
+              {/*      size="7"*/}
+              {/*      name={this.state.heartIcon}*/}
+              {/*      color="#B64F54"*/}
+              {/*    />*/}
+              {/*  }*/}
+              {/*  buttonStyle={{*/}
+              {/*    width: 60,*/}
+              {/*    height: 60,*/}
+              {/*    borderRadius: 50,*/}
+              {/*    backgroundColor: '#fff',*/}
+              {/*    alignItems: 'center',*/}
+              {/*    justifyContent: 'center',*/}
+              {/*  }}*/}
+              {/*  loading={this.state.isLoading}*/}
+              {/*  onPress={() => this.onReject()}*/}
+              {/*/>*/}
+              {/*<TouchableOpacity*/}
+              {/*  style={{*/}
+              {/*    width: 60,*/}
+              {/*    height: 60,*/}
+              {/*    borderRadius: 30,*/}
+              {/*    backgroundColor: '#cc2e48',*/}
+              {/*    alignItems: 'center',*/}
+              {/*    justifyContent: 'center',*/}
+              {/*  }}*/}
+              {/*  onPress={() => this.instantChat()}>*/}
+              {/*  <Image source={b_chat} style={{width: 30, height: 30}} />*/}
+              {/*</TouchableOpacity>*/}
+              {/*<Button*/}
+              {/*  icon={*/}
+              {/*    <FavouriteIcon*/}
+              {/*      size="7"*/}
+              {/*      name={this.state.heartIcon}*/}
+              {/*      color="#fff"*/}
+              {/*    />*/}
+              {/*  }*/}
+              {/*  buttonStyle={{*/}
+              {/*    width: 60,*/}
+              {/*    height: 60,*/}
+              {/*    borderRadius: 50,*/}
+              {/*    backgroundColor: '#B64F54',*/}
+              {/*    alignItems: 'center',*/}
+              {/*    justifyContent: 'center',*/}
+              {/*  }}*/}
+              {/*  loading={this.state.isLoading}*/}
+              {/*  onPress={() => this.onHeart()}*/}
+              {/*/>*/}
+              {/*</View>*/}
             </View>
           </View>
         )}

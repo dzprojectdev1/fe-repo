@@ -1,4 +1,4 @@
-package com.pys.dazzleddate;
+package com.pys.dorry.ai;
 
 import android.content.Context;
 import com.facebook.react.ReactInstanceManager;

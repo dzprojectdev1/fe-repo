@@ -48,6 +48,8 @@ import firebase from '@react-native-firebase/app';
 import database from '@react-native-firebase/database';
 import {colors, em} from '../../commonUI/base';
 import bg from '../../assets/images/bg.jpg';
+import auth from '@react-native-firebase/auth';
+import {getEmoji, replaceEmojis} from '../../util/upload';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
@@ -67,9 +69,9 @@ class ChatScreen extends React.Component {
     super(props);
     const {data} = props.route.params;
     const template =
-      'My name is #name#, who is #age# year old #gender# living in the #country#. #description#. I know only #language#.';
+      'My name is #name#, who is #age# year old #gender# living in the #country#. #description#. #name# speaks #language#.';
     const template1 =
-      ' #name#, who is #age# year old #gender# living in the #country#. #description#. I know only #language#.';
+      ' #name#, who is #age# year old #gender# living in the #country#. #description#. #name# speaks #language#.';
     const replacements = {
       name: Global.saveData.u_name,
       age: Global.saveData.u_age,
@@ -90,6 +92,7 @@ class ChatScreen extends React.Component {
         coin_count: data.data.coin_count,
         fan_count: data.data.fan_count,
         ai_friend: data.data.ai_friend,
+        chat_type: data.data.chat_type,
         ai_personality: data.data.ai_personality,
         img_message: data.data.img_message,
       },
@@ -103,7 +106,10 @@ class ChatScreen extends React.Component {
         {
           role: 'system',
           content: data.data.ai_personality
-            ? data.data.ai_personality.replace('#userdata#', result1)
+            ? data.data.ai_personality
+                .replace('#userdata#', result1)
+                .replace('undefined', '')
+                .trim()
             : '',
         },
         {role: 'user', content: result},
@@ -128,7 +134,7 @@ class ChatScreen extends React.Component {
       ai_images_data: [],
       ai_image_id: 0,
       ai_image_sent: 0,
-      dimensions: {adjustedWidth: 628 / 2.5, adjustedHeight: 1120 / 2.5},
+      dimensions: {adjustedWidth: 628 / 2.75, adjustedHeight: 1120 / 2.75},
       limit: 10,
       lastFetchedIndex: 0,
       lastKey: null,
@@ -141,72 +147,68 @@ class ChatScreen extends React.Component {
 
   _menu = null;
 
-  componentWillMount() {
-    Global.saveData.nowPage = 'ChatDetail';
-    const u_id = Global.saveData.u_id;
-    const userId = this.state.other.userId;
-
-    // database()
-    //   .ref()
-    //   .child('dz-chat-data')
-    //   .child(u_id.toString())
-    //   .child(userId.toString())
-    //   .on('child_added', value => {
-    //     if (this.state.other.ai_friend === 1) {
-    //       let conversationHistory = {
-    //         role: value.val().from === u_id ? 'user' : 'assistant',
-    //         content:
-    //           value.val().from === u_id
-    //             ? 'Response/Reply should be less then 200 character only for \n' +
-    //               value.val().message
-    //             : value.val().message,
-    //       };
-    //
-    //       this.setState(prevState => {
-    //         return {
-    //           messageList: [...prevState.messageList, value.val()],
-    //         };
-    //       });
-    //       this.setState(prevState => {
-    //         return {
-    //           tempmessageList: [
-    //             ...prevState.tempmessageList,
-    //             conversationHistory,
-    //           ],
-    //         };
-    //       });
-    //     }
-    //     if (
-    //       this.state.other.ai_friend === 0 &&
-    //       this.state.other.ai_personality == null
-    //     ) {
-    //       this.setState(prevState => {
-    //         return {
-    //           messageList: [...prevState.messageList, value.val()],
-    //         };
-    //       });
-    //     }
-    //     // if (this.scrollView) {
-    //     //   setTimeout(() => {
-    //     //     this.scrollView.scrollToEnd({animated: true});
-    //     //   }, 200);
-    //     // }
-    //   });
-    this.keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      this.keyboardDidShow.bind(this),
-    );
-    this.keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      this.keyboardDidHide.bind(this),
-    );
-    this.backHanlder = BackHandler.addEventListener(
-      'hardwareBackPress',
-      this.backPressed,
-    );
-    // this.getMessageData();
-    this.getStatusByMatchId();
-  }
+  // componentWillMount() {
+  //   Global.saveData.nowPage = 'ChatDetail';
+  //   const u_id = Global.saveData.u_id;
+  //   const userId = this.state.other.userId;
+  //
+  //   // database()
+  //   //   .ref()
+  //   //   .child('dz-chat-data')
+  //   //   .child(u_id.toString())
+  //   //   .child(userId.toString())
+  //   //   .on('child_added', value => {
+  //   //     if (this.state.other.ai_friend === 1) {
+  //   //       let conversationHistory = {
+  //   //         role: value.val().from === u_id ? 'user' : 'assistant',
+  //   //         content: value.val().message,
+  //   //       };
+  //   //
+  //   //       this.setState(prevState => {
+  //   //         return {
+  //   //           messageList: [...prevState.messageList, value.val()],
+  //   //         };
+  //   //       });
+  //   //       this.setState(prevState => {
+  //   //         return {
+  //   //           tempmessageList: [
+  //   //             ...prevState.tempmessageList,
+  //   //             conversationHistory,
+  //   //           ],
+  //   //         };
+  //   //       });
+  //   //     }
+  //   //     if (
+  //   //       this.state.other.ai_friend === 0 &&
+  //   //       this.state.other.ai_personality == null
+  //   //     ) {
+  //   //       this.setState(prevState => {
+  //   //         return {
+  //   //           messageList: [...prevState.messageList, value.val()],
+  //   //         };
+  //   //       });
+  //   //     }
+  //   //     // if (this.scrollView) {
+  //   //     //   setTimeout(() => {
+  //   //     //     this.scrollView.scrollToEnd({animated: true});
+  //   //     //   }, 200);
+  //   //     // }
+  //   //   });
+  //   this.keyboardDidShowListener = Keyboard.addListener(
+  //     'keyboardDidShow',
+  //     this.keyboardDidShow.bind(this),
+  //   );
+  //   this.keyboardDidHideListener = Keyboard.addListener(
+  //     'keyboardDidHide',
+  //     this.keyboardDidHide.bind(this),
+  //   );
+  //   this.backHanlder = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     this.backPressed,
+  //   );
+  //   // this.getMessageData();
+  //   this.getStatusByMatchId();
+  // }
 
   getUserImagesData = () => {
     const userId = this.state.other.userId;
@@ -321,134 +323,116 @@ class ChatScreen extends React.Component {
       menu: false,
     });
     this._mounted = true;
-    // if (this._mounted && this.scrollView) {
-    //   this.scrollView.scrollToEnd({animated: true});
-    // }
 
+    this.getInitialRecords();
     Global.saveData.nowPage = 'ChatDetail';
     const u_id = Global.saveData.u_id;
     const userId = this.state.other.userId;
-    this.chatRef = database()
-      .ref()
-      .child('dz-chat-data')
-      .child(u_id.toString())
-      .child(userId.toString());
 
-    // this.fetchMessages();
-    // Fetch initial chat messages once
-    this.chatRef.once('value', snapshot => {
-      let messages = snapshot.val() ? Object.values(snapshot.val()) : [];
-      messages.sort((a, b) => a.time - b.time);
-      if (this.state.other.ai_friend === 1) {
-        // this.setState(prevState => {
-        //   return {
-        //     messageList: messages,
-        //   };
+    auth()
+      .signInWithEmailAndPassword('admin@dorry.ai', 'dorry.ai#&T^%^%#UIUG')
+      .then(res => {
+        this.chatRef = database()
+          .ref()
+          .child('dz-chat-data')
+          .child(u_id.toString())
+          .child(userId.toString());
+
+        this.chatRef
+          .once('value', snapshot => {
+            let messages = snapshot.val() ? Object.values(snapshot.val()) : [];
+            messages.sort((a, b) => a.time - b.time);
+            if (this.state.other.ai_friend === 1) {
+              this.setState(
+                {
+                  allMessageList: messages,
+                },
+                () => {
+                  this.loadInitialMessages();
+                },
+              );
+
+              let temp = this.state.tempmessageList.slice();
+              messages.forEach(message => {
+                if (message?.user_image_url) {
+                  const tempMessage = this.state.orgAiPersonality
+                    .replace('#userdata#', this.state.orgAiPersonalities)
+                    .replace('#currentaction#', message?.user_current_action)
+                    .replace('undefined', '');
+                  temp.push({
+                    role: 'assistant',
+                    content: tempMessage.trim(),
+                  });
+                }
+                temp.push({
+                  role: message.from === u_id ? 'user' : 'assistant',
+                  content: message.message.trim(),
+                });
+              });
+              // if (messages.length === 0) {
+              //   this.setState({isLoading: false});
+              // }
+              this.setState({tempmessageList: temp});
+            }
+            if (
+              this.state.other.ai_friend === 0 &&
+              this.state.other.ai_personality == null
+            ) {
+              this.setState({messageList: messages, isLoading: false});
+            }
+            // Register child_added listener after initial load
+            const lastMessageTime =
+              messages.length > 0 ? messages[messages.length - 1].time : 0;
+            this.registerChildAddedListener(lastMessageTime);
+          })
+          .catch(error => {
+            console.error(
+              'componentDidMount || Once Value || Error fetching messages: ',
+              error,
+            );
+            // this.setState({isLoading: false});
+          });
+
+        // console.log('Registering child_added listener');
+        //
+        // this.chatRef.on('child_added', value => {
+        //   console.log('New message added', value);
+        //   if (!this.state.isLoading) {
+        //     const newMessage = value.val();
+        //     if (this.state.other.ai_friend === 1) {
+        //       let conversationHistory = {
+        //         role: newMessage.from === u_id ? 'user' : 'assistant',
+        //         content: newMessage.message,
+        //       };
+        //       this.setState(prevState => ({
+        //         allMessageList: [...prevState.allMessageList, newMessage],
+        //         messageList: [...prevState.messageList, newMessage],
+        //         tempmessageList: [
+        //           ...prevState.tempmessageList,
+        //           conversationHistory,
+        //         ],
+        //       }));
+        //     }
+        //     if (
+        //       this.state.other.ai_friend === 0 &&
+        //       this.state.other.ai_personality == null
+        //     ) {
+        //       this.setState(prevState => ({
+        //         messageList: [...prevState.messageList, newMessage],
+        //       }));
+        //     }
+        //     if (this.flatListRef.current) {
+        //       this.scrollToBottom();
+        //     }
+        //   }
         // });
-        this.setState(
-          {
-            allMessageList: messages,
-          },
-          this.loadInitialMessages,
+      })
+      .catch(error => {
+        console.error(
+          'componentDidMount || signInWithEmailAndPassword => ',
+          error,
         );
-
-        let temp = this.state.tempmessageList;
-        messages.map((message, index) => {
-          if (message?.user_image_url) {
-            const temp = this.state.orgAiPersonality
-              .replace('#userdata#', this.state.orgAiPersonalities)
-              .replace('#currentaction#', message?.user_current_action);
-            temp.push({
-              role: 'assistant',
-              content: temp,
-            });
-          }
-          temp.push({
-            role: message.from === u_id ? 'user' : 'assistant',
-            content:
-              message.from === u_id
-                ? 'Response/Reply should be less then 200 character only for \n' +
-                  message.message
-                : message.message,
-          });
-        });
-
-        if (messages.length === 0) {
-          this.setState({isLoading: false});
-        }
-
-        this.setState(prevState => {
-          return {
-            tempmessageList: temp,
-          };
-        });
-      }
-      if (
-        this.state.other.ai_friend === 0 &&
-        this.state.other.ai_personality == null
-      ) {
-        this.setState(prevState => {
-          return {
-            messageList: messages,
-          };
-        });
-      }
-    });
-
-    // Register child_added listener after the initial load
-    this.chatRef.on('child_added', value => {
-      if (!this.state.isLoading) {
-        if (this.state.other.ai_friend === 1) {
-          let conversationHistory = {
-            role: value.val().from === u_id ? 'user' : 'assistant',
-            content:
-              value.val().from === u_id
-                ? 'Response/Reply should be less then 200 character only for \n' +
-                  value.val().message
-                : value.val().message,
-          };
-          // this.setState(prevState => {
-          //   return {
-          //     messageList: [...prevState.messageList, value.val()],
-          //   };
-          // });
-          this.setState(prevState => {
-            return {
-              allMessageList: [...prevState.allMessageList, value.val()],
-              messageList: [...prevState.messageList, value.val()],
-            };
-          });
-          this.setState(prevState => {
-            return {
-              tempmessageList: [
-                ...prevState.tempmessageList,
-                conversationHistory,
-              ],
-            };
-          });
-        }
-        if (
-          this.state.other.ai_friend === 0 &&
-          this.state.other.ai_personality == null
-        ) {
-          this.setState(prevState => {
-            return {
-              messageList: [...prevState.messageList, value.val()],
-            };
-          });
-        }
-        // if (this.scrollView) {
-        //   this.scrollView.scrollToEnd({animated: true});
-        // }
-        if (this.flatListRef.current) {
-          // setTimeout(() => {
-          //   this.flatListRef.current.scrollToEnd({animated: true});
-          // }, 10);
-          this.scrollToBottom();
-        }
-      }
-    });
-
+      });
     fetch(`${SERVER_URL}/api/transaction/getDiamondCount`, {
       method: 'POST',
       headers: {
@@ -469,16 +453,27 @@ class ChatScreen extends React.Component {
         return;
       });
 
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this.keyboardDidShow.bind(this),
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this.keyboardDidHide.bind(this),
+    );
+    this.backHanlder = BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.backPressed,
+    );
+    // this.getMessageData();
+    this.getStatusByMatchId();
+
     this.checkUnReadMessage();
     this.checkFanUser();
 
     Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
     Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
-    // if (this.scrollView) {
-    //   setTimeout(() => {
-    //     this.scrollView.scrollToEnd({animated: true});
-    //   }, 200);
-    // }
+
     if (
       this.state.other.ai_friend === 1 &&
       this.state.other.ai_personality !== '' &&
@@ -487,16 +482,113 @@ class ChatScreen extends React.Component {
       this.getUserImagesData();
       this.getUserImageLastData();
     }
-    // setTimeout(() => {
-    //   this.loadInitialMessages();
-    // }, 200);
+  }
+
+  getInitialRecords() {
+    const u_id = Global.saveData.u_id;
+    const userId = this.state.other.userId;
+
+    auth()
+      .signInWithEmailAndPassword('admin@dorry.ai', 'dorry.ai#&T^%^%#UIUG')
+      .then(res => {
+        this.chatRef = database()
+          .ref()
+          .child('dz-chat-data')
+          .child(u_id.toString())
+          .child(userId.toString());
+
+        this.chatRef
+          .orderByChild('time')
+          .limitToLast(10)
+          .once('value', snapshot => {
+            let messages = snapshot.val() ? Object.values(snapshot.val()) : [];
+            messages.sort((a, b) => a.time - b.time);
+            if (this.state.other.ai_friend === 1) {
+              this.setState({
+                messageList: messages,
+              });
+
+              if (messages.length === 0) {
+                this.setState({isLoading: false});
+              }
+            }
+            if (
+              this.state.other.ai_friend === 0 &&
+              this.state.other.ai_personality == null
+            ) {
+              this.setState({messageList: messages, isLoading: false});
+            }
+          })
+          .catch(error => {
+            console.error(
+              'componentDidMount || Once Value || Error fetching messages: ',
+              error,
+            );
+            this.setState({isLoading: false});
+          });
+      })
+      .catch(error => {
+        console.error(
+          'componentDidMount || signInWithEmailAndPassword => ',
+          error,
+        );
+      });
+  }
+
+  // Function to register the child_added listener starting from the last fetched message time
+  registerChildAddedListener(lastMessageTime) {
+    const u_id = Global.saveData.u_id;
+    const userId = this.state.other.userId;
+    auth()
+      .signInWithEmailAndPassword('admin@dorry.ai', 'dorry.ai#&T^%^%#UIUG')
+      .then(res => {
+        this.chatRef = database()
+          .ref()
+          .child('dz-chat-data')
+          .child(u_id.toString())
+          .child(userId.toString());
+
+        this.chatRef
+          .orderByChild('time')
+          .startAt(lastMessageTime + 1)
+          .on('child_added', value => {
+            if (!this.state.isLoading) {
+              const newMessage = value.val();
+              if (this.state.other.ai_friend === 1) {
+                let conversationHistory = {
+                  role: newMessage.from === u_id ? 'user' : 'assistant',
+                  content: newMessage.message.trim(),
+                };
+                this.setState(prevState => ({
+                  allMessageList: [...prevState.allMessageList, newMessage],
+                  messageList: [...prevState.messageList, newMessage],
+                  tempmessageList: [
+                    ...prevState.tempmessageList,
+                    conversationHistory,
+                  ],
+                }));
+              }
+              if (
+                this.state.other.ai_friend === 0 &&
+                this.state.other.ai_personality == null
+              ) {
+                this.setState(prevState => ({
+                  messageList: [...prevState.messageList, newMessage],
+                }));
+              }
+              if (this.flatListRef.current) {
+                this.scrollToBottom();
+              }
+            }
+          });
+      });
   }
 
   loadInitialMessages = () => {
     const {limit, allMessageList} = this.state;
     const lastMessages = allMessageList.slice(-limit);
     this.setState({
-      messageList: lastMessages,
+      // messageList: lastMessages,
       lastFetchedIndex: allMessageList.length - limit,
     });
   };
@@ -540,12 +632,11 @@ class ChatScreen extends React.Component {
     if (this.flatListRef.current && this.state.messageList.length > 0) {
       setTimeout(() => {
         this.flatListRef.current.scrollToEnd({animated: true});
-      }, 50);
+      }, 75);
     }
   };
 
   onLastMessageLayout = () => {
-    // Check if loading is still ongoing and the last message has been rendered
     if (this.state.isLoading && this.state.messageList.length > 0) {
       this.scrollToBottom();
       this.setState({isLoading: false}); // Stop loading and scroll to bottom
@@ -579,40 +670,45 @@ class ChatScreen extends React.Component {
   checkUnReadMessage = () => {
     const u_id = Global.saveData.u_id;
     const userId = this.state.other.userId;
+    auth()
+      .signInWithEmailAndPassword('admin@dorry.ai', 'dorry.ai#&T^%^%#UIUG')
+      .then(res => {
+        database()
+          .ref()
+          .child('dz-chat-unread')
+          .child(u_id.toString() + '/')
+          .once('value', value => {
+            let senderIdArr = value.toJSON();
+            let newPayload = {};
+            let updates = {};
+            if (senderIdArr) {
+              senderIdArr = senderIdArr.split(',');
+              let index = senderIdArr.indexOf(
+                this.state.other.userId.toString(),
+              );
+              if (index !== -1) {
+                senderIdArr.splice(index, 1);
+              }
+              newPayload = {
+                unreadFlag: true,
+                senders: senderIdArr,
+              };
+              if (senderIdArr.length) {
+                newPayload.unreadFlag = true;
+                updates[Global.saveData.u_id] = senderIdArr.toString();
+                database().ref().child('dz-chat-unread').update(updates);
+              } else {
+                newPayload.unreadFlag = false;
+                database()
+                  .ref()
+                  .child('dz-chat-unread')
+                  .child(u_id.toString() + '/')
+                  .remove();
+              }
 
-    database()
-      .ref()
-      .child('dz-chat-unread')
-      .child(u_id.toString() + '/')
-      .once('value', value => {
-        let senderIdArr = value.toJSON();
-        let newPayload = {};
-        let updates = {};
-        if (senderIdArr) {
-          senderIdArr = senderIdArr.split(',');
-          let index = senderIdArr.indexOf(this.state.other.userId.toString());
-          if (index !== -1) {
-            senderIdArr.splice(index, 1);
-          }
-          newPayload = {
-            unreadFlag: true,
-            senders: senderIdArr,
-          };
-          if (senderIdArr.length) {
-            newPayload.unreadFlag = true;
-            updates[Global.saveData.u_id] = senderIdArr.toString();
-            database().ref().child('dz-chat-unread').update(updates);
-          } else {
-            newPayload.unreadFlag = false;
-            database()
-              .ref()
-              .child('dz-chat-unread')
-              .child(u_id.toString() + '/')
-              .remove();
-          }
-
-          this.props.changeReadFlag(newPayload);
-        }
+              this.props.changeReadFlag(newPayload);
+            }
+          });
       });
   };
 
@@ -747,18 +843,25 @@ class ChatScreen extends React.Component {
         if (responseJson.error === false) {
           const u_id = Global.saveData.u_id;
           const userId = this.state.other.userId;
-          database()
-            .ref()
-            .child('dz-chat-data')
-            .child(u_id.toString())
-            .child(userId.toString())
-            .remove();
-          database()
-            .ref()
-            .child('dz-chat-data')
-            .child(userId.toString())
-            .child(u_id.toString())
-            .remove();
+          auth()
+            .signInWithEmailAndPassword(
+              'admin@dorry.ai',
+              'dorry.ai#&T^%^%#UIUG',
+            )
+            .then(res => {
+              database()
+                .ref()
+                .child('dz-chat-data')
+                .child(u_id.toString())
+                .child(userId.toString())
+                .remove();
+              database()
+                .ref()
+                .child('dz-chat-data')
+                .child(userId.toString())
+                .child(u_id.toString())
+                .remove();
+            });
           this.props.navigation.replace('Chat');
         }
       })
@@ -890,7 +993,207 @@ class ChatScreen extends React.Component {
       });
   };
 
-  callbackChat = () => {
+  callbackChat = textMessage => {
+    const {matchId} = this.state;
+    let img = '';
+    let tempcontent = '';
+    let imgid = 0;
+
+    if (
+      this.state.ai_image_sent == this.state.other.img_message &&
+      this.state.ai_images_data != undefined &&
+      this.state.ai_images_data.length > 0
+    ) {
+      const filteredArray =
+        this.state.ai_image_id === 0
+          ? this.state.ai_images_data[0]
+          : this.state.ai_images_data.find(
+              item => item.id > this.state.ai_image_id,
+            );
+
+      img = filteredArray.user_image_url;
+      tempcontent = filteredArray.user_current_action;
+      imgid = filteredArray.id;
+
+      const temp = this.state.orgAiPersonality
+        .replace('#userdata#', this.state.orgAiPersonalities)
+        .replace('#currentaction#', tempcontent);
+      this.state.tempmessageList[0].content = temp;
+      this.state.tempmessageList.push({
+        role: 'assistant',
+        content: temp,
+      });
+    }
+    this.state.tempmessageList.push({
+      role: 'user',
+      content: textMessage,
+    });
+
+    fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization:
+          'Bearer sk-my-service-account-OcVwpHabIqoDlDYTtTLuT3BlbkFJOsnTUJjvEiuTd2sUQyDK',
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: this.state.tempmessageList,
+        max_tokens: 512,
+        temperature: 0.7,
+        top_p: 0.9,
+        frequency_penalty: 0.5,
+        presence_penalty: 0.6,
+        n: 1,
+        stop: ['\n'],
+      }),
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        const messageOfChat = responseJson.choices[0].message.content.trim();
+        const details = {
+          matchId: matchId,
+          messageText: responseJson.choices[0].message.content.trim(),
+          user_image_url:
+            this.state.ai_image_sent == this.state.other.img_message ? img : '',
+          user_current_action:
+            this.state.ai_image_sent == this.state.other.img_message
+              ? tempcontent
+              : '',
+          is_auto_chat: true,
+        };
+        let formBody = [];
+        for (const property in details) {
+          const encodedKey = encodeURIComponent(property);
+          const encodedValue = encodeURIComponent(details[property]);
+          formBody.push(encodedKey + '=' + encodedValue);
+        }
+        formBody = formBody.join('&');
+        fetch(`${SERVER_URL}/api/chat/create`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: Global.saveData.token,
+          },
+          body: formBody,
+        })
+          .then(response => response.json())
+          .then(responseJson => {
+            if (responseJson.data.account_status == 1) {
+              if (this.state.ai_image_sent == this.state.other.img_message) {
+                this.updateChatImageHistory(
+                  responseJson.data.sendResult.insertId,
+                  imgid,
+                  tempcontent,
+                );
+              }
+              const u_id = this.state.other.userId;
+              const userId = Global.saveData.u_id;
+              const imgid1 = imgid;
+              const img1 = img;
+              const tempcontent1 = tempcontent;
+              auth()
+                .signInWithEmailAndPassword(
+                  'admin@dorry.ai',
+                  'dorry.ai#&T^%^%#UIUG',
+                )
+                .then(res => {
+                  let msgId = database()
+                    .ref()
+                    .child('dz-chat-data')
+                    .child(u_id.toString())
+                    .child(userId.toString())
+                    .push().key;
+                  let updates = {};
+                  let senderMessage = {
+                    message: messageOfChat,
+                    time: firebase.database.ServerValue.TIMESTAMP,
+                    from: u_id,
+                    user_image_id:
+                      this.state.ai_image_sent == this.state.other.img_message
+                        ? imgid1
+                        : null,
+                    user_image_url:
+                      this.state.ai_image_sent == this.state.other.img_message
+                        ? img1
+                        : null,
+                    user_current_action:
+                      this.state.ai_image_sent == this.state.other.img_message
+                        ? tempcontent1
+                        : null,
+                    read: true,
+                  };
+                  updates[
+                    this.state.other.userId +
+                      '/' +
+                      Global.saveData.u_id +
+                      '/' +
+                      msgId
+                  ] = senderMessage;
+                  let receiverMessage = {
+                    message: messageOfChat,
+                    time: firebase.database.ServerValue.TIMESTAMP,
+                    from: u_id,
+                    user_image_id:
+                      this.state.ai_image_sent == this.state.other.img_message
+                        ? imgid
+                        : null,
+                    user_image_url:
+                      this.state.ai_image_sent == this.state.other.img_message
+                        ? img
+                        : null,
+                    user_current_action:
+                      this.state.ai_image_sent == this.state.other.img_message
+                        ? tempcontent
+                        : null,
+                    read: false,
+                  };
+                  updates[
+                    Global.saveData.u_id +
+                      '/' +
+                      this.state.other.userId +
+                      '/' +
+                      msgId
+                  ] = receiverMessage;
+                  database()
+                    .ref()
+                    .child('dz-chat-data')
+                    .update(updates)
+                    .then(() => {
+                      if (
+                        this.state.ai_image_sent == this.state.other.img_message
+                      ) {
+                        this.setState(prevState => {
+                          return {
+                            ai_image_sent: 0,
+                          };
+                        });
+                      }
+                    });
+                  // if (this.scrollView) {
+                  //   this.scrollView.scrollToEnd({animated: true});
+                  // }
+                });
+              if (this.flatListRef.current) {
+                // this.flatListRef.current.scrollToEnd({ animated: true });
+                this.scrollToBottom();
+              }
+            } else {
+              Alert.alert('', responseJson.message, [], {cancelable: false});
+            }
+          })
+          .catch(error => {
+            // alert(JSON.stringify(error))
+            return;
+          });
+      })
+      .catch(error => {
+        console.log(error);
+        return;
+      });
+  };
+
+  callBackDeepInfraChat = textMessage => {
     const {matchId} = this.state;
     let img = '';
     let tempcontent = '';
@@ -921,28 +1224,38 @@ class ChatScreen extends React.Component {
       });
     }
 
-    fetch('https://api.openai.com/v1/chat/completions', {
+    this.state.tempmessageList.push({
+      role: 'user',
+      content: textMessage,
+    });
+
+    fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization:
-          'Bearer sk-my-service-account-OcVwpHabIqoDlDYTtTLuT3BlbkFJOsnTUJjvEiuTd2sUQyDK',
+        Authorization: 'Bearer Ixg4lU3AELIubf2UutGa5ApFkf6WhrH8',
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'meta-llama/Meta-Llama-3-8B-Instruct',
         messages: this.state.tempmessageList,
-        max_tokens: 150,
+        max_tokens: 512,
         temperature: 0.7,
         top_p: 0.9,
-        frequency_penalty: 0.5,
-        presence_penalty: 0.6,
+        top_k: 0,
+        frequency_penalty: 0,
+        presence_penalty: 0,
         n: 1,
         stop: ['\n'],
+        response_format: {type: 'json_object'},
+        tool_choice: 'auto',
       }),
     })
       .then(response => response.json())
       .then(responseJson => {
-        const messageOfChat = responseJson.choices[0].message.content.trim();
+        console.log(JSON.stringify(responseJson));
+        const messageOfChat = replaceEmojis(
+          responseJson.choices[0].message.content.trim(),
+        );
         const details = {
           matchId: matchId,
           messageText: responseJson.choices[0].message.content.trim(),
@@ -952,6 +1265,7 @@ class ChatScreen extends React.Component {
             this.state.ai_image_sent == this.state.other.img_message
               ? tempcontent
               : '',
+          is_auto_chat: true,
         };
         let formBody = [];
         for (const property in details) {
@@ -973,84 +1287,101 @@ class ChatScreen extends React.Component {
             if (responseJson.data.account_status == 1) {
               if (this.state.ai_image_sent == this.state.other.img_message) {
                 this.updateChatImageHistory(
-                  responseJson.data.receiveResult.insertId,
+                  responseJson.data.sendResult.insertId,
                   imgid,
                   tempcontent,
                 );
               }
               const u_id = this.state.other.userId;
               const userId = Global.saveData.u_id;
-              let msgId = database()
-                .ref()
-                .child('dz-chat-data')
-                .child(u_id.toString())
-                .child(userId.toString())
-                .push().key;
-              let updates = {};
-              let senderMessage = {
-                message: messageOfChat,
-                time: firebase.database.ServerValue.TIMESTAMP,
-                from: u_id,
-                user_image_id:
-                  this.state.ai_image_sent == this.state.other.img_message
-                    ? imgid
-                    : null,
-                user_image_url:
-                  this.state.ai_image_sent == this.state.other.img_message
-                    ? img
-                    : null,
-                user_current_action:
-                  this.state.ai_image_sent == this.state.other.img_message
-                    ? tempcontent
-                    : null,
-                read: true,
-              };
-              updates[
-                this.state.other.userId +
-                  '/' +
-                  Global.saveData.u_id +
-                  '/' +
-                  msgId
-              ] = senderMessage;
-              let receiverMessage = {
-                message: messageOfChat,
-                time: firebase.database.ServerValue.TIMESTAMP,
-                from: u_id,
-                user_image_id:
-                  this.state.ai_image_sent == this.state.other.img_message
-                    ? imgid
-                    : null,
-                user_image_url:
-                  this.state.ai_image_sent == this.state.other.img_message
-                    ? img
-                    : null,
-                user_current_action:
-                  this.state.ai_image_sent == this.state.other.img_message
-                    ? tempcontent
-                    : null,
-                read: false,
-              };
-              updates[
-                Global.saveData.u_id +
-                  '/' +
-                  this.state.other.userId +
-                  '/' +
-                  msgId
-              ] = receiverMessage;
-              database().ref().child('dz-chat-data').update(updates);
-              // if (this.scrollView) {
-              //   this.scrollView.scrollToEnd({animated: true});
-              // }
+              const imgid1 = imgid;
+              const img1 = img;
+              const tempcontent1 = tempcontent;
+              auth()
+                .signInWithEmailAndPassword(
+                  'admin@dorry.ai',
+                  'dorry.ai#&T^%^%#UIUG',
+                )
+                .then(res => {
+                  let msgId = database()
+                    .ref()
+                    .child('dz-chat-data')
+                    .child(u_id.toString())
+                    .child(userId.toString())
+                    .push().key;
+                  let updates = {};
+                  let senderMessage = {
+                    message: messageOfChat,
+                    time: firebase.database.ServerValue.TIMESTAMP,
+                    from: u_id,
+                    user_image_id:
+                      this.state.ai_image_sent == this.state.other.img_message
+                        ? imgid1
+                        : null,
+                    user_image_url:
+                      this.state.ai_image_sent == this.state.other.img_message
+                        ? img1
+                        : null,
+                    user_current_action:
+                      this.state.ai_image_sent == this.state.other.img_message
+                        ? tempcontent1
+                        : null,
+                    read: true,
+                  };
+                  updates[
+                    this.state.other.userId +
+                      '/' +
+                      Global.saveData.u_id +
+                      '/' +
+                      msgId
+                  ] = senderMessage;
+                  let receiverMessage = {
+                    message: messageOfChat,
+                    time: firebase.database.ServerValue.TIMESTAMP,
+                    from: u_id,
+                    user_image_id:
+                      this.state.ai_image_sent == this.state.other.img_message
+                        ? imgid
+                        : null,
+                    user_image_url:
+                      this.state.ai_image_sent == this.state.other.img_message
+                        ? img
+                        : null,
+                    user_current_action:
+                      this.state.ai_image_sent == this.state.other.img_message
+                        ? tempcontent
+                        : null,
+                    read: false,
+                  };
+                  updates[
+                    Global.saveData.u_id +
+                      '/' +
+                      this.state.other.userId +
+                      '/' +
+                      msgId
+                  ] = receiverMessage;
+                  database()
+                    .ref()
+                    .child('dz-chat-data')
+                    .update(updates)
+                    .then(() => {
+                      if (
+                        this.state.ai_image_sent == this.state.other.img_message
+                      ) {
+                        this.setState(prevState => {
+                          return {
+                            ai_image_sent: 0,
+                          };
+                        });
+                      }
+                    });
+                  // if (this.scrollView) {
+                  //   this.scrollView.scrollToEnd({animated: true});
+                  // }
+                });
               if (this.flatListRef.current) {
                 // this.flatListRef.current.scrollToEnd({ animated: true });
                 this.scrollToBottom();
-              }
-              if (this.state.ai_image_sent == this.state.other.img_message) {
-                this.setState(prevState => {
-                  return {
-                    ai_image_sent: 0,
-                  };
-                });
               }
             } else {
               Alert.alert('', responseJson.message, [], {cancelable: false});
@@ -1089,6 +1420,7 @@ class ChatScreen extends React.Component {
     var details = {
       matchId: matchId,
       messageText: textMessage,
+      is_auto_chat: false,
     };
     var formBody = [];
     for (var property in details) {
@@ -1111,51 +1443,81 @@ class ChatScreen extends React.Component {
           if (responseJson.data.sending_available) {
             const u_id = Global.saveData.u_id;
             const userId = this.state.other.userId;
+            auth()
+              .signInWithEmailAndPassword(
+                'admin@dorry.ai',
+                'dorry.ai#&T^%^%#UIUG',
+              )
+              .then(res => {
+                let msgId = database()
+                  .ref()
+                  .child('dz-chat-data')
+                  .child(u_id.toString())
+                  .child(userId.toString())
+                  .push().key;
+                let updates = {};
+                let senderMessage = {
+                  message: textMessage,
+                  time: firebase.database.ServerValue.TIMESTAMP,
+                  from: Global.saveData.u_id,
+                  read: true,
+                };
+                updates[
+                  Global.saveData.u_id +
+                    '/' +
+                    this.state.other.userId +
+                    '/' +
+                    msgId
+                ] = senderMessage;
+                let receiverMessage = {
+                  message: textMessage,
+                  time: firebase.database.ServerValue.TIMESTAMP,
+                  from: Global.saveData.u_id,
+                  read: false,
+                };
+                updates[
+                  this.state.other.userId +
+                    '/' +
+                    Global.saveData.u_id +
+                    '/' +
+                    msgId
+                ] = receiverMessage;
+                database().ref().child('dz-chat-data').update(updates);
 
-            let msgId = database()
-              .ref()
-              .child('dz-chat-data')
-              .child(u_id.toString())
-              .child(userId.toString())
-              .push().key;
-            let updates = {};
-            let senderMessage = {
-              message: textMessage,
-              time: firebase.database.ServerValue.TIMESTAMP,
-              from: Global.saveData.u_id,
-              read: true,
-            };
-            updates[
-              Global.saveData.u_id + '/' + this.state.other.userId + '/' + msgId
-            ] = senderMessage;
-            let receiverMessage = {
-              message: textMessage,
-              time: firebase.database.ServerValue.TIMESTAMP,
-              from: Global.saveData.u_id,
-              read: false,
-            };
-            updates[
-              this.state.other.userId + '/' + Global.saveData.u_id + '/' + msgId
-            ] = receiverMessage;
-            database().ref().child('dz-chat-data').update(updates);
-
-            // if (this.scrollView) {
-            //   this.scrollView.scrollToEnd({animated: true});
-            // }
+                // if (this.scrollView) {
+                //   this.scrollView.scrollToEnd({animated: true});
+                // }
+              });
             if (this.flatListRef.current) {
               // this.flatListRef.current.scrollToEnd({ animated: true });
               this.scrollToBottom();
             }
-
             if (
               this.state.other.ai_friend === 1 &&
               this.state.other.ai_personality != null &&
               this.state.other.ai_personality !== ''
             ) {
-              setTimeout(() => {
-                this.callbackChat();
-              }, 100);
+              // setTimeout(() => {
+              if (this.state.other.chat_type == 1) {
+                this.callbackChat(textMessage);
+              } else if (this.state.other.chat_type == 2) {
+                this.callBackDeepInfraChat(textMessage);
+              }
+              // }, 70);
             }
+            // if (
+            //   this.state.other.ai_friend === 1 &&
+            //   this.state.other.ai_personality != null &&
+            //   this.state.other.ai_personality !== ''
+            // ) {
+            //   setTimeout(() => {
+            //     if (this.state.other.chat_type == 1) {
+            //       this.callbackChat();
+            //     } else if (this.state.other.chat_type == 2) {
+            //       this.callBackDeepInfraChat();
+            //     }
+            //   }, 70);
+            // }
           } else {
             if (!responseJson.data.diamonds_enough) {
               Alert.alert(
@@ -1230,6 +1592,7 @@ class ChatScreen extends React.Component {
               fan_count: newData.fan_count,
               coin_per_message: newData.coin_per_message,
               ai_friend: this.state.other.ai_friend,
+              chat_type: this.state.other.chat_type,
               ai_personality: this.state.other.ai_personality,
             },
           });
@@ -1578,94 +1941,94 @@ class ChatScreen extends React.Component {
     const isLastMessage = index === this.state.messageList.length - 1;
     return (
       <>
-        {item?.user_image_url != '' && item?.user_image_url != null && (
-          <View
-            key={`${index}_0${index}`}
-            style={{
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}>
-            {/* <View style={{alignSelf: 'center', paddingLeft: 10, paddingRight: 10}}>
-                    <Text style={{color: '#000', fontSize: 14}}>{this.setChatDate(item)}</Text>
-                </View> */}
-            <View
-              style={{
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                alignSelf:
-                  item.from === Global.saveData.u_id
-                    ? 'flex-end'
-                    : 'flex-start',
-                margin: 10,
-                marginLeft: 15,
-                maxWidth: '70%',
-              }}>
-              <Text
-                style={{
-                  padding: 3,
-                  fontSize: 12,
-                  color: '#000',
-                  alignSelf: 'flex-end',
-                }}>
-                {this.formatAMPM(item.time)}
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  backgroundColor:
-                    item.from === Global.saveData.u_id ? '#D5d5d5' : '#B64F54',
-                  borderRadius: 20,
-                  padding: 8,
-                  paddingLeft: item.from === Global.saveData.u_id ? 10 : 5,
-                  shadowColor: '#efefef',
-                  shadowOpacity: 0.8,
-                  shadowRadius: 2,
-                  shadowOffset: {
-                    height: 1,
-                    width: 1,
-                  },
-                }}
-                elevation={5}>
-                {item.from === this.state.other.userId && (
-                  <TouchableHighlight
-                    style={styles.avatarBtn}
-                    onPress={() => this.gotoProfilePage()}>
-                    <Image
-                      style={styles.avatar}
-                      source={
-                        this.state.other.imgUrl
-                          ? {uri: this.state.other.imgUrl}
-                          : hiddenMan
-                      }
-                    />
-                  </TouchableHighlight>
-                )}
-                <View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.setState({
-                        imagLargeUrl: item?.user_image_url,
-                      });
-                      this.setState({
-                        imagLarge: true,
-                      });
-                    }}>
-                    <Image
-                      style={{
-                        width: this.state.dimensions?.adjustedWidth,
-                        height: this.state.dimensions?.adjustedHeight,
-                        borderRadius: 10,
-                      }}
-                      resizeMode="contain"
-                      source={{uri: item?.user_image_url}}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </View>
-        )}
+        {/*{item?.user_image_url != '' && item?.user_image_url != null && (*/}
+        {/*  <View*/}
+        {/*    key={`${index}_0${index}`}*/}
+        {/*    style={{*/}
+        {/*      flexDirection: 'column',*/}
+        {/*      justifyContent: 'space-between',*/}
+        {/*    }}>*/}
+        {/*    /!* <View style={{alignSelf: 'center', paddingLeft: 10, paddingRight: 10}}>*/}
+        {/*            <Text style={{color: '#000', fontSize: 14}}>{this.setChatDate(item)}</Text>*/}
+        {/*        </View> *!/*/}
+        {/*    <View*/}
+        {/*      style={{*/}
+        {/*        flexDirection: 'column',*/}
+        {/*        justifyContent: 'space-between',*/}
+        {/*        alignSelf:*/}
+        {/*          item.from === Global.saveData.u_id*/}
+        {/*            ? 'flex-end'*/}
+        {/*            : 'flex-start',*/}
+        {/*        margin: 10,*/}
+        {/*        marginLeft: 15,*/}
+        {/*        maxWidth: '70%',*/}
+        {/*      }}>*/}
+        {/*      <Text*/}
+        {/*        style={{*/}
+        {/*          padding: 3,*/}
+        {/*          fontSize: 12,*/}
+        {/*          color: '#000',*/}
+        {/*          alignSelf: 'flex-end',*/}
+        {/*        }}>*/}
+        {/*        {this.formatAMPM(item.time)}*/}
+        {/*      </Text>*/}
+        {/*      <View*/}
+        {/*        style={{*/}
+        {/*          flexDirection: 'row',*/}
+        {/*          justifyContent: 'space-between',*/}
+        {/*          backgroundColor:*/}
+        {/*            item.from === Global.saveData.u_id ? '#D5d5d5' : '#B64F54',*/}
+        {/*          borderRadius: 20,*/}
+        {/*          padding: 8,*/}
+        {/*          paddingLeft: item.from === Global.saveData.u_id ? 10 : 5,*/}
+        {/*          shadowColor: '#efefef',*/}
+        {/*          shadowOpacity: 0.8,*/}
+        {/*          shadowRadius: 2,*/}
+        {/*          shadowOffset: {*/}
+        {/*            height: 1,*/}
+        {/*            width: 1,*/}
+        {/*          },*/}
+        {/*        }}*/}
+        {/*        elevation={5}>*/}
+        {/*        {item.from === this.state.other.userId && (*/}
+        {/*          <TouchableHighlight*/}
+        {/*            style={styles.avatarBtn}*/}
+        {/*            onPress={() => this.gotoProfilePage()}>*/}
+        {/*            <Image*/}
+        {/*              style={styles.avatar}*/}
+        {/*              source={*/}
+        {/*                this.state.other.imgUrl*/}
+        {/*                  ? {uri: this.state.other.imgUrl}*/}
+        {/*                  : hiddenMan*/}
+        {/*              }*/}
+        {/*            />*/}
+        {/*          </TouchableHighlight>*/}
+        {/*        )}*/}
+        {/*        <View>*/}
+        {/*          <TouchableOpacity*/}
+        {/*            onPress={() => {*/}
+        {/*              this.setState({*/}
+        {/*                imagLargeUrl: item?.user_image_url,*/}
+        {/*              });*/}
+        {/*              this.setState({*/}
+        {/*                imagLarge: true,*/}
+        {/*              });*/}
+        {/*            }}>*/}
+        {/*            <Image*/}
+        {/*              style={{*/}
+        {/*                width: this.state.dimensions?.adjustedWidth,*/}
+        {/*                height: this.state.dimensions?.adjustedHeight,*/}
+        {/*                borderRadius: 10,*/}
+        {/*              }}*/}
+        {/*              resizeMode="contain"*/}
+        {/*              source={{uri: item?.user_image_url}}*/}
+        {/*            />*/}
+        {/*          </TouchableOpacity>*/}
+        {/*        </View>*/}
+        {/*      </View>*/}
+        {/*    </View>*/}
+        {/*  </View>*/}
+        {/*)}*/}
         <View
           key={index}
           ref={isLastMessage ? this.lastMessageRef : null}
@@ -1704,7 +2067,13 @@ class ChatScreen extends React.Component {
                   item.from === Global.saveData.u_id ? '#D5d5d5' : '#B64F54',
                 borderRadius: 20,
                 padding: 8,
-                paddingLeft: item.from === Global.saveData.u_id ? 10 : 35,
+                paddingLeft:
+                  item.from === Global.saveData.u_id
+                    ? 10
+                    : item?.user_image_url !== '' &&
+                      item?.user_image_url != null
+                    ? 10.5
+                    : 30,
                 shadowColor: '#efefef',
                 shadowOpacity: 0.8,
                 shadowRadius: 2,
@@ -1729,6 +2098,29 @@ class ChatScreen extends React.Component {
                 </TouchableHighlight>
               )}
               <View>
+                {item?.user_image_url !== '' && item?.user_image_url != null ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({
+                        imagLargeUrl: item?.user_image_url,
+                      });
+                      this.setState({
+                        imagLarge: true,
+                      });
+                    }}>
+                    <Image
+                      style={{
+                        width: this.state.dimensions?.adjustedWidth,
+                        height: this.state.dimensions?.adjustedHeight,
+                        borderRadius: 10,
+                      }}
+                      resizeMode="contain"
+                      source={{uri: item?.user_image_url}}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <></>
+                )}
                 <Text
                   style={{
                     padding: 7,
@@ -2048,9 +2440,10 @@ class ChatScreen extends React.Component {
                     marginTop: 10,
                     color: '#000',
                   }}>
-                  {this.state.other.name.length > 6
-                    ? this.state.other.name.substring(0, 6)
-                    : this.state.other.name}
+                  {/*{this.state.other.name.length > 6*/}
+                  {/*  ? this.state.other.name.substring(0, 6)*/}
+                  {/*  : this.state.other.name}*/}
+                  {this.state.other.name}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -2379,12 +2772,17 @@ class ChatScreen extends React.Component {
           style={{padding: 10}}
           data={this.state.messageList}
           renderItem={this.renderRow}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => `${item.time}-${index}`}
           onScroll={this.handleScroll}
+          initialNumToRender={10}
           onMomentumScrollBegin={this.handleMomentumScrollBegin}
           ListHeaderComponent={() =>
             this.state.isLoading && <ActivityIndicator />
           }
+          onEndReachedThreshold={0.5}
+          onEndReached={() => {
+            console.log('End reached');
+          }}
           // onContentSizeChange={() =>
           //   this.flatListRef.current.scrollToEnd({animated: true})
           // }
@@ -2497,7 +2895,7 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 22.5,
     left: -15,
-    top: 1,
+    top: -22.5,
     zIndex: 2,
   },
   avatar: {

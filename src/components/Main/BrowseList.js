@@ -153,6 +153,7 @@ class BrowserList extends Component {
       })
         .then(response => response.json())
         .then(responseJson => {
+          console.log(responseJson);
           if (!responseJson.error) {
             // console.log('responseJson.data => ', responseJson.data);
             if (responseJson.data) {
@@ -171,6 +172,7 @@ class BrowserList extends Component {
             isLoading: false,
             error: 'Something just went wrong.',
           });
+          console.log(error);
           return;
         });
     });
@@ -511,7 +513,7 @@ class BrowserList extends Component {
           !this.state.isRefreshing && (
             <View
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-              <Text> Sorry, we cannot find anyone you want!</Text>
+              <Text>There are no more AI users</Text>
             </View>
           )}
         <ScrollView
@@ -624,31 +626,31 @@ class BrowserList extends Component {
                           {item.detail.coin_per_message + '/msg'}
                         </Text>
                       </View>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: '#7d7d7d',
-                        }}>
-                        {
-                          (item.detail.gender === 1 ? 'Male , ' : 'Female , ') +
-                            (item.detail.age + ' years old, ')
-                          // + ((parseInt(item.detail.distance) != 0
-                          // ? parseInt(item.detail.distance)
-                          // : 'unknown') +
-                          // ' miles away ')
-                        }
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: '#7d7d7d',
-                        }}>
-                        {item.detail.language_name +
-                          ', ' +
-                          item.detail.country_name +
-                          ', ' +
-                          item.detail.ethnicity_name}
-                      </Text>
+                      {/*<Text*/}
+                      {/*  style={{*/}
+                      {/*    fontSize: 12,*/}
+                      {/*    color: '#7d7d7d',*/}
+                      {/*  }}>*/}
+                      {/*  {*/}
+                      {/*    (item.detail.gender === 1 ? 'Male , ' : 'Female , ') +*/}
+                      {/*      (item.detail.age + ' years old, ')*/}
+                      {/*    // + ((parseInt(item.detail.distance) != 0*/}
+                      {/*    // ? parseInt(item.detail.distance)*/}
+                      {/*    // : 'unknown') +*/}
+                      {/*    // ' miles away ')*/}
+                      {/*  }*/}
+                      {/*</Text>*/}
+                      {/*<Text*/}
+                      {/*  style={{*/}
+                      {/*    fontSize: 12,*/}
+                      {/*    color: '#7d7d7d',*/}
+                      {/*  }}>*/}
+                      {/*  {item.detail.language_name +*/}
+                      {/*    ', ' +*/}
+                      {/*    item.detail.country_name +*/}
+                      {/*    ', ' +*/}
+                      {/*    item.detail.ethnicity_name}*/}
+                      {/*</Text>*/}
                       <View
                         style={{
                           flex: 1,

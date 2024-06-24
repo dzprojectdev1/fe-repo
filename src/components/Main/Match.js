@@ -230,6 +230,7 @@ class Match extends Component {
               fan_count: newData.fan_count,
               coin_per_message: newData.coin_per_message,
               ai_friend: newData.ai_friend,
+              chat_type: newData.chat_type,
               ai_personality: newData.ai_personality,
               img_message: newData.img_message,
             });
@@ -440,34 +441,34 @@ class Match extends Component {
                         width: (DEVICE_WIDTH / 2 - 10) * 0.6,
                         justifyContent: 'space-between',
                       }}>
-                      <Image
-                        source={b_name}
-                        style={{
-                          width: 10,
-                          marginTop: 4,
-                          marginLeft: 2,
-                          height: 10,
-                          tintColor: '#B64F54',
-                        }}
-                      />
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          marginLeft: 5,
-                          fontWeight: 'bold',
-                          color: '#B64F54',
-                        }}>
-                        {rowData.age + ''}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          marginLeft: 5,
-                          fontWeight: 'bold',
-                          color: '#B64F54',
-                        }}>
-                        {rowData.gender === 1 ? 'M' : 'F'}
-                      </Text>
+                      {/*<Image*/}
+                      {/*  source={b_name}*/}
+                      {/*  style={{*/}
+                      {/*    width: 10,*/}
+                      {/*    marginTop: 4,*/}
+                      {/*    marginLeft: 2,*/}
+                      {/*    height: 10,*/}
+                      {/*    tintColor: '#B64F54',*/}
+                      {/*  }}*/}
+                      {/*/>*/}
+                      {/*<Text*/}
+                      {/*  style={{*/}
+                      {/*    fontSize: 12,*/}
+                      {/*    marginLeft: 5,*/}
+                      {/*    fontWeight: 'bold',*/}
+                      {/*    color: '#B64F54',*/}
+                      {/*  }}>*/}
+                      {/*  {rowData.age + ''}*/}
+                      {/*</Text>*/}
+                      {/*<Text*/}
+                      {/*  style={{*/}
+                      {/*    fontSize: 12,*/}
+                      {/*    marginLeft: 5,*/}
+                      {/*    fontWeight: 'bold',*/}
+                      {/*    color: '#B64F54',*/}
+                      {/*  }}>*/}
+                      {/*  {rowData.gender === 1 ? 'M' : 'F'}*/}
+                      {/*</Text>*/}
                       {/* <Text style={{ fontSize: 12, marginLeft: 5, fontWeight: 'bold', color: '#B64F54' }} ellipsizeMode="tail" numberOfLines={1}>{((rowData.name).length > 6) ? (((rowData.name).substring(0, 6)) + '...') : rowData.name}</Text> */}
                       <Text
                         style={{

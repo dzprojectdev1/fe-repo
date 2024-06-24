@@ -99,6 +99,7 @@ class IncomeDetail extends Component {
       coin_per_message,
       content_type,
       ai_friend,
+      chat_type,
       ai_personality,
       img_message,
     } = this.props.route.params;
@@ -140,6 +141,7 @@ class IncomeDetail extends Component {
         coin_per_message: coin_per_message,
         content_type: content_type,
         ai_friend: ai_friend,
+        chat_type: chat_type,
         ai_personality: ai_personality,
         img_message: img_message,
       });
@@ -213,6 +215,7 @@ class IncomeDetail extends Component {
         fan_count: this.state.fan_count,
         coin_per_message: this.state.coin_per_message,
         ai_friend: this.state.ai_friend,
+        chat_type: this.state.chat_type,
         ai_personality: this.state.ai_personality,
         img_message: this.state.img_message,
       },
@@ -364,6 +367,7 @@ class IncomeDetail extends Component {
               fan_count: newData.fan_count,
               coin_per_message: newData.coin_per_message,
               ai_friend: newData.ai_friend,
+              chat_type: newData.chat_type,
               ai_personality: newData.ai_personality,
               img_message: newData.img_message,
             });
@@ -389,6 +393,7 @@ class IncomeDetail extends Component {
                 videoUrl: this.state.vUrl,
                 content_type: this.state.content_type,
                 ai_friend: this.state.ai_friend,
+                chat_type: this.state.chat_type,
                 ai_personality: this.state.ai_personality,
                 img_message: this.state.img_message,
               },
@@ -1051,26 +1056,26 @@ class IncomeDetail extends Component {
                 </>
               )}
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: 5,
-                alignItems: 'center',
-              }}>
-              <Image
-                source={b_age}
-                style={{width: 15, height: 15, tintColor: colors.inputLabel}}
-              />
-              <Text
-                style={{
-                  marginLeft: 10,
-                  color: colors.inputLabel,
-                  fontSize: 12,
-                  fontWeight: 'bold',
-                }}>
-                {this.state.userage + ' years old'}
-              </Text>
-            </View>
+            {/*<View*/}
+            {/*  style={{*/}
+            {/*    flexDirection: 'row',*/}
+            {/*    marginTop: 5,*/}
+            {/*    alignItems: 'center',*/}
+            {/*  }}>*/}
+            {/*  <Image*/}
+            {/*    source={b_age}*/}
+            {/*    style={{width: 15, height: 15, tintColor: colors.inputLabel}}*/}
+            {/*  />*/}
+            {/*  <Text*/}
+            {/*    style={{*/}
+            {/*      marginLeft: 10,*/}
+            {/*      color: colors.inputLabel,*/}
+            {/*      fontSize: 12,*/}
+            {/*      fontWeight: 'bold',*/}
+            {/*    }}>*/}
+            {/*    {this.state.userage + ' years old'}*/}
+            {/*  </Text>*/}
+            {/*</View>*/}
             {Global.saveData.is_admin === 1 && (
               <View
                 style={{
@@ -1120,48 +1125,48 @@ class IncomeDetail extends Component {
                 {this.state.coin_per_message + ' per message'}
               </Text>
             </View>
-            <View style={{flexDirection: 'column', marginTop: 5}}>
-              <Text>
-                <Text
-                  style={{
-                    marginTop: 5,
-                    color: colors.inputLabel,
-                    fontSize: 12,
-                    fontWeight: 'bold',
-                  }}>
-                  {this.props.route.params.gender === 1 ? 'Male, ' : 'Female, '}
-                </Text>
-                <Text
-                  style={{
-                    marginTop: 5,
-                    color: colors.inputLabel,
-                    fontSize: 12,
-                    fontWeight: 'bold',
-                  }}>
-                  {this.props.route.params.ethnicity_name}
-                </Text>
-                <Text
-                  style={{
-                    marginTop: 5,
-                    color: colors.inputLabel,
-                    fontSize: 12,
-                    fontWeight: 'bold',
-                  }}>
-                  {', speaks ' + this.props.route.params.language_name}
-                </Text>
-              </Text>
-              <Text
-                style={{
-                  marginTop: 5,
-                  color: colors.inputLabel,
-                  fontSize: 12,
-                  fontWeight: 'bold',
-                }}>
-                {this.props.route.params.last_loggedin_date +
-                  ', ' +
-                  this.props.route.params.country_name}
-              </Text>
-            </View>
+            {/*<View style={{flexDirection: 'column', marginTop: 5}}>*/}
+            {/*<Text>*/}
+            {/*  <Text*/}
+            {/*    style={{*/}
+            {/*      marginTop: 5,*/}
+            {/*      color: colors.inputLabel,*/}
+            {/*      fontSize: 12,*/}
+            {/*      fontWeight: 'bold',*/}
+            {/*    }}>*/}
+            {/*    {this.props.route.params.gender === 1 ? 'Male, ' : 'Female, '}*/}
+            {/*  </Text>*/}
+            {/*  <Text*/}
+            {/*    style={{*/}
+            {/*      marginTop: 5,*/}
+            {/*      color: colors.inputLabel,*/}
+            {/*      fontSize: 12,*/}
+            {/*      fontWeight: 'bold',*/}
+            {/*    }}>*/}
+            {/*    {this.props.route.params.ethnicity_name}*/}
+            {/*  </Text>*/}
+            {/*  <Text*/}
+            {/*    style={{*/}
+            {/*      marginTop: 5,*/}
+            {/*      color: colors.inputLabel,*/}
+            {/*      fontSize: 12,*/}
+            {/*      fontWeight: 'bold',*/}
+            {/*    }}>*/}
+            {/*    {', speaks ' + this.props.route.params.language_name}*/}
+            {/*  </Text>*/}
+            {/*</Text>*/}
+            {/*<Text*/}
+            {/*  style={{*/}
+            {/*    marginTop: 5,*/}
+            {/*    color: colors.inputLabel,*/}
+            {/*    fontSize: 12,*/}
+            {/*    fontWeight: 'bold',*/}
+            {/*  }}>*/}
+            {/*  {this.props.route.params.last_loggedin_date +*/}
+            {/*    ', ' +*/}
+            {/*    this.props.route.params.country_name}*/}
+            {/*</Text>*/}
+            {/*</View>*/}
             <View style={{marginTop: 10}}>
               <ScrollView
                 contentContainerStyle={{paddingVertical: 20}}
@@ -1237,7 +1242,7 @@ class IncomeDetail extends Component {
                     }}
                     onPress={() => this.gotoChat()}>
                     <Text style={{color: '#fff', fontSize: 16}}>
-                      {'Start Chat!'}
+                      {'Start Chat'}
                     </Text>
                   </TouchableOpacity>
                 </View>

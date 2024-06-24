@@ -1,16 +1,17 @@
 import React, {Component} from 'react';
-import {PermissionsAndroid, Platform} from 'react-native';
+import {LogBox, PermissionsAndroid, Platform} from 'react-native';
 import {Provider} from 'react-redux';
 import {createStore} from 'redux';
 import storeReducer from './Reducer';
 import Geolocation from 'react-native-geolocation-service';
-import {getFirebaseApp} from '@react-native-firebase/app';
+import firebase, {getFirebaseApp} from '@react-native-firebase/app';
 import messaging from '@react-native-firebase/messaging';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import AppView from './AppView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeBaseProvider} from 'native-base';
 import {setup} from 'react-native-iap';
+import Instabug, {InvocationEvent} from 'instabug-reactnative';
 // "react-native-firebase": "^5.5.4",
 //     "react-navigation": "^2.18.2",
 // "react-navigation-hooks": "^1.1.0",
@@ -49,6 +50,15 @@ class App extends Component {
       await Geolocation.requestAuthorization();
     }
     await this.checkFirebasePermission();
+    firebase.auth();
+    Instabug.init({
+      token: 'ff3b8a4fe0671f532e00d66118749a2d',
+      invocationEvents: [InvocationEvent.shake],
+    });
+
+    LogBox.ignoreLogs([
+      'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
+    ]);
   }
 
   componentWillUnmount() {

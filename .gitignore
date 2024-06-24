@@ -64,9 +64,7 @@ index.android.bundle
 package-lock.json
 
 .vscode
-.DS_Store
 android/app/release/chatGPT app-release.apk
 *.apk
-.DS_Store
-android/app/release/output-metadata.json
+*.DS_Store
 android/app/release/output-metadata.json
