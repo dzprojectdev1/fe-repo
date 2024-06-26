@@ -33,6 +33,7 @@ import bg from '../../assets/images/bg.jpg';
 import yellow_star from '../../assets/images/yellow_star.png';
 import Global from '../Global';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Sentry from '@sentry/react-native';
 
 class BrowserList extends Component {
   constructor(props) {
@@ -79,6 +80,7 @@ class BrowserList extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   }
@@ -172,6 +174,7 @@ class BrowserList extends Component {
             isLoading: false,
             error: 'Something just went wrong.',
           });
+          Sentry.captureException(new Error(error));
           console.log(error);
           return;
         });
@@ -249,6 +252,7 @@ class BrowserList extends Component {
             isRefreshing: false,
             error: 'Something just went wrong.',
           });
+          Sentry.captureException(new Error(error));
           return;
         });
     });
@@ -285,6 +289,7 @@ class BrowserList extends Component {
               });
             })
             .catch(error => {
+              Sentry.captureException(new Error(error));
               alert('There is error, please try again!');
               return;
             });

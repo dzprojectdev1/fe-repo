@@ -44,6 +44,7 @@ import {SERVER_URL, GCS_BUCKET} from '../../config/constants';
 import {TopBar} from '../../commonUI/components/topbar';
 import {colors} from '../../commonUI/base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as Sentry from '@sentry/react-native';
 
 class Browse extends Component {
   constructor(props) {
@@ -114,6 +115,7 @@ class Browse extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         // alert(error);
         return;
       });
@@ -171,6 +173,7 @@ class Browse extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   }
@@ -228,6 +231,7 @@ class Browse extends Component {
           }
         })
         .catch(error => {
+          Sentry.captureException(new Error(error));
           return;
         });
     });
@@ -271,6 +275,7 @@ class Browse extends Component {
           };
         })
         .catch(error => {
+          Sentry.captureException(new Error(error));
           alert('There is error, please try again!');
           return;
         });
@@ -335,6 +340,7 @@ class Browse extends Component {
         });
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         this.setState({
           isLoading: false,
           disabled: false,
@@ -419,6 +425,7 @@ class Browse extends Component {
         });
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         this.setState({
           isLoading: false,
           disabled: false,
@@ -517,6 +524,7 @@ class Browse extends Component {
         });
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         this.setState({
           isLoading: false,
           disabled: false,
@@ -615,6 +623,7 @@ class Browse extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         console.log(error);
         return;
       });
@@ -685,6 +694,7 @@ class Browse extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -817,6 +827,7 @@ class Browse extends Component {
             }
           })
           .catch(error => {
+            Sentry.captureException(new Error(error));
             this.setState({
               isLoading: false,
               disabled: false,

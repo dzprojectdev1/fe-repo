@@ -80,8 +80,6 @@ class Signup extends Component {
   handleSignup = () => {
     const {nickName, selected_mItem, selected_dItem, yitemList, ditemList} =
       this.state;
-    // Sentry.nativeCrash();
-    throw new Error('My first Sentry error!');
     if (nickName === '') {
       Alert.alert(
         '',

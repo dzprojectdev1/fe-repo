@@ -27,7 +27,7 @@ import search_photo from '../../assets/images/search_photo.png';
 import bg from '../../assets/images/bg.jpg';
 import yellow_star from '../../assets/images/yellow_star.png';
 import Global from '../Global';
-
+import * as Sentry from '@sentry/react-native';
 import {SERVER_URL, GCS_BUCKET} from '../../config/constants';
 
 class Match extends Component {
@@ -68,6 +68,7 @@ class Match extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
 
@@ -96,6 +97,7 @@ class Match extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -148,6 +150,7 @@ class Match extends Component {
             });
           })
           .catch(error => {
+            Sentry.captureException(new Error(error));
             alert('There is error, please try again!');
             return;
           });
@@ -237,6 +240,7 @@ class Match extends Component {
           }
         })
         .catch(error => {
+          Sentry.captureException(new Error(error));
           alert(JSON.stringify(error));
           return;
         });
@@ -276,6 +280,7 @@ class Match extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };

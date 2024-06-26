@@ -29,6 +29,7 @@ import {
   RECEIVED_VIDEO_TRACK,
   NOT_ANSWER,
   SESSION_TYPE,
+  FIREBASE_DB_UNREAD,
 } from './src/config/constants';
 import Sound from 'react-native-sound';
 import userIcon from './src/assets/images/hidden_man.png';
@@ -439,7 +440,7 @@ class AppView extends Component {
 
     database()
       .ref()
-      .child('dz-chat-unread')
+      .child(FIREBASE_DB_UNREAD)
       .update(updates)
       .then(() => console.log('Data updated.'));
   };

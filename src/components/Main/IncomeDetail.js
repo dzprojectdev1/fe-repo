@@ -35,7 +35,7 @@ import line_star from '../../assets/images/line_star.png';
 import shooting_star from '../../assets/images/shooting_star.png';
 import accept from '../../assets/images/accept.png';
 import Global from '../Global';
-
+import * as Sentry from '@sentry/react-native';
 import {capitalizeWords, SERVER_URL} from '../../config/constants';
 import {TopBar} from '../../commonUI/components/topbar';
 import {colors} from '../../commonUI/base';
@@ -169,6 +169,7 @@ class IncomeDetail extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
 
@@ -255,6 +256,7 @@ class IncomeDetail extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
     this.setState({isOperating: false});
@@ -302,6 +304,7 @@ class IncomeDetail extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -334,6 +337,7 @@ class IncomeDetail extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -401,6 +405,7 @@ class IncomeDetail extends Component {
           }
         })
         .catch(error => {
+          Sentry.captureException(new Error(error));
           return;
         });
     }
@@ -465,6 +470,7 @@ class IncomeDetail extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -598,6 +604,7 @@ class IncomeDetail extends Component {
             }
           })
           .catch(error => {
+            Sentry.captureException(new Error(error));
             this.setState({
               isLoading: false,
               disabled: false,

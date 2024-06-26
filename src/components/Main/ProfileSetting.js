@@ -19,6 +19,7 @@ import diamond from '../../assets/images/red_diamond_trans.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {capitalizeWords, SERVER_URL} from '../../config/constants';
 import {TopBar} from '../../commonUI/components/topbar';
+import * as Sentry from '@sentry/react-native';
 
 class ProfileSetting extends Component {
   constructor(props) {
@@ -87,6 +88,7 @@ class ProfileSetting extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -111,6 +113,7 @@ class ProfileSetting extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -139,6 +142,7 @@ class ProfileSetting extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -168,6 +172,7 @@ class ProfileSetting extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -286,6 +291,7 @@ class ProfileSetting extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         this.setState({
           isLoading: false,
           disabled: false,
@@ -344,6 +350,7 @@ class ProfileSetting extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -368,6 +375,7 @@ class ProfileSetting extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -422,6 +430,7 @@ class ProfileSetting extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });

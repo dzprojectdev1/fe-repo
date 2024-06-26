@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import * as RNIap from 'react-native-iap';
-
+import * as Sentry from '@sentry/react-native';
 // import RNIap, {
 //   acknowledgePurchaseAndroid, flushFailedPurchasesCachedAsPendingAndroid,
 //   purchaseErrorListener,
@@ -94,6 +94,7 @@ import {
 } from 'react-native-iap';
 import {SubscriptionPurchase} from 'react-native-iap';
 import {ProductPurchase} from 'react-native-iap';
+import * as Sentry from '@sentry/react-native';
 
 class ScreenGpay01 extends Component {
   constructor(props) {
@@ -132,6 +133,7 @@ class ScreenGpay01 extends Component {
       await this.getItems();
       flushFailedPurchasesCachedAsPendingAndroid()
         .catch(err => {
+          Sentry.captureException(new Error(err));
           console.warn(err.code, err.message);
         })
         .then(() => {
@@ -151,6 +153,7 @@ class ScreenGpay01 extends Component {
           this.purchaseErrorSubscription = purchaseErrorListener(
             (error: PurchaseError) => {
               console.warn('purchaseErrorListener', error);
+              Sentry.captureException(new Error(error));
             },
           );
         });
@@ -245,6 +248,7 @@ class ScreenGpay01 extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(error);
       });
   }
@@ -407,6 +411,7 @@ class ScreenGpay01 extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(error);
       });
   };
@@ -451,6 +456,7 @@ class ScreenGpay01 extends Component {
         });
       }
     } catch (err) {
+      Sentry.captureException(new Error(err));
       console.error(err.code, err.message);
     }
   };
@@ -469,6 +475,7 @@ class ScreenGpay01 extends Component {
         });
       }
     } catch (err) {
+      Sentry.captureException(new Error(err));
       console.warn(err.code, err.message);
       Alert.alert(err.message);
     }
@@ -480,6 +487,7 @@ class ScreenGpay01 extends Component {
       console.log(sku);
       await RNIap.requestPurchase({skus: [sku]});
     } catch (err) {
+      Sentry.captureException(new Error(err));
       console.warn(err.code, err.message);
     }
   };
@@ -488,6 +496,7 @@ class ScreenGpay01 extends Component {
     try {
       await RNIap.requestSubscription(sku);
     } catch (err) {
+      Sentry.captureException(new Error(err));
       Alert.alert(err.message);
     }
   };
@@ -587,6 +596,7 @@ class ScreenGpay01 extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(error);
       });
   };

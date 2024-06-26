@@ -14,6 +14,7 @@ import {setup} from 'react-native-iap';
 const store = createStore(storeReducer);
 setup({storekitMode: 'STOREKIT2_MODE'});
 import * as Sentry from '@sentry/react-native';
+import { PRODUCTION } from './src/config/constants';
 
 class App extends Component {
   constructor(props) {
@@ -67,6 +68,8 @@ class App extends Component {
     LogBox.ignoreLogs([
       'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
     ]);
+
+    Sentry.setTag('Production', PRODUCTION);
   }
 
   componentWillUnmount() {
@@ -104,6 +107,7 @@ class App extends Component {
       await this.requestPermissions(permissions);
     } catch (error) {
       // Error retrieving data
+      Sentry.captureException(new Error(error));
       console.error(error);
     }
   }
@@ -129,6 +133,7 @@ class App extends Component {
       return;
     } catch (error) {
       // Error retrieving data
+      Sentry.captureException(new Error(error));
       console.error(error);
       return;
     }
@@ -154,19 +159,24 @@ class App extends Component {
       // User has authorised
       await this.getToken();
     } catch (error) {
+      Sentry.captureException(new Error(error));
       // User has rejected permissions
       alert('Firebase permission rejected');
     }
   }
 
   async getToken() {
-    let fcmToken = await AsyncStorage.getItem('fcmToken');
-    if (!fcmToken) {
-      fcmToken = await messaging().getToken();
-      if (fcmToken) {
-        // user has a device token
-        await AsyncStorage.setItem('fcmToken', fcmToken);
+    try {
+      let fcmToken = await AsyncStorage.getItem('fcmToken');
+      if (!fcmToken) {
+        fcmToken = await messaging().getToken();
+        if (fcmToken) {
+          // user has a device token
+          await AsyncStorage.setItem('fcmToken', fcmToken);
+        }
       }
+    } catch (error) {
+      Sentry.captureException(new Error(error));
     }
   }
 

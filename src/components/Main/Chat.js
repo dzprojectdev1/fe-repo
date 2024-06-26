@@ -21,7 +21,7 @@ import {
 // import shorthash from 'shorthash';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {SERVER_URL, GCS_BUCKET} from '../../config/constants';
+import {SERVER_URL, GCS_BUCKET, FIREBASE_DB_UNREAD, FIREBASE_DB} from '../../config/constants';
 import {changeReadFlag} from '../../../Action';
 // import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
@@ -40,6 +40,7 @@ import Global from '../Global';
 import database from '@react-native-firebase/database';
 import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
+import * as Sentry from '@sentry/react-native';
 
 class Chat extends Component {
   constructor(props) {
@@ -72,7 +73,7 @@ class Chat extends Component {
     }
     database()
       .ref()
-      .child('dz-chat-data')
+      .child(FIREBASE_DB)
       .child(Global.saveData.u_id + '/')
       .on('value', value => {
         this.getChatData();
@@ -97,6 +98,7 @@ class Chat extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   }
@@ -125,6 +127,7 @@ class Chat extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   }
@@ -208,7 +211,7 @@ class Chat extends Component {
   checkUnReadMessage = data => {
     database()
       .ref()
-      .child('dz-chat-unread')
+      .child(FIREBASE_DB_UNREAD)
       .child(Global.saveData.u_id + '/')
       .once('value', value => {
         let senderIdArr = value.toJSON();
@@ -227,12 +230,12 @@ class Chat extends Component {
           if (senderIdArr.length) {
             newPayload.unreadFlag = true;
             updates[Global.saveData.u_id] = senderIdArr.toString();
-            database().ref().child('dz-chat-unread').update(updates);
+            database().ref().child(FIREBASE_DB_UNREAD).update(updates);
           } else {
             newPayload.unreadFlag = false;
             database()
               .ref()
-              .child('dz-chat-unread')
+              .child(FIREBASE_DB_UNREAD)
               .child(Global.saveData.u_id + '/')
               .remove();
           }
@@ -258,7 +261,7 @@ class Chat extends Component {
   readAllAsRead = () => {
     database()
       .ref()
-      .child('dz-chat-unread')
+      .child(FIREBASE_DB_UNREAD)
       .child(Global.saveData.u_id + '/')
       .once('value', value => {
         let newPayload = {};
@@ -269,7 +272,7 @@ class Chat extends Component {
         // newPayload.unreadFlag = false;
         database()
           .ref()
-          .child('dz-chat-unread')
+          .child(FIREBASE_DB_UNREAD)
           .child(Global.saveData.u_id + '/')
           .remove();
 
@@ -311,6 +314,7 @@ class Chat extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };

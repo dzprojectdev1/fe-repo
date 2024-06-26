@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Video from 'react-native-video';
 import Global from '../Global';
-
+import * as Sentry from '@sentry/react-native';
 import {SERVER_URL, GCS_BUCKET, capitalizeWords} from '../../config/constants';
 import {TopBar} from '../../commonUI/components/topbar';
 
@@ -65,6 +65,7 @@ class MyVideoDetail extends Component {
         });
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         console.log('There is error, please try again!');
         return;
       });
@@ -88,6 +89,7 @@ class MyVideoDetail extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   }

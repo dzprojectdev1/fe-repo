@@ -29,6 +29,7 @@ import yellow_star_black from '../../assets/images/yellow_star_black.png';
 import {SERVER_URL, GCS_BUCKET, capitalizeWords} from '../../config/constants';
 import listData from 'react-native-simple-store';
 import {TopBar} from '../../commonUI/components/topbar';
+import * as Sentry from '@sentry/react-native';
 
 class MyFans extends Component {
   constructor(props) {
@@ -79,6 +80,7 @@ class MyFans extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   }
@@ -114,6 +116,7 @@ class MyFans extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         // alert(JSON.stringify(error));
         return;
       });
@@ -148,6 +151,7 @@ class MyFans extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         // alert(JSON.stringify(error));
         return;
       });
@@ -193,6 +197,7 @@ class MyFans extends Component {
                 });
               })
               .catch(error => {
+                Sentry.captureException(new Error(error));
                 alert('There is error, please try again!');
                 return;
               });
@@ -212,6 +217,7 @@ class MyFans extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -236,6 +242,7 @@ class MyFans extends Component {
         });
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert('There is error, please try again!');
         return;
       });

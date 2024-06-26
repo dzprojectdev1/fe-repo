@@ -20,6 +20,7 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Global from '../Global';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SERVER_URL} from '../../config/constants';
+import * as Sentry from '@sentry/react-native';
 
 class Filter extends Component {
   constructor(props) {
@@ -145,6 +146,7 @@ class Filter extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -168,6 +170,7 @@ class Filter extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -193,6 +196,7 @@ class Filter extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -218,6 +222,7 @@ class Filter extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });

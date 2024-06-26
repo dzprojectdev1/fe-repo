@@ -43,13 +43,14 @@ import yellow_star from '../../assets/images/yellow_star.png';
 import ban_black from '../../assets/images/ban_black.png';
 import notification_black from '../../assets/images/notification_black.png';
 
-import {SERVER_URL} from '../../config/constants';
+import {SERVER_URL, FIREBASE_DB, FIREBASE_DB_UNREAD} from '../../config/constants';
 import firebase from '@react-native-firebase/app';
 import database from '@react-native-firebase/database';
 import {colors, em} from '../../commonUI/base';
 import bg from '../../assets/images/bg.jpg';
 import auth from '@react-native-firebase/auth';
 import {replaceEmojis} from '../../util/upload';
+import * as Sentry from '@sentry/react-native';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
@@ -228,6 +229,7 @@ class ChatScreen extends React.Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -281,6 +283,7 @@ class ChatScreen extends React.Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -314,6 +317,7 @@ class ChatScreen extends React.Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -474,6 +478,7 @@ class ChatScreen extends React.Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
 
@@ -514,7 +519,7 @@ class ChatScreen extends React.Component {
 
     database()
       .ref()
-      .child('dz-chat-data')
+      .child(FIREBASE_DB)
       .child(u_id.toString())
       .child(userId.toString())
       .orderByChild('time')
@@ -552,11 +557,11 @@ class ChatScreen extends React.Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         console.error(
           'componentDidMount || Once Value || Error fetching messages: ',
           error,
         );
-        Alert.alert('1', error);
         this.setState({isLoading: false});
       });
   }
@@ -567,7 +572,7 @@ class ChatScreen extends React.Component {
 
     database()
       .ref()
-      .child('dz-chat-data')
+      .child(FIREBASE_DB)
       .child(u_id.toString())
       .child(userId.toString())
       .once('value', snapshot => {
@@ -620,7 +625,7 @@ class ChatScreen extends React.Component {
         }
       })
       .catch(error => {
-        Alert.alert('3', error);
+        Sentry.captureException(new Error(error));
         console.error(
           'componentDidMount || Once Value || Error fetching messages: ',
           error,
@@ -635,7 +640,7 @@ class ChatScreen extends React.Component {
     const userId = this.state.other.userId;
     database()
       .ref()
-      .child('dz-chat-data')
+      .child(FIREBASE_DB)
       .child(u_id.toString())
       .child(userId.toString())
       .orderByChild('time')
@@ -761,7 +766,7 @@ class ChatScreen extends React.Component {
 
     database()
       .ref()
-      .child('dz-chat-unread')
+      .child(FIREBASE_DB_UNREAD)
       .child(u_id.toString() + '/')
       .once('value', value => {
         let senderIdArr = value.toJSON();
@@ -780,12 +785,12 @@ class ChatScreen extends React.Component {
           if (senderIdArr.length) {
             newPayload.unreadFlag = true;
             updates[Global.saveData.u_id] = senderIdArr.toString();
-            database().ref().child('dz-chat-unread').update(updates);
+            database().ref().child(FIREBASE_DB_UNREAD).update(updates);
           } else {
             newPayload.unreadFlag = false;
             database()
               .ref()
-              .child('dz-chat-unread')
+              .child(FIREBASE_DB_UNREAD)
               .child(u_id.toString() + '/')
               .remove();
           }
@@ -804,7 +809,7 @@ class ChatScreen extends React.Component {
     const userId = this.state.other.userId;
     database()
       .ref()
-      .child('dz-chat-data')
+      .child(FIREBASE_DB)
       .child(u_id.toString())
       .child(userId.toString())
       .off('child_added');
@@ -934,13 +939,13 @@ class ChatScreen extends React.Component {
           const userId = this.state.other.userId;
           database()
             .ref()
-            .child('dz-chat-data')
+            .child(FIREBASE_DB)
             .child(u_id.toString())
             .child(userId.toString())
             .remove();
           database()
             .ref()
-            .child('dz-chat-data')
+            .child(FIREBASE_DB)
             .child(userId.toString())
             .child(u_id.toString())
             .remove();
@@ -948,6 +953,7 @@ class ChatScreen extends React.Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -993,6 +999,7 @@ class ChatScreen extends React.Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -1071,6 +1078,7 @@ class ChatScreen extends React.Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         // alert(JSON.stringify(error))
         return;
       });
@@ -1134,7 +1142,7 @@ class ChatScreen extends React.Component {
     })
       .then(response => response.json())
       .then(responseJson => {
-        Alert.alert('Output', JSON.stringify(responseJson));
+        //Alert.alert('Output', JSON.stringify(responseJson));
         const messageOfChat = responseJson.choices[0].message.content.trim();
         const details = {
           matchId: matchId,
@@ -1180,7 +1188,7 @@ class ChatScreen extends React.Component {
 
               let msgId = database()
                 .ref()
-                .child('dz-chat-data')
+                .child(FIREBASE_DB)
                 .child(u_id.toString())
                 .child(userId.toString())
                 .push().key;
@@ -1237,7 +1245,7 @@ class ChatScreen extends React.Component {
               ] = receiverMessage;
               database()
                 .ref()
-                .child('dz-chat-data')
+                .child(FIREBASE_DB)
                 .update(updates)
                 .then(() => {
                   if (
@@ -1258,12 +1266,12 @@ class ChatScreen extends React.Component {
             }
           })
           .catch(error => {
-            Alert.alert('error 0a', error)
+            Sentry.captureException(new Error(error));
             return;
           });
       })
       .catch(error => {
-        Alert.alert('error 0b', error)
+        Sentry.captureException(new Error(error));
         console.log(error);
         return;
       });
@@ -1305,7 +1313,7 @@ class ChatScreen extends React.Component {
       content: textMessage,
     });
 
-    Alert.alert('Output', JSON.stringify(this.state.tempmessageList));
+   // Alert.alert('Output', JSON.stringify(this.state.tempmessageList));
 
     fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
       method: 'POST',
@@ -1331,7 +1339,7 @@ class ChatScreen extends React.Component {
       .then(response => response.json())
       .then(responseJson => {
         console.log(JSON.stringify(responseJson));
-        Alert.alert('Output', JSON.stringify(responseJson));
+        //Alert.alert('Output', JSON.stringify(responseJson));
         const messageOfChat = replaceEmojis(
           responseJson.choices[0].message.content.trim(),
         );
@@ -1378,7 +1386,7 @@ class ChatScreen extends React.Component {
               const tempcontent1 = tempcontent;
               let msgId = database()
                 .ref()
-                .child('dz-chat-data')
+                .child(FIREBASE_DB)
                 .child(u_id.toString())
                 .child(userId.toString())
                 .push().key;
@@ -1435,7 +1443,7 @@ class ChatScreen extends React.Component {
               ] = receiverMessage;
               database()
                 .ref()
-                .child('dz-chat-data')
+                .child(FIREBASE_DB)
                 .update(updates)
                 .then(() => {
                   if (
@@ -1456,12 +1464,12 @@ class ChatScreen extends React.Component {
             }
           })
           .catch(error => {
-            Alert.alert('error 1a', error);
+            Sentry.captureException(new Error(error));
             return;
           });
       })
       .catch(error => {
-        Alert.alert('error 1b', error);
+        Sentry.captureException(new Error(error));
         console.log(error);
         return;
       });
@@ -1514,7 +1522,7 @@ class ChatScreen extends React.Component {
             const userId = this.state.other.userId;
             let msgId = database()
               .ref()
-              .child('dz-chat-data')
+              .child(FIREBASE_DB)
               .child(u_id.toString())
               .child(userId.toString())
               .push().key;
@@ -1537,7 +1545,7 @@ class ChatScreen extends React.Component {
             updates[
               this.state.other.userId + '/' + Global.saveData.u_id + '/' + msgId
             ] = receiverMessage;
-            database().ref().child('dz-chat-data').update(updates);
+            database().ref().child(FIREBASE_DB).update(updates);
 
             if (this.flatListRef.current) {
               this.scrollToBottom();
@@ -1599,7 +1607,7 @@ class ChatScreen extends React.Component {
         }
       })
       .catch(error => {
-        // alert(JSON.stringify(error))
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -1647,6 +1655,7 @@ class ChatScreen extends React.Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -1688,6 +1697,7 @@ class ChatScreen extends React.Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -1731,6 +1741,7 @@ class ChatScreen extends React.Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -1845,6 +1856,7 @@ class ChatScreen extends React.Component {
             }
           })
           .catch(error => {
+            Sentry.captureException(new Error(error));
             this.setState({
               isLoading: false,
               disabled: false,

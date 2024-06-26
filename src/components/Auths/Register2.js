@@ -30,6 +30,7 @@ import messaging from '@react-native-firebase/messaging';
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import {isQBOn} from '../../config';
+import * as Sentry from '@sentry/react-native';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
@@ -81,6 +82,7 @@ class Register2 extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -105,6 +107,7 @@ class Register2 extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -130,6 +133,7 @@ class Register2 extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
         return;
       });
@@ -154,6 +158,7 @@ class Register2 extends Component {
       return false;
     } catch (error) {
       // Error retrieving data
+      Sentry.captureException(new Error(error));
       alert(JSON.stringify('check permissions = ' + error.message));
       return false;
     }
@@ -250,6 +255,7 @@ class Register2 extends Component {
     })
       .then(response => response.json())
       .catch(error => {
+        Sentry.captureException(new Error(error));
         alert(JSON.stringify('account create = ' + error.message));
       });
     if (!responseJson.error) {

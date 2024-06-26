@@ -41,7 +41,7 @@ import collapse from '../../assets/images/collapse.png';
 import expand from '../../assets/images/expand.png';
 import video_player from '../../assets/images/video_player.png';
 import Global from '../Global';
-
+import * as Sentry from '@sentry/react-native';
 import {SERVER_URL, GCS_BUCKET, capitalizeWords} from '../../config/constants';
 import {TopBar} from '../../commonUI/components/topbar';
 
@@ -151,6 +151,7 @@ class Profile extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         // alert(JSON.stringify(error));
         return;
       });
@@ -178,6 +179,7 @@ class Profile extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         this.setState({
           noData: false,
           isLoading: false,
@@ -223,6 +225,7 @@ class Profile extends Component {
             });
           })
           .catch(error => {
+            Sentry.captureException(new Error(error));
             alert('There is error, please try again!');
             return;
           });
@@ -374,6 +377,7 @@ class Profile extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         this.setState({
           flash_ban: false,
         });
@@ -417,6 +421,7 @@ class Profile extends Component {
         }
       })
       .catch(error => {
+        Sentry.captureException(new Error(error));
         return;
       });
   };
@@ -552,6 +557,7 @@ class Profile extends Component {
             }
           })
           .catch(error => {
+            Sentry.captureException(new Error(error));
             this.setState({
               isLoading: false,
               disabled: false,
@@ -604,6 +610,7 @@ class Profile extends Component {
                   });
                 })
                 .catch(error => {
+                  Sentry.captureException(new Error(error));
                   alert('There is error, please try again!');
                   return;
                 });
@@ -623,6 +630,7 @@ class Profile extends Component {
           }
         })
         .catch(error => {
+          Sentry.captureException(new Error(error));
           console.log('error_go_to_browseDetail ', error);
           return;
         });

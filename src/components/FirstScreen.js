@@ -25,12 +25,13 @@ import firstBg from '../assets/images/splash.png';
 import logo from '../assets/images/logo.png';
 import Global from './Global';
 import QB from 'quickblox-react-native-sdk';
-import {SERVER_URL} from '../config/constants';
+import {SERVER_URL, FIREBASE_DB_UNREAD, FIREBASE_DB} from '../config/constants';
 import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import database from '@react-native-firebase/database';
 import {isQBOn} from '../config';
 import auth from '@react-native-firebase/auth';
+import * as Sentry from '@sentry/react-native';
 
 class FirstScreen extends Component {
   constructor(props) {
@@ -65,6 +66,7 @@ class FirstScreen extends Component {
       return false;
     } catch (error) {
       // Error retrieving data
+      Sentry.captureException(new Error(error));
       console.log('check permissions = ', error.message);
       return false;
     }
@@ -106,7 +108,7 @@ class FirstScreen extends Component {
           },
         )
           .then(response => response.json())
-          .catch(e => console.log(e.message));
+          .catch(e => {Sentry.captureException(new Error(e)); console.log(e.message)});
         if (responseJson.error === false) {
           if (responseJson.user) {
             if (isQBOn()) {
@@ -231,6 +233,15 @@ class FirstScreen extends Component {
     Global.saveData.fan_count = responseJson.user.fan_count;
     Global.saveData.coin_per_message = responseJson.user.coin_per_message;
 
+    Sentry.setUser({
+      email: responseJson.user.email,
+      id: responseJson.user.id,
+      username: responseJson.user.name,
+    });
+
+    Sentry.setTag('FIREBASE_DB', FIREBASE_DB);
+    Sentry.setTag('FIREBASE_DB_UNREAD', FIREBASE_DB_UNREAD);
+
     if (responseJson.user.account_status == 3) {
       let alert_str =
         'Your account is closed. Please send an email to contact@dorry.ai if this was done in error. Please include the following information in your email ';
@@ -282,7 +293,7 @@ class FirstScreen extends Component {
   checkUnreadMessage = () => {
     database()
       .ref()
-      .child('dz-chat-unread')
+      .child(FIREBASE_DB_UNREAD)
       .child(Global.saveData.u_id + '/')
       .on('value', value => {
         let newPayload = {};
@@ -331,6 +342,7 @@ class FirstScreen extends Component {
       return JSON.parse(value);
     } catch (error) {
       // Error retrieving data
+      Sentry.captureException(new Error(error));
       console.log(error.message);
     }
     return;
