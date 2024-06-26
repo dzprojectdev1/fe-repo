@@ -81,6 +81,7 @@ class AppView extends Component {
 
   async componentDidMount() {
     await this.createNotificationListeners();
+
     /** Sam's */
     // const appSettings = {
     //   appId: '79653',

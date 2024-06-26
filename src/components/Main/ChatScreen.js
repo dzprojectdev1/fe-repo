@@ -49,8 +49,7 @@ import database from '@react-native-firebase/database';
 import {colors, em} from '../../commonUI/base';
 import bg from '../../assets/images/bg.jpg';
 import auth from '@react-native-firebase/auth';
-import {getEmoji, replaceEmojis} from '../../util/upload';
-import Instabug, {CrashReporting, ReproStepsMode} from 'instabug-reactnative';
+import {replaceEmojis} from '../../util/upload';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
@@ -1113,6 +1112,7 @@ class ChatScreen extends React.Component {
       content: textMessage,
     });
 
+    Alert.alert('Input', JSON.stringify(this.state.tempmessageList))
     fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -1134,6 +1134,7 @@ class ChatScreen extends React.Component {
     })
       .then(response => response.json())
       .then(responseJson => {
+        Alert.alert('Output', JSON.stringify(responseJson));
         const messageOfChat = responseJson.choices[0].message.content.trim();
         const details = {
           matchId: matchId,
@@ -1257,10 +1258,12 @@ class ChatScreen extends React.Component {
             }
           })
           .catch(error => {
+            Alert.alert('error 0a', error)
             return;
           });
       })
       .catch(error => {
+        Alert.alert('error 0b', error)
         console.log(error);
         return;
       });
@@ -1302,6 +1305,8 @@ class ChatScreen extends React.Component {
       content: textMessage,
     });
 
+    Alert.alert('Output', JSON.stringify(this.state.tempmessageList));
+
     fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
       method: 'POST',
       headers: {
@@ -1326,6 +1331,7 @@ class ChatScreen extends React.Component {
       .then(response => response.json())
       .then(responseJson => {
         console.log(JSON.stringify(responseJson));
+        Alert.alert('Output', JSON.stringify(responseJson));
         const messageOfChat = replaceEmojis(
           responseJson.choices[0].message.content.trim(),
         );
@@ -1450,10 +1456,12 @@ class ChatScreen extends React.Component {
             }
           })
           .catch(error => {
+            Alert.alert('error 1a', error);
             return;
           });
       })
       .catch(error => {
+        Alert.alert('error 1b', error);
         console.log(error);
         return;
       });
@@ -2767,20 +2775,20 @@ class ChatScreen extends React.Component {
         {/*  </View>*/}
         {/*)}*/}
 
-        {/*{this.state.other.ai_personality != '' &&*/}
-        {/*  this.state.other.ai_personality != null && (*/}
-        {/*    <View*/}
-        {/*      style={{*/}
-        {/*        justifyContent: 'center',*/}
-        {/*        borderColor: '#d9d9d9',*/}
-        {/*        borderWidth: 0.5,*/}
-        {/*        padding: 10,*/}
-        {/*      }}>*/}
-        {/*      <Text style={{color: '#000', fontSize: 8}}>*/}
-        {/*        {this.state.tempmessageList[0].content}*/}
-        {/*      </Text>*/}
-        {/*    </View>*/}
-        {/*  )}*/}
+        {this.state.other.ai_personality != '' &&
+          this.state.other.ai_personality != null && (
+              <View
+                  style={{
+                    justifyContent: 'center',
+                    borderColor: '#d9d9d9',
+                    borderWidth: 0.5,
+                    padding: 10,
+                  }}>
+                <Text style={{color: '#000', fontSize: 8}}>
+                  {this.state.tempmessageList[0].content}
+                </Text>
+              </View>
+          )}
         {/*<ScrollView*/}
         {/*  ref={ref => {*/}
         {/*    this.scrollView = ref;*/}

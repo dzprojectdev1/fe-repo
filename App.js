@@ -11,12 +11,9 @@ import AppView from './AppView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeBaseProvider} from 'native-base';
 import {setup} from 'react-native-iap';
-import Instabug, {InvocationEvent} from 'instabug-reactnative';
-// "react-native-firebase": "^5.5.4",
-//     "react-navigation": "^2.18.2",
-// "react-navigation-hooks": "^1.1.0",
 const store = createStore(storeReducer);
 setup({storekitMode: 'STOREKIT2_MODE'});
+import * as Sentry from '@sentry/react-native';
 
 class App extends Component {
   constructor(props) {
@@ -28,6 +25,22 @@ class App extends Component {
 
   async componentDidMount() {
     console.disableYellowBox = true;
+    Sentry.init({
+      dsn: 'https://56f60f84556c1107c18b25fd83f399c4@o4506133148401664.ingest.us.sentry.io/4506133149712384',
+      appHangTimeoutInterval: 1,
+      enableAutoSessionTracking: true,
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      tracesSampleRate: 1.0,
+      
+      _experiments: {
+        // profilesSampleRate is relative to tracesSampleRate.
+        // Here, we'll capture profiles for 100% of transactions.
+        profilesSampleRate: 1.0,
+      },
+      sendDefaultPii: true,
+    });
+
     const firebaseConfig = {
       apiKey: 'AIzaSyBuJ1590DczIiuH7JA_Ls8Pido4IJ_GVT4',
       authDomain: 'dazzled-date-dev.firebaseapp.com',
@@ -51,11 +64,6 @@ class App extends Component {
     }
     await this.checkFirebasePermission();
     firebase.auth();
-    Instabug.init({
-      token: 'ff3b8a4fe0671f532e00d66118749a2d',
-      invocationEvents: [InvocationEvent.none],
-    });
-
     LogBox.ignoreLogs([
       'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
     ]);
@@ -175,4 +183,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default Sentry.wrap(App);

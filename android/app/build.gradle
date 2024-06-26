@@ -177,6 +177,7 @@ dependencies {
         implementation jscFlavor
     }
 
+
 //    implementation 'com.google.firebase:firebase-core:21.1.1'
 //    implementation 'com.google.firebase:firebase-messaging:24.0.0' // From node_modules
 }

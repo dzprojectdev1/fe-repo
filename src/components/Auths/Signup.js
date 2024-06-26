@@ -16,6 +16,7 @@ import Picker from '@gregfrench/react-native-wheel-picker';
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import userIcon from '../../assets/images/userIcon.png';
+import * as Sentry from '@sentry/react-native';
 
 const PickerItem = Picker.Item;
 
@@ -79,7 +80,8 @@ class Signup extends Component {
   handleSignup = () => {
     const {nickName, selected_mItem, selected_dItem, yitemList, ditemList} =
       this.state;
-
+    // Sentry.nativeCrash();
+    throw new Error('My first Sentry error!');
     if (nickName === '') {
       Alert.alert(
         '',
