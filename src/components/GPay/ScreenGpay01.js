@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 
 import * as RNIap from 'react-native-iap';
-import * as Sentry from '@sentry/react-native';
 // import RNIap, {
 //   acknowledgePurchaseAndroid, flushFailedPurchasesCachedAsPendingAndroid,
 //   purchaseErrorListener,

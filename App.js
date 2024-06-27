@@ -14,7 +14,7 @@ import {setup} from 'react-native-iap';
 const store = createStore(storeReducer);
 setup({storekitMode: 'STOREKIT2_MODE'});
 import * as Sentry from '@sentry/react-native';
-import { PRODUCTION } from './src/config/constants';
+import {PRODUCTION} from './src/config/constants';
 
 class App extends Component {
   constructor(props) {
@@ -33,7 +33,7 @@ class App extends Component {
       // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
       // We recommend adjusting this value in production.
       tracesSampleRate: 1.0,
-      
+
       _experiments: {
         // profilesSampleRate is relative to tracesSampleRate.
         // Here, we'll capture profiles for 100% of transactions.
@@ -52,10 +52,11 @@ class App extends Component {
       appId: '1:725302073253:android:0aa373b87b7f562c2a3a4c',
     };
 
-    if (!getFirebaseApp().apps.length) {
-      await getFirebaseApp().initializeApp({});
+    if (!firebase.apps.length) {
+      await firebase.initializeApp(firebaseConfig);
     }
-    await getFirebaseApp().initializeApp(firebaseConfig);
+    await firebase.app();
+
     this.setState({loading: false});
 
     if (Platform.OS === 'android') {
@@ -104,7 +105,7 @@ class App extends Component {
       if (permissions.length === 0) {
         return;
       }
-      await this.requestPermissions(permissions);
+      //await this.requestPermissions(permissions);
     } catch (error) {
       // Error retrieving data
       Sentry.captureException(new Error(error));

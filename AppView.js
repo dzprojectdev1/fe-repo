@@ -42,6 +42,7 @@ import database from '@react-native-firebase/database';
 import {isQBOn} from './src/config';
 import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
+import Global from './src/components/Global';
 
 Sound.setCategory('Playback');
 const whoosh = new Sound(
