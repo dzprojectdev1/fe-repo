@@ -49,5 +49,6 @@ module.exports = {
     call_id: 0,
     fan_count: 0,
     coin_per_message: 0,
+    device_id: '',
   },
 };

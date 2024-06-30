@@ -1,3 +1,5 @@
+const {withSentryConfig} = require('@sentry/react-native/metro');
+
 /**
  * Metro configuration for React Native
  * https://github.com/facebook/react-native
@@ -5,7 +7,7 @@
  * @format
  */
 
-module.exports = {
+module.exports = withSentryConfig({
   transformer: {
     getTransformOptions: async () => ({
       transform: {
@@ -14,4 +16,4 @@ module.exports = {
       },
     }),
   },
-};
+});

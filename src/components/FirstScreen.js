@@ -82,13 +82,17 @@ class FirstScreen extends Component {
       );
     }
     if (isAllowed) {
-      let fcmToken = await messaging().getToken();
+      let fcmToken = await AsyncStorage.getItem('fcmToken');
+      if (!fcmToken) {
+        fcmToken = await messaging().getToken();
+      }
       if (fcmToken) {
         this.props.updateFCMTocken(fcmToken);
         let deviceId = await this.getdeviceId();
-        // let deviceId = 'd2c73df212bf1e4f';
+        // let deviceId = '84e3753af8012d49';
+        // let deviceId = 'f85e6c5fdebc2621';
         const details = {fcmId: fcmToken};
-
+        Global.saveData.device_id = deviceId;
         let formBody = [];
         for (const property in details) {
           const encodedKey = encodeURIComponent(property);
@@ -108,7 +112,10 @@ class FirstScreen extends Component {
           },
         )
           .then(response => response.json())
-          .catch(e => {Sentry.captureException(new Error(e)); console.log(e.message)});
+          .catch(e => {
+            Sentry.captureException(new Error(e));
+            console.log(e.message);
+          });
         if (responseJson.error === false) {
           if (responseJson.user) {
             if (isQBOn()) {

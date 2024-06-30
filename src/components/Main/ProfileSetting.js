@@ -173,7 +173,7 @@ class ProfileSetting extends Component {
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        alert(JSON.stringify(error));
+        // alert(JSON.stringify(error));
         return;
       });
   };

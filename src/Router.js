@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
-
+import {enableScreens} from 'react-native-screens';
 // Import your screens
 import FirstScreen from './components/FirstScreen';
 import Login from './components/Auths/Login';
@@ -36,6 +36,7 @@ import VoiceCall from './components/Main/VoiceCall';
 import VoiceCallIncome from './components/Main/VoiceCallIncome';
 import ScreenGpay01 from './components/GPay/ScreenGpay01';
 
+enableScreens(true);
 const Stack = createStackNavigator();
 
 const Router = () => {

@@ -31,6 +31,7 @@ import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import {isQBOn} from '../../config';
 import * as Sentry from '@sentry/react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
@@ -182,7 +183,11 @@ class Register2 extends Component {
 
   getdeviceId = async () => {
     //Getting the Unique Id from here
-    const fcmToken = await messaging().getToken();
+    // const fcmToken = await messaging().getToken();
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    if (!fcmToken) {
+      fcmToken = await messaging().getToken();
+    }
     const id = await DeviceInfo.getUniqueId();
     const deviceInfo = {device_id: id, fcm_id: fcmToken};
     return deviceInfo;

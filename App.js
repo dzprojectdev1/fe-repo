@@ -4,7 +4,7 @@ import {Provider} from 'react-redux';
 import {createStore} from 'redux';
 import storeReducer from './Reducer';
 import Geolocation from 'react-native-geolocation-service';
-import firebase, {getFirebaseApp} from '@react-native-firebase/app';
+import firebase from '@react-native-firebase/app';
 import messaging from '@react-native-firebase/messaging';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import AppView from './AppView';
@@ -15,7 +15,6 @@ const store = createStore(storeReducer);
 setup({storekitMode: 'STOREKIT2_MODE'});
 import * as Sentry from '@sentry/react-native';
 import {PRODUCTION} from './src/config/constants';
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -69,7 +68,6 @@ class App extends Component {
     LogBox.ignoreLogs([
       'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
     ]);
-
     Sentry.setTag('Production', PRODUCTION);
   }
 
@@ -169,10 +167,13 @@ class App extends Component {
   async getToken() {
     try {
       let fcmToken = await AsyncStorage.getItem('fcmToken');
+      if (fcmToken) {
+        await messaging().deleteToken(fcmToken);
+      }
+
       if (!fcmToken) {
         fcmToken = await messaging().getToken();
         if (fcmToken) {
-          // user has a device token
           await AsyncStorage.setItem('fcmToken', fcmToken);
         }
       }

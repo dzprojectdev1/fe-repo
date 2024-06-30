@@ -315,25 +315,24 @@ class AppView extends Component {
   };
 
   async createNotificationListeners() {
-    console.log('createNotificationListeners here');
     messaging().onMessage(async remoteMessage => {
       const {notification, data} = remoteMessage;
       const {title, body} = notification;
-      this.checkNotification(title, body, data);
+      //this.checkNotification(title, body, data);
     });
 
     // Background message handler (when app is in background or killed)
     messaging().setBackgroundMessageHandler(async remoteMessage => {
       const {notification, data} = remoteMessage;
       const {title, body} = notification;
-      this.checkNotification(title, body, data);
+      //this.checkNotification(title, body, data);
     });
 
     // Notification opened handler (when app is in background and opened by tapping the notification)
     messaging().onNotificationOpenedApp(remoteMessage => {
       const {notification, data} = remoteMessage;
       const {title, body} = notification;
-      this.checkNotification(title, body, data);
+      //this.checkNotification(title, body, data);
     });
 
     // Initial notification handler (when app is opened from a quit state by tapping the notification)
@@ -343,7 +342,7 @@ class AppView extends Component {
         if (remoteMessage) {
           const {notification, data} = remoteMessage;
           const {title, body} = notification;
-          this.checkNotification(title, body, data);
+          //this.checkNotification(title, body, data);
         }
       });
 
@@ -377,8 +376,6 @@ class AppView extends Component {
     // }
 
     this.messageListener = messaging().onMessage(message => {
-      //process data message
-      console.log('message ', message);
     });
   }
 
