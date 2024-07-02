@@ -11,10 +11,12 @@ import AppView from './AppView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeBaseProvider} from 'native-base';
 import {setup} from 'react-native-iap';
-const store = createStore(storeReducer);
-setup({storekitMode: 'STOREKIT2_MODE'});
 import * as Sentry from '@sentry/react-native';
 import {PRODUCTION} from './src/config/constants';
+
+const store = createStore(storeReducer);
+setup({storekitMode: 'STOREKIT2_MODE'});
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -101,7 +103,6 @@ class App extends Component {
       );
 
       if (permissions.length === 0) {
-        return;
       }
       //await this.requestPermissions(permissions);
     } catch (error) {
@@ -129,12 +130,10 @@ class App extends Component {
       } else {
         console.log('all permission denied');
       }
-      return;
     } catch (error) {
       // Error retrieving data
       Sentry.captureException(new Error(error));
       console.error(error);
-      return;
     }
   }
 
@@ -167,10 +166,10 @@ class App extends Component {
   async getToken() {
     try {
       let fcmToken = await AsyncStorage.getItem('fcmToken');
-      if (fcmToken) {
-        await messaging().deleteToken(fcmToken);
-      }
-
+      console.log(fcmToken);
+      // if (fcmToken) {
+      //   await messaging().deleteToken(fcmToken);
+      // }
       if (!fcmToken) {
         fcmToken = await messaging().getToken();
         if (fcmToken) {

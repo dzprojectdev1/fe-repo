@@ -465,9 +465,9 @@ class ChatScreen extends React.PureComponent {
             this.setState({messageList: messages, isLoading: false});
           }
           // Register child_added listener after initial load
-          const lastMessageTime =
-            messages.length > 0 ? messages[messages.length - 1].time : 0;
-          this.registerChildAddedListener(lastMessageTime);
+          // const lastMessageTime =
+          //   messages.length > 0 ? messages[messages.length - 1].time : 0;
+          // this.registerChildAddedListener(lastMessageTime);
         } else {
           this.setState({isLoading: false});
         }
@@ -491,29 +491,30 @@ class ChatScreen extends React.PureComponent {
       .orderByChild('time')
       .startAt(lastMessageTime + 1)
       .on('child_added', value => {
-        if (!isLoading) {
-          const newMessage = value.val();
-          if (ai_friend === 1) {
-            let conversationHistory = {
-              role: newMessage.from === u_id ? 'user' : 'assistant',
-              content: newMessage.message.trim(),
-            };
-            this.setState(prevState => ({
-              allMessageList: [...prevState.allMessageList, newMessage],
-              messageList: [...prevState.messageList, newMessage],
-              tempMessageList: [
-                ...prevState.tempMessageList,
-                conversationHistory,
-              ],
-            }));
-          }
-          if (ai_friend === 0 && ai_personality == null) {
-            this.setState(prevState => ({
-              messageList: [...prevState.messageList, newMessage],
-            }));
-          }
-          this.scrollToBottom();
+        console.log('Coming', isLoading);
+        // if (!isLoading) {
+        const newMessage = value.val();
+        if (ai_friend === 1) {
+          let conversationHistory = {
+            role: newMessage.from === u_id ? 'user' : 'assistant',
+            content: newMessage.message.trim(),
+          };
+          this.setState(prevState => ({
+            allMessageList: [...prevState.allMessageList, newMessage],
+            messageList: [...prevState.messageList, newMessage],
+            tempMessageList: [
+              ...prevState.tempMessageList,
+              conversationHistory,
+            ],
+          }));
         }
+        if (ai_friend === 0 && ai_personality == null) {
+          this.setState(prevState => ({
+            messageList: [...prevState.messageList, newMessage],
+          }));
+        }
+        this.scrollToBottom();
+        // }
       });
   }
 
@@ -561,7 +562,7 @@ class ChatScreen extends React.PureComponent {
     if (this.flatListRef.current && this.state.messageList.length > 0) {
       setTimeout(() => {
         this.flatListRef.current.scrollToEnd({animated: true});
-      }, 50);
+      }, 75);
     }
     // if (this.scrollView && this.state.messageList.length > 0) {
     //   setTimeout(() => {
@@ -681,21 +682,21 @@ class ChatScreen extends React.PureComponent {
   };
 
   keyboardDidShow(e) {
-    if (this._mounted && this.scrollView) {
-      this.scrollToBottom();
-    }
-    // if (this._mounted && this.flatListRef.current) {
+    // if (this._mounted && this.scrollView) {
     //   this.scrollToBottom();
     // }
+    if (this._mounted && this.flatListRef.current) {
+      this.scrollToBottom();
+    }
   }
 
   keyboardDidHide(e) {
-    // if (this._mounted && this.flatListRef.current) {
-    //   this.scrollToBottom();
-    // }
-    if (this._mounted && this.scrollView) {
+    if (this._mounted && this.flatListRef.current) {
       this.scrollToBottom();
     }
+    // if (this._mounted && this.scrollView) {
+    //   this.scrollToBottom();
+    // }
   }
 
   hideMenu = () => {
@@ -1012,18 +1013,15 @@ class ChatScreen extends React.PureComponent {
   };
 
   createNewMessage = () => {
-    const {textMessage, matchId} = this.state;
+    const {textMessage, matchId, ai_image_sent} = this.state;
+    const {ai_friend, ai_personality, userId, chat_type} = this.state.other;
 
     this.setState({textMessage: ''});
-    if (
-      this.state.other.ai_friend === 1 &&
-      this.state.other.ai_personality !== '' &&
-      this.state.other.ai_personality !== null
-    ) {
+    if (ai_friend === 1 && ai_personality !== '' && ai_personality !== null) {
       this.setState(prevState => {
         return {
           ai_image_sent:
-            prevState.ai_image_sent >= this.state.ai_image_sent
+            prevState.ai_image_sent >= ai_image_sent
               ? prevState.ai_image_sent + 1
               : 0,
         };
@@ -1055,7 +1053,6 @@ class ChatScreen extends React.PureComponent {
         if (responseJson.data.account_status == 1) {
           if (responseJson.data.sending_available) {
             const u_id = Global.saveData.u_id;
-            const userId = this.state.other.userId;
             let msgId = database()
               .ref()
               .child(FIREBASE_DB)
@@ -1069,29 +1066,27 @@ class ChatScreen extends React.PureComponent {
               from: Global.saveData.u_id,
               read: true,
             };
-            updates[
-              Global.saveData.u_id + '/' + this.state.other.userId + '/' + msgId
-            ] = senderMessage;
+            updates[Global.saveData.u_id + '/' + userId + '/' + msgId] =
+              senderMessage;
             let receiverMessage = {
               message: textMessage,
               time: firebase.database.ServerValue.TIMESTAMP,
               from: Global.saveData.u_id,
               read: false,
             };
-            updates[
-              this.state.other.userId + '/' + Global.saveData.u_id + '/' + msgId
-            ] = receiverMessage;
+            updates[userId + '/' + Global.saveData.u_id + '/' + msgId] =
+              receiverMessage;
             database().ref().child(FIREBASE_DB).update(updates);
 
             this.scrollToBottom();
             if (
-              this.state.other.ai_friend === 1 &&
-              this.state.other.ai_personality != null &&
-              this.state.other.ai_personality !== ''
+              ai_friend === 1 &&
+              ai_personality != null &&
+              ai_personality !== ''
             ) {
-              if (this.state.other.chat_type == 1) {
+              if (chat_type == 1) {
                 this.callbackChat(textMessage);
-              } else if (this.state.other.chat_type == 2) {
+              } else if (chat_type == 2) {
                 this.callBackDeepInfraChat(textMessage);
               }
             }
