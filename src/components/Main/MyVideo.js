@@ -395,7 +395,7 @@ class MyVideo extends Component {
     //     path: 'images',
     //   },
     // };
-    let isAllowed = await this.checkMultiPermissions();
+    // let isAllowed = await this.checkMultiPermissions();
 
     const options = {
       title: 'Select Picture',
