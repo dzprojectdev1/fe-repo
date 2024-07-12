@@ -1,52 +1,46 @@
 import React, {Component} from 'react';
-import {ArrowBackIcon, FavouriteIcon} from 'native-base';
 import {
-  BackHandler,
-  Image,
-  ScrollView,
-  Dimensions,
-  View,
-  StyleSheet,
-  TouchableOpacity,
   Alert,
-  TextInput,
-  Platform,
+  BackHandler,
+  Dimensions,
+  Image,
   Keyboard,
+  Platform,
+  ScrollView,
+  StyleSheet,
   Text,
-  StatusBar,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import {Button} from 'react-native-elements';
 import Dialog, {
-  DialogFooter,
   DialogButton,
   DialogContent,
+  DialogFooter,
   SlideAnimation,
 } from 'react-native-popup-dialog';
-import Video from 'react-native-video';
-
-import b_chat from '../../assets/images/chat.png';
-import b_notification from '../../assets/images/notification.png';
+// import Video from 'react-native-video';
 import b_filters from '../../assets/images/filters.png';
-import b_name from '../../assets/images/name.png';
-import b_age from '../../assets/images/age.png';
-import b_distance from '../../assets/images/distance.png';
 import ban_user from '../../assets/images/ban_user.png';
 import no_photo from '../../assets/images/no_photo.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 import flash_heart from '../../assets/images/flash_heart.png';
 import flash_reject from '../../assets/images/flash_reject.png';
 import shooting_star from '../../assets/images/shooting_star.png';
-import yellow_star from '../../assets/images/yellow_star.png';
 import Global from '../Global';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {SERVER_URL, GCS_BUCKET} from '../../config/constants';
+import {GCS_BUCKET, SERVER_URL} from '../../config/constants';
 import {TopBar} from '../../commonUI/components/topbar';
 import {colors} from '../../commonUI/base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as Sentry from '@sentry/react-native';
 
 class Browse extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     const {data} = props.route.params;
     super(props);
@@ -83,10 +77,6 @@ class Browse extends Component {
     };
   }
 
-  static navigationOptions = {
-    header: null,
-  };
-
   componentDidMount() {
     Global.saveData.nowPage = 'Browse';
     BackHandler.addEventListener('hardwareBackPress', this.backPressed);
@@ -117,7 +107,6 @@ class Browse extends Component {
       .catch(error => {
         Sentry.captureException(new Error(error));
         // alert(error);
-        return;
       });
 
     Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
@@ -174,9 +163,9 @@ class Browse extends Component {
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
   }
+
   getFilterVideos() {
     AsyncStorage.getItem('filterData', (err, result) => {
       let details = {};
@@ -232,10 +221,10 @@ class Browse extends Component {
         })
         .catch(error => {
           Sentry.captureException(new Error(error));
-          return;
         });
     });
   }
+
   getDetails = async data => {
     let otherData;
     if (data.cdn_filtered_id && data.content_type == 1) {
@@ -277,7 +266,6 @@ class Browse extends Component {
         .catch(error => {
           Sentry.captureException(new Error(error));
           alert('There is error, please try again!');
-          return;
         });
       this.setState({
         otherData: otherData,
@@ -304,6 +292,7 @@ class Browse extends Component {
       });
     }
   };
+
   onReject() {
     this.setState({
       isLoading: true,
@@ -345,9 +334,9 @@ class Browse extends Component {
           isLoading: false,
           disabled: false,
         });
-        return;
       });
   }
+
   onHeart() {
     this.setState({
       isLoading: true,
@@ -431,7 +420,6 @@ class Browse extends Component {
           disabled: false,
           flash_heart: false,
         });
-        return;
       });
   }
 
@@ -446,9 +434,11 @@ class Browse extends Component {
     }
     return true;
   };
+
   gotoFilter() {
     this.props.navigation.navigate('Filter');
   }
+
   gotoProfile = () => {
     Global.saveData.prevpage = 'Browse';
     this.props.navigation.replace('Profile', {
@@ -529,7 +519,6 @@ class Browse extends Component {
           isLoading: false,
           disabled: false,
         });
-        return;
       });
   };
   gotoShop = () => {
@@ -625,7 +614,6 @@ class Browse extends Component {
       .catch(error => {
         Sentry.captureException(new Error(error));
         console.log(error);
-        return;
       });
   };
 
@@ -695,7 +683,6 @@ class Browse extends Component {
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
   };
 
@@ -832,7 +819,6 @@ class Browse extends Component {
               isLoading: false,
               disabled: false,
             });
-            return;
           });
       }
     }
@@ -1109,18 +1095,18 @@ class Browse extends Component {
           <View>
             {this.state.otherData.videoUrl != null && (
               <TouchableOpacity onPress={this.gotoProfile}>
-                <Video
-                  source={{uri: this.state.otherData.videoUrl}} // Can be a URL or a local file.
-                  ref={ref => {
-                    this.player = ref;
-                  }}
-                  resizeMode="cover"
-                  ignoreSilentSwitch={null}
-                  repeat={true}
-                  // paused={this.state.isPlayVideo} // option to play video automatically or manually
-                  // onError={this.videoError}       // Callback when video cannot be loaded
-                  style={{height: DEVICE_HEIGHT, width: DEVICE_WIDTH}}
-                />
+                {/*<Video*/}
+                {/*  source={{uri: this.state.otherData.videoUrl}} // Can be a URL or a local file.*/}
+                {/*  ref={ref => {*/}
+                {/*    this.player = ref;*/}
+                {/*  }}*/}
+                {/*  resizeMode="cover"*/}
+                {/*  ignoreSilentSwitch={null}*/}
+                {/*  repeat={true}*/}
+                {/*  // paused={this.state.isPlayVideo} // option to play video automatically or manually*/}
+                {/*  // onError={this.videoError}       // Callback when video cannot be loaded*/}
+                {/*  style={{height: DEVICE_HEIGHT, width: DEVICE_WIDTH}}*/}
+                {/*/>*/}
               </TouchableOpacity>
             )}
             {this.state.otherData.imageUrl &&
@@ -1539,6 +1525,7 @@ class Browse extends Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

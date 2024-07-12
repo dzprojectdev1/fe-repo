@@ -2,23 +2,21 @@ import React, {Component} from 'react';
 import {Button} from 'native-base';
 import {
   ActivityIndicator,
-  ImageBackground,
-  BackHandler,
-  Image,
-  ScrollView,
-  Platform,
-  Dimensions,
-  View,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  StatusBar,
   Alert,
+  BackHandler,
+  Dimensions,
+  FlatList,
+  Image,
+  ImageBackground,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
   Text,
-  PermissionsAndroid,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {Badge} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 // import ImagePicker from 'react-native-image-picker';
 import * as ImagePicker from 'react-native-image-picker';
@@ -32,38 +30,28 @@ import b_delete from '../../assets/images/delete.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 import bg from '../../assets/images/bg.jpg';
 import upload from '../../assets/images/upload_photos.png';
-import crown from '../../assets/images/crown.png';
-import hiddenMan from '../../assets/images/hidden_man.png';
 import admirable from '../../assets/images/admirable_icon.png';
-import collapse from '../../assets/images/collapse.png';
-import expand from '../../assets/images/expand.png';
-import yellow_star from '../../assets/images/yellow_star.png';
-import yellow_heart_black from '../../assets/images/yellow_heart_black.png';
-import yellow_star_black from '../../assets/images/yellow_star_black.png';
-import dollar_sign from '../../assets/images/dollar_sign.png';
-import video_add from '../../assets/images/video_add.png';
 import video_player from '../../assets/images/video_player.png';
 import Global from '../Global';
 
 import {
-  SERVER_URL,
-  GCS_BUCKET,
-  VIDEO_UPLOAD,
   BUCKET,
+  GCS_BUCKET,
   GOOGLE_ACCESS_ID,
+  SERVER_URL,
+  VIDEO_UPLOAD,
 } from '../../config/constants';
 import {uploadPhoto} from '../../util/upload';
-import {uploadVideo} from '../../util/uploadVideo';
-import Dialog, {
-  DialogFooter,
-  DialogButton,
-  DialogContent,
-  SlideAnimation,
-} from 'react-native-popup-dialog';
-import FlashMessage, {showMessage} from 'react-native-flash-message';
+import Dialog, {SlideAnimation} from 'react-native-popup-dialog';
+import FlashMessage from 'react-native-flash-message';
+
 const includeExtra = true;
 
 class MyVideo extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -89,10 +77,6 @@ class MyVideo extends Component {
       fileId: '',
     };
   }
-
-  static navigationOptions = {
-    header: null,
-  };
 
   componentDidMount() {
     Global.saveData.nowPage = 'MyVideo';
@@ -124,9 +108,7 @@ class MyVideo extends Component {
           });
         }
       })
-      .catch(error => {
-        return;
-      });
+      .catch(error => {});
   }
 
   getBiggestFanUsers = () => {
@@ -161,7 +143,6 @@ class MyVideo extends Component {
       })
       .catch(error => {
         // alert(JSON.stringify(error));
-        return;
       });
   };
 
@@ -195,7 +176,6 @@ class MyVideo extends Component {
       })
       .catch(error => {
         // alert(JSON.stringify(error));
-        return;
       });
   };
 
@@ -227,7 +207,6 @@ class MyVideo extends Component {
       })
       .catch(error => {
         alert(JSON.stringify(error));
-        return;
       });
   };
 
@@ -317,6 +296,7 @@ class MyVideo extends Component {
   componentWillUnmount() {
     // BackHandler.removeEventListener('hardwareBackPress', this.backPressed);
   }
+
   backPressed = () => {
     this.props.navigation.replace('Chat');
     return true;
@@ -360,31 +340,30 @@ class MyVideo extends Component {
       })
       .catch(error => {
         console.log('There is error, please try again!');
-        return;
       });
   };
 
-  async checkMultiPermissions() {
-    try {
-      let result = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-      ]).catch(e => {
-        console.log('request permission', e.message);
-      });
-      if (
-        result['android.permission.CAMERA'] &&
-        result['android.permission.RECORD_AUDIO'] === 'granted'
-      ) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      // Error retrieving data
-      console.log('check permissions = ', error.message);
-      return false;
-    }
-  }
+  // async checkMultiPermissions() {
+  //   try {
+  //     let result = await PermissionsAndroid.requestMultiple([
+  //       PermissionsAndroid.PERMISSIONS.CAMERA,
+  //       PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+  //     ]).catch(e => {
+  //       console.log('request permission', e.message);
+  //     });
+  //     if (
+  //       result['android.permission.CAMERA'] &&
+  //       result['android.permission.RECORD_AUDIO'] === 'granted'
+  //     ) {
+  //       return true;
+  //     }
+  //     return false;
+  //   } catch (error) {
+  //     // Error retrieving data
+  //     console.log('check permissions = ', error.message);
+  //     return false;
+  //   }
+  // }
 
   async addImage() {
     // More info on all the options is below in the API Reference... just some common use cases shown here
@@ -600,7 +579,6 @@ class MyVideo extends Component {
       })
       .catch(err => {
         console.log('error', err);
-        return;
       });
 
     Alert.alert(
@@ -610,6 +588,7 @@ class MyVideo extends Component {
       {cancelable: false},
     );
   }
+
   /**
    *
    * @param {file data} fileData
@@ -644,7 +623,6 @@ class MyVideo extends Component {
       })
       .catch(error => {
         console.log('Error ', error);
-        return;
       });
   }
 
@@ -683,9 +661,7 @@ class MyVideo extends Component {
           this.getVideos();
         }
       })
-      .catch(error => {
-        return;
-      });
+      .catch(error => {});
   }
 
   gotoProfileSetting() {
@@ -722,12 +698,9 @@ class MyVideo extends Component {
       .then(response => response.json())
       .then(responseJson => {
         if (!responseJson.error) {
-          return;
         }
       })
-      .catch(error => {
-        return;
-      });
+      .catch(error => {});
   };
 
   showFanUsersList = () => {
@@ -1285,6 +1258,7 @@ class MyVideo extends Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

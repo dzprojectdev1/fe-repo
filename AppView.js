@@ -1,35 +1,32 @@
 import React, {Component} from 'react';
 import {
-  View,
-  Image,
-  Text,
-  DeviceEventEmitter,
-  Platform,
-  Modal,
-  TouchableOpacity,
-  ImageBackground,
-  StyleSheet,
   Dimensions,
-  NativeEventEmitter,
+  Image,
+  ImageBackground,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import QB from 'quickblox-react-native-sdk';
-import WebRTCView from 'quickblox-react-native-sdk/RTCView';
+// import QB from 'quickblox-react-native-sdk';
+// import WebRTCView from 'quickblox-react-native-sdk/RTCView';
 import FlashMessage, {showMessage} from 'react-native-flash-message';
 import Router from './src/Router.js';
 import {changeReadFlag, updateCallEvent} from './Action';
 import {
+  ACCEPT,
   CALL,
   CALL_END,
-  REJECT,
-  ACCEPT,
+  FIREBASE_DB_UNREAD,
   HANG_UP,
+  NOT_ANSWER,
   PEER_CONNECTION_STATE_CHANGED,
   RECEIVED_VIDEO_TRACK,
-  NOT_ANSWER,
+  REJECT,
   SESSION_TYPE,
-  FIREBASE_DB_UNREAD,
 } from './src/config/constants';
 import Sound from 'react-native-sound';
 import userIcon from './src/assets/images/hidden_man.png';
@@ -40,7 +37,6 @@ import call_ring_accept from './src/assets/images/call_ring_accept.png';
 import messaging from '@react-native-firebase/messaging';
 import database from '@react-native-firebase/database';
 import {isQBOn} from './src/config';
-import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 import Global from './src/components/Global';
 
@@ -102,22 +98,21 @@ class AppView extends Component {
       accountKey: 'ack_D6drzYsggFopAMseCz_J',
     };
     if (isQBOn()) {
-      QB.settings
-        .init(appSettings)
-        .then(() => {
-          const emitter = Platform.select({
-            android: DeviceEventEmitter,
-            ios: new NativeEventEmitter(QB.webrtc),
-          });
-
-          Object.keys(QB.webrtc.EVENT_TYPE).forEach(key => {
-            emitter.addListener(QB.webrtc.EVENT_TYPE[key], this.eventHandler);
-          });
-        })
-        .catch(e => {
-          console.error('QB.settings :- ', e);
-        });
-
+      // QB.settings
+      //   .init(appSettings)
+      //   .then(() => {
+      //     const emitter = Platform.select({
+      //       android: DeviceEventEmitter,
+      //       ios: new NativeEventEmitter(QB.webrtc),
+      //     });
+      //
+      //     Object.keys(QB.webrtc.EVENT_TYPE).forEach(key => {
+      //       emitter.addListener(QB.webrtc.EVENT_TYPE[key], this.eventHandler);
+      //     });
+      //   })
+      //   .catch(e => {
+      //     console.error('QB.settings :- ', e);
+      //   });
       // const emitter = Platform.select({
       //   android: DeviceEventEmitter,
       //   ios: new NativeEventEmitter(QB.webrtc),
@@ -375,8 +370,7 @@ class AppView extends Component {
     //   }
     // }
 
-    this.messageListener = messaging().onMessage(message => {
-    });
+    this.messageListener = messaging().onMessage(message => {});
   }
 
   checkNotification = (title, body, data) => {
@@ -602,12 +596,12 @@ class AppView extends Component {
                     padding: 3,
                     zIndex: -1,
                   }}>
-                  <WebRTCView // opponent video
-                    sessionId={state.callEvent.payload.session.id}
-                    // add styles as necessary
-                    style={{width: '100%', height: '100%'}}
-                    userId={state.callEvent.payload.session.otherId} // your user's Id for local video or occupantId for remote
-                  />
+                  {/*<WebRTCView // opponent video*/}
+                  {/*  sessionId={state.callEvent.payload.session.id}*/}
+                  {/*  // add styles as necessary*/}
+                  {/*  style={{width: '100%', height: '100%'}}*/}
+                  {/*  userId={state.callEvent.payload.session.otherId} // your user's Id for local video or occupantId for remote*/}
+                  {/*/>*/}
                 </View>
               )}
               {state.showTimer && state.callEvent.payload.session && (
@@ -624,11 +618,11 @@ class AppView extends Component {
                     padding: 3,
                     zIndex: 1,
                   }}>
-                  <WebRTCView
-                    sessionId={state.callEvent.payload.session.id}
-                    style={styles.myvideo} // add styles as necessary
-                    userId={state.callEvent.payload.session.opponentsIds[0]} // your user's Id for local video or occupantId for remote
-                  />
+                  {/*<WebRTCView*/}
+                  {/*  sessionId={state.callEvent.payload.session.id}*/}
+                  {/*  style={styles.myvideo} // add styles as necessary*/}
+                  {/*  userId={state.callEvent.payload.session.opponentsIds[0]} // your user's Id for local video or occupantId for remote*/}
+                  {/*/>*/}
                   <TouchableOpacity
                     style={{width: 60, height: 60}}
                     onPress={() => this.callEnd()}>

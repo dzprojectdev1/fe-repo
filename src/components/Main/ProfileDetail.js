@@ -1,26 +1,18 @@
 import React, {Component} from 'react';
-import {ArrowBackIcon, Icon} from 'native-base';
-import {
-  Dimensions,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  StatusBar,
-  Image,
-  TouchableHighlight,
-  Text,
-} from 'react-native';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import ImageSlider from '../../commonUI/ImageSlider';
 // import Slideshow from 'react-native-image-slider-show';
-import Video from 'react-native-video';
-import video_player from '../../assets/images/video_player.png';
+// import Video from 'react-native-video';
 import Global from '../Global';
 import {SliderBox} from '../../commonUI/slider/SliderBox';
 import {capitalizeWords} from '../../config/constants';
 import {TopBar} from '../../commonUI/components/topbar';
 
 class ProfileDetail extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     super(props);
     const {datas, index} = props.route.params;
@@ -39,10 +31,6 @@ class ProfileDetail extends Component {
       play_video: false,
     };
   }
-
-  static navigationOptions = {
-    header: null,
-  };
 
   componentWillMount() {
     Global.saveData.nowPage = 'ProfileDetail';
@@ -111,20 +99,20 @@ class ProfileDetail extends Component {
         />
         <View>
           {/* {(this.state.vUrl != "") && ( */}
-          {this.state.play_video == true && (
-            <Video
-              source={{uri: this.state.datas[this.state.video_index].videoUrl}} // Can be a URL or a local file.
-              ref={ref => {
-                this.player = ref;
-              }}
-              ignoreSilentSwitch={null}
-              resizeMode="cover"
-              repeat={true}
-              paused={this.state.paused}
-              onError={this.videoError} // Callback when video cannot be loaded
-              style={{height: DEVICE_HEIGHT, width: DEVICE_WIDTH}}
-            />
-          )}
+          {/*{this.state.play_video == true && (*/}
+          {/*  <Video*/}
+          {/*    source={{uri: this.state.datas[this.state.video_index].videoUrl}} // Can be a URL or a local file.*/}
+          {/*    ref={ref => {*/}
+          {/*      this.player = ref;*/}
+          {/*    }}*/}
+          {/*    ignoreSilentSwitch={null}*/}
+          {/*    resizeMode="cover"*/}
+          {/*    repeat={true}*/}
+          {/*    paused={this.state.paused}*/}
+          {/*    onError={this.videoError} // Callback when video cannot be loaded*/}
+          {/*    style={{height: DEVICE_HEIGHT, width: DEVICE_WIDTH}}*/}
+          {/*  />*/}
+          {/*)}*/}
           {/* <Image
               source={{ uri: this.state.vUrl }}
               style={{ height: DEVICE_HEIGHT, width: DEVICE_WIDTH }}
@@ -235,6 +223,7 @@ class ProfileDetail extends Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

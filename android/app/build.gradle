@@ -106,8 +106,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
-        versionCode 11
-        versionName "1.0.11"
+        versionCode 13
+        versionName "1.0.13"
         missingDimensionStrategy ('store', 'play')
         missingDimensionStrategy 'react-native-camera', 'general'
     }
@@ -152,9 +152,6 @@ dependencies {
     implementation("com.facebook.react:react-android")
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation(project(':react-native-camera')){
-        exclude group: 'com.google.android.gms'
-    }
 
     implementation(project(':react-native-device-info')){
         exclude group: 'com.google.firebase',

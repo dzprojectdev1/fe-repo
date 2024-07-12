@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import {LogBox, PermissionsAndroid, Platform} from 'react-native';
+import {LogBox} from 'react-native';
 import {Provider} from 'react-redux';
 import {createStore} from 'redux';
 import storeReducer from './Reducer';
-import Geolocation from 'react-native-geolocation-service';
 import firebase from '@react-native-firebase/app';
 import messaging from '@react-native-firebase/messaging';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -60,13 +59,13 @@ class App extends Component {
 
     this.setState({loading: false});
 
-    if (Platform.OS === 'android') {
-      await this.checkDefaultPermissions();
-    } else if (Platform.OS === 'ios') {
-      await Geolocation.requestAuthorization();
-    }
+    // if (Platform.OS === 'android') {
+    //   await this.checkDefaultPermissions();
+    // } else if (Platform.OS === 'ios') {
+    //   await Geolocation.requestAuthorization();
+    // }
     await this.checkFirebasePermission();
-    firebase.auth();
+    //firebase.auth();
     LogBox.ignoreLogs([
       'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
     ]);
@@ -78,64 +77,64 @@ class App extends Component {
     // this.notificationOpenedListener();
   }
 
-  async checkDefaultPermissions() {
-    try {
-      var permissions = [];
-      // const isCameraPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA);
-      const isStoragePermission = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      );
-      const isAccessFineLocationPermission = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      // if (!isCameraPermission) {
-      //   permissions.push(PermissionsAndroid.PERMISSIONS.CAMERA);
-      // }
-      if (!isStoragePermission) {
-        permissions.push(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-      }
-      if (!isAccessFineLocationPermission) {
-        permissions.push(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-      }
+  // async checkDefaultPermissions() {
+  //   try {
+  //     var permissions = [];
+  //     // const isCameraPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA);
+  //     const isStoragePermission = await PermissionsAndroid.check(
+  //       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+  //     );
+  //     const isAccessFineLocationPermission = await PermissionsAndroid.check(
+  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  //     );
+  //     // if (!isCameraPermission) {
+  //     //   permissions.push(PermissionsAndroid.PERMISSIONS.CAMERA);
+  //     // }
+  //     if (!isStoragePermission) {
+  //       permissions.push(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+  //     }
+  //     if (!isAccessFineLocationPermission) {
+  //       permissions.push(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+  //     }
+  //
+  //     const isNotificationPermission = await PermissionsAndroid.check(
+  //       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+  //     );
+  //
+  //     if (permissions.length === 0) {
+  //     }
+  //     //await this.requestPermissions(permissions);
+  //   } catch (error) {
+  //     // Error retrieving data
+  //     Sentry.captureException(new Error(error));
+  //     console.error(error);
+  //   }
+  // }
 
-      const isNotificationPermission = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-      );
-
-      if (permissions.length === 0) {
-      }
-      //await this.requestPermissions(permissions);
-    } catch (error) {
-      // Error retrieving data
-      Sentry.captureException(new Error(error));
-      console.error(error);
-    }
-  }
-
-  async requestPermissions(permissions) {
-    try {
-      const granted = await PermissionsAndroid.requestMultiple(permissions, {
-        title: 'Cool App Some Permissions',
-        message: 'Cool App needs access to your some permissions.',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-      });
-
-      if (
-        granted['android.permission.WRITE_EXTERNAL_STORAGE'] &&
-        granted['android.permission.ACCESS_FINE_LOCATION'] ===
-          PermissionsAndroid.RESULTS.GRANTED
-      ) {
-        console.log('You can use the all');
-      } else {
-        console.log('all permission denied');
-      }
-    } catch (error) {
-      // Error retrieving data
-      Sentry.captureException(new Error(error));
-      console.error(error);
-    }
-  }
+  // async requestPermissions(permissions) {
+  //   try {
+  //     const granted = await PermissionsAndroid.requestMultiple(permissions, {
+  //       title: 'Cool App Some Permissions',
+  //       message: 'Cool App needs access to your some permissions.',
+  //       buttonNegative: 'Cancel',
+  //       buttonPositive: 'OK',
+  //     });
+  //
+  //     if (
+  //       granted['android.permission.WRITE_EXTERNAL_STORAGE'] &&
+  //       granted['android.permission.ACCESS_FINE_LOCATION'] ===
+  //         PermissionsAndroid.RESULTS.GRANTED
+  //     ) {
+  //       console.log('You can use the all');
+  //     } else {
+  //       console.log('all permission denied');
+  //     }
+  //   } catch (error) {
+  //     // Error retrieving data
+  //     Sentry.captureException(new Error(error));
+  //     console.error(error);
+  //   }
+  // }
 
   async checkFirebasePermission() {
     const authStatus = await messaging().requestPermission();

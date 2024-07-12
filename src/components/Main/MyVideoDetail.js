@@ -1,20 +1,23 @@
 import React, {Component} from 'react';
-import {ArrowBackIcon, Icon, Text} from 'native-base';
+import {Text} from 'native-base';
 import {
   Dimensions,
-  View,
+  Image,
   StyleSheet,
   TouchableOpacity,
-  StatusBar,
-  Image,
+  View,
 } from 'react-native';
-import Video from 'react-native-video';
+// import Video from 'react-native-video';
 import Global from '../Global';
 import * as Sentry from '@sentry/react-native';
-import {SERVER_URL, GCS_BUCKET, capitalizeWords} from '../../config/constants';
+import {GCS_BUCKET, SERVER_URL} from '../../config/constants';
 import {TopBar} from '../../commonUI/components/topbar';
 
 class MyVideoDetail extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     super(props);
     const {vUrl, cdn_id, otherId, id, primary, content_type} =
@@ -34,9 +37,6 @@ class MyVideoDetail extends Component {
     };
   }
 
-  static navigationOptions = {
-    header: null,
-  };
   componentDidMount() {
     Global.saveData.nowPage = 'MyVideoDetail';
     this.setState({username: 'SANDY', userage: 27, userdistance: 302});
@@ -67,13 +67,13 @@ class MyVideoDetail extends Component {
       .catch(error => {
         Sentry.captureException(new Error(error));
         console.log('There is error, please try again!');
-        return;
       });
   };
 
   onBack() {
     this.props.navigation.pop();
   }
+
   onSetPrimary() {
     fetch(`${SERVER_URL}/api/video/setAsPrimary/` + this.state.vid, {
       method: 'PUT',
@@ -90,26 +90,26 @@ class MyVideoDetail extends Component {
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
   }
+
   render() {
     return (
       <View style={styles.contentContainer}>
         <TopBar onBack={this.onBack.bind(this)} />
         <View>
-          {this.state.content_type == 2 && (
-            <Video
-              source={{uri: this.state.vUrl}} // Can be a URL or a local file.
-              ref={ref => {
-                this.player = ref;
-              }}
-              ignoreSilentSwitch={null}
-              resizeMode="cover"
-              repeat={true}
-              style={{height: DEVICE_HEIGHT, width: DEVICE_WIDTH}}
-            />
-          )}
+          {/*{this.state.content_type == 2 && (*/}
+          {/*  <Video*/}
+          {/*    source={{uri: this.state.vUrl}} // Can be a URL or a local file.*/}
+          {/*    ref={ref => {*/}
+          {/*      this.player = ref;*/}
+          {/*    }}*/}
+          {/*    ignoreSilentSwitch={null}*/}
+          {/*    resizeMode="cover"*/}
+          {/*    repeat={true}*/}
+          {/*    style={{height: DEVICE_HEIGHT, width: DEVICE_WIDTH}}*/}
+          {/*  />*/}
+          {/*)}*/}
           {this.state.content_type == 1 && (
             <Image
               source={{uri: GCS_BUCKET + this.state.cdn_id + '-screenshot'}}
@@ -141,6 +141,7 @@ class MyVideoDetail extends Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

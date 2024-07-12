@@ -1,37 +1,31 @@
 import React, {Component} from 'react';
-import {Icon, ArrowBackIcon, CloseIcon} from 'native-base';
+import {CloseIcon} from 'native-base';
 import {
-  BackHandler,
-  Image,
-  Dimensions,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  StatusBar,
-  ScrollView,
   Alert,
-  TextInput,
-  Platform,
+  BackHandler,
+  Dimensions,
+  Image,
   Keyboard,
+  Platform,
+  ScrollView,
+  StyleSheet,
   Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Dialog, {
-  DialogFooter,
   DialogButton,
   DialogContent,
+  DialogFooter,
   SlideAnimation,
 } from 'react-native-popup-dialog';
-import Video from 'react-native-video';
-
-import b_notification from '../../assets/images/notification.png';
+// import Video from 'react-native-video';
 import b_name from '../../assets/images/name.png';
-import b_age from '../../assets/images/age.png';
 import b_distance from '../../assets/images/distance.png';
-import b_profile from '../../assets/images/profile.png';
 import no_photo from '../../assets/images/no_photo.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 import yellow_star from '../../assets/images/yellow_star.png';
-import line_star from '../../assets/images/line_star.png';
 import shooting_star from '../../assets/images/shooting_star.png';
 import accept from '../../assets/images/accept.png';
 import Global from '../Global';
@@ -41,6 +35,10 @@ import {TopBar} from '../../commonUI/components/topbar';
 import {colors} from '../../commonUI/base';
 
 class IncomeDetail extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -77,10 +75,6 @@ class IncomeDetail extends Component {
       content_type: 0,
     };
   }
-
-  static navigationOptions = {
-    header: null,
-  };
 
   componentWillMount() {
     Global.saveData.nowPage = 'IncomeDetail';
@@ -147,6 +141,7 @@ class IncomeDetail extends Component {
       });
     }
   }
+
   componentDidMount() {
     this.props.navigation.addListener('didFocus', playload => {
       this.setState({paused: false, privatedPaused: false});
@@ -170,7 +165,6 @@ class IncomeDetail extends Component {
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
 
     Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
@@ -201,6 +195,7 @@ class IncomeDetail extends Component {
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.back);
   }
+
   gotoChat() {
     if (this.state.matchId == -1) {
       return;
@@ -224,6 +219,7 @@ class IncomeDetail extends Component {
     Global.saveData.prevpage = 'IncomeDetail';
     this.props.navigation.navigate('ChatDetail', {data: otherData});
   }
+
   onReject() {
     this.setState({
       isOperating: true,
@@ -257,10 +253,10 @@ class IncomeDetail extends Component {
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
     this.setState({isOperating: false});
   }
+
   onMatch() {
     this.setState({
       paused: true,
@@ -306,10 +302,10 @@ class IncomeDetail extends Component {
       .catch(error => {
         Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
-        return;
       });
     this.setState({isOperating: false});
   }
+
   getMatchedVideo = (cdnId, matchId) => {
     fetch(
       'http://138.197.203.178:8080/api/storage/videoLink?fileId=' +
@@ -339,9 +335,9 @@ class IncomeDetail extends Component {
       .catch(error => {
         Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
-        return;
       });
   };
+
   gotoProfile() {
     this.setState({paused: true});
     if (this.state.otherId != -1) {
@@ -406,10 +402,10 @@ class IncomeDetail extends Component {
         })
         .catch(error => {
           Sentry.captureException(new Error(error));
-          return;
         });
     }
   }
+
   back = () => {
     if (this.state.isMatchVideo === true) {
       this.props.navigation.replace('Match');
@@ -428,6 +424,7 @@ class IncomeDetail extends Component {
     }
     this.props.navigation.navigate('ScreenGpay01');
   };
+
   gotoReport() {
     if (this.state.otherId != -1) {
       this.props.navigation.navigate('Report', {otherId: this.state.otherId});
@@ -471,7 +468,6 @@ class IncomeDetail extends Component {
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
   };
 
@@ -609,7 +605,6 @@ class IncomeDetail extends Component {
               isLoading: false,
               disabled: false,
             });
-            return;
           });
       }
     }
@@ -805,18 +800,18 @@ class IncomeDetail extends Component {
         <View>
           {this.state.vUrl != null ? (
             <TouchableOpacity onPress={() => this.gotoProfile()}>
-              <Video
-                source={{uri: this.state.vUrl}} // Can be a URL or a local file.
-                ref={ref => {
-                  this.player = ref;
-                }}
-                resizeMode="cover"
-                ignoreSilentSwitch={null}
-                repeat={true}
-                // paused={this.state.isPlayVideo} // option to play video automatically or manually
-                // onError={this.videoError}       // Callback when video cannot be loaded
-                // style={{height: DEVICE_HEIGHT, width: DEVICE_WIDTH}}
-              />
+              {/*<Video*/}
+              {/*  source={{uri: this.state.vUrl}} // Can be a URL or a local file.*/}
+              {/*  ref={ref => {*/}
+              {/*    this.player = ref;*/}
+              {/*  }}*/}
+              {/*  resizeMode="cover"*/}
+              {/*  ignoreSilentSwitch={null}*/}
+              {/*  repeat={true}*/}
+              {/*  // paused={this.state.isPlayVideo} // option to play video automatically or manually*/}
+              {/*  // onError={this.videoError}       // Callback when video cannot be loaded*/}
+              {/*  // style={{height: DEVICE_HEIGHT, width: DEVICE_WIDTH}}*/}
+              {/*/>*/}
             </TouchableOpacity>
           ) : this.state.userimage ? (
             <TouchableOpacity onPress={() => this.gotoProfile()}>
@@ -1261,6 +1256,7 @@ class IncomeDetail extends Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

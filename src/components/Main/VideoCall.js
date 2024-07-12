@@ -1,34 +1,30 @@
 import React from 'react';
 import {
-  SafeAreaView,
-  View,
-  StyleSheet,
-  ActivityIndicator,
   BackHandler,
   Dimensions,
-  ImageBackground,
   Image,
+  ImageBackground,
+  StyleSheet,
   Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import {connect} from 'react-redux';
-import QB from 'quickblox-react-native-sdk';
-import WebRTCView from 'quickblox-react-native-sdk/RTCView';
+// import QB from 'quickblox-react-native-sdk';
+// import WebRTCView from 'quickblox-react-native-sdk/RTCView';
 import Sound from 'react-native-sound';
 import bg from '../../assets/images/back_1.jpeg';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import call_end_reject from '../../assets/images/call_end_reject.png';
 import {
+  ACCEPT,
   CALL,
   CALL_END,
-  REJECT,
-  ACCEPT,
-  HANG_UP,
   PEER_CONNECTION_STATE_CHANGED,
-  RECEIVED_VIDEO_TRACK,
-  NOT_ANSWER,
+  REJECT,
 } from '../../config/constants';
 import {isQBOn} from '../../config';
+
 Sound.setCategory('Playback');
 const whoosh = new Sound(
   'happy_birthday_by_music_box.mp3',
@@ -71,37 +67,38 @@ class VideoCall extends React.Component {
       this.backPressed,
     );
     if (isQBOn()) {
-      const {quickBloxInfo} = this.props;
-      QB.chat
-        .isConnected()
-        .then(connected => {
-          // boolean
-          // handle as necessary, i.e.
-          // if (connected === false) reconnect()
-          if (connected === true) {
-            this.initWebRTC();
-          } else {
-            QB.chat
-              .connect({
-                userId: quickBloxInfo.user.id,
-                password: 'quickblox',
-              })
-              .then(() => {
-                // connected successfully
-                this.initWebRTC();
-              })
-              .catch(e => {
-                // some error occurred
-                alert(JSON.stringify(e.message));
-              });
-          }
-        })
-        .catch(e => {
-          // handle error
-          alert(JSON.stringify(e.message));
-        });
+      // const {quickBloxInfo} = this.props;
+      // QB.chat
+      //   .isConnected()
+      //   .then(connected => {
+      //     // boolean
+      //     // handle as necessary, i.e.
+      //     // if (connected === false) reconnect()
+      //     if (connected === true) {
+      //       this.initWebRTC();
+      //     } else {
+      //       QB.chat
+      //         .connect({
+      //           userId: quickBloxInfo.user.id,
+      //           password: 'quickblox',
+      //         })
+      //         .then(() => {
+      //           // connected successfully
+      //           this.initWebRTC();
+      //         })
+      //         .catch(e => {
+      //           // some error occurred
+      //           alert(JSON.stringify(e.message));
+      //         });
+      //     }
+      //   })
+      //   .catch(e => {
+      //     // handle error
+      //     alert(JSON.stringify(e.message));
+      //   });
     }
   }
+
   componentWillReceiveProps(nextProps, nextContext) {
     clearInterval(this.state.intervalId);
     if (nextProps.callEvent !== null) {
@@ -184,49 +181,49 @@ class VideoCall extends React.Component {
       }
     });
     if (isQBOn()) {
-      const filter = {
-        field: QB.users.USERS_FILTER.FIELD.LOGIN,
-        operator: QB.users.USERS_FILTER.OPERATOR.IN,
-        type: QB.users.USERS_FILTER.TYPE.STRING,
-        value: this.state.opponentAppInfo.userId,
-      };
-      QB.users
-        .getUsers({filter: filter})
-        .then(result => {
-          // users found
-          let allUsers = result.users;
-          let otherUserData = allUsers.filter(
-            user =>
-              user.login === JSON.stringify(this.state.opponentAppInfo.userId),
-          );
-          if (otherUserData.length) {
-            const params = {
-              opponentsIds: [otherUserData[0].id],
-              type: QB.webrtc.RTC_SESSION_TYPE.VIDEO,
-              userInfo: {
-                callerName: this.props.userData.name,
-                receiverName: this.state.opponentAppInfo.name,
-              },
-            };
-            QB.webrtc
-              .call(params)
-              .then(session => {
-                /* session created */
-                this.setState({
-                  videoSession: session,
-                  isLoading: false,
-                });
-              })
-              .catch(e => {
-                /* handle error */
-                alert(JSON.stringify(e.message));
-              });
-          }
-        })
-        .catch(e => {
-          // handle error
-          alert(JSON.stringify(e.message));
-        });
+      // const filter = {
+      //   field: QB.users.USERS_FILTER.FIELD.LOGIN,
+      //   operator: QB.users.USERS_FILTER.OPERATOR.IN,
+      //   type: QB.users.USERS_FILTER.TYPE.STRING,
+      //   value: this.state.opponentAppInfo.userId,
+      // };
+      // QB.users
+      //   .getUsers({filter: filter})
+      //   .then(result => {
+      //     // users found
+      //     let allUsers = result.users;
+      //     let otherUserData = allUsers.filter(
+      //       user =>
+      //         user.login === JSON.stringify(this.state.opponentAppInfo.userId),
+      //     );
+      //     if (otherUserData.length) {
+      //       const params = {
+      //         opponentsIds: [otherUserData[0].id],
+      //         type: QB.webrtc.RTC_SESSION_TYPE.VIDEO,
+      //         userInfo: {
+      //           callerName: this.props.userData.name,
+      //           receiverName: this.state.opponentAppInfo.name,
+      //         },
+      //       };
+      //       QB.webrtc
+      //         .call(params)
+      //         .then(session => {
+      //           /* session created */
+      //           this.setState({
+      //             videoSession: session,
+      //             isLoading: false,
+      //           });
+      //         })
+      //         .catch(e => {
+      //           /* handle error */
+      //           alert(JSON.stringify(e.message));
+      //         });
+      //     }
+      //   })
+      //   .catch(e => {
+      //     // handle error
+      //     alert(JSON.stringify(e.message));
+      //   });
     }
   };
 
@@ -239,12 +236,12 @@ class VideoCall extends React.Component {
       // only [string]: string type supported
     };
     if (isQBOn()) {
-      await QB.webrtc
-        .hangUp({sessionId: this.state.videoSession.id, userInfo})
-        .catch(e => {
-          /* handle error */
-          alert(JSON.stringify(e.message));
-        });
+      // await QB.webrtc
+      //   .hangUp({sessionId: this.state.videoSession.id, userInfo})
+      //   .catch(e => {
+      //     /* handle error */
+      //     alert(JSON.stringify(e.message));
+      //   });
     }
     this.props.navigation.pop();
   };
@@ -291,12 +288,12 @@ class VideoCall extends React.Component {
               padding: 3,
               zIndex: -1,
             }}>
-            <WebRTCView // opponent video
-              sessionId={state.videoSession.id}
-              // add styles as necessary
-              style={{width: '100%', height: '100%'}}
-              userId={state.videoSession.opponentsIds[0]} // your user's Id for local video or occupantId for remote
-            />
+            {/*<WebRTCView // opponent video*/}
+            {/*  sessionId={state.videoSession.id}*/}
+            {/*  // add styles as necessary*/}
+            {/*  style={{width: '100%', height: '100%'}}*/}
+            {/*  userId={state.videoSession.opponentsIds[0]} // your user's Id for local video or occupantId for remote*/}
+            {/*/>*/}
           </View>
         )}
         {state.showTimer && (
@@ -313,11 +310,11 @@ class VideoCall extends React.Component {
               padding: 3,
               zIndex: 1,
             }}>
-            <WebRTCView
-              sessionId={state.videoSession.id}
-              style={styles.myvideo} // add styles as necessary
-              userId={this.props.quickBloxInfo.user.id} // your user's Id for local video or occupantId for remote
-            />
+            {/*<WebRTCView*/}
+            {/*  sessionId={state.videoSession.id}*/}
+            {/*  style={styles.myvideo} // add styles as necessary*/}
+            {/*  userId={this.props.quickBloxInfo.user.id} // your user's Id for local video or occupantId for remote*/}
+            {/*/>*/}
             <TouchableOpacity
               style={{width: 60, height: 60}}
               onPress={this.callEndEvent}>
@@ -332,6 +329,7 @@ class VideoCall extends React.Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

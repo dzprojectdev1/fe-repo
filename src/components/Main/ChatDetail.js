@@ -1,21 +1,22 @@
 import React from 'react';
 import {Icon, Text} from 'native-base';
+// import {
+//   GiftedChat,
+//   Send,
+//   InputToolbar,
+//   Composer,
+//   Bubble,
+//   GiftedAvatar,
+//   utils,
+// } from 'react-native-gifted-chat';
 import {
-  GiftedChat,
-  Send,
-  InputToolbar,
-  Composer,
-  Bubble,
-  GiftedAvatar,
-  utils,
-} from 'react-native-gifted-chat';
-import {
+  Alert,
+  Dimensions,
   Image,
   Platform,
-  Dimensions,
-  View,
   StyleSheet,
   TouchableOpacity,
+  View,
 } from 'react-native';
 
 import Global from '../Global';
@@ -27,6 +28,9 @@ import b_userplus from '../../assets/images/userplus.png';
 import {SERVER_URL} from '../../config/constants';
 
 class ChatDetail extends React.Component {
+  static navigationOptions = {
+    header: null,
+  };
   state = {
     isExtraSending: false,
     messages: [],
@@ -58,6 +62,7 @@ class ChatDetail extends React.Component {
       },
     );
   }
+
   loadMessages = async () => {
     const {data} = this.props.route.params;
     var userdata = data;
@@ -99,15 +104,12 @@ class ChatDetail extends React.Component {
           this.setState({messages: message_list});
         }
       })
-      .catch(error => {
-        return;
-      });
+      .catch(error => {});
     this.loadMessages();
   };
-  static navigationOptions = {
-    header: null,
-  };
+
   handlePress(avatar) {}
+
   renderBubble = props => {
     //right avatar
     const renderAvatarOnTop = props.renderAvatarOnTop;
@@ -117,39 +119,39 @@ class ChatDetail extends React.Component {
     if (props.user._id === props.currentMessage.user._id) {
       return (
         <View style={{flexDirection: 'row'}}>
-          <Bubble
-            {...props}
-            onLongPress={() => {}}
-            textStyle={{
-              right: {
-                color: '#000',
-              },
-            }}
-            wrapperStyle={{
-              left: {
-                backgroundColor: '#000',
-              },
-              right: {
-                backgroundColor: '#fff',
-                borderWidth: 0.5,
-                borderColor: '#aaa',
-              },
-            }}
-            containerStyle={{backgroundColor: '#000'}}
-          />
-          {utils.isSameUser(props.currentMessage, messageToCompare) &&
-          utils.isSameDay(props.currentMessage, messageToCompare) ? (
-            <GiftedAvatar
-              avatarStyle={{alignSelf: 'flex-end', marginLeft: 5}}
-            />
-          ) : (
-            <GiftedAvatar
-              {...props}
-              user={props.currentMessage.user}
-              avatarStyle={{alignSelf: 'flex-end', marginTop: 5, marginLeft: 5}}
-              onPress={() => this.handlePress('avatar')}
-            />
-          )}
+          {/*<Bubble*/}
+          {/*  {...props}*/}
+          {/*  onLongPress={() => {}}*/}
+          {/*  textStyle={{*/}
+          {/*    right: {*/}
+          {/*      color: '#000',*/}
+          {/*    },*/}
+          {/*  }}*/}
+          {/*  wrapperStyle={{*/}
+          {/*    left: {*/}
+          {/*      backgroundColor: '#000',*/}
+          {/*    },*/}
+          {/*    right: {*/}
+          {/*      backgroundColor: '#fff',*/}
+          {/*      borderWidth: 0.5,*/}
+          {/*      borderColor: '#aaa',*/}
+          {/*    },*/}
+          {/*  }}*/}
+          {/*  containerStyle={{backgroundColor: '#000'}}*/}
+          {/*/>*/}
+          {/*{utils.isSameUser(props.currentMessage, messageToCompare) &&*/}
+          {/*utils.isSameDay(props.currentMessage, messageToCompare) ? (*/}
+          {/*  <GiftedAvatar*/}
+          {/*    avatarStyle={{alignSelf: 'flex-end', marginLeft: 5}}*/}
+          {/*  />*/}
+          {/*) : (*/}
+          {/*  <GiftedAvatar*/}
+          {/*    {...props}*/}
+          {/*    user={props.currentMessage.user}*/}
+          {/*    avatarStyle={{alignSelf: 'flex-end', marginTop: 5, marginLeft: 5}}*/}
+          {/*    onPress={() => this.handlePress('avatar')}*/}
+          {/*  />*/}
+          {/*)}*/}
         </View>
       );
     }
@@ -157,29 +159,30 @@ class ChatDetail extends React.Component {
     //default bubble
     return (
       <View style={styles.bubbleView}>
-        <Bubble
-          {...props}
-          onLongPress={() => {}}
-          textStyle={{
-            left: {
-              color: '#fff',
-            },
-            right: {
-              color: '#fff',
-            },
-          }}
-          wrapperStyle={{
-            left: {
-              backgroundColor: '#EC595A',
-            },
-            right: {
-              backgroundColor: '#000',
-            },
-          }}
-        />
+        {/*<Bubble*/}
+        {/*  {...props}*/}
+        {/*  onLongPress={() => {}}*/}
+        {/*  textStyle={{*/}
+        {/*    left: {*/}
+        {/*      color: '#fff',*/}
+        {/*    },*/}
+        {/*    right: {*/}
+        {/*      color: '#fff',*/}
+        {/*    },*/}
+        {/*  }}*/}
+        {/*  wrapperStyle={{*/}
+        {/*    left: {*/}
+        {/*      backgroundColor: '#EC595A',*/}
+        {/*    },*/}
+        {/*    right: {*/}
+        {/*      backgroundColor: '#000',*/}
+        {/*    },*/}
+        {/*  }}*/}
+        {/*/>*/}
       </View>
     );
   };
+
   sendMessage(message) {
     for (let i = 0; i < message.length; i++) {
       var details = {
@@ -207,39 +210,40 @@ class ChatDetail extends React.Component {
         })
         .catch(error => {
           alert(JSON.stringify(error));
-          return;
         });
     }
   }
-  renderInputToolbar(props) {
-    return (
-      <InputToolbar {...props} containerStyle={{backgroundColor: '#fff'}} />
-    );
-  }
-  renderSend = props => {
-    return (
-      <Send {...props}>
-        <View
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 15,
-            marginRight: 10,
-            marginLeft: 5,
-            marginBottom: 5,
-            backgroundColor: '#EC595A',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Icon type="Ionicons" name="ios-send" style={{color: '#fff'}} />
-        </View>
-      </Send>
-    );
-    //containerStyle
-  };
+
+  // renderInputToolbar(props) {
+  //   return (
+  //     <InputToolbar {...props} containerStyle={{backgroundColor: '#fff'}} />
+  //   );
+  // }
+  // renderSend = props => {
+  //   return (
+  //     <Send {...props}>
+  //       <View
+  //         style={{
+  //           width: 30,
+  //           height: 30,
+  //           borderRadius: 15,
+  //           marginRight: 10,
+  //           marginLeft: 5,
+  //           marginBottom: 5,
+  //           backgroundColor: '#EC595A',
+  //           alignItems: 'center',
+  //           justifyContent: 'center',
+  //         }}>
+  //         <Icon type="Ionicons" name="ios-send" style={{color: '#fff'}} />
+  //       </View>
+  //     </Send>
+  //   );
+  //   //containerStyle
+  // };
   onExtraSending() {
     this.setState({isExtraSending: !this.state.isExtraSending});
   }
+
   gotoProfile() {
     if (this.state.other_id != -1) {
       Global.saveData.prevpage = 'ChatDetail';
@@ -249,6 +253,7 @@ class ChatDetail extends React.Component {
       });
     }
   }
+
   rendercomposer = props => {
     return (
       <View>
@@ -298,20 +303,21 @@ class ChatDetail extends React.Component {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Composer
-            {...props}
-            textInputStyle={{
-              backgroundColor: '#fff',
-              opacity: 1.0,
-              marginTop: 5,
-              fontSize: 16,
-              paddingTop: Platform.select({ios: 10, android: 5}),
-            }}
-          />
+          {/*<Composer*/}
+          {/*  {...props}*/}
+          {/*  textInputStyle={{*/}
+          {/*    backgroundColor: '#fff',*/}
+          {/*    opacity: 1.0,*/}
+          {/*    marginTop: 5,*/}
+          {/*    fontSize: 16,*/}
+          {/*    paddingTop: Platform.select({ios: 10, android: 5}),*/}
+          {/*  }}*/}
+          {/*/>*/}
         </View>
       </View>
     );
   };
+
   back() {
     if (Global.saveData.prevpage === 'Chat') {
       this.props.navigation.replace('Chat');
@@ -319,14 +325,17 @@ class ChatDetail extends React.Component {
       this.props.navigation.pop();
     }
   }
+
   setToggle() {
     this.setState({openMenu: !this.state.openMenu});
   }
+
   gotoReport() {
     if (this.state.other_id != -1) {
       this.props.navigation.navigate('Report', {id: this.state.other_id});
     }
   }
+
   onBlock() {
     Alert.alert(
       'Are you sure you want to block this user?',
@@ -342,6 +351,7 @@ class ChatDetail extends React.Component {
       {cancelable: false},
     );
   }
+
   setBlock() {
     var details = {
       otherId: this.state.other_id,
@@ -372,9 +382,9 @@ class ChatDetail extends React.Component {
       })
       .catch(error => {
         alert(JSON.stringify(error));
-        return;
       });
   }
+
   render() {
     return (
       <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -423,23 +433,23 @@ class ChatDetail extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={{flex: 1}}>
-          <GiftedChat
-            style={{height: DEVICE_HEIGHT - 100}}
-            messages={this.state.messages}
-            onSend={messages => this.sendMessage(messages)}
-            //renderBubble={this.renderBubble}
-            renderComposer={this.rendercomposer}
-            renderInputToolbar={this.renderInputToolbar}
-            onPressAvatar={() => this.gotoProfile()}
-            alwaysShowSend={true}
-            renderSend={this.renderSend}
-            keyboardShouldPersistTaps="never"
-            user={{
-              _id: this.state.my_id,
-              name: this.state.my_name,
-              avatar: this.state.my_imgurl,
-            }}
-          />
+          {/*<GiftedChat*/}
+          {/*  style={{height: DEVICE_HEIGHT - 100}}*/}
+          {/*  messages={this.state.messages}*/}
+          {/*  onSend={messages => this.sendMessage(messages)}*/}
+          {/*  //renderBubble={this.renderBubble}*/}
+          {/*  renderComposer={this.rendercomposer}*/}
+          {/*  renderInputToolbar={this.renderInputToolbar}*/}
+          {/*  onPressAvatar={() => this.gotoProfile()}*/}
+          {/*  alwaysShowSend={true}*/}
+          {/*  renderSend={this.renderSend}*/}
+          {/*  keyboardShouldPersistTaps="never"*/}
+          {/*  user={{*/}
+          {/*    _id: this.state.my_id,*/}
+          {/*    name: this.state.my_name,*/}
+          {/*    avatar: this.state.my_imgurl,*/}
+          {/*  }}*/}
+          {/*/>*/}
         </View>
         {this.state.openMenu && (
           <View
@@ -479,6 +489,7 @@ class ChatDetail extends React.Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

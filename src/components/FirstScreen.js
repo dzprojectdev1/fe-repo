@@ -1,31 +1,28 @@
 import React, {Component} from 'react';
 import {Text} from 'native-base';
 import {
-  ImageBackground,
-  Dimensions,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  StatusBar,
   ActivityIndicator,
   Alert,
-  PermissionsAndroid,
   BackHandler,
+  Dimensions,
+  ImageBackground,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {
   changeReadFlag,
-  updateUserData,
   updateFCMTocken,
   updateQuickBlox,
+  updateUserData,
 } from '../../Action';
 import DeviceInfo from 'react-native-device-info';
-import firstBg from '../assets/images/splash.png';
 import logo from '../assets/images/logo.png';
 import Global from './Global';
-import QB from 'quickblox-react-native-sdk';
-import {SERVER_URL, FIREBASE_DB_UNREAD, FIREBASE_DB} from '../config/constants';
+import {FIREBASE_DB, FIREBASE_DB_UNREAD, SERVER_URL} from '../config/constants';
 import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import database from '@react-native-firebase/database';
@@ -34,43 +31,44 @@ import auth from '@react-native-firebase/auth';
 import * as Sentry from '@sentry/react-native';
 
 class FirstScreen extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       isLoaded: true,
     };
   }
-  static navigationOptions = {
-    header: null,
-  };
 
   getdeviceId = async () => {
     let id = await DeviceInfo.getUniqueId();
     return id;
   };
 
-  async checkMultiPermissions() {
-    try {
-      let result = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-      ]).catch(e => {
-        console.log('request permission', e.message);
-      });
-      if (
-        result['android.permission.CAMERA'] &&
-        result['android.permission.RECORD_AUDIO'] === 'granted'
-      ) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      // Error retrieving data
-      Sentry.captureException(new Error(error));
-      console.log('check permissions = ', error.message);
-      return false;
-    }
-  }
+  // async checkMultiPermissions() {
+  //   try {
+  //     let result = await PermissionsAndroid.requestMultiple([
+  //       PermissionsAndroid.PERMISSIONS.CAMERA,
+  //       PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+  //     ]).catch(e => {
+  //       console.log('request permission', e.message);
+  //     });
+  //     if (
+  //       result['android.permission.CAMERA'] &&
+  //       result['android.permission.RECORD_AUDIO'] === 'granted'
+  //     ) {
+  //       return true;
+  //     }
+  //     return false;
+  //   } catch (error) {
+  //     // Error retrieving data
+  //     Sentry.captureException(new Error(error));
+  //     console.log('check permissions = ', error.message);
+  //     return false;
+  //   }
+  // }
 
   async componentDidMount() {
     // let isAllowed = await this.checkMultiPermissions();
@@ -119,80 +117,80 @@ class FirstScreen extends Component {
         if (responseJson.error === false) {
           if (responseJson.user) {
             if (isQBOn()) {
-              let info = await QB.auth
-                .login({
-                  login: responseJson.user.id,
-                  password: 'quickblox',
-                })
-                .catch(e => {
-                  console.log('my login = ', e.message);
-                });
-              if (!info) {
-                let user = await QB.users
-                  .create({
-                    fullName: responseJson.user.name,
-                    login: responseJson.user.id,
-                    password: 'quickblox',
-                    // phone: '404-388-5366',
-                    tags: ['awesome', 'quickblox'],
-                  })
-                  .catch(e => {
-                    console.log(e.message);
-                  });
-                // eslint-disable-next-line no-shadow
-                let info = await QB.auth
-                  .login({
-                    login: user.login,
-                    password: 'quickblox',
-                  })
-                  .catch(e => {
-                    // handle error
-                    console.log('my login = ', e.message);
-                  });
-                this.props.updateQuickBlox(info);
-                // const subscription = { deviceToken: fcmToken };
-                // await QB.subscriptions.create(subscription).catch(e => {
-                //   /* handle error */
-                //   console.log("subscription = ", e.message);
-                // });
-                let isConnected = await QB.chat.isConnected().catch(e => {
-                  //console.log('chat connect check = ', e.message);
-                });
-                if (isConnected === false) {
-                  await QB.chat
-                    .connect({userId: info.user.id, password: 'quickblox'})
-                    .catch(e => {
-                      console.log('new chat connect = ', e.message);
-                    });
-                }
-                await QB.webrtc.init().catch(e => {
-                  /* handle error */
-                  console.log(e.message);
-                });
-                this.nextThrough(responseJson);
-              } else {
-                this.props.updateQuickBlox(info);
-                const subscription = {deviceToken: fcmToken};
-                await QB.subscriptions.create(subscription).catch(e => {
-                  /* handle error */
-                  console.log('subscription = ', e.message);
-                });
-                let isConnected = await QB.chat.isConnected().catch(e => {
-                  console.log('chat connect check = ', e.message);
-                });
-                if (isConnected === false) {
-                  await QB.chat
-                    .connect({userId: info.user.id, password: 'quickblox'})
-                    .catch(e => {
-                      console.log('new chat connect = ', e.message);
-                    });
-                }
-                await QB.webrtc.init().catch(e => {
-                  /* handle error */
-                  console.log(e.message);
-                });
-                this.nextThrough(responseJson);
-              }
+              // let info = await QB.auth
+              //   .login({
+              //     login: responseJson.user.id,
+              //     password: 'quickblox',
+              //   })
+              //   .catch(e => {
+              //     console.log('my login = ', e.message);
+              //   });
+              // if (!info) {
+              //   let user = await QB.users
+              //     .create({
+              //       fullName: responseJson.user.name,
+              //       login: responseJson.user.id,
+              //       password: 'quickblox',
+              //       // phone: '404-388-5366',
+              //       tags: ['awesome', 'quickblox'],
+              //     })
+              //     .catch(e => {
+              //       console.log(e.message);
+              //     });
+              //   // eslint-disable-next-line no-shadow
+              //   let info = await QB.auth
+              //     .login({
+              //       login: user.login,
+              //       password: 'quickblox',
+              //     })
+              //     .catch(e => {
+              //       // handle error
+              //       console.log('my login = ', e.message);
+              //     });
+              //   this.props.updateQuickBlox(info);
+              //   // const subscription = { deviceToken: fcmToken };
+              //   // await QB.subscriptions.create(subscription).catch(e => {
+              //   //   /* handle error */
+              //   //   console.log("subscription = ", e.message);
+              //   // });
+              //   let isConnected = await QB.chat.isConnected().catch(e => {
+              //     //console.log('chat connect check = ', e.message);
+              //   });
+              //   if (isConnected === false) {
+              //     await QB.chat
+              //       .connect({userId: info.user.id, password: 'quickblox'})
+              //       .catch(e => {
+              //         console.log('new chat connect = ', e.message);
+              //       });
+              //   }
+              //   await QB.webrtc.init().catch(e => {
+              //     /* handle error */
+              //     console.log(e.message);
+              //   });
+              //   this.nextThrough(responseJson);
+              // } else {
+              //   this.props.updateQuickBlox(info);
+              //   const subscription = {deviceToken: fcmToken};
+              //   await QB.subscriptions.create(subscription).catch(e => {
+              //     /* handle error */
+              //     console.log('subscription = ', e.message);
+              //   });
+              //   let isConnected = await QB.chat.isConnected().catch(e => {
+              //     console.log('chat connect check = ', e.message);
+              //   });
+              //   if (isConnected === false) {
+              //     await QB.chat
+              //       .connect({userId: info.user.id, password: 'quickblox'})
+              //       .catch(e => {
+              //         console.log('new chat connect = ', e.message);
+              //       });
+              //   }
+              //   await QB.webrtc.init().catch(e => {
+              //     /* handle error */
+              //     console.log(e.message);
+              //   });
+              //   this.nextThrough(responseJson);
+              // }
             }
             this.nextThrough(responseJson);
           } else {
@@ -339,7 +337,6 @@ class FirstScreen extends Component {
       })
       .catch(error => {
         console.log(error.message);
-        return;
       });
   }
 
@@ -352,14 +349,16 @@ class FirstScreen extends Component {
       Sentry.captureException(new Error(error));
       console.log(error.message);
     }
-    return;
   };
+
   gotoLogin() {
     this.props.navigation.replace('Login');
   }
+
   gotoSignUp() {
     this.props.navigation.navigate('Signup');
   }
+
   render() {
     return (
       <View style={styles.contentContainer}>
@@ -495,6 +494,7 @@ class FirstScreen extends Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

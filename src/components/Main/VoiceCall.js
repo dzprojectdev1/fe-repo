@@ -1,30 +1,17 @@
 import React from 'react';
 import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
   BackHandler,
   Dimensions,
-  ImageBackground,
   Image,
+  ImageBackground,
+  StyleSheet,
   Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import {connect} from 'react-redux';
-import QB from 'quickblox-react-native-sdk';
-import WebRTCView from 'quickblox-react-native-sdk/RTCView';
 import Sound from 'react-native-sound';
-import Global from '../Global';
-import {
-  CALL,
-  CALL_END,
-  REJECT,
-  ACCEPT,
-  HANG_UP,
-  PEER_CONNECTION_STATE_CHANGED,
-  RECEIVED_VIDEO_TRACK,
-  NOT_ANSWER,
-} from '../../config/constants';
+import {ACCEPT, CALL, CALL_END, REJECT} from '../../config/constants';
 // asset images
 import hiddenMan from '../../assets/images/hidden_man.png';
 import bg from '../../assets/images/back_1.jpeg';
@@ -76,36 +63,36 @@ class VoiceCall extends React.Component {
       this.backPressed,
     );
     if (isQBOn()) {
-      const {quickBloxInfo} = this.props;
-
-      QB.chat
-        .isConnected()
-        .then(connected => {
-          // boolean
-          // handle as necessary, i.e.
-          // if (connected === false) reconnect()
-          if (connected === true) {
-            this.initWebRTC();
-          } else {
-            QB.chat
-              .connect({
-                userId: quickBloxInfo.user.id,
-                password: 'quickblox',
-              })
-              .then(() => {
-                // connected successfully
-                this.initWebRTC();
-              })
-              .catch(e => {
-                // some error occurred
-                console.log(e.message);
-              });
-          }
-        })
-        .catch(e => {
-          // handle error
-          console.log(e.message);
-        });
+      // const {quickBloxInfo} = this.props;
+      //
+      // QB.chat
+      //   .isConnected()
+      //   .then(connected => {
+      //     // boolean
+      //     // handle as necessary, i.e.
+      //     // if (connected === false) reconnect()
+      //     if (connected === true) {
+      //       this.initWebRTC();
+      //     } else {
+      //       QB.chat
+      //         .connect({
+      //           userId: quickBloxInfo.user.id,
+      //           password: 'quickblox',
+      //         })
+      //         .then(() => {
+      //           // connected successfully
+      //           this.initWebRTC();
+      //         })
+      //         .catch(e => {
+      //           // some error occurred
+      //           console.log(e.message);
+      //         });
+      //     }
+      //   })
+      //   .catch(e => {
+      //     // handle error
+      //     console.log(e.message);
+      //   });
     }
   }
 
@@ -188,49 +175,49 @@ class VoiceCall extends React.Component {
       }
     });
     if (isQBOn()) {
-      const filter = {
-        field: QB.users.USERS_FILTER.FIELD.LOGIN,
-        operator: QB.users.USERS_FILTER.OPERATOR.IN,
-        type: QB.users.USERS_FILTER.TYPE.STRING,
-        value: this.state.opponentAppInfo.userId,
-      };
-      QB.users
-        .getUsers({filter: filter})
-        .then(result => {
-          // users found
-          let allUsers = result.users;
-          let otherUserData = allUsers.filter(
-            user =>
-              user.login === JSON.stringify(this.state.opponentAppInfo.userId),
-          );
-          if (otherUserData.length) {
-            const params = {
-              opponentsIds: [otherUserData[0].id],
-              type: QB.webrtc.RTC_SESSION_TYPE.AUDIO,
-              userInfo: {
-                callerName: this.props.userData.name,
-                receiverName: this.state.opponentAppInfo.name,
-              },
-            };
-            QB.webrtc
-              .call(params)
-              .then(session => {
-                /* session created */
-                this.setState({
-                  videoSession: session,
-                  isLoading: false,
-                });
-              })
-              .catch(e => {
-                /* handle error */
-                console.log(e.message);
-              });
-          }
-        })
-        .catch(e => {
-          // handle error
-          console.log(e.message);
-        });
+      // const filter = {
+      //   field: QB.users.USERS_FILTER.FIELD.LOGIN,
+      //   operator: QB.users.USERS_FILTER.OPERATOR.IN,
+      //   type: QB.users.USERS_FILTER.TYPE.STRING,
+      //   value: this.state.opponentAppInfo.userId,
+      // };
+      // QB.users
+      //   .getUsers({filter: filter})
+      //   .then(result => {
+      //     // users found
+      //     let allUsers = result.users;
+      //     let otherUserData = allUsers.filter(
+      //       user =>
+      //         user.login === JSON.stringify(this.state.opponentAppInfo.userId),
+      //     );
+      //     if (otherUserData.length) {
+      //       const params = {
+      //         opponentsIds: [otherUserData[0].id],
+      //         type: QB.webrtc.RTC_SESSION_TYPE.AUDIO,
+      //         userInfo: {
+      //           callerName: this.props.userData.name,
+      //           receiverName: this.state.opponentAppInfo.name,
+      //         },
+      //       };
+      //       QB.webrtc
+      //         .call(params)
+      //         .then(session => {
+      //           /* session created */
+      //           this.setState({
+      //             videoSession: session,
+      //             isLoading: false,
+      //           });
+      //         })
+      //         .catch(e => {
+      //           /* handle error */
+      //           console.log(e.message);
+      //         });
+      //     }
+      //   })
+      //   .catch(e => {
+      //     // handle error
+      //     console.log(e.message);
+      //   });
     }
   };
 
@@ -243,20 +230,20 @@ class VoiceCall extends React.Component {
       // only [string]: string type supported
     };
     if (isQBOn()) {
-      await QB.webrtc
-        .hangUp({sessionId: this.state.videoSession.id, userInfo})
-        .catch(e => {
-          /* handle error */
-          console.log(e.message);
-        });
-      this.setState(
-        {
-          videoSession: {},
-        },
-        () => {
-          this.props.navigation.pop();
-        },
-      );
+      // await QB.webrtc
+      //   .hangUp({sessionId: this.state.videoSession.id, userInfo})
+      //   .catch(e => {
+      //     /* handle error */
+      //     console.log(e.message);
+      //   });
+      // this.setState(
+      //   {
+      //     videoSession: {},
+      //   },
+      //   () => {
+      //     this.props.navigation.pop();
+      //   },
+      // );
     }
   };
 
@@ -327,6 +314,7 @@ class VoiceCall extends React.Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

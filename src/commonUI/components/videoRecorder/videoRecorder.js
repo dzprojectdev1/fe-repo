@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
 import {
-  Modal,
-  View,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-  Text,
   InteractionManager,
+  Modal,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import Camera from 'react-native-camera';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import RecordingButton from './RecordingButton';
 import styles from './style';
@@ -64,15 +63,15 @@ export default class VideoRecorder extends Component {
 
   startCapture = () => {
     InteractionManager.runAfterInteractions(() => {
-      this.camera
-        .capture()
-        .then(data => {
-          this.setState({
-            recorded: true,
-            recordedData: data,
-          });
-        })
-        .catch(err => console.error(err));
+      // this.camera
+      //   .capture()
+      //   .then(data => {
+      //     this.setState({
+      //       recorded: true,
+      //       recordedData: data,
+      //     });
+      //   })
+      //   .catch(err => console.error(err));
       setTimeout(() => {
         this.startTimer();
         this.setState({
@@ -88,7 +87,7 @@ export default class VideoRecorder extends Component {
   stopCapture = () => {
     InteractionManager.runAfterInteractions(() => {
       this.stopTimer();
-      this.camera.stopCapture();
+      // this.camera.stopCapture();
       this.setState({
         isRecording: false,
       });
@@ -153,21 +152,21 @@ export default class VideoRecorder extends Component {
     );
   }
 
-  renderCamera() {
-    return (
-      <Camera
-        ref={cam => {
-          this.camera = cam;
-        }}
-        style={styles.preview}
-        captureAudio
-        captureMode={Camera.constants.CaptureMode.video}
-        captureTarget={Camera.constants.CaptureTarget.temp}
-        aspect={Camera.constants.Aspect.fill}>
-        {this.renderContent()}
-      </Camera>
-    );
-  }
+  // renderCamera() {
+  //   return (
+  //     <Camera
+  //       ref={cam => {
+  //         this.camera = cam;
+  //       }}
+  //       style={styles.preview}
+  //       captureAudio
+  //       captureMode={Camera.constants.CaptureMode.video}
+  //       captureTarget={Camera.constants.CaptureTarget.temp}
+  //       aspect={Camera.constants.Aspect.fill}>
+  //       {this.renderContent()}
+  //     </Camera>
+  //   );
+  // }
 
   render() {
     const {loading, isOpen} = this.state;
@@ -185,7 +184,7 @@ export default class VideoRecorder extends Component {
             <View style={styles.backdrop} />
           </TouchableWithoutFeedback>
           <View style={styles.container}>
-            <View style={styles.content}>{this.renderCamera()}</View>
+            {/*<View style={styles.content}>{this.renderCamera()}</View>*/}
             <TouchableOpacity onPress={this.close} style={styles.buttonClose}>
               <Icon name="close" size={32} color={'white'} />
             </TouchableOpacity>

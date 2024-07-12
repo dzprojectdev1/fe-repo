@@ -1,29 +1,27 @@
 import React, {Component} from 'react';
 import {
-  ImageBackground,
-  Image,
-  Platform,
-  Dimensions,
-  View,
-  StyleSheet,
-  StatusBar,
   Alert,
-  PermissionsAndroid,
+  Dimensions,
+  Image,
+  ImageBackground,
   Linking,
+  Platform,
+  StatusBar,
+  StyleSheet,
   Text,
+  View,
 } from 'react-native';
-import QB from 'quickblox-react-native-sdk';
+// import QB from 'quickblox-react-native-sdk';
 import DeviceInfo from 'react-native-device-info';
 import AnimateLoadingButton from 'react-native-animate-loading-button';
-import Geolocation from '@react-native-community/geolocation';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {Dropdown} from 'react-native-material-dropdown';
 import Global from '../Global';
 import {
   updateFCMTocken,
-  updateUserData,
   updateQuickBlox,
+  updateUserData,
 } from '../../../Action';
 import {SERVER_URL} from '../../config/constants';
 import messaging from '@react-native-firebase/messaging';
@@ -31,11 +29,15 @@ import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import {isQBOn} from '../../config';
 import * as Sentry from '@sentry/react-native';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
 class Register2 extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -53,9 +55,6 @@ class Register2 extends Component {
     };
   }
 
-  static navigationOptions = {
-    header: null,
-  };
   componentDidMount() {
     const {nickName, birthday, description, gender} = this.props.route.params;
     this.setState({nickName, birthday, description, gender});
@@ -63,6 +62,7 @@ class Register2 extends Component {
     this.get_country();
     this.get_language();
   }
+
   get_ethnicity() {
     fetch(`${SERVER_URL}/api/ethnicity/all`, {
       method: 'GET',
@@ -85,9 +85,9 @@ class Register2 extends Component {
       .catch(error => {
         Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
-        return;
       });
   }
+
   get_country() {
     fetch(`${SERVER_URL}/api/country/all`, {
       method: 'GET',
@@ -110,7 +110,6 @@ class Register2 extends Component {
       .catch(error => {
         Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
-        return;
       });
   }
 
@@ -136,34 +135,33 @@ class Register2 extends Component {
       .catch(error => {
         Sentry.captureException(new Error(error));
         alert(JSON.stringify(error));
-        return;
       });
   }
 
-  async checkMultiPermissions() {
-    try {
-      let result = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-      ]).catch(e => {
-        alert(JSON.stringify('request permission' + e.message));
-      });
-      if (
-        result[PermissionsAndroid.PERMISSIONS.CAMERA] &&
-        result[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] &&
-        result[PermissionsAndroid.PERMISSIONS.RECORD_AUDIO] === 'granted'
-      ) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      // Error retrieving data
-      Sentry.captureException(new Error(error));
-      alert(JSON.stringify('check permissions = ' + error.message));
-      return false;
-    }
-  }
+  // async checkMultiPermissions() {
+  //   try {
+  //     let result = await PermissionsAndroid.requestMultiple([
+  //       PermissionsAndroid.PERMISSIONS.CAMERA,
+  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  //       PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+  //     ]).catch(e => {
+  //       alert(JSON.stringify('request permission' + e.message));
+  //     });
+  //     if (
+  //       result[PermissionsAndroid.PERMISSIONS.CAMERA] &&
+  //       result[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] &&
+  //       result[PermissionsAndroid.PERMISSIONS.RECORD_AUDIO] === 'granted'
+  //     ) {
+  //       return true;
+  //     }
+  //     return false;
+  //   } catch (error) {
+  //     // Error retrieving data
+  //     Sentry.captureException(new Error(error));
+  //     alert(JSON.stringify('check permissions = ' + error.message));
+  //     return false;
+  //   }
+  // }
 
   showAlert(title, body) {
     Alert.alert(
@@ -265,49 +263,49 @@ class Register2 extends Component {
       });
     if (!responseJson.error) {
       if (isQBOn()) {
-        let user = await QB.users
-          .create({
-            fullName: responseJson.user.name,
-            login: responseJson.user.id,
-            password: 'quickblox',
-            // phone: '404-388-5366',
-            tags: ['awesome', 'quickblox'],
-          })
-          .catch(e => {
-            console.log(e);
-            alert(JSON.stringify(e.message));
-          });
-        let info = await QB.auth
-          .login({
-            login: user.login,
-            password: 'quickblox',
-          })
-          .catch(e => {
-            // handle error
-            alert(JSON.stringify('my login = ' + e.message));
-          });
-        this.props.updateQuickBlox(info);
+        // let user = await QB.users
+        //   .create({
+        //     fullName: responseJson.user.name,
+        //     login: responseJson.user.id,
+        //     password: 'quickblox',
+        //     // phone: '404-388-5366',
+        //     tags: ['awesome', 'quickblox'],
+        //   })
+        //   .catch(e => {
+        //     console.log(e);
+        //     alert(JSON.stringify(e.message));
+        //   });
+        // let info = await QB.auth
+        //   .login({
+        //     login: user.login,
+        //     password: 'quickblox',
+        //   })
+        //   .catch(e => {
+        //     // handle error
+        //     alert(JSON.stringify('my login = ' + e.message));
+        //   });
+        // this.props.updateQuickBlox(info);
         // const subscription = { deviceToken: deviceInfo.fcm_id };
         // await QB.subscriptions.create(subscription).catch(e => {
         //   /* handle error */
         //   alert(JSON.stringify("subscription = " + e.message));
         // });
-        let isConnected = await QB.chat.isConnected().catch(e => {
-          alert(JSON.stringify('chat connect check = ' + e.message));
-        });
-        if (isConnected === false) {
-          await QB.chat
-            .connect({userId: info.user.id, password: 'quickblox'})
-            .catch(e => {
-              alert(JSON.stringify('new chat connect = ' + e.message));
-            });
-        }
-        await QB.webrtc.init().catch(e => {
-          /* handle error */
-          alert(JSON.stringify(e.message));
-        });
-        this.nextThrough(responseJson);
-        this.registerLoadingBtn.showLoading(false);
+        // let isConnected = await QB.chat.isConnected().catch(e => {
+        //   alert(JSON.stringify('chat connect check = ' + e.message));
+        // });
+        // if (isConnected === false) {
+        //   await QB.chat
+        //     .connect({userId: info.user.id, password: 'quickblox'})
+        //     .catch(e => {
+        //       alert(JSON.stringify('new chat connect = ' + e.message));
+        //     });
+        // }
+        // await QB.webrtc.init().catch(e => {
+        //   /* handle error */
+        //   alert(JSON.stringify(e.message));
+        // });
+        // this.nextThrough(responseJson);
+        // this.registerLoadingBtn.showLoading(false);
       }
       this.nextThrough(responseJson);
       this.registerLoadingBtn.showLoading(false);
@@ -324,7 +322,7 @@ class Register2 extends Component {
         // let isPermission = await this.checkMultiPermissions();
         let isPermission = true;
         if (isPermission) {
-          this.createNewAccount(null);
+          await this.createNewAccount(null);
           // Geolocation.getCurrentPosition(
           //   position => {
           //     this.createNewAccount(position);
@@ -353,7 +351,7 @@ class Register2 extends Component {
           );
         }
       } else if (Platform.OS === 'ios') {
-        this.createNewAccount(null);
+        await this.createNewAccount(null);
         // await Geolocation.requestAuthorization();
         // Geolocation.getCurrentPosition(
         //   position => {
