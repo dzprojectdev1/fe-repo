@@ -2,6 +2,7 @@ import React from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Animated,
   BackHandler,
   Dimensions,
   FlatList,
@@ -49,6 +50,12 @@ import bg from '../../assets/images/bg.jpg';
 import auth from '@react-native-firebase/auth';
 import {replaceEmojis} from '../../util/upload';
 import * as Sentry from '@sentry/react-native';
+import {
+  GestureHandlerRootView,
+  PanGestureHandler,
+  PinchGestureHandler,
+  State,
+} from 'react-native-gesture-handler';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
@@ -141,11 +148,68 @@ class ChatScreen extends React.PureComponent {
         content: '',
         imageLink: '',
       },
+      panEnabled: false,
     };
     this.flatListRef = React.createRef();
     this.scrollViewRef = React.createRef();
     this.lastMessageRef = React.createRef();
+    this.imageZoomRef = React.createRef();
+    this.scale = new Animated.Value(1);
+    this.translateX = new Animated.Value(0);
+    this.translateY = new Animated.Value(0);
+
+    this.pinchRef = React.createRef();
+    this.panRef = React.createRef();
+
+    this.onPinchEvent = Animated.event(
+      [
+        {
+          nativeEvent: {scale: this.scale},
+        },
+      ],
+      {useNativeDriver: true},
+    );
+
+    this.onPanEvent = Animated.event(
+      [
+        {
+          nativeEvent: {
+            translationX: this.translateX,
+            translationY: this.translateY,
+          },
+        },
+      ],
+      {useNativeDriver: true},
+    );
   }
+
+  handlePinchStateChange = ({nativeEvent}) => {
+    // enabled pan only after pinch-zoom
+    if (nativeEvent.state === State.ACTIVE) {
+      this.setState({panEnabled: true});
+    }
+
+    // when scale < 1, reset scale back to original (1)
+    const nScale = nativeEvent.scale;
+    if (nativeEvent.state === State.END) {
+      if (nScale < 1) {
+        Animated.spring(this.scale, {
+          toValue: 1,
+          useNativeDriver: true,
+        }).start();
+        Animated.spring(this.translateX, {
+          toValue: 0,
+          useNativeDriver: true,
+        }).start();
+        Animated.spring(this.translateY, {
+          toValue: 0,
+          useNativeDriver: true,
+        }).start();
+
+        this.setState({panEnabled: false});
+      }
+    }
+  };
 
   replacePlaceholders = (template, replacements) => {
     return template.replace(/#(\w+)#/g, (match, p1) => {
@@ -659,24 +723,30 @@ class ChatScreen extends React.PureComponent {
   }
 
   backPressed = () => {
-    this.setState({
-      menu: false,
-      messageList: [],
-      lastKey: null,
-    });
-
-    if (
-      Global.saveData.prevpage == 'Chat' ||
-      Global.saveData.prevpage == 'ChatDetail' ||
-      Global.saveData.prevpage == 'IncomeDetail'
-    ) {
-      this.props.navigation.replace('Chat');
-    } else if (Global.saveData.prevpage == 'BrowseList') {
-      this.props.navigation.replace('BrowseList');
-    } else if (Global.saveData.prevpage == 'Browse') {
-      this.props.navigation.replace('BrowseList');
+    if (this.state.imagLarge) {
+      this.setState({
+        imagLarge: false,
+      });
     } else {
-      this.props.navigation.pop();
+      this.setState({
+        menu: false,
+        messageList: [],
+        lastKey: null,
+      });
+
+      if (
+        Global.saveData.prevpage == 'Chat' ||
+        Global.saveData.prevpage == 'ChatDetail' ||
+        Global.saveData.prevpage == 'IncomeDetail'
+      ) {
+        this.props.navigation.replace('Chat');
+      } else if (Global.saveData.prevpage == 'BrowseList') {
+        this.props.navigation.replace('BrowseList');
+      } else if (Global.saveData.prevpage == 'Browse') {
+        this.props.navigation.replace('BrowseList');
+      } else {
+        this.props.navigation.pop();
+      }
     }
     return true;
   };
@@ -1688,7 +1758,7 @@ class ChatScreen extends React.PureComponent {
             })
           }>
           <View style={[styles.screenOverlay]}>
-            <View style={{position: 'absolute', right: 30, top: 20}}>
+            <View style={{position: 'absolute', zIndex: 9, right: 40, top: 60}}>
               <TouchableOpacity
                 onPress={() => {
                   this.setState({
@@ -1698,21 +1768,56 @@ class ChatScreen extends React.PureComponent {
                 <Image style={{width: 24, height: 24}} source={icClose} />
               </TouchableOpacity>
             </View>
-            <View
-              style={[
-                styles.dialogPrompt,
-                {backgroundColor: '#000', marginTop: 50},
-              ]}>
-              <Image
-                style={{
-                  width: Dimensions.get('window').width - 20,
-                  height: Dimensions.get('window').height - 75,
-                  borderRadius: 10,
-                  resizeMode: 'cover',
-                }}
-                source={{uri: this.state.imagLargeUrl}}
-              />
-            </View>
+            <GestureHandlerRootView>
+              <View
+                style={[
+                  styles.dialogPrompt,
+                  {
+                    backgroundColor: 'black',
+                    opacity: 0.9,
+                    marginTop: 50,
+                  },
+                ]}>
+                <PanGestureHandler
+                  onGestureEvent={this.onPanEvent}
+                  ref={this.panRef}
+                  simultaneousHandlers={[this.pinchRef]}
+                  enabled={this.state.panEnabled}
+                  failOffsetX={[-1000, 1000]}
+                  shouldCancelWhenOutside>
+                  <Animated.View>
+                    <PinchGestureHandler
+                      ref={this.pinchRef}
+                      onGestureEvent={this.onPinchEvent}
+                      simultaneousHandlers={[this.panRef]}
+                      onHandlerStateChange={this.handlePinchStateChange}>
+                      <Animated.Image
+                        source={{uri: this.state.imagLargeUrl}}
+                        style={{
+                          width: Dimensions.get('window').width - 20,
+                          height: Dimensions.get('window').height - 75,
+                          transform: [
+                            {scale: this.scale},
+                            {translateX: this.translateX},
+                            {translateY: this.translateY},
+                          ],
+                        }}
+                        resizeMode="contain"
+                      />
+                    </PinchGestureHandler>
+                  </Animated.View>
+                </PanGestureHandler>
+                {/*<Image*/}
+                {/*  style={{*/}
+                {/*    width: Dimensions.get('window').width - 20,*/}
+                {/*    height: Dimensions.get('window').height - 75,*/}
+                {/*    borderRadius: 10,*/}
+                {/*    resizeMode: 'cover',*/}
+                {/*  }}*/}
+                {/*  source={{uri: this.state.imagLargeUrl}}*/}
+                {/*/>*/}
+              </View>
+            </GestureHandlerRootView>
           </View>
         </Dialog>
 
@@ -2023,7 +2128,10 @@ class ChatScreen extends React.PureComponent {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                <Text>No chat history available</Text>
+                <Text>
+                  Start a conversation and have fun! Please keep in mind that
+                  you are talking to an AI language model
+                </Text>
               </View>
             }
             ListHeaderComponent={() =>
@@ -2162,7 +2270,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   screenOverlay: {
-    height: Dimensions.get('window').height,
+    height: Dimensions.get('window').height + 50,
     backgroundColor: 'black',
     opacity: 0.9,
   },
