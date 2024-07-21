@@ -37,7 +37,6 @@ import yellow_star from '../../assets/images/yellow_star.png';
 import ban_black from '../../assets/images/ban_black.png';
 import reset from '../../assets/images/reset.png';
 import notification_black from '../../assets/images/notification_black.png';
-
 import {
   FIREBASE_DB,
   FIREBASE_DB_UNREAD,
@@ -50,12 +49,8 @@ import bg from '../../assets/images/bg.jpg';
 import auth from '@react-native-firebase/auth';
 import {replaceEmojis} from '../../util/upload';
 import * as Sentry from '@sentry/react-native';
-import {
-  GestureHandlerRootView,
-  PanGestureHandler,
-  PinchGestureHandler,
-  State,
-} from 'react-native-gesture-handler';
+import {GestureHandlerRootView, State} from 'react-native-gesture-handler';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
@@ -154,21 +149,20 @@ class ChatScreen extends React.PureComponent {
     this.scrollViewRef = React.createRef();
     this.lastMessageRef = React.createRef();
     this.imageZoomRef = React.createRef();
+
     this.scale = new Animated.Value(1);
+    this.lastScale = 1;
     this.translateX = new Animated.Value(0);
+    this.lastTranslateX = 0;
     this.translateY = new Animated.Value(0);
+    this.lastTranslateY = 0;
 
     this.pinchRef = React.createRef();
     this.panRef = React.createRef();
 
-    this.onPinchEvent = Animated.event(
-      [
-        {
-          nativeEvent: {scale: this.scale},
-        },
-      ],
-      {useNativeDriver: true},
-    );
+    this.onPinchEvent = Animated.event([{nativeEvent: {scale: this.scale}}], {
+      useNativeDriver: true,
+    });
 
     this.onPanEvent = Animated.event(
       [
@@ -184,31 +178,43 @@ class ChatScreen extends React.PureComponent {
   }
 
   handlePinchStateChange = ({nativeEvent}) => {
-    // enabled pan only after pinch-zoom
-    if (nativeEvent.state === State.ACTIVE) {
-      this.setState({panEnabled: true});
-    }
+    if (
+      nativeEvent.state === State.END ||
+      nativeEvent.state === State.CANCELLED
+    ) {
+      this.lastScale *= nativeEvent.scale;
+      this.scale.setValue(this.lastScale);
 
-    // when scale < 1, reset scale back to original (1)
-    const nScale = nativeEvent.scale;
-    if (nativeEvent.state === State.END) {
-      if (nScale < 1) {
-        Animated.spring(this.scale, {
-          toValue: 1,
-          useNativeDriver: true,
-        }).start();
-        Animated.spring(this.translateX, {
-          toValue: 0,
-          useNativeDriver: true,
-        }).start();
-        Animated.spring(this.translateY, {
-          toValue: 0,
-          useNativeDriver: true,
-        }).start();
-
+      if (this.lastScale > 1) {
+        this.setState({panEnabled: true});
+      } else {
         this.setState({panEnabled: false});
+        this.resetTransform();
       }
     }
+  };
+
+  handlePanStateChange = ({nativeEvent}) => {
+    if (
+      nativeEvent.state === State.END ||
+      nativeEvent.state === State.CANCELLED
+    ) {
+      this.lastTranslateX += nativeEvent.translationX;
+      this.lastTranslateY += nativeEvent.translationY;
+      this.translateX.setValue(this.lastTranslateX);
+      this.translateY.setValue(this.lastTranslateY);
+    }
+  };
+
+  resetTransform = () => {
+    Animated.parallel([
+      Animated.spring(this.scale, {toValue: 1, useNativeDriver: true}),
+      Animated.spring(this.translateX, {toValue: 0, useNativeDriver: true}),
+      Animated.spring(this.translateY, {toValue: 0, useNativeDriver: true}),
+    ]).start();
+    this.lastScale = 1;
+    this.lastTranslateX = 0;
+    this.lastTranslateY = 0;
   };
 
   replacePlaceholders = (template, replacements) => {
@@ -555,7 +561,6 @@ class ChatScreen extends React.PureComponent {
       .orderByChild('time')
       .startAt(lastMessageTime + 1)
       .on('child_added', value => {
-        console.log('Coming', isLoading);
         // if (!isLoading) {
         const newMessage = value.val();
         if (ai_friend === 1) {
@@ -926,11 +931,11 @@ class ChatScreen extends React.PureComponent {
         frequency_penalty: 0.5,
         presence_penalty: 0.6,
         n: 1,
-        stop: ['\n'],
       }),
     })
       .then(response => response.json())
       .then(responseJson => {
+        console.log('callbackChat', JSON.stringify(responseJson));
         const messageOfChat = responseJson.choices[0].message.content.trim();
         const aiCharacteristics = this.getCurrentAction('');
         const parts = aiCharacteristics.split(/[\.\?\!]\s/);
@@ -968,14 +973,13 @@ class ChatScreen extends React.PureComponent {
         frequency_penalty: 0,
         presence_penalty: 0,
         n: 1,
-        stop: ['\n'],
         response_format: {type: 'json_object'},
         tool_choice: 'auto',
       }),
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(JSON.stringify(responseJson));
+        console.log('callBackDeepInfraChat', JSON.stringify(responseJson));
         const messageOfChat = replaceEmojis(
           responseJson.choices[0].message.content.trim(),
         );
@@ -1776,37 +1780,59 @@ class ChatScreen extends React.PureComponent {
                     backgroundColor: 'black',
                     opacity: 0.9,
                     marginTop: 50,
+                    width: Dimensions.get('window').width - 20,
+                    height: Dimensions.get('window').height - 75,
                   },
                 ]}>
-                <PanGestureHandler
-                  onGestureEvent={this.onPanEvent}
-                  ref={this.panRef}
-                  simultaneousHandlers={[this.pinchRef]}
-                  enabled={this.state.panEnabled}
-                  failOffsetX={[-1000, 1000]}
-                  shouldCancelWhenOutside>
-                  <Animated.View>
-                    <PinchGestureHandler
-                      ref={this.pinchRef}
-                      onGestureEvent={this.onPinchEvent}
-                      simultaneousHandlers={[this.panRef]}
-                      onHandlerStateChange={this.handlePinchStateChange}>
-                      <Animated.Image
-                        source={{uri: this.state.imagLargeUrl}}
-                        style={{
-                          width: Dimensions.get('window').width - 20,
-                          height: Dimensions.get('window').height - 75,
-                          transform: [
-                            {scale: this.scale},
-                            {translateX: this.translateX},
-                            {translateY: this.translateY},
-                          ],
-                        }}
-                        resizeMode="contain"
-                      />
-                    </PinchGestureHandler>
-                  </Animated.View>
-                </PanGestureHandler>
+                {/*<PanGestureHandler*/}
+                {/*  onGestureEvent={this.onPanEvent}*/}
+                {/*  onHandlerStateChange={this.handlePanStateChange}*/}
+                {/*  ref={this.panRef}*/}
+                {/*  simultaneousHandlers={[this.pinchRef]}*/}
+                {/*  enabled={this.state.panEnabled}*/}
+                {/*  failOffsetX={[-1000, 1000]}*/}
+                {/*  shouldCancelWhenOutside>*/}
+                {/*  <Animated.View style={{flex: 1}}>*/}
+                {/*    <PinchGestureHandler*/}
+                {/*      ref={this.pinchRef}*/}
+                {/*      onGestureEvent={this.onPinchEvent}*/}
+                {/*      onHandlerStateChange={this.handlePinchStateChange}*/}
+                {/*      simultaneousHandlers={[this.panRef]}>*/}
+                {/*      <Animated.Image*/}
+                {/*        source={{uri: this.state.imagLargeUrl}}*/}
+                {/*        style={{*/}
+                {/*          width: Dimensions.get('window').width - 20,*/}
+                {/*          height: Dimensions.get('window').height - 75,*/}
+                {/*          transform: [*/}
+                {/*            {scale: this.scale},*/}
+                {/*            {translateX: this.translateX},*/}
+                {/*            {translateY: this.translateY},*/}
+                {/*          ],*/}
+                {/*        }}*/}
+                {/*        resizeMode="contain"*/}
+                {/*      />*/}
+                {/*    </PinchGestureHandler>*/}
+                {/*  </Animated.View>*/}
+                {/*</PanGestureHandler>*/}
+                <ImageViewer
+                  imageUrls={[
+                    {
+                      url: this.state.imagLargeUrl,
+                    },
+                  ]}
+                  width={Dimensions.get('window').width - 20}
+                  height={Dimensions.get('window').height - 75}
+                  renderIndicator={() => {}}
+                  renderImage={({source}) => (
+                    <Image
+                      source={source}
+                      style={{
+                        width: Dimensions.get('window').width - 20,
+                        height: Dimensions.get('window').height - 75,
+                      }}
+                    />
+                  )}
+                />
                 {/*<Image*/}
                 {/*  style={{*/}
                 {/*    width: Dimensions.get('window').width - 20,*/}
