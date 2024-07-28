@@ -224,18 +224,22 @@ class ChatScreen extends React.PureComponent {
   };
 
   aiPersonalityChanged = textMessage => {
-    this.state.tempMessageList.push({
+    const {img_message} = this.state.other;
+    const {ai_images_data, ai_image_sent, tempMessageList, ai_image_id} =
+      this.state;
+
+    tempMessageList.push({
       role: 'user',
       content: textMessage,
     });
 
     if (
-      this.state.ai_image_sent == this.state.other.img_message &&
-      this.state.ai_images_data.length > 0
+      ai_image_sent == img_message &&
+      ai_images_data != undefined &&
+      ai_images_data?.length > 0
     ) {
-      const filteredArray = this.state.ai_images_data.find(
-        item =>
-          this.state.ai_image_id === 0 || item.id > this.state.ai_image_id,
+      const filteredArray = ai_images_data.find(
+        item => ai_image_id === 0 || item.id > ai_image_id,
       );
 
       this.setState({
@@ -246,10 +250,10 @@ class ChatScreen extends React.PureComponent {
         },
       });
 
-      this.state.tempMessageList[0].content = this.getCurrentAction(
+      tempMessageList[0].content = this.getCurrentAction(
         filteredArray.user_current_action,
       );
-      this.state.tempMessageList[0].role = 'system';
+      tempMessageList[0].role = 'system';
     }
   };
 
@@ -914,7 +918,6 @@ class ChatScreen extends React.PureComponent {
 
   callbackChat = textMessage => {
     this.aiPersonalityChanged(textMessage);
-
     fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -935,7 +938,7 @@ class ChatScreen extends React.PureComponent {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log('callbackChat', JSON.stringify(responseJson));
+        // console.log('callbackChat', JSON.stringify(responseJson));
         const messageOfChat = responseJson.choices[0].message.content.trim();
         const aiCharacteristics = this.getCurrentAction('');
         const parts = aiCharacteristics.split(/[\.\?\!]\s/);
@@ -952,9 +955,10 @@ class ChatScreen extends React.PureComponent {
   };
 
   callBackDeepInfraChat = textMessage => {
+    // console.log('chat_type', 2, textMessage);
     this.aiPersonalityChanged(textMessage);
     this.state.tempMessageList[0].content.replace('ChatGPT', '');
-
+    // console.log('2');
     // Authorization: 'Bearer Ixg4lU3AELIubf2UutGa5ApFkf6WhrH8',
     // Bearer 6oBs98aRVw7IgL3NBNpQgm1twv7xvFPL
     fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
@@ -979,13 +983,13 @@ class ChatScreen extends React.PureComponent {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log('callBackDeepInfraChat', JSON.stringify(responseJson));
+        // console.log('callBackDeepInfraChat', JSON.stringify(responseJson));
         const messageOfChat = replaceEmojis(
           responseJson.choices[0].message.content.trim(),
         );
         const aiCharacteristics = this.getCurrentAction('');
         const parts = aiCharacteristics.split(/[\.\?\!]\s/);
-        console.log(parts.some(part => messageOfChat.includes(part.trim())));
+        // console.log(parts.some(part => messageOfChat.includes(part.trim())));
         if (!parts.some(part => messageOfChat.includes(part.trim()))) {
           this.processAIResponse(messageOfChat);
         } else {
@@ -1004,9 +1008,9 @@ class ChatScreen extends React.PureComponent {
     const {imageLink, content, id} = this.state.aiPersonalityImg;
     const u_id = Global.saveData.u_id;
 
-    console.log(
-      `matchId: ${matchId} \n ai_image_sent: ${ai_image_sent} \n img_message: ${img_message} \n imageLink: ${imageLink} \n content: ${content} \n id: ${id} \n message: ${responseData}`,
-    );
+    // console.log(
+    //   `matchId: ${matchId} \n ai_image_sent: ${ai_image_sent} \n img_message: ${img_message} \n imageLink: ${imageLink} \n content: ${content} \n id: ${id} \n message: ${responseData}`,
+    // );
 
     const details = {
       matchId: matchId,
@@ -1032,7 +1036,7 @@ class ChatScreen extends React.PureComponent {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
+        // console.log(responseJson);
         if (responseJson.data.account_status == 1) {
           if (ai_image_sent == img_message) {
             this.updateChatImageHistory(

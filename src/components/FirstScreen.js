@@ -88,7 +88,7 @@ class FirstScreen extends Component {
         this.props.updateFCMTocken(fcmToken);
         let deviceId = await this.getdeviceId();
         // let deviceId = '84e3753af8012d49';
-        // let deviceId = 'f85e6c5fdebc2621';
+        // let deviceId = 'ac630ee6f3187683';
         const details = {fcmId: fcmToken};
         Global.saveData.device_id = deviceId;
         let formBody = [];

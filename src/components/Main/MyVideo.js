@@ -51,6 +51,8 @@ class MyVideo extends Component {
   static navigationOptions = {
     header: null,
   };
+  // }
+  isAllowed = true;
 
   constructor(props) {
     super(props);
@@ -317,6 +319,27 @@ class MyVideo extends Component {
     }
   }
 
+  // async checkMultiPermissions() {
+  //   try {
+  //     let result = await PermissionsAndroid.requestMultiple([
+  //       PermissionsAndroid.PERMISSIONS.CAMERA,
+  //       PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+  //     ]).catch(e => {
+  //       console.log('request permission', e.message);
+  //     });
+  //     if (
+  //       result['android.permission.CAMERA'] &&
+  //       result['android.permission.RECORD_AUDIO'] === 'granted'
+  //     ) {
+  //       return true;
+  //     }
+  //     return false;
+  //   } catch (error) {
+  //     // Error retrieving data
+  //     console.log('check permissions = ', error.message);
+  //     return false;
+  //   }
+
   getVideoUrl = async (cdn_id, user_id, id, primary, content_type) => {
     const v_url = `${SERVER_URL}/api/storage/videoLink?fileId=` + cdn_id;
     await fetch(v_url, {
@@ -343,28 +366,6 @@ class MyVideo extends Component {
       });
   };
 
-  // async checkMultiPermissions() {
-  //   try {
-  //     let result = await PermissionsAndroid.requestMultiple([
-  //       PermissionsAndroid.PERMISSIONS.CAMERA,
-  //       PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-  //     ]).catch(e => {
-  //       console.log('request permission', e.message);
-  //     });
-  //     if (
-  //       result['android.permission.CAMERA'] &&
-  //       result['android.permission.RECORD_AUDIO'] === 'granted'
-  //     ) {
-  //       return true;
-  //     }
-  //     return false;
-  //   } catch (error) {
-  //     // Error retrieving data
-  //     console.log('check permissions = ', error.message);
-  //     return false;
-  //   }
-  // }
-
   async addImage() {
     // More info on all the options is below in the API Reference... just some common use cases shown here
     // const options = {
@@ -387,7 +388,7 @@ class MyVideo extends Component {
       },
     };
 
-    if (isAllowed) {
+    if (this.isAllowed) {
       ImagePicker.launchImageLibrary(options, imagePickerResponse => {
         if (imagePickerResponse.didCancel) {
           console.log('User cancelled image picker');
