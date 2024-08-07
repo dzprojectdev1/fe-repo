@@ -96,6 +96,8 @@ class IncomeDetail extends Component {
       chat_type,
       ai_personality,
       img_message,
+      creator_user_id,
+      is_public,
     } = this.props.route.params;
 
     BackHandler.addEventListener('hardwareBackPress', this.back);
@@ -138,6 +140,8 @@ class IncomeDetail extends Component {
         chat_type: chat_type,
         ai_personality: ai_personality,
         img_message: img_message,
+        creator_user_id: creator_user_id,
+        is_public: is_public,
       });
     }
   }
@@ -214,6 +218,9 @@ class IncomeDetail extends Component {
         chat_type: this.state.chat_type,
         ai_personality: this.state.ai_personality,
         img_message: this.state.img_message,
+        creator_user_id: this.state.creator_user_id,
+        description: this.state.description,
+        is_public: this.state.is_public,
       },
     };
     Global.saveData.prevpage = 'IncomeDetail';
@@ -370,6 +377,9 @@ class IncomeDetail extends Component {
               chat_type: newData.chat_type,
               ai_personality: newData.ai_personality,
               img_message: newData.img_message,
+              creator_user_id: newData.creator_user_id,
+              description: newData.description,
+              is_public: newData.is_public,
             });
 
             this.props.navigation.replace('Profile', {
@@ -396,6 +406,8 @@ class IncomeDetail extends Component {
                 chat_type: this.state.chat_type,
                 ai_personality: this.state.ai_personality,
                 img_message: this.state.img_message,
+                creator_user_id: this.state.creator_user_id,
+                is_public: this.state.is_public,
               },
             });
           }

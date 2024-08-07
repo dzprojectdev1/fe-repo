@@ -64,6 +64,8 @@ class Browse extends Component {
       ai_friend: data.detail.ai_friend,
       chat_type: data.detail.chat_type,
       ai_personality: data.detail.ai_personality,
+      creator_user_id: data.detail.creator_user_id,
+      is_public: data.detail.is_public,
       img_message: data.detail.img_message,
       fanUserVisible: false,
       noFanUserVisible: false,
@@ -462,6 +464,8 @@ class Browse extends Component {
         chat_type: this.state.chat_type,
         ai_personality: this.state.ai_personality,
         img_message: this.state.img_message,
+        creator_user_id: this.state.creator_user_id,
+        is_public: this.state.is_public,
         coin_per_message: this.state.otherData.detail.coin_per_message,
         matchId: 0,
       },
@@ -633,6 +637,9 @@ class Browse extends Component {
         chat_type: this.state.chat_type,
         ai_personality: this.state.ai_personality,
         img_message: this.state.img_message,
+        creator_user_id: this.state.creator_user_id,
+        description: this.state.otherData.detail.description,
+        is_public: this.state.is_public,
       },
     };
     Global.saveData.prevpage = 'BrowseList';

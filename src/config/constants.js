@@ -14,7 +14,7 @@ export const SESSION_TYPE = {
 };
 
 // export const SERVER_URL       = 'http://192.168.0.225:8080';
-export const PRODUCTION = true;
+export const PRODUCTION = false;
 
 export const SERVER_URL = PRODUCTION
   ? 'http://34.172.47.245:8080'
@@ -38,3 +38,45 @@ export function capitalizeWords(sentence) {
     return char.toUpperCase();
   });
 }
+
+export const illegalWords = [
+  'sex',
+  'pussy',
+  'fuck',
+  'fucking',
+  'lick',
+  'boob',
+  'boobs',
+  'tit',
+  'tits',
+  'nude',
+  'blowjob',
+  'cum',
+  'porn',
+  'naked',
+  'cock',
+  'dildo',
+  'horny',
+  'dick',
+  'sexting',
+  'sexchat',
+  'penis',
+  'pennis',
+  'vagina',
+  'call girl',
+  'sex chat',
+  'suck my',
+  'suck your',
+  'muslim',
+  'mohammed',
+  'mohmmad',
+  'allah',
+];
+
+export const findIllegalWords = text => {
+  const dataText = text.trim().toUpperCase();
+  return illegalWords.some(word => {
+    const upperWord = word.toUpperCase();
+    return dataText.includes(upperWord);
+  });
+};

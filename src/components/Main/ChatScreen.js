@@ -32,10 +32,12 @@ import Global from '../Global';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 import icClose from '../../assets/images/ic_close.png';
+import iconTooltip from '../../assets/images/iconTooltip.png';
 import shooting_star from '../../assets/images/shooting_star.png';
 import yellow_star from '../../assets/images/yellow_star.png';
 import ban_black from '../../assets/images/ban_black.png';
 import reset from '../../assets/images/reset.png';
+import editIcon from '../../assets/images/editIcon.png';
 import notification_black from '../../assets/images/notification_black.png';
 import {
   FIREBASE_DB,
@@ -51,6 +53,7 @@ import {replaceEmojis} from '../../util/upload';
 import * as Sentry from '@sentry/react-native';
 import {GestureHandlerRootView, State} from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
@@ -69,6 +72,7 @@ class ChatScreen extends React.PureComponent {
       ' #name#, who is #age# year old #gender# living in the #country#. #description#. #name# speaks #language#.';
 
     const {data} = props.route.params;
+
     const replacements = {
       name: Global.saveData.u_name,
       age: Global.saveData.u_age,
@@ -92,6 +96,9 @@ class ChatScreen extends React.PureComponent {
         chat_type: data.data.chat_type,
         ai_personality: data.data.ai_personality,
         img_message: data.data.img_message,
+        creator_user_id: data.data.creator_user_id,
+        is_public: data.data.is_public,
+        isFirstTime: data?.isFirstTime ? data?.isFirstTime : false,
       },
       opponentData: null,
       matchId: data.data.match_id,
@@ -123,6 +130,7 @@ class ChatScreen extends React.PureComponent {
       sendDiamondsCount: 0,
       fanMessage: '',
       is_fan: false,
+      isReset: false,
       dialogStyle: {},
       statusByMatchId: 0,
       msgCoinPerMessage: 0,
@@ -193,6 +201,50 @@ class ChatScreen extends React.PureComponent {
       }
     }
   };
+
+  async componentDidUpdate(prevProps) {
+    if (prevProps.route.params !== this.props.route.params) {
+      await this.initializeState();
+    }
+  }
+
+  async initializeState() {
+    const {data} = this.props.route.params || {};
+    if (data) {
+      const {
+        other_user_id,
+        name,
+        description,
+        coin_count,
+        fan_count,
+        ai_friend,
+        chat_type,
+        ai_personality,
+        img_message,
+        creator_user_id,
+        is_public,
+      } = data.data;
+      const {isFirstTime, imageUrl} = data;
+
+      this.setState({
+        other: {
+          userId: other_user_id,
+          name: name,
+          imgUrl: imageUrl,
+          description: description,
+          coin_count: coin_count,
+          fan_count: fan_count,
+          ai_friend: ai_friend,
+          chat_type: chat_type,
+          ai_personality: ai_personality,
+          img_message: img_message,
+          creator_user_id: creator_user_id,
+          is_public: is_public,
+          isFirstTime: isFirstTime ? isFirstTime : false,
+        },
+      });
+    }
+  }
 
   handlePanStateChange = ({nativeEvent}) => {
     if (
@@ -955,10 +1007,8 @@ class ChatScreen extends React.PureComponent {
   };
 
   callBackDeepInfraChat = textMessage => {
-    // console.log('chat_type', 2, textMessage);
     this.aiPersonalityChanged(textMessage);
     this.state.tempMessageList[0].content.replace('ChatGPT', '');
-    // console.log('2');
     // Authorization: 'Bearer Ixg4lU3AELIubf2UutGa5ApFkf6WhrH8',
     // Bearer 6oBs98aRVw7IgL3NBNpQgm1twv7xvFPL
     fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
@@ -983,17 +1033,19 @@ class ChatScreen extends React.PureComponent {
     })
       .then(response => response.json())
       .then(responseJson => {
-        // console.log('callBackDeepInfraChat', JSON.stringify(responseJson));
         const messageOfChat = replaceEmojis(
           responseJson.choices[0].message.content.trim(),
         );
         const aiCharacteristics = this.getCurrentAction('');
         const parts = aiCharacteristics.split(/[\.\?\!]\s/);
-        // console.log(parts.some(part => messageOfChat.includes(part.trim())));
-        if (!parts.some(part => messageOfChat.includes(part.trim()))) {
+        if (
+          !parts.some(part => messageOfChat.includes(part.trim())) ||
+          this.state.other.creator_user_id
+        ) {
           this.processAIResponse(messageOfChat);
         } else {
           this.resetError(false, textMessage);
+          this.setState({isReset: true});
         }
       })
       .catch(error => {
@@ -1036,7 +1088,6 @@ class ChatScreen extends React.PureComponent {
     })
       .then(response => response.json())
       .then(responseJson => {
-        // console.log(responseJson);
         if (responseJson.data.account_status == 1) {
           if (ai_image_sent == img_message) {
             this.updateChatImageHistory(
@@ -1205,11 +1256,49 @@ class ChatScreen extends React.PureComponent {
       });
   };
 
+  editAIuser = async () => {
+    const {
+      userId,
+      name,
+      ai_personality,
+      description,
+      creator_user_id,
+      is_public,
+    } = this.state.other;
+    await AsyncStorage.setItem('id', userId.toString());
+    await AsyncStorage.setItem('name', name);
+    await AsyncStorage.setItem('description', description);
+    await AsyncStorage.setItem('creator_user_id', creator_user_id.toString());
+    await AsyncStorage.setItem('is_public', is_public.toString());
+    await AsyncStorage.setItem(
+      'ai_personality',
+      ai_personality
+        .replace('#currentaction#', '')
+        .replace('#userdata#', '')
+        .trim(),
+    );
+
+    const data = {
+      data: {
+        id: userId,
+        username: name,
+        description: description,
+        ai_personality: ai_personality
+          .replace('#currentaction#', '')
+          .replace('#userdata#', '')
+          .trim(),
+        creator_user_id: creator_user_id,
+        is_public: is_public,
+      },
+    };
+    this.props.navigation.navigate('AIUserEdit', {data: data});
+  };
+
   resetError = (isToast = true, lastUserMessage = null) => {
     const serverTime = firebase.database.ServerValue.TIMESTAMP;
     const u_id = Global.saveData.u_id;
     const {userId, chat_type} = this.state.other;
-
+    console.log(lastUserMessage);
     database()
       .ref(FIREBASE_DB)
       .child(u_id.toString())
@@ -1220,8 +1309,6 @@ class ChatScreen extends React.PureComponent {
       .then(snapshot => {
         const lastMessageData = snapshot.val();
         const lastMessageKey = Object.keys(lastMessageData)[0];
-        const lastMessage = lastMessageData[lastMessageKey];
-
         database()
           .ref(FIREBASE_DB)
           .child(u_id.toString())
@@ -1241,7 +1328,7 @@ class ChatScreen extends React.PureComponent {
                 content: temp,
               },
             ];
-            if (!isToast && lastUserMessage != null) {
+            if (!isToast && lastUserMessage != null && !this.state.isReset) {
               if (chat_type == 1) {
                 this.callbackChat(lastUserMessage);
               } else if (chat_type == 2) {
@@ -1305,6 +1392,8 @@ class ChatScreen extends React.PureComponent {
               ai_friend: this.state.other.ai_friend,
               chat_type: this.state.other.chat_type,
               ai_personality: this.state.other.ai_personality,
+              creator_user_id: this.state.other.creator_user_id,
+              is_public: this.state.other.is_public,
             },
           });
         }
@@ -1419,6 +1508,14 @@ class ChatScreen extends React.PureComponent {
       </View>
     );
   });
+
+  firstTime = () => {
+    this.setState({
+      other: {
+        isFirstTime: false,
+      },
+    });
+  };
 
   gotoShop = () => {
     this.setState({
@@ -1759,6 +1856,57 @@ class ChatScreen extends React.PureComponent {
         </Dialog>
 
         <Dialog
+          visible={this.state.other.isFirstTime}
+          dialogAnimation={
+            new SlideAnimation({
+              slideFrom: 'top',
+            })
+          }>
+          <View
+            style={{
+              height: 330,
+              backgroundColor: '#fff',
+              padding: 20,
+              margin: 20,
+            }}>
+            <View>
+              <Text style={{fontSize: 16, color: '#000', marginBottom: 25}}>
+                To edit the AI character’s settings, click on the three-dot menu
+                button in top-right corner.
+              </Text>
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  style={{
+                    width: 200,
+                    height: 150,
+                    borderRadius: 10,
+                  }}
+                  source={iconTooltip}
+                />
+              </View>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  {
+                    justifyContent: 'flex-end',
+                    alignItems: 'flex-end',
+                    marginTop: 25,
+                  },
+                ]}
+                onPress={this.firstTime}>
+                <Text style={[styles.submitButtonText, {color: '#000'}]}>
+                  {'OK'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Dialog>
+
+        <Dialog
           visible={this.state.imagLarge}
           dialogAnimation={
             new SlideAnimation({
@@ -2082,6 +2230,15 @@ class ChatScreen extends React.PureComponent {
                   </MenuItem>
                 </>
               )}
+              {Global.saveData.u_id == this.state.other.creator_user_id && (
+                <MenuItem onPress={() => this.editAIuser()}>
+                  <Image
+                    source={editIcon}
+                    style={{width: 20, height: 20, marginRight: 30}}
+                  />
+                  <Text style={{color: '#000'}}>{'   Edit Ai Settings'}</Text>
+                </MenuItem>
+              )}
               <MenuItem onPress={this.resetError}>
                 <Image
                   source={reset}
@@ -2092,20 +2249,20 @@ class ChatScreen extends React.PureComponent {
             </Menu>
           </View>
         </ImageBackground>
-        {/*{this.state.other.ai_personality != '' &&*/}
-        {/*  this.state.other.ai_personality != null && (*/}
-        {/*    <View*/}
-        {/*      style={{*/}
-        {/*        justifyContent: 'center',*/}
-        {/*        borderColor: '#d9d9d9',*/}
-        {/*        borderWidth: 0.5,*/}
-        {/*        padding: 10,*/}
-        {/*      }}>*/}
-        {/*      <Text style={{color: '#000', fontSize: 8}}>*/}
-        {/*        {this.state.tempMessageList[0].content}*/}
-        {/*      </Text>*/}
-        {/*    </View>*/}
-        {/*  )}*/}
+        {this.state.other.ai_personality != '' &&
+          this.state.other.ai_personality != null && (
+            <View
+              style={{
+                justifyContent: 'center',
+                borderColor: '#d9d9d9',
+                borderWidth: 0.5,
+                padding: 10,
+              }}>
+              <Text style={{color: '#000', fontSize: 8}}>
+                {this.state.tempMessageList[0].content}
+              </Text>
+            </View>
+          )}
         {/*<ScrollView*/}
         {/*  style={{flex: 1, marginHorizontal: 10}}*/}
         {/*  ref={ref => {*/}

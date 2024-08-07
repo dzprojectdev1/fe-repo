@@ -1,27 +1,32 @@
 import React, {Component} from 'react';
 import {Button} from 'native-base';
 import {
-  BackHandler,
-  Image,
-  ScrollView,
-  Platform,
-  Dimensions,
-  TextInput,
-  View,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  StatusBar,
   Alert,
+  BackHandler,
+  Dimensions,
+  FlatList,
+  Image,
   ImageBackground,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
   Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 // import { Badge } from 'react-native-elements';
 // import FastImage from 'react-native-fast-image';
 // import shorthash from 'shorthash';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {SERVER_URL, GCS_BUCKET, FIREBASE_DB_UNREAD, FIREBASE_DB} from '../../config/constants';
+import {
+  FIREBASE_DB,
+  FIREBASE_DB_UNREAD,
+  GCS_BUCKET,
+  SERVER_URL,
+} from '../../config/constants';
 import {changeReadFlag} from '../../../Action';
 // import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
@@ -31,18 +36,20 @@ import b_match from '../../assets/images/match.png';
 import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
-import heart from '../../assets/images/heart.png';
 import search_photo from '../../assets/images/search_photo.png';
 import bg from '../../assets/images/bg.jpg';
 import check from '../../assets/images/check_unread.png';
 import yellow_star from '../../assets/images/yellow_star.png';
 import Global from '../Global';
 import database from '@react-native-firebase/database';
-import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 import * as Sentry from '@sentry/react-native';
 
 class Chat extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -55,10 +62,6 @@ class Chat extends Component {
       visible: false,
     };
   }
-
-  static navigationOptions = {
-    header: null,
-  };
 
   async componentDidMount() {
     Global.saveData.nowPage = 'Chat';
@@ -99,7 +102,6 @@ class Chat extends Component {
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
   }
 
@@ -128,7 +130,6 @@ class Chat extends Component {
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
   }
 
@@ -310,12 +311,10 @@ class Chat extends Component {
       .then(response => response.json())
       .then(responseJson => {
         if (!responseJson.error) {
-          return;
         }
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
   };
 
@@ -764,6 +763,7 @@ class Chat extends Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

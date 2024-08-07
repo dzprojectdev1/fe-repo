@@ -2,17 +2,17 @@ import React, {Component} from 'react';
 import {Button} from 'native-base';
 import {
   BackHandler,
-  Image,
-  ScrollView,
-  Platform,
   Dimensions,
-  View,
-  StyleSheet,
   FlatList,
-  TouchableOpacity,
-  StatusBar,
+  Image,
   ImageBackground,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
   Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import {connect} from 'react-redux';
 import hiddenMan from '../../assets/images/hidden_man.png';
@@ -21,16 +21,19 @@ import b_incoming from '../../assets/images/incoming.png';
 import b_match from '../../assets/images/match.png';
 import b_chat from '../../assets/images/chat.png';
 import b_myvideo from '../../assets/images/myvideo.png';
-import b_name from '../../assets/images/name.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
 import search_photo from '../../assets/images/search_photo.png';
 import bg from '../../assets/images/bg.jpg';
 import yellow_star from '../../assets/images/yellow_star.png';
 import Global from '../Global';
 import * as Sentry from '@sentry/react-native';
-import {SERVER_URL, GCS_BUCKET} from '../../config/constants';
+import {GCS_BUCKET, SERVER_URL} from '../../config/constants';
 
 class Match extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -41,10 +44,6 @@ class Match extends Component {
       visible: false,
     };
   }
-
-  static navigationOptions = {
-    header: null,
-  };
 
   componentDidMount() {
     Global.saveData.nowPage = 'Match';
@@ -69,7 +68,6 @@ class Match extends Component {
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
 
     this.getHeartUsers();
@@ -98,7 +96,6 @@ class Match extends Component {
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
   };
 
@@ -152,7 +149,6 @@ class Match extends Component {
           .catch(error => {
             Sentry.captureException(new Error(error));
             alert('There is error, please try again!');
-            return;
           });
       } else {
         list_items.push({
@@ -236,13 +232,14 @@ class Match extends Component {
               chat_type: newData.chat_type,
               ai_personality: newData.ai_personality,
               img_message: newData.img_message,
+              creator_user_id: newData.creator_user_id,
+              is_public: newData.is_public,
             });
           }
         })
         .catch(error => {
           Sentry.captureException(new Error(error));
           alert(JSON.stringify(error));
-          return;
         });
     }
   }
@@ -276,12 +273,10 @@ class Match extends Component {
       .then(response => response.json())
       .then(responseJson => {
         if (!responseJson.error) {
-          return;
         }
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
   };
 
@@ -676,6 +671,7 @@ class Match extends Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 // const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

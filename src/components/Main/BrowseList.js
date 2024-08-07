@@ -2,24 +2,23 @@ import React, {Component} from 'react';
 import {Button} from 'native-base';
 import {
   ActivityIndicator,
-  BackHandler,
-  Image,
-  ScrollView,
-  Platform,
-  Dimensions,
-  // TextInput,
-  Text,
-  View,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  RefreshControl,
-  StatusBar,
   Alert,
+  BackHandler,
+  Dimensions,
+  FlatList,
+  Image,
   ImageBackground,
+  Platform,
+  RefreshControl,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {SERVER_URL, GCS_BUCKET} from '../../config/constants';
+import {GCS_BUCKET, SERVER_URL} from '../../config/constants';
 // import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import b_browse from '../../assets/images/browse.png';
@@ -34,8 +33,13 @@ import yellow_star from '../../assets/images/yellow_star.png';
 import Global from '../Global';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class BrowserList extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -50,10 +54,6 @@ class BrowserList extends Component {
       visible: false,
     };
   }
-
-  static navigationOptions = {
-    header: null,
-  };
 
   componentDidMount() {
     Global.saveData.nowPage = 'BrowseList';
@@ -81,7 +81,6 @@ class BrowserList extends Component {
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
   }
 
@@ -176,7 +175,6 @@ class BrowserList extends Component {
           });
           Sentry.captureException(new Error(error));
           console.log(error);
-          return;
         });
     });
   };
@@ -253,7 +251,6 @@ class BrowserList extends Component {
             error: 'Something just went wrong.',
           });
           Sentry.captureException(new Error(error));
-          return;
         });
     });
   }
@@ -291,7 +288,6 @@ class BrowserList extends Component {
             .catch(error => {
               Sentry.captureException(new Error(error));
               alert('There is error, please try again!');
-              return;
             });
         } else {
           listData.push({
@@ -391,12 +387,9 @@ class BrowserList extends Component {
       .then(response => response.json())
       .then(responseJson => {
         if (!responseJson.error) {
-          return;
         }
       })
-      .catch(error => {
-        return;
-      });
+      .catch(error => {});
   };
 
   gotoMyFans = () => {
@@ -707,6 +700,22 @@ class BrowserList extends Component {
           <View style={{height: 50}} />
         </ScrollView>
 
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            right: 15,
+            bottom: Platform.select({android: 90, ios: 105}),
+            width: 70,
+            height: 70,
+            backgroundColor: '#f00',
+            borderRadius: 35,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onPress={() => this.props.navigation.navigate('AIUser')}>
+          <Icon name="add" size={40} style={{color: '#fff'}} />
+        </TouchableOpacity>
+
         {/* <View style={styles.inputwrapper}> */}
         {/* <TextInput
                         style={{ marginLeft: 10, fontSize: 16, width: DEVICE_WIDTH - 60, color: '#000', overflow: 'hidden'}}
@@ -882,6 +891,7 @@ class BrowserList extends Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

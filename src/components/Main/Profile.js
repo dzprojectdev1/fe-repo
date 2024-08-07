@@ -1,38 +1,29 @@
 import React, {Component} from 'react';
-import {ArrowBackIcon, Icon} from 'native-base';
 import {
   ActivityIndicator,
-  ImageBackground,
-  ScrollView,
-  Platform,
-  Dimensions,
-  View,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  StatusBar,
-  Image,
-  Modal,
   Alert,
-  TextInput,
+  Dimensions,
+  FlatList,
+  Image,
+  ImageBackground,
   Keyboard,
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
   Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import Dialog, {
-  DialogFooter,
-  DialogButton,
-  DialogContent,
-  SlideAnimation,
-} from 'react-native-popup-dialog';
-import FlashMessage, {showMessage} from 'react-native-flash-message';
+import Dialog, {SlideAnimation} from 'react-native-popup-dialog';
+import FlashMessage from 'react-native-flash-message';
 import search_photo from '../../assets/images/search_photo.png';
 import bg from '../../assets/images/bg.jpg';
 import ban_user from '../../assets/images/ban_user.png';
 import ban_user_red from '../../assets/images/ban_user_red.png';
 import diamond from '../../assets/images/red_diamond_trans.png';
-import yellow_star from '../../assets/images/yellow_star.png';
 import yellow_star_black from '../../assets/images/yellow_star_black.png';
-import line_star from '../../assets/images/line_star.png';
 import shooting_star from '../../assets/images/shooting_star.png';
 import crown from '../../assets/images/crown.png';
 import hiddenMan from '../../assets/images/hidden_man.png';
@@ -42,10 +33,14 @@ import expand from '../../assets/images/expand.png';
 import video_player from '../../assets/images/video_player.png';
 import Global from '../Global';
 import * as Sentry from '@sentry/react-native';
-import {SERVER_URL, GCS_BUCKET, capitalizeWords} from '../../config/constants';
+import {capitalizeWords, GCS_BUCKET, SERVER_URL} from '../../config/constants';
 import {TopBar} from '../../commonUI/components/topbar';
 
 class Profile extends Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     super(props);
     const {data} = props.route.params;
@@ -79,12 +74,12 @@ class Profile extends Component {
       ai_friend: data.ai_friend,
       chat_type: data.chat_type,
       ai_personality: data.ai_personality,
+      creator_user_id: data.creator_user_id,
+      is_public: data.is_public,
+      description: data.description,
     };
   }
 
-  static navigationOptions = {
-    header: null,
-  };
   componentDidMount() {
     Global.saveData.nowPage = 'Profile';
     const otherid = this.state.otherData.id;
@@ -153,7 +148,6 @@ class Profile extends Component {
       .catch(error => {
         Sentry.captureException(new Error(error));
         // alert(JSON.stringify(error));
-        return;
       });
   };
 
@@ -184,7 +178,6 @@ class Profile extends Component {
           noData: false,
           isLoading: false,
         });
-        return;
       });
   }
 
@@ -227,7 +220,6 @@ class Profile extends Component {
           .catch(error => {
             Sentry.captureException(new Error(error));
             alert('There is error, please try again!');
-            return;
           });
       } else {
         list_items.push({
@@ -275,6 +267,8 @@ class Profile extends Component {
             ai_friend: this.state.ai_friend,
             chat_type: this.state.chat_type,
             ai_personality: this.state.ai_personality,
+            creator_user_id: this.state.creator_user_id,
+            is_public: this.state.is_public,
           },
         },
       });
@@ -381,7 +375,6 @@ class Profile extends Component {
         this.setState({
           flash_ban: false,
         });
-        return;
       });
   };
 
@@ -422,7 +415,6 @@ class Profile extends Component {
       })
       .catch(error => {
         Sentry.captureException(new Error(error));
-        return;
       });
   };
 
@@ -562,7 +554,6 @@ class Profile extends Component {
               isLoading: false,
               disabled: false,
             });
-            return;
           });
       }
     }
@@ -612,7 +603,6 @@ class Profile extends Component {
                 .catch(error => {
                   Sentry.captureException(new Error(error));
                   alert('There is error, please try again!');
-                  return;
                 });
             } else {
               this.props.navigation.replace('Browse', {
@@ -632,7 +622,6 @@ class Profile extends Component {
         .catch(error => {
           Sentry.captureException(new Error(error));
           console.log('error_go_to_browseDetail ', error);
-          return;
         });
     }
   };
@@ -1122,182 +1111,185 @@ class Profile extends Component {
             </TouchableOpacity>
           )}
         </View>
-        {Global.saveData.is_admin === 1 &&
-            <TouchableOpacity
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  backgroundColor: '#FFF',
-                  width: DEVICE_WIDTH,
-                  height: 40,
-                  marginTop: 10,
-                  paddingTop: 10,
-                }}
-                onPress={() => this.showFanUsersList()}>
-              <Image
-                  source={yellow_star_black}
-                  style={{width: 20, height: 20, marginRight: 15}}
-              />
-              <Text
-                  style={{
-                    fontSize: 16,
-                    marginRight: 20,
-                    color: '#7d7d7d',
-                  }}>{`Biggest Fans for ${this.state.otherData.name} (${this.state.fanUsersCount})`}</Text>
-              <Image
-                  source={this.state.showFanUsers ? collapse : expand}
-                  style={{width: 15, height: 15, marginTop: 3}}
-              />
-            </TouchableOpacity>
-        }
+        {Global.saveData.is_admin === 1 && (
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              backgroundColor: '#FFF',
+              width: DEVICE_WIDTH,
+              height: 40,
+              marginTop: 10,
+              paddingTop: 10,
+            }}
+            onPress={() => this.showFanUsersList()}>
+            <Image
+              source={yellow_star_black}
+              style={{width: 20, height: 20, marginRight: 15}}
+            />
+            <Text
+              style={{
+                fontSize: 16,
+                marginRight: 20,
+                color: '#7d7d7d',
+              }}>{`Biggest Fans for ${this.state.otherData.name} (${this.state.fanUsersCount})`}</Text>
+            <Image
+              source={this.state.showFanUsers ? collapse : expand}
+              style={{width: 15, height: 15, marginTop: 3}}
+            />
+          </TouchableOpacity>
+        )}
 
         <ScrollView
           style={{backgroundColor: '#FFF', marginTop: 1}}
           removeClippedSubviews={true}>
-          {Global.saveData.is_admin === 1 && this.state.fanUsersCount != 0 && this.state.showFanUsers && (
-            <FlatList
-              numColumns={1}
-              style={{flex: 0, marginTop: 10}}
-              removeClippedSubviews={true}
-              data={this.state.fanUsers}
-              initialNumToRender={this.state.fanUsersCount}
-              renderItem={({item: rowData, index}) => {
-                return (
-                  <TouchableOpacity
-                    style={styles.listItem}
-                    onPress={() => this.gotoBrowsDetail(rowData)}>
-                    <View
-                      style={{
-                        width: 50,
-                        height: 50,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        paddingTop: index == 0 ? 25 : 10,
-                      }}>
-                      <Text style={{fontSize: 16, color: '#000'}}>
-                        {index + 1 + '.'}
-                      </Text>
-                    </View>
-                    <View style={styles.listItemUser}>
+          {Global.saveData.is_admin === 1 &&
+            this.state.fanUsersCount != 0 &&
+            this.state.showFanUsers && (
+              <FlatList
+                numColumns={1}
+                style={{flex: 0, marginTop: 10}}
+                removeClippedSubviews={true}
+                data={this.state.fanUsers}
+                initialNumToRender={this.state.fanUsersCount}
+                renderItem={({item: rowData, index}) => {
+                  return (
+                    <TouchableOpacity
+                      style={styles.listItem}
+                      onPress={() => this.gotoBrowsDetail(rowData)}>
                       <View
                         style={{
+                          width: 50,
+                          height: 50,
                           alignItems: 'center',
                           justifyContent: 'center',
-                          flexDirection: 'row',
+                          paddingTop: index == 0 ? 25 : 10,
                         }}>
+                        <Text style={{fontSize: 16, color: '#000'}}>
+                          {index + 1 + '.'}
+                        </Text>
+                      </View>
+                      <View style={styles.listItemUser}>
                         <View
                           style={{
-                            width: 30,
-                            height: 50,
                             alignItems: 'center',
                             justifyContent: 'center',
+                            flexDirection: 'row',
                           }}>
-                          {index == 0 && (
-                            <Image
-                              source={crown}
-                              style={{
-                                width: 30,
-                                height: 20,
-                                marginBottom: -5,
-                              }}
-                            />
-                          )}
-                          <Image
-                            source={
-                              rowData.imgUrl
-                                ? {
-                                    uri:
-                                      GCS_BUCKET +
-                                      rowData.imgUrl +
-                                      '-screenshot',
-                                  }
-                                : hiddenMan
-                            }
-                            resizeMode="cover"
-                            style={{
-                              width: 50,
-                              height: 50,
-                              borderRadius: 25,
-                              backgroundColor: '#5A5A5A',
-                            }}
-                          />
-                        </View>
-                        <View style={styles.listItemName}>
                           <View
                             style={{
-                              width: DEVICE_WIDTH - 150,
-                              height: 40,
-                              marginLeft: 5,
-                              justifyContent: 'center',
+                              width: 30,
+                              height: 50,
                               alignItems: 'center',
+                              justifyContent: 'center',
                             }}>
+                            {index == 0 && (
+                              <Image
+                                source={crown}
+                                style={{
+                                  width: 30,
+                                  height: 20,
+                                  marginBottom: -5,
+                                }}
+                              />
+                            )}
+                            <Image
+                              source={
+                                rowData.imgUrl
+                                  ? {
+                                      uri:
+                                        GCS_BUCKET +
+                                        rowData.imgUrl +
+                                        '-screenshot',
+                                    }
+                                  : hiddenMan
+                              }
+                              resizeMode="cover"
+                              style={{
+                                width: 50,
+                                height: 50,
+                                borderRadius: 25,
+                                backgroundColor: '#5A5A5A',
+                              }}
+                            />
+                          </View>
+                          <View style={styles.listItemName}>
                             <View
                               style={{
                                 width: DEVICE_WIDTH - 150,
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                display: 'flex',
+                                height: 40,
+                                marginLeft: 5,
+                                justifyContent: 'center',
+                                alignItems: 'center',
                               }}>
-                              <View style={{paddingTop: index == 0 ? 25 : 15}}>
-                                <Text
-                                  numberOfLines={1}
-                                  style={{color: '#808080'}}>
-                                  {rowData.name}
-                                </Text>
-                              </View>
                               <View
                                 style={{
+                                  width: DEVICE_WIDTH - 150,
                                   flexDirection: 'row',
-                                  paddingTop: index == 0 ? 25 : 15,
+                                  justifyContent: 'space-between',
+                                  display: 'flex',
                                 }}>
-                                <Image
-                                  source={diamond}
+                                <View
+                                  style={{paddingTop: index == 0 ? 25 : 15}}>
+                                  <Text
+                                    numberOfLines={1}
+                                    style={{color: '#808080'}}>
+                                    {rowData.name}
+                                  </Text>
+                                </View>
+                                <View
                                   style={{
-                                    width: 15,
-                                    height: 15,
-                                    marginTop: 5,
-                                    marginLeft: 5,
-                                    marginRight: 5,
-                                  }}
-                                />
-                                <Text
-                                  numberOfLines={1}
-                                  style={{
-                                    color: '#808080',
-                                    marginTop: 3,
-                                    fontSize: 12,
+                                    flexDirection: 'row',
+                                    paddingTop: index == 0 ? 25 : 15,
                                   }}>
-                                  {rowData.diamonds}
-                                </Text>
+                                  <Image
+                                    source={diamond}
+                                    style={{
+                                      width: 15,
+                                      height: 15,
+                                      marginTop: 5,
+                                      marginLeft: 5,
+                                      marginRight: 5,
+                                    }}
+                                  />
+                                  <Text
+                                    numberOfLines={1}
+                                    style={{
+                                      color: '#808080',
+                                      marginTop: 3,
+                                      fontSize: 12,
+                                    }}>
+                                    {rowData.diamonds}
+                                  </Text>
+                                </View>
                               </View>
                             </View>
                           </View>
                         </View>
+                        {rowData.fanMessage != '' && (
+                          <View style={styles.fanMessage}>
+                            <Text
+                              style={{
+                                color: '#808080',
+                                marginTop: 3,
+                                fontSize: 16,
+                                flexWrap: 'wrap',
+                                width: DEVICE_WIDTH - 100,
+                              }}>
+                              {rowData.name +
+                                ' says "' +
+                                rowData.fanMessage +
+                                '"'}
+                            </Text>
+                          </View>
+                        )}
                       </View>
-                      {rowData.fanMessage != '' && (
-                        <View style={styles.fanMessage}>
-                          <Text
-                            style={{
-                              color: '#808080',
-                              marginTop: 3,
-                              fontSize: 16,
-                              flexWrap: 'wrap',
-                              width: DEVICE_WIDTH - 100,
-                            }}>
-                            {rowData.name +
-                              ' says "' +
-                              rowData.fanMessage +
-                              '"'}
-                          </Text>
-                        </View>
-                      )}
-                    </View>
-                  </TouchableOpacity>
-                );
-              }}
-              keyExtractor={(item, index) => index}
-            />
-          )}
+                    </TouchableOpacity>
+                  );
+                }}
+                keyExtractor={(item, index) => index}
+              />
+            )}
           {this.state.mutualUsersCount != 0 && this.state.showMutualUsers && (
             <FlatList
               numColumns={1}
@@ -1582,6 +1574,7 @@ class Profile extends Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({
