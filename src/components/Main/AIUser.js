@@ -313,12 +313,23 @@ class AIUser extends Component {
           'Bearer sk-my-service-account-OcVwpHabIqoDlDYTtTLuT3BlbkFJOsnTUJjvEiuTd2sUQyDK',
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo', // Updated to a supported model
+        model: 'gpt-4', // Updated to a supported model
         messages: [
-          {role: 'system', content: 'You are a helpful assistant.'},
-          {role: 'user', content: prompt},
+          {
+            role: "system",
+            content: "You are an evaluator that checks text against a set of specific conditions. Your task is to return 'true' or 'false' based on the evaluation criteria provided, and list any matching words."
+          },
+          {
+            role: "user",
+            content: "Evaluate the following text based on these criteria:\n- Does it mention any well-known brand names?\n- Does it mention any country's president's name or political person?\n- Does it indicate that the user is 18 years or older?\n- Does it contain any words related to community?\n- Is the text inappropriate in any way?\n- Does it mention anything illegal?\n- Does it contain sexual content?\n- Does it involve minors?\n- Does it contain any offensive words?\n- Does it discriminate against any group?\n- Does it contain a specific brand name?\n- Does it mention a person who is currently alive?\n- Does it mention a person who died less than 70 years ago?\n- Does it violate copyright laws?\n- Does it mention Islam, Muslims, Mohammed, or Allah?\n\nPlease provide a 'true' if the text matches any of these conditions. Also, return a list of matching words in array form. If none of the conditions are met, return 'false'."
+          },
+          {
+            role: "user",
+            content: `${this.state.username}, ${this.state.ai_personality}, ${this.state.description}`
+          }
         ],
-        max_tokens: 10,
+        max_tokens: 100,
+        temperature: 0
       }),
     })
       .then(response => response.json())
@@ -345,33 +356,30 @@ class AIUser extends Component {
       });
   }
 
-  parseResponse = response => {
+  parseResponse = (response) => {
     try {
       const content = response.message.content.trim();
-
-      // Regular expressions to match "True" or "False" status and words in parentheses
-      const statusMatches = content.match(/(\d+\.\s)(True|False)/gi);
-      const wordsMatches = content.match(/\(([^)]+)\)/g);
-
-      // Extracting the status (True or False)
-      const status = statusMatches
-        ? statusMatches.some(match => match.includes('True'))
-        : false;
-
-      // Extracting words from parentheses, if any
-      const words = wordsMatches
-        ? wordsMatches.map(word => word.replace(/[()]/g, '').trim())
-        : [];
-
+  
+      // Extract status ("True" or "False")
+      const status = content.includes('True');
+  
+      // Extract words from the list in square brackets
+      const wordsMatch = content.match(/\[(.*?)\]/);
+      const words = wordsMatch ? wordsMatch[1].split(',').map(word => word.trim().replace(/['"]/g, '')) : [];
+  
       return {
         status,
         words,
       };
     } catch (error) {
       console.error('Error parsing response:', error);
-      return null;
+      return {
+        status: false, // Safe default
+        words: [],
+      };
     }
   };
+  
 
   // parseResponse = response => {
   //   try {
