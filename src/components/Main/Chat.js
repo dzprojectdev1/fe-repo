@@ -204,6 +204,7 @@ class Chat extends Component {
         {cancelable: false},
       );
     } else {
+      data.isFirstTime = false;
       //  console.log("ChatDetail", data);
       this.props.navigation.replace('ChatDetail', {data: data});
     }

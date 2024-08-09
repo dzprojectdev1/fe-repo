@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import {Text} from 'native-base';
 import {
   BackHandler,
-  Image,
   Dimensions,
-  View,
+  Image,
+  ImageBackground,
   StyleSheet,
   TouchableOpacity,
-  ImageBackground,
+  View,
 } from 'react-native';
 import hiddenMan from '../../assets/images/hidden_man.png';
 import bg from '../../assets/images/back_1.jpeg';
@@ -57,6 +57,7 @@ class CallIncome extends Component {
           description: this.state.other.description,
           match_id: this.state.other.matchId,
         },
+        isFirstTime: false,
         imageUrl: this.state.other.imgUrl,
       },
     });
@@ -114,6 +115,7 @@ class CallIncome extends Component {
     );
   }
 }
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const styles = StyleSheet.create({

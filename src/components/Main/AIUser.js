@@ -116,8 +116,10 @@ class AIUser extends Component {
         is_public: this.state.otherData.is_public,
       },
     };
-    Global.saveData.prevpage = 'BrowseList';
-    this.props.navigation.replace('ChatDetail', {data: otherData});
+    setTimeout(() => {
+      Global.saveData.prevpage = 'BrowseList';
+      this.props.navigation.replace('ChatDetail', {data: otherData});
+    }, 100);
   }
 
   gotoInstantChat = () => {
@@ -193,7 +195,8 @@ class AIUser extends Component {
       is_public: this.state.is_public,
       description: this.state.description.trim(),
       ai_personality:
-        this.state.ai_personality.trim() + ' #currentaction#. #userdata#',
+        this.state.ai_personality.trim() +
+        '. #currentaction#. You are talking to #userdata#. all conversations are appropriate and legal, does not involve minor and is not sexual.',
       creator_user_id: this.state.creator_user_id,
       coin_for_ai_user_create: this.state.coin_for_ai_user_create,
       coin_per_message: this.state.coin_per_message,
@@ -277,6 +280,31 @@ class AIUser extends Component {
   }
 
   checkIsOffenciveWords() {
+    const prompt = `
+        Text: "${this.state.username}, ${this.state.ai_personality}, ${this.state.description}"
+        
+        Please evaluate the text based on the following criteria:
+        1. Does it mention any well-known brand names?
+        2. Does it mention any country's president's name?
+        3. Does it indicate that the user is 18 years or older?
+        4. Does it contain any words related to community?
+        5. Is the text inappropriate in any way?
+        6. Does it mention anything illegal?
+        7. Does it contain sexual content?
+        8. Does it involve minors?
+        9. Does it contain any offensive words?
+        10. Does it discriminate against any group?
+        11. Does it contain a specific brand name?
+        12. Does it mention a person who is currently alive?
+        13. Does it mention a person who died less than 70 years ago?
+        14. Does it violate copyright laws?
+        15. Does it mention Islam, Muslims, Mohammed, or Allah?
+        
+        Return 'true' if any of these conditions are met; otherwise, return 'false'.
+      `;
+
+    console.log(prompt);
+
     fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -285,24 +313,20 @@ class AIUser extends Component {
           'Bearer sk-my-service-account-OcVwpHabIqoDlDYTtTLuT3BlbkFJOsnTUJjvEiuTd2sUQyDK',
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-3.5-turbo', // Updated to a supported model
         messages: [
-          {
-            role: 'user',
-            content: `Is this text appropriate, legal, is not sexual, does not involve minors, is not offensive, does not discriminate, does not contain a specific brand, does not contain a specific brand name, does not violate copyright, does not mention muslim, Muslims, Islam, Mohammed or Allah?\n\nPlease provide a response in true if falls in any conditions and provide a list of words which fall in the condition as array else false.\n\n${this.state.username}\n\n${this.state.ai_personality}\n\n${this.state.description}`,
-          },
+          {role: 'system', content: 'You are a helpful assistant.'},
+          {role: 'user', content: prompt},
         ],
-        max_tokens: 512,
-        temperature: 0.7,
-        top_p: 0.9,
-        frequency_penalty: 0.5,
-        presence_penalty: 0.6,
-        n: 1,
+        max_tokens: 10,
       }),
     })
       .then(response => response.json())
       .then(responseJson => {
+        console.log(JSON.stringify(responseJson));
+
         const {status, words} = this.parseResponse(responseJson.choices[0]);
+        console.log(status, words);
         if (!status) {
           this.setState({
             isLoading: true,
@@ -323,17 +347,24 @@ class AIUser extends Component {
 
   parseResponse = response => {
     try {
-      const content = response.message.content;
-      const statusMatch = content.match(/Status: (\w+)/);
-      const wordsMatch = content.match(/Words: ([\w, ]+)/);
+      const content = response.message.content.trim();
 
-      const status = statusMatch ? statusMatch[1] : null;
-      const words = wordsMatch
-        ? wordsMatch[1].split(',').map(word => word.trim())
+      // Regular expressions to match "True" or "False" status and words in parentheses
+      const statusMatches = content.match(/(\d+\.\s)(True|False)/gi);
+      const wordsMatches = content.match(/\(([^)]+)\)/g);
+
+      // Extracting the status (True or False)
+      const status = statusMatches
+        ? statusMatches.some(match => match.includes('True'))
+        : false;
+
+      // Extracting words from parentheses, if any
+      const words = wordsMatches
+        ? wordsMatches.map(word => word.replace(/[()]/g, '').trim())
         : [];
 
       return {
-        status: status === 'true',
+        status,
         words,
       };
     } catch (error) {
@@ -341,6 +372,27 @@ class AIUser extends Component {
       return null;
     }
   };
+
+  // parseResponse = response => {
+  //   try {
+  //     const content = response.message.content;
+  //     const statusMatch = content.match(/Status: (\w+)/);
+  //     const wordsMatch = content.match(/Words: ([\w, ]+)/);
+  //
+  //     const status = statusMatch ? statusMatch[1] : null;
+  //     const words = wordsMatch
+  //       ? wordsMatch[1].split(',').map(word => word.trim())
+  //       : [];
+  //
+  //     return {
+  //       status: status === 'true',
+  //       words,
+  //     };
+  //   } catch (error) {
+  //     console.error('Error parsing response:', error);
+  //     return null;
+  //   }
+  // };
 
   render() {
     const buttons = ['Private', 'Public'];

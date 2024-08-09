@@ -256,6 +256,7 @@ class Profile extends Component {
       this.props.navigation.replace(Global.saveData.prevpage, {
         data: {
           imageUrl: this.state.otherData.imageUrl,
+          isFirstTime: false,
           data: {
             other_user_id: this.state.otherData.id,
             name: this.state.otherData.name,

@@ -627,6 +627,7 @@ class Browse extends Component {
     }
     const otherData = {
       imageUrl: this.state.otherData.imageUrl,
+      isFirstTime: false,
       data: {
         name: this.state.otherData.detail.name,
         other_user_id: this.state.otherData.detail.id,

@@ -67,9 +67,9 @@ class ChatScreen extends React.PureComponent {
     super(props);
 
     const template =
-      'My name is #name#, who is #age# year old #gender# living in the #country#. #description#. #name# speaks #language#.';
+      'My name is #name#, who is #age# year old #gender# living in the #country#. #name# speaks #language#.';
     const template1 =
-      ' #name#, who is #age# year old #gender# living in the #country#. #description#. #name# speaks #language#.';
+      ' #name#, who is #age# year old #gender# living in the #country#. #name# speaks #language#.';
 
     const {data} = props.route.params;
 
@@ -98,7 +98,7 @@ class ChatScreen extends React.PureComponent {
         img_message: data.data.img_message,
         creator_user_id: data.data.creator_user_id,
         is_public: data.data.is_public,
-        isFirstTime: data?.isFirstTime ? data?.isFirstTime : false,
+        isTooltipVisible: false,
       },
       opponentData: null,
       matchId: data.data.match_id,
@@ -240,7 +240,7 @@ class ChatScreen extends React.PureComponent {
           img_message: img_message,
           creator_user_id: creator_user_id,
           is_public: is_public,
-          isFirstTime: isFirstTime ? isFirstTime : false,
+          isTooltipVisible: isFirstTime,
         },
       });
     }
@@ -475,6 +475,7 @@ class ChatScreen extends React.PureComponent {
 
     this.checkUnReadMessage();
     this.checkFanUser();
+    this.initializeState();
 
     Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
     Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -1273,8 +1274,12 @@ class ChatScreen extends React.PureComponent {
     await AsyncStorage.setItem(
       'ai_personality',
       ai_personality
-        .replace('#currentaction#', '')
-        .replace('#userdata#', '')
+        .replace(
+          'all conversations are appropriate and legal, does not involve minor and is not sexual.',
+          '',
+        )
+        .replace('. #currentaction#.', '')
+        .replace('You are talking to #userdata#.', '')
         .trim(),
     );
 
@@ -1284,8 +1289,12 @@ class ChatScreen extends React.PureComponent {
         username: name,
         description: description,
         ai_personality: ai_personality
-          .replace('#currentaction#', '')
-          .replace('#userdata#', '')
+          .replace(
+            'all conversations are appropriate and legal, does not involve minor and is not sexual.',
+            '',
+          )
+          .replace('. #currentaction#.', '')
+          .replace('You are talking to #userdata#.', '')
           .trim(),
         creator_user_id: creator_user_id,
         is_public: is_public,
@@ -1512,7 +1521,7 @@ class ChatScreen extends React.PureComponent {
   firstTime = () => {
     this.setState({
       other: {
-        isFirstTime: false,
+        isTooltipVisible: false,
       },
     });
   };
@@ -1856,7 +1865,7 @@ class ChatScreen extends React.PureComponent {
         </Dialog>
 
         <Dialog
-          visible={this.state.other.isFirstTime}
+          visible={this.state.other.isTooltipVisible}
           dialogAnimation={
             new SlideAnimation({
               slideFrom: 'top',
@@ -1897,7 +1906,14 @@ class ChatScreen extends React.PureComponent {
                     marginTop: 25,
                   },
                 ]}
-                onPress={this.firstTime}>
+                onPress={() => {
+                  this.setState(prevState => ({
+                    other: {
+                      ...prevState.other,
+                      isTooltipVisible: false,
+                    },
+                  }));
+                }}>
                 <Text style={[styles.submitButtonText, {color: '#000'}]}>
                   {'OK'}
                 </Text>

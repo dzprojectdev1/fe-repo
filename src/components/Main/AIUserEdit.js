@@ -175,7 +175,8 @@ class AIUserEdit extends React.PureComponent {
       is_public: this.state.is_public,
       description: this.state.description.trim(),
       ai_personality:
-        this.state.ai_personality.trim() + ' #currentaction#. #userdata#',
+        this.state.ai_personality.trim() +
+        '. #currentaction#. You are talking to #userdata#. all conversations are appropriate and legal, does not involve minor and is not sexual.',
       creator_user_id: this.state.creator_user_id,
       coin_for_ai_user_create: this.state.coin_for_ai_user_create,
       coin_per_message: this.state.coin_per_message,
@@ -272,7 +273,7 @@ class AIUserEdit extends React.PureComponent {
         messages: [
           {
             role: 'user',
-            content: `Is this text appropriate, legal, is not sexual, does not involve minors, is not offensive, does not discriminate, does not contain a specific brand, does not contain a specific brand name, does not violate copyright, does not mention muslim, Muslims, Islam, Mohammed or Allah?\n\nPlease provide a response in true if falls in any conditions and provide a list of words which fall in the condition as array else false.\n\n${this.state.username}\n\n${this.state.ai_personality}\n\n${this.state.description}`,
+            content: `Please read carefully text and is this text inappropriate, or illegal, or is sexual, or involve minors, or offensive, or discriminates, or contain a specific brand, or is a person who is alive, or is a person who died less than 70 years ago, or violates copyright, or mentions muslim, Muslims, Islam, Mohammed or Allah? Please provide a response "true" if the text matches any conditions provided above and also provide a list of words which matches the condition as array else return "false". Text is ${this.state.username}, ${this.state.ai_personality}, ${this.state.description}`,
           },
         ],
         max_tokens: 512,

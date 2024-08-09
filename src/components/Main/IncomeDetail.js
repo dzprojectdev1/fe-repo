@@ -207,6 +207,7 @@ class IncomeDetail extends Component {
     this.setState({paused: true, privatedPaused: true});
     var otherData = {
       imageUrl: this.state.userimage,
+      isFirstTime: false,
       data: {
         name: this.state.username,
         other_user_id: this.state.otherId,
