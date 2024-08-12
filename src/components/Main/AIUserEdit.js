@@ -269,20 +269,41 @@ class AIUserEdit extends React.PureComponent {
           'Bearer sk-my-service-account-OcVwpHabIqoDlDYTtTLuT3BlbkFJOsnTUJjvEiuTd2sUQyDK',
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4', // Updated to a supported model
         messages: [
           {
+            role: 'system',
+            content:
+              "You are an evaluator that checks text against a set of specific conditions. Your task is to return 'true' or 'false' based on the evaluation criteria provided, and list any matching words.",
+          },
+          {
             role: 'user',
-            content: `Please read carefully text and is this text inappropriate, or illegal, or is sexual, or involve minors, or offensive, or discriminates, or contain a specific brand, or is a person who is alive, or is a person who died less than 70 years ago, or violates copyright, or mentions muslim, Muslims, Islam, Mohammed or Allah? Please provide a response "true" if the text matches any conditions provided above and also provide a list of words which matches the condition as array else return "false". Text is ${this.state.username}, ${this.state.ai_personality}, ${this.state.description}`,
+            content:
+              "Evaluate the following text based on these criteria:\n- Does it mention any well-known brand names?\n- Does it mention any country's president's name or political person?\n- Does it indicate that the user is 18 years or older?\n- Does it contain any movie, cartoon or book character that may violate copyright law?\n- Does it contain any words related to community?\n- Does it contain sexual scene or a scene that may lead to sexual activities?\n- Is the text inappropriate in any way?\n- Does it mention anything illegal?\n- Does it contain sexual content?\n- Does it involve minors?\n- Does it contain any offensive words?\n- Does it discriminate against any group?\n- Does it contain a specific brand name?\n- Does it mention a person who is currently alive?\n- Does it mention a person who died less than 70 years ago?\n- Does it violate copyright laws?\n- Does it mention Islam, Muslims, Mohammed, or Allah?\n\nPlease provide a 'true' if the text matches any of these conditions. Also, return a list of matching words in array form. If none of the conditions are met, return 'false'.",
+          },
+          {
+            role: 'user',
+            content: `${this.state.username}, ${this.state.ai_personality}, ${this.state.description}`,
           },
         ],
-        max_tokens: 512,
-        temperature: 0.7,
-        top_p: 0.9,
-        frequency_penalty: 0.5,
-        presence_penalty: 0.6,
-        n: 1,
+        max_tokens: 100,
+        temperature: 0,
       }),
+      // body: JSON.stringify({
+      //   model: 'gpt-3.5-turbo',
+      //   messages: [
+      //     {
+      //       role: 'user',
+      //       content: `Please read carefully text and is this text inappropriate, or illegal, or is sexual, or involve minors, or offensive, or discriminates, or contain a specific brand, or is a person who is alive, or is a person who died less than 70 years ago, or violates copyright, or mentions muslim, Muslims, Islam, Mohammed or Allah? Please provide a response "true" if the text matches any conditions provided above and also provide a list of words which matches the condition as array else return "false". Text is ${this.state.username}, ${this.state.ai_personality}, ${this.state.description}`,
+      //     },
+      //   ],
+      //   max_tokens: 512,
+      //   temperature: 0.7,
+      //   top_p: 0.9,
+      //   frequency_penalty: 0.5,
+      //   presence_penalty: 0.6,
+      //   n: 1,
+      // }),
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -296,7 +317,9 @@ class AIUserEdit extends React.PureComponent {
         } else {
           Alert.alert(
             'Error',
-            'The entered text is not appropriate, please change the text and try again.',
+            `The entered text is not appropriate, please change the text and try again.\n\n${words.join(
+              ', ',
+            )}`,
           );
         }
       })
@@ -308,24 +331,49 @@ class AIUserEdit extends React.PureComponent {
 
   parseResponse = response => {
     try {
-      const content = response.message.content;
-      const statusMatch = content.match(/Status: (\w+)/);
-      const wordsMatch = content.match(/Words: ([\w, ]+)/);
+      const content = response.message.content.trim();
 
-      const status = statusMatch ? statusMatch[1] : null;
+      // Extract status ("True" or "False")
+      const status = content.includes('True');
+
+      // Extract words from the list in square brackets
+      const wordsMatch = content.match(/\[(.*?)\]/);
       const words = wordsMatch
-        ? wordsMatch[1].split(',').map(word => word.trim())
+        ? wordsMatch[1].split(',').map(word => word.trim().replace(/['"]/g, ''))
         : [];
 
       return {
-        status: status === 'true',
+        status,
         words,
       };
     } catch (error) {
       console.error('Error parsing response:', error);
-      return null;
+      return {
+        status: false, // Safe default
+        words: [],
+      };
     }
   };
+  // parseResponse = response => {
+  //   try {
+  //     const content = response.message.content;
+  //     const statusMatch = content.match(/Status: (\w+)/);
+  //     const wordsMatch = content.match(/Words: ([\w, ]+)/);
+  //
+  //     const status = statusMatch ? statusMatch[1] : null;
+  //     const words = wordsMatch
+  //       ? wordsMatch[1].split(',').map(word => word.trim())
+  //       : [];
+  //
+  //     return {
+  //       status: status === 'true',
+  //       words,
+  //     };
+  //   } catch (error) {
+  //     console.error('Error parsing response:', error);
+  //     return null;
+  //   }
+  // };
 
   render() {
     return (

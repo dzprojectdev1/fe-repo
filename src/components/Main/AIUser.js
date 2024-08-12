@@ -280,31 +280,6 @@ class AIUser extends Component {
   }
 
   checkIsOffenciveWords() {
-    const prompt = `
-        Text: "${this.state.username}, ${this.state.ai_personality}, ${this.state.description}"
-        
-        Please evaluate the text based on the following criteria:
-        1. Does it mention any well-known brand names?
-        2. Does it mention any country's president's name?
-        3. Does it indicate that the user is 18 years or older?
-        4. Does it contain any words related to community?
-        5. Is the text inappropriate in any way?
-        6. Does it mention anything illegal?
-        7. Does it contain sexual content?
-        8. Does it involve minors?
-        9. Does it contain any offensive words?
-        10. Does it discriminate against any group?
-        11. Does it contain a specific brand name?
-        12. Does it mention a person who is currently alive?
-        13. Does it mention a person who died less than 70 years ago?
-        14. Does it violate copyright laws?
-        15. Does it mention Islam, Muslims, Mohammed, or Allah?
-        
-        Return 'true' if any of these conditions are met; otherwise, return 'false'.
-      `;
-
-    console.log(prompt);
-
     fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -316,20 +291,22 @@ class AIUser extends Component {
         model: 'gpt-4', // Updated to a supported model
         messages: [
           {
-            role: "system",
-            content: "You are an evaluator that checks text against a set of specific conditions. Your task is to return 'true' or 'false' based on the evaluation criteria provided, and list any matching words."
+            role: 'system',
+            content:
+              "You are an evaluator that checks text against a set of specific conditions. Your task is to return 'true' or 'false' based on the evaluation criteria provided, and list any matching words.",
           },
           {
-            role: "user",
-            content: "Evaluate the following text based on these criteria:\n- Does it mention any well-known brand names?\n- Does it mention any country's president's name or political person?\n- Does it indicate that the user is 18 years or older?\n- Does it contain any words related to community?\n- Is the text inappropriate in any way?\n- Does it mention anything illegal?\n- Does it contain sexual content?\n- Does it involve minors?\n- Does it contain any offensive words?\n- Does it discriminate against any group?\n- Does it contain a specific brand name?\n- Does it mention a person who is currently alive?\n- Does it mention a person who died less than 70 years ago?\n- Does it violate copyright laws?\n- Does it mention Islam, Muslims, Mohammed, or Allah?\n\nPlease provide a 'true' if the text matches any of these conditions. Also, return a list of matching words in array form. If none of the conditions are met, return 'false'."
+            role: 'user',
+            content:
+              "Evaluate the following text based on these criteria:\n- Does it mention any well-known brand names?\n- Does it mention any country's president's name or political person?\n- Does it contain sexual scene or a scene that may lead to sexual activities?\n- Does it contain any movie, cartoon or book character that may violate copyright law?\n- Does it indicate that the user is 18 years or older?\n- Does it contain any words related to community?\n- Is the text inappropriate in any way?\n- Does it mention anything illegal?\n- Does it contain sexual content?\n- Does it involve minors?\n- Does it contain any offensive words?\n- Does it discriminate against any group?\n- Does it contain a specific brand name?\n- Does it mention a person who is currently alive?\n- Does it mention a person who died less than 70 years ago?\n- Does it violate copyright laws?\n- Does it mention Islam, Muslims, Mohammed, or Allah?\n\nPlease provide a 'true' if the text matches any of these conditions. Also, return a list of matching words in array form. If none of the conditions are met, return 'false'.",
           },
           {
-            role: "user",
-            content: `${this.state.username}, ${this.state.ai_personality}, ${this.state.description}`
-          }
+            role: 'user',
+            content: `${this.state.username}, ${this.state.ai_personality}, ${this.state.description}`,
+          },
         ],
         max_tokens: 100,
-        temperature: 0
+        temperature: 0,
       }),
     })
       .then(response => response.json())
@@ -346,7 +323,9 @@ class AIUser extends Component {
         } else {
           Alert.alert(
             'Error',
-            'The entered text is not appropriate, please change the text and try again.',
+            `The entered text is not appropriate, please change the text and try again.\n\n${words.join(
+              ', ',
+            )}`,
           );
         }
       })
@@ -356,17 +335,19 @@ class AIUser extends Component {
       });
   }
 
-  parseResponse = (response) => {
+  parseResponse = response => {
     try {
       const content = response.message.content.trim();
-  
+
       // Extract status ("True" or "False")
       const status = content.includes('True');
-  
+
       // Extract words from the list in square brackets
       const wordsMatch = content.match(/\[(.*?)\]/);
-      const words = wordsMatch ? wordsMatch[1].split(',').map(word => word.trim().replace(/['"]/g, '')) : [];
-  
+      const words = wordsMatch
+        ? wordsMatch[1].split(',').map(word => word.trim().replace(/['"]/g, ''))
+        : [];
+
       return {
         status,
         words,
@@ -379,7 +360,6 @@ class AIUser extends Component {
       };
     }
   };
-  
 
   // parseResponse = response => {
   //   try {
