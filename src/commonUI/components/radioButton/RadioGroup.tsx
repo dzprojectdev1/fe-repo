@@ -13,6 +13,7 @@ export default function RadioGroup({
   radioButtons,
   selectedId,
   testID,
+  disabled,
 }: RadioGroupProps) {
   function handlePress(id: string) {
     if (id !== selectedId) {
@@ -39,6 +40,7 @@ export default function RadioGroup({
           labelStyle={button.labelStyle || labelStyle}
           selected={button.id === selectedId}
           onPress={handlePress}
+          disabled={disabled}
         />
       ))}
     </View>

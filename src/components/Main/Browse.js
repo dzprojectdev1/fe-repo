@@ -66,6 +66,7 @@ class Browse extends Component {
       ai_personality: data.detail.ai_personality,
       creator_user_id: data.detail.creator_user_id,
       is_public: data.detail.is_public,
+      language: data.detail.language,
       img_message: data.detail.img_message,
       fanUserVisible: false,
       noFanUserVisible: false,
@@ -457,6 +458,7 @@ class Browse extends Component {
         last_loggedin_date: this.state.otherData.detail.last_loggedin_date,
         ethnicity_name: this.state.otherData.detail.ethnicity_name,
         language_name: this.state.otherData.detail.language_name,
+        language: this.state.otherData.detail.language,
         country_name: this.state.otherData.detail.country_name,
         coin_count: this.state.coin_count,
         fan_count: this.state.fan_count,
@@ -641,6 +643,7 @@ class Browse extends Component {
         creator_user_id: this.state.creator_user_id,
         description: this.state.otherData.detail.description,
         is_public: this.state.is_public,
+        language: this.state.language,
       },
     };
     Global.saveData.prevpage = 'BrowseList';

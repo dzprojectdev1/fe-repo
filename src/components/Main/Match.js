@@ -234,6 +234,7 @@ class Match extends Component {
               img_message: newData.img_message,
               creator_user_id: newData.creator_user_id,
               is_public: newData.is_public,
+              language: newData.language,
             });
           }
         })

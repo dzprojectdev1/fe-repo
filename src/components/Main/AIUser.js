@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Sentry from '@sentry/react-native';
 import {findIllegalWords, SERVER_URL} from '../../config/constants';
 import RadioGroup from '../../commonUI/components/radioButton';
+import {Dropdown} from 'react-native-material-dropdown';
 
 class AIUser extends Component {
   static navigationOptions = {
@@ -31,7 +32,8 @@ class AIUser extends Component {
       id: 0,
       username: '',
       gender: 1,
-      language: 1,
+      languageData: [],
+      language: 'English',
       country: 1,
       ethnicity: 1,
       userBirthData: '1998-01-01',
@@ -76,7 +78,7 @@ class AIUser extends Component {
       deviceId: await this.getdeviceId(),
       fcmId: await this.getfcmId(),
     });
-
+    await this.get_language();
     if (Global.saveData.coin_count < 200) {
       Alert.alert(
         '',
@@ -97,6 +99,34 @@ class AIUser extends Component {
     this.props.navigation.navigate('BrowseList');
   }
 
+  get_language = async () => {
+    await fetch(`${SERVER_URL}/api/language/all`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: Global.saveData.token,
+      },
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        //  alert(JSON.stringify(responseJson))
+        if (!responseJson.error) {
+          const data = responseJson.data;
+          var itmes = [];
+          for (var i = 0; i < data.length; i++) {
+            itmes.push({value: data[i].language_name});
+          }
+          console.log(itmes);
+          this.setState({
+            languageData: itmes,
+          });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
   goToChat() {
     const otherData = {
       imageUrl: this.state.otherData.imageUrl,
@@ -114,6 +144,7 @@ class AIUser extends Component {
         creator_user_id: this.state.otherData.creator_user_id,
         description: this.state.otherData.description,
         is_public: this.state.otherData.is_public,
+        language: this.state.otherData.language,
       },
     };
     setTimeout(() => {
@@ -180,11 +211,20 @@ class AIUser extends Component {
   };
 
   callSave() {
+    var lanD = this.state.languageData;
+    var lanindex = 1;
+    for (var i = 0; i < lanD.length; i++) {
+      if (lanD[i].value == this.state.language) {
+        lanindex = i + 1;
+        break;
+      }
+    }
+
     const details = {
       id: this.state.id,
       username: this.state.username.trim(),
       gender: this.state.gender,
-      language: this.state.language,
+      language: lanindex,
       country: this.state.country,
       ethnicity: this.state.ethnicity,
       birth_date: this.state.userBirthData,
@@ -560,6 +600,41 @@ class AIUser extends Component {
               }}>
               {'*This field is required'}
             </Text>
+          </View>
+
+          <View
+            style={{
+              width: DEVICE_WIDTH * 0.8,
+              marginLeft: DEVICE_WIDTH * 0.1,
+              marginTop: 10,
+            }}>
+            <Dropdown
+              containerStyle={{width: DEVICE_WIDTH * 0.8, marginTop: -15}}
+              label=" "
+              pickerStyle={{marginTop: -50}}
+              style={{
+                backgroundColor: 'transparent',
+                width: DEVICE_WIDTH * 0.8,
+                paddingLeft: 2,
+                color: '#000',
+              }}
+              inputContainerStyle={{borderBottomColor: '#808080'}}
+              baseColor="#DE5859" //indicator color
+              textColor="#000"
+              data={this.state.languageData}
+              onChangeText={language =>
+                this.setState({language, disabled: false})
+              }
+              value={this.state.language}
+              dropdownPosition={-4}
+            />
+            <View
+              style={{
+                height: 1,
+                width: DEVICE_WIDTH * 0.8,
+                backgroundColor: '#808080',
+              }}
+            />
           </View>
           {/*{this.state.errorMsg && (*/}
           {/*  <Text style={styles.requiredSent}>* {this.state.msgError} </Text>*/}

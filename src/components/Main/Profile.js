@@ -76,6 +76,7 @@ class Profile extends Component {
       ai_personality: data.ai_personality,
       creator_user_id: data.creator_user_id,
       is_public: data.is_public,
+      language: data.language,
       description: data.description,
     };
   }
@@ -270,6 +271,7 @@ class Profile extends Component {
             ai_personality: this.state.ai_personality,
             creator_user_id: this.state.creator_user_id,
             is_public: this.state.is_public,
+            language: this.state.language,
           },
         },
       });

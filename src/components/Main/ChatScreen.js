@@ -72,7 +72,6 @@ class ChatScreen extends React.PureComponent {
       ' #name#, who is #age# year old #gender# living in the #country#. #name# speaks #language#.';
 
     const {data} = props.route.params;
-
     const replacements = {
       name: Global.saveData.u_name,
       age: Global.saveData.u_age,
@@ -98,6 +97,7 @@ class ChatScreen extends React.PureComponent {
         img_message: data.data.img_message,
         creator_user_id: data.data.creator_user_id,
         is_public: data.data.is_public,
+        language: data.data.language,
         isTooltipVisible: false,
       },
       opponentData: null,
@@ -223,6 +223,7 @@ class ChatScreen extends React.PureComponent {
         img_message,
         creator_user_id,
         is_public,
+        language,
       } = data.data;
       const {isFirstTime, imageUrl} = data;
 
@@ -239,6 +240,7 @@ class ChatScreen extends React.PureComponent {
           ai_personality: ai_personality,
           img_message: img_message,
           creator_user_id: creator_user_id,
+          language: language,
           is_public: is_public,
           isTooltipVisible: isFirstTime,
         },
@@ -1257,6 +1259,26 @@ class ChatScreen extends React.PureComponent {
       });
   };
 
+  editAIuserProfilePic = async () => {
+    const {userId, name, creator_user_id} = this.state.other;
+
+    const data = {
+      data: {
+        id: userId,
+        username: name,
+        creator_user_id: creator_user_id,
+      },
+    };
+    this.setState(
+      {
+        menu: false,
+      },
+      () => {
+        this.props.navigation.navigate('MyVideo', {data: data});
+      },
+    );
+  };
+
   editAIuser = async () => {
     const {
       userId,
@@ -1265,12 +1287,14 @@ class ChatScreen extends React.PureComponent {
       description,
       creator_user_id,
       is_public,
+      language,
     } = this.state.other;
     await AsyncStorage.setItem('id', userId.toString());
     await AsyncStorage.setItem('name', name);
     await AsyncStorage.setItem('description', description);
     await AsyncStorage.setItem('creator_user_id', creator_user_id.toString());
     await AsyncStorage.setItem('is_public', is_public.toString());
+    await AsyncStorage.setItem('language', language.toString());
     await AsyncStorage.setItem(
       'ai_personality',
       ai_personality
@@ -1298,6 +1322,7 @@ class ChatScreen extends React.PureComponent {
           .trim(),
         creator_user_id: creator_user_id,
         is_public: is_public,
+        language: language,
       },
     };
     this.props.navigation.navigate('AIUserEdit', {data: data});
@@ -1403,6 +1428,7 @@ class ChatScreen extends React.PureComponent {
               ai_personality: this.state.other.ai_personality,
               creator_user_id: this.state.other.creator_user_id,
               is_public: this.state.other.is_public,
+              language: this.state.other.language,
             },
           });
         }
@@ -2247,13 +2273,24 @@ class ChatScreen extends React.PureComponent {
                 </>
               )}
               {Global.saveData.u_id == this.state.other.creator_user_id && (
-                <MenuItem onPress={() => this.editAIuser()}>
-                  <Image
-                    source={editIcon}
-                    style={{width: 20, height: 20, marginRight: 30}}
-                  />
-                  <Text style={{color: '#000'}}>{'   Edit Ai Settings'}</Text>
-                </MenuItem>
+                <>
+                  <MenuItem onPress={() => this.editAIuser()}>
+                    <Image
+                      source={editIcon}
+                      style={{width: 20, height: 20, marginRight: 30}}
+                    />
+                    <Text style={{color: '#000'}}>{'   Edit AI Settings'}</Text>
+                  </MenuItem>
+                  <MenuItem onPress={() => this.editAIuserProfilePic()}>
+                    <Image
+                      source={editIcon}
+                      style={{width: 20, height: 20, marginRight: 30}}
+                    />
+                    <Text style={{color: '#000'}}>
+                      {'   Edit AI Profile Pictures'}
+                    </Text>
+                  </MenuItem>
+                </>
               )}
               <MenuItem onPress={this.resetError}>
                 <Image

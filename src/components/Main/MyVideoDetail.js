@@ -75,13 +75,19 @@ class MyVideoDetail extends Component {
   }
 
   onSetPrimary() {
-    fetch(`${SERVER_URL}/api/video/setAsPrimary/` + this.state.vid, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: Global.saveData.token,
+    fetch(
+      `${SERVER_URL}/api/video/setAsPrimary/` +
+        this.state.vid +
+        '/' +
+        this.state.otherId,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: Global.saveData.token,
+        },
       },
-    })
+    )
       .then(response => response.json())
       .then(responseJson => {
         if (!responseJson.error) {

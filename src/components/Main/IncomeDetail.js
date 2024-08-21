@@ -65,6 +65,7 @@ class IncomeDetail extends Component {
       country_name: '',
       ethnicity_name: '',
       language_name: '',
+      language: '',
       last_loggedin_date: '',
       fanUserVisible: false,
       noFanUserVisible: false,
@@ -98,6 +99,7 @@ class IncomeDetail extends Component {
       img_message,
       creator_user_id,
       is_public,
+      language,
     } = this.props.route.params;
 
     BackHandler.addEventListener('hardwareBackPress', this.back);
@@ -142,6 +144,7 @@ class IncomeDetail extends Component {
         img_message: img_message,
         creator_user_id: creator_user_id,
         is_public: is_public,
+        language: language,
       });
     }
   }
@@ -222,6 +225,7 @@ class IncomeDetail extends Component {
         creator_user_id: this.state.creator_user_id,
         description: this.state.description,
         is_public: this.state.is_public,
+        language: this.state.language,
       },
     };
     Global.saveData.prevpage = 'IncomeDetail';
@@ -381,6 +385,7 @@ class IncomeDetail extends Component {
               creator_user_id: newData.creator_user_id,
               description: newData.description,
               is_public: newData.is_public,
+              language: newData.language,
             });
 
             this.props.navigation.replace('Profile', {
@@ -409,6 +414,7 @@ class IncomeDetail extends Component {
                 img_message: this.state.img_message,
                 creator_user_id: this.state.creator_user_id,
                 is_public: this.state.is_public,
+                language: this.state.language,
               },
             });
           }

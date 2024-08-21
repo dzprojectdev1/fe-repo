@@ -51,12 +51,16 @@ class MyVideo extends Component {
   static navigationOptions = {
     header: null,
   };
-  // }
   isAllowed = true;
 
   constructor(props) {
     super(props);
+    const {data} = props.route.params;
+
     this.state = {
+      ai_userId: data?.data?.id || 0,
+      creator_user_id: data?.data?.creator_user_id || 0,
+      username: data?.data?.username || '',
       datas: [],
       isLoading: true,
       noData: false,
@@ -111,6 +115,10 @@ class MyVideo extends Component {
         }
       })
       .catch(error => {});
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    this.getVideos();
   }
 
   getBiggestFanUsers = () => {
@@ -220,7 +228,9 @@ class MyVideo extends Component {
   };
 
   getVideos() {
-    fetch(`${SERVER_URL}/api/video/getMyAllVideo`, {
+    const userId =
+      this.state.ai_userId != 0 ? this.state.ai_userId : Global.saveData.u_id;
+    fetch(`${SERVER_URL}/api/video/getMyAllVideo/${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -305,12 +315,15 @@ class MyVideo extends Component {
   };
 
   showUserVideo(cdn_id, user_id, id, primary, content_type) {
+    const userId =
+      this.state.ai_userId != 0 ? this.state.ai_userId : Global.saveData.u_id;
+
     if (content_type == 2) {
-      this.getVideoUrl(cdn_id, user_id, id, primary, content_type);
+      this.getVideoUrl(cdn_id, userId, id, primary, content_type);
     } else {
       this.props.navigation.navigate('MyVideoDetail', {
         cdn_id: cdn_id,
-        otherId: user_id,
+        otherId: userId,
         id: id,
         primary: primary,
         content_type: content_type,
@@ -389,22 +402,29 @@ class MyVideo extends Component {
     };
 
     if (this.isAllowed) {
-      ImagePicker.launchImageLibrary(options, imagePickerResponse => {
-        if (imagePickerResponse.didCancel) {
-          console.log('User cancelled image picker');
-        } else if (imagePickerResponse.error) {
-          console.log('ImagePicker Error: ', imagePickerResponse.error);
-        } else if (imagePickerResponse.customButton) {
-          console.log(
-            'User tapped custom button: ',
-            imagePickerResponse.customButton,
-          );
-        } else {
-          uploadPhoto(imagePickerResponse).then(() => {
-            this.getVideos();
-          });
-        }
-      });
+      await ImagePicker.launchImageLibrary(
+        options,
+        async imagePickerResponse => {
+          if (imagePickerResponse.didCancel) {
+            console.log('User cancelled image picker');
+          } else if (imagePickerResponse.error) {
+            console.log('ImagePicker Error: ', imagePickerResponse.error);
+          } else if (imagePickerResponse.customButton) {
+            console.log(
+              'User tapped custom button: ',
+              imagePickerResponse.customButton,
+            );
+          } else {
+            const userId =
+              this.state.ai_userId != 0
+                ? this.state.ai_userId
+                : Global.saveData.u_id;
+            await uploadPhoto(imagePickerResponse, userId).then(() => {
+              this.getVideos();
+            });
+          }
+        },
+      );
     }
 
     // ImagePicker.showImagePicker(options, imagePickerResponse => {
@@ -649,7 +669,9 @@ class MyVideo extends Component {
   }
 
   deleteVideo(otherid) {
-    fetch(`${SERVER_URL}/api/video/removeMyVideo/${otherid}`, {
+    const userId =
+      this.state.ai_userId != 0 ? this.state.ai_userId : Global.saveData.u_id;
+    fetch(`${SERVER_URL}/api/video/removeMyVideo/${otherid}/${userId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -833,29 +855,38 @@ class MyVideo extends Component {
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'row',
-            justifyContent: 'space-between',
+            justifyContent:
+              this.state.ai_userId == 0 ? 'space-between' : 'center',
           }}>
-          <View style={{width: 100, flexDirection: 'row'}}>
-            <TouchableOpacity
-              style={{width: 60, height: 40, marginRight: 15}}
-              onPress={() => this.gotoShop()}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Image
-                  source={diamond}
-                  style={{width: 18, height: 18, marginLeft: 15, marginTop: 10}}
-                />
-                <Text
-                  style={{
-                    marginLeft: 10,
-                    color: '#000',
-                    fontSize: 12,
-                    fontWeight: 'bold',
-                    marginTop: 12,
-                  }}>
-                  {this.state.coinCount}
-                </Text>
-              </View>
-            </TouchableOpacity>
+          <View style={{width: '100%', flexDirection: 'row'}}>
+            {this.state.ai_userId == 0 && (
+              <TouchableOpacity
+                style={{width: 60, height: 40, marginRight: 15}}
+                onPress={() => this.gotoShop()}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Image
+                    source={diamond}
+                    style={{
+                      width: 18,
+                      height: 18,
+                      marginLeft: 15,
+                      marginTop: 10,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      marginLeft: 10,
+                      color: '#000',
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      marginTop: 12,
+                    }}>
+                    {this.state.coinCount}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
+
             {/*<TouchableOpacity*/}
             {/*  style={{width: 80, height: 40}}*/}
             {/*  onPress={() => this.gotoMyFans()}>*/}
@@ -879,29 +910,34 @@ class MyVideo extends Component {
           </View>
           <Text
             style={{
+              justifyContent: 'center',
+              alignSelf: 'center',
+              width: '100%',
               fontSize: 12,
               marginTop: 5,
               marginLeft: -60,
               color: '#000',
             }}>
-            {'PROFILE'}
+            {this.state.ai_userId != 0 ? this.state.username : 'PROFILE'}
           </Text>
-          <TouchableOpacity
-            style={{
-              width: 30,
-              height: 40,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: 10,
-            }}
-            onPress={() => this.gotoProfileSetting()}>
-            <Icon
-              name="menu"
-              size={30}
-              color="black"
-              style={{color: '#000', marginTop: 5}}
-            />
-          </TouchableOpacity>
+          {this.state.ai_userId == 0 && (
+            <TouchableOpacity
+              style={{
+                width: 30,
+                height: 40,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: 10,
+              }}
+              onPress={() => this.gotoProfileSetting()}>
+              <Icon
+                name="menu"
+                size={30}
+                color="black"
+                style={{color: '#000', marginTop: 5}}
+              />
+            </TouchableOpacity>
+          )}
         </View>
         {this.state.isLoading && (
           <View
@@ -934,8 +970,10 @@ class MyVideo extends Component {
                   textAlign: 'center',
                   alignContent: 'center',
                 }}>
-                You dont have any photo. {'\n'} Please upload more than one so
-                that others can find you more easily.
+                {this.state.ai_userId != 0
+                  ? 'This AI character does not have any profile pictures.'
+                  : 'You dont have any photo. \nPlease upload more than one so\n' +
+                    '                that others can find you more easily.'}
               </Text>
             </View>
           )}
@@ -994,7 +1032,7 @@ class MyVideo extends Component {
                         }}>
                         <View
                           style={{
-                            width: DEVICE_WIDTH / 2 - 60,
+                            width: DEVICE_WIDTH / 2 - 70,
                             height: 30,
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -1031,6 +1069,14 @@ class MyVideo extends Component {
                           )}
                         </View>
                         <TouchableOpacity
+                          style={{
+                            paddingLeft: 10,
+                            paddingRight: 10,
+                            paddingBottom: 5,
+                            paddingTop: 5,
+                            zIndex: 99,
+                            height: 40,
+                          }}
                           onPress={() => this.onDeleteVideo(rowData.id)}>
                           <Image
                             source={b_delete}
@@ -1083,7 +1129,7 @@ class MyVideo extends Component {
           onPress={() => this.addVideo()}>
           <Image source={video_add} style={{width: 85, height: 85, }} />
         </TouchableOpacity> */}
-        {Global.saveData.is_admin === 1 && (
+        {(Global.saveData.is_admin === 1 || this.state.ai_userId !== 0) && (
           <TouchableOpacity
             style={{
               position: 'absolute',

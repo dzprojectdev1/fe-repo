@@ -16,6 +16,7 @@ import {findIllegalWords, SERVER_URL} from '../../config/constants';
 import RadioGroup from '../../commonUI/components/radioButton';
 import {connect} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Dropdown} from 'react-native-material-dropdown';
 
 class AIUserEdit extends React.PureComponent {
   static navigationOptions = {
@@ -43,7 +44,8 @@ class AIUserEdit extends React.PureComponent {
       id: 0,
       username: '',
       gender: 1,
-      language: 1,
+      languageData: [],
+      language: 'English',
       country: 1,
       ethnicity: 1,
       userBirthData: '1998-01-01',
@@ -53,6 +55,7 @@ class AIUserEdit extends React.PureComponent {
       matchId: 0,
       fcmId: '',
       is_public: '',
+      is_public_ns: '',
       description: '',
       ai_personality: '',
       creator_user_id: Global.saveData.u_id,
@@ -69,7 +72,8 @@ class AIUserEdit extends React.PureComponent {
   }
 
   async componentDidMount() {
-    this.initializeState();
+    await this.get_language();
+    await this.initializeState();
     Global.saveData.nowPage = 'AIUserEdit';
     // const id = await AsyncStorage.getItem('id');
     // const name = await AsyncStorage.getItem('name');
@@ -88,6 +92,34 @@ class AIUserEdit extends React.PureComponent {
     // });
   }
 
+  get_language = async () => {
+    await fetch(`${SERVER_URL}/api/language/all`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: Global.saveData.token,
+      },
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        //  alert(JSON.stringify(responseJson))
+        if (!responseJson.error) {
+          var data = responseJson.data;
+          var itmes = [];
+          for (var i = 0; i < data.length; i++) {
+            itmes.push({value: data[i].language_name});
+          }
+          this.setState({
+            languageData: itmes,
+          });
+        }
+      })
+      .catch(error => {
+        Sentry.captureException(new Error(error));
+        // alert(JSON.stringify(error));
+      });
+  };
+
   async componentDidUpdate(prevProps) {
     if (prevProps.route.params !== this.props.route.params) {
       this.initializeState();
@@ -97,15 +129,26 @@ class AIUserEdit extends React.PureComponent {
   async initializeState() {
     const {data} = this.props.route.params || {};
     if (data) {
-      const {id, username, description, ai_personality, is_public} = data.data;
-
+      const {id, username, description, ai_personality, is_public, language} =
+        data.data;
       this.setState({
         id: id || '',
         username: username || '',
         description: description || '',
         ai_personality: ai_personality || '',
         is_public: is_public || 0,
+        is_public_ns: is_public || 0,
+        language: language || 'English',
       });
+      const lanD = this.state.languageData;
+      for (var i = 0; i < lanD.length; i++) {
+        if (i === language) {
+          this.setState({
+            language: lanD[i - 1].value,
+          });
+          break;
+        }
+      }
     } else {
       const id = await AsyncStorage.getItem('id');
       const name = await AsyncStorage.getItem('name');
@@ -113,6 +156,7 @@ class AIUserEdit extends React.PureComponent {
       const creator_user_id = await AsyncStorage.getItem('creator_user_id');
       const is_public = await AsyncStorage.getItem('is_public');
       const ai_personality = await AsyncStorage.getItem('ai_personality');
+      const language = await AsyncStorage.getItem('language');
 
       this.setState({
         id: parseInt(id),
@@ -120,8 +164,19 @@ class AIUserEdit extends React.PureComponent {
         description: description,
         creator_user_id: parseInt(creator_user_id),
         is_public: parseInt(is_public),
+        is_public_ns: parseInt(is_public),
         ai_personality: ai_personality,
+        language: language,
       });
+      const lanD = this.state.languageData;
+      for (var i = 0; i < lanD.length; i++) {
+        if (i === language) {
+          this.setState({
+            language: lanD[i - 1].value,
+          });
+          break;
+        }
+      }
     }
   }
 
@@ -160,11 +215,20 @@ class AIUserEdit extends React.PureComponent {
   };
 
   callSave() {
+    var lanD = this.state.languageData;
+    var lanindex = 1;
+    for (var i = 0; i < lanD.length; i++) {
+      if (lanD[i].value == this.state.language) {
+        lanindex = i + 1;
+        break;
+      }
+    }
+
     const details = {
       id: this.state.id,
       username: this.state.username.trim(),
       gender: this.state.gender,
-      language: this.state.language,
+      language: lanindex,
       country: this.state.country,
       ethnicity: this.state.ethnicity,
       birth_date: this.state.userBirthData,
@@ -173,6 +237,7 @@ class AIUserEdit extends React.PureComponent {
       device_id: this.state.deviceId,
       fcm_id: this.state.fcmId,
       is_public: this.state.is_public,
+      is_public_ns: this.state.is_public,
       description: this.state.description.trim(),
       ai_personality:
         this.state.ai_personality.trim() +
@@ -529,6 +594,40 @@ class AIUserEdit extends React.PureComponent {
           <View
             style={{
               width: DEVICE_WIDTH * 0.8,
+              marginLeft: DEVICE_WIDTH * 0.1,
+              marginTop: 10,
+            }}>
+            <Dropdown
+              containerStyle={{width: DEVICE_WIDTH * 0.8, marginTop: -15}}
+              label=" "
+              pickerStyle={{marginTop: -50}}
+              style={{
+                backgroundColor: 'transparent',
+                width: DEVICE_WIDTH * 0.8,
+                paddingLeft: 2,
+                color: '#000',
+              }}
+              inputContainerStyle={{borderBottomColor: '#808080'}}
+              baseColor="#DE5859" //indicator color
+              textColor="#000"
+              data={this.state.languageData}
+              onChangeText={language =>
+                this.setState({language, disabled: false})
+              }
+              value={this.state.language}
+              dropdownPosition={-4}
+            />
+            <View
+              style={{
+                height: 1,
+                width: DEVICE_WIDTH * 0.8,
+                backgroundColor: '#808080',
+              }}
+            />
+          </View>
+          <View
+            style={{
+              width: DEVICE_WIDTH * 0.8,
               marginLeft: 25,
               justifyContent: 'flex-start',
               alignItems: 'flex-start',
@@ -551,6 +650,7 @@ class AIUserEdit extends React.PureComponent {
                 this.setState({is_public: index, disabled: false});
               }}
               selectedId={this.state.is_public}
+              disabled={this.state.is_public_ns === 0}
             />
           </View>
           <View
