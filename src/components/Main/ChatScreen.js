@@ -430,7 +430,10 @@ class ChatScreen extends React.PureComponent {
   async componentDidMount() {
     this.setState({
       menu: false,
+      messageList: [],
+      allMessageList: [],
     });
+
     this._mounted = true;
     if (!auth().currentUser) {
       await auth().signInWithEmailAndPassword(
@@ -478,7 +481,7 @@ class ChatScreen extends React.PureComponent {
 
     this.checkUnReadMessage();
     this.checkFanUser();
-    this.initializeState();
+    await this.initializeState();
 
     Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
     Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -2306,20 +2309,20 @@ class ChatScreen extends React.PureComponent {
             </Menu>
           </View>
         </ImageBackground>
-        {this.state.other.ai_personality != '' &&
-          this.state.other.ai_personality != null && (
-            <View
-              style={{
-                justifyContent: 'center',
-                borderColor: '#d9d9d9',
-                borderWidth: 0.5,
-                padding: 10,
-              }}>
-              <Text style={{color: '#000', fontSize: 8}}>
-                {this.state.tempMessageList[0].content}
-              </Text>
-            </View>
-          )}
+        {/*{this.state.other.ai_personality != '' &&*/}
+        {/*  this.state.other.ai_personality != null && (*/}
+        {/*    <View*/}
+        {/*      style={{*/}
+        {/*        justifyContent: 'center',*/}
+        {/*        borderColor: '#d9d9d9',*/}
+        {/*        borderWidth: 0.5,*/}
+        {/*        padding: 10,*/}
+        {/*      }}>*/}
+        {/*      <Text style={{color: '#000', fontSize: 8}}>*/}
+        {/*        {this.state.tempMessageList[0].content}*/}
+        {/*      </Text>*/}
+        {/*    </View>*/}
+        {/*  )}*/}
         {/*<ScrollView*/}
         {/*  style={{flex: 1, marginHorizontal: 10}}*/}
         {/*  ref={ref => {*/}

@@ -135,12 +135,11 @@ class MyVideo extends Component {
 
     if (
       prevProps.route.params !== this.props.route.params &&
-      this.props.route.params.data.isRefresh !== undefined &&
-      this.props.route.params.data.isRefresh
+      this.props.route.params?.data?.isRefresh !== undefined &&
+      this.props.route.params?.data?.isRefresh == true
     ) {
       setTimeout(() => {
         this.getVideos();
-        console.log('here');
       }, 12000);
     }
   }

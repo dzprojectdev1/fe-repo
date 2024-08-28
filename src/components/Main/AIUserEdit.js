@@ -125,7 +125,7 @@ class AIUserEdit extends React.PureComponent {
 
   async componentDidUpdate(prevProps) {
     if (prevProps.route.params !== this.props.route.params) {
-      this.initializeState();
+      await this.initializeState();
     }
   }
 
