@@ -13,11 +13,13 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TouchableHighlight,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {Button as REButton} from 'react-native-elements';
 // import ImagePicker from 'react-native-image-picker';
 import * as ImagePicker from 'react-native-image-picker';
 // import OnlyGImage from '../../assets/images/OnlyGImage.png';
@@ -44,6 +46,7 @@ import {
 import {uploadPhoto} from '../../util/upload';
 import Dialog, {SlideAnimation} from 'react-native-popup-dialog';
 import FlashMessage from 'react-native-flash-message';
+import {colors, em} from '../../commonUI/base';
 
 const includeExtra = true;
 
@@ -81,7 +84,9 @@ class MyVideo extends Component {
       recordedUri: '',
       uploadCredentials: null,
       fileId: '',
+      lastApiCallTimestamp: 0,
     };
+    this.timeoutDuration = 10000;
   }
 
   componentDidMount() {
@@ -118,7 +123,26 @@ class MyVideo extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    this.getVideos();
+    const currentTimestamp = Date.now();
+    const {lastApiCallTimestamp} = this.state;
+
+    // Check if the time since the last API call exceeds the timeout duration
+    // if (currentTimestamp - lastApiCallTimestamp > this.timeoutDuration) {
+    //   this.getVideos();
+    //   this.setState({lastApiCallTimestamp: currentTimestamp});
+    //   console.log('here');
+    // }
+
+    if (
+      prevProps.route.params !== this.props.route.params &&
+      this.props.route.params.data.isRefresh !== undefined &&
+      this.props.route.params.data.isRefresh
+    ) {
+      setTimeout(() => {
+        this.getVideos();
+        console.log('here');
+      }, 12000);
+    }
   }
 
   getBiggestFanUsers = () => {
@@ -780,6 +804,16 @@ class MyVideo extends Component {
     this.props.navigation.replace('MyFans');
   };
 
+  gotoAIUserImageGenerate = () => {
+    Global.saveData.prevpage = 'MyVideo';
+    const otherData = {
+      ai_userId: this.state.ai_userId,
+      user_name: this.state.username,
+      creator_user_id: this.state.creator_user_id,
+    };
+    this.props.navigation.navigate('GenerateAIUserImage', {data: otherData});
+  };
+
   gotoExDiamonds = () => {
     Global.saveData.prevpage = 'MyVideo';
     this.props.navigation.replace('ExchangeDiamonds');
@@ -855,37 +889,60 @@ class MyVideo extends Component {
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'row',
-            justifyContent:
-              this.state.ai_userId == 0 ? 'space-between' : 'center',
+            justifyContent: 'space-between',
           }}>
           <View style={{width: '100%', flexDirection: 'row'}}>
-            {this.state.ai_userId == 0 && (
-              <TouchableOpacity
-                style={{width: 60, height: 40, marginRight: 15}}
-                onPress={() => this.gotoShop()}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Image
-                    source={diamond}
-                    style={{
-                      width: 18,
-                      height: 18,
-                      marginLeft: 15,
-                      marginTop: 10,
-                    }}
+            {this.state.ai_userId !== 0 && (
+              <View
+                style={{
+                  alignSelf: 'center',
+                  zIndex: 2,
+                  marginLeft: 5,
+                }}>
+                <TouchableHighlight
+                  style={{
+                    height: 75 * em,
+                    width: 75 * em,
+                    borderRadius: 5, // Make it circular for better touch area
+                    backgroundColor: 'transparent', // Background color should be transparent
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  underlayColor="rgba(0,0,0,0.2)" // Slight darkening effect when pressed
+                  onPress={this.backPressed}>
+                  <Icon
+                    name="keyboard-arrow-left"
+                    size={36}
+                    color={colors.inputLabel}
                   />
-                  <Text
-                    style={{
-                      marginLeft: 10,
-                      color: '#000',
-                      fontSize: 12,
-                      fontWeight: 'bold',
-                      marginTop: 12,
-                    }}>
-                    {this.state.coinCount}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                </TouchableHighlight>
+              </View>
             )}
+            <TouchableOpacity
+              style={{width: 60, height: 40, marginRight: 15}}
+              onPress={() => this.gotoShop()}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image
+                  source={diamond}
+                  style={{
+                    width: 18,
+                    height: 18,
+                    marginLeft: 15,
+                    marginTop: 10,
+                  }}
+                />
+                <Text
+                  style={{
+                    marginLeft: 10,
+                    color: '#000',
+                    fontSize: 12,
+                    fontWeight: 'bold',
+                    marginTop: 12,
+                  }}>
+                  {this.state.coinCount}
+                </Text>
+              </View>
+            </TouchableOpacity>
 
             {/*<TouchableOpacity*/}
             {/*  style={{width: 80, height: 40}}*/}
@@ -907,19 +964,19 @@ class MyVideo extends Component {
             {/*    </Text>*/}
             {/*  </View>*/}
             {/*</TouchableOpacity>*/}
+            <Text
+              style={{
+                justifyContent: 'center',
+                alignSelf: 'center',
+                width: '100%',
+                fontSize: 12,
+                marginTop: 0,
+                marginLeft: 50,
+                color: '#000',
+              }}>
+              {this.state.ai_userId != 0 ? this.state.username : 'PROFILE'}
+            </Text>
           </View>
-          <Text
-            style={{
-              justifyContent: 'center',
-              alignSelf: 'center',
-              width: '100%',
-              fontSize: 12,
-              marginTop: 5,
-              marginLeft: -60,
-              color: '#000',
-            }}>
-            {this.state.ai_userId != 0 ? this.state.username : 'PROFILE'}
-          </Text>
           {this.state.ai_userId == 0 && (
             <TouchableOpacity
               style={{
@@ -1119,17 +1176,51 @@ class MyVideo extends Component {
         {/*  onPress={() => this.gotoExDiamonds()}>*/}
         {/*  <Image source={dollar_sign} style={{width: 90, height: 90}} />*/}
         {/*</TouchableOpacity>*/}
-        {/* <TouchableOpacity style={{
-          position: 'absolute', right: 100,
-          bottom: Platform.select({ 'android': 90, 'ios': 105 }),
-          width: 70, height: 70,
-          borderRadius: 35,
-          alignItems: 'center', justifyContent: 'center'
-        }}
-          onPress={() => this.addVideo()}>
-          <Image source={video_add} style={{width: 85, height: 85, }} />
-        </TouchableOpacity> */}
-        {(Global.saveData.is_admin === 1 || this.state.ai_userId !== 0) && (
+        <View
+          style={{
+            position: 'absolute',
+            left: 20,
+            right: Global.saveData.is_admin === 1 ? 100 : 20,
+            bottom: Platform.select({android: 90, ios: 105}),
+            height: 60,
+            borderRadius: 35,
+            backgroundColor: '#DE5859',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <REButton
+            title={'Create New'}
+            buttonStyle={{
+              width:
+                Global.saveData.is_admin === 1
+                  ? DEVICE_WIDTH * 0.7
+                  : DEVICE_WIDTH * 0.8,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#DE5859',
+              padding: 10,
+              borderRadius: 35,
+            }}
+            onPress={() => this.gotoAIUserImageGenerate()}
+          />
+        </View>
+        {/*<TouchableOpacity*/}
+        {/*  style={{*/}
+        {/*    position: 'absolute',*/}
+        {/*    right: 100,*/}
+        {/*    bottom: Platform.select({android: 90, ios: 105}),*/}
+        {/*    width: 70,*/}
+        {/*    height: 70,*/}
+        {/*    borderRadius: 35,*/}
+        {/*    backgroundColor: '#f00',*/}
+        {/*    alignItems: 'center',*/}
+        {/*    justifyContent: 'center',*/}
+        {/*  }}*/}
+        {/*  onPress={() => this.addVideo()}>*/}
+        {/*  <Image source={b_myvideo} style={{width: 85, height: 85}} />*/}
+        {/*</TouchableOpacity>*/}
+        {/*|| this.state.ai_userId !== 0*/}
+        {Global.saveData.is_admin === 1 && (
           <TouchableOpacity
             style={{
               position: 'absolute',

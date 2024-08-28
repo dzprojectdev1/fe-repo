@@ -1,33 +1,41 @@
 import React, {Component} from 'react';
 import {
-  View,
-  Text,
-  ImageBackground,
   Image,
+  ImageBackground,
   StatusBar,
-  TouchableOpacity,
-  TouchableNativeFeedback,
+  Text,
   TouchableHighlight,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 import {colors, em} from '../base';
 import bg from '../../assets/images/bg.jpg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import diamond from '../../assets/images/red_diamond_trans.png';
+import Global from '../../components/Global';
+
 export class TopBar extends Component {
   constructor(props) {
     super(props);
   }
+
   onBack() {
     if (this.props.onBack) {
       this.props.onBack();
     }
   }
 
+  gotoShop = () => {
+    this.props.navigation.navigate('ScreenGpay01');
+  };
+
   onAction() {
     if (this.props.onAction) {
       this.props.onAction();
     }
   }
+
   render() {
     return (
       <View style={this.props?.style ? this.props.style : []}>
@@ -70,11 +78,47 @@ export class TopBar extends Component {
               />
             </TouchableHighlight>
           </View>
+          {this.props.isRequired && (
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                left: 20 * em,
+                top: 70 * em,
+                alignSelf: 'center',
+                width: 60,
+                height: 40,
+                marginRight: 15,
+                marginLeft: 30,
+              }}
+              onPress={() => this.gotoShop()}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image
+                  source={diamond}
+                  style={{
+                    width: 18,
+                    height: 18,
+                    marginLeft: 15,
+                    marginTop: 10,
+                  }}
+                />
+                <Text
+                  style={{
+                    marginLeft: 10,
+                    color: '#000',
+                    fontSize: 12,
+                    fontWeight: 'bold',
+                    marginTop: 12,
+                  }}>
+                  {Global.saveData.coin_count}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
           <View
             style={{
               position: 'absolute',
-              left: 0,
-              top: 77 * em,
+              left: this.props.isRequired ? 40 : 0,
+              top: this.props.isRequired ? 82 * em : 77 * em,
               width: '100%',
               justifyContent: 'center',
               alignItems: 'center',
@@ -83,7 +127,7 @@ export class TopBar extends Component {
             <Text
               style={{
                 color: colors.inputLabel,
-                fontSize: 34 * em,
+                fontSize: this.props.isRequired ? 26 * em : 34 * em,
                 fontWeight: 'bold',
               }}>
               {this.props.title}

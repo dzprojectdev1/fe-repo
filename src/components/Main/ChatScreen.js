@@ -72,6 +72,7 @@ class ChatScreen extends React.PureComponent {
       ' #name#, who is #age# year old #gender# living in the #country#. #name# speaks #language#.';
 
     const {data} = props.route.params;
+
     const replacements = {
       name: Global.saveData.u_name,
       age: Global.saveData.u_age,
@@ -1288,6 +1289,7 @@ class ChatScreen extends React.PureComponent {
       creator_user_id,
       is_public,
       language,
+      fan_count,
     } = this.state.other;
     await AsyncStorage.setItem('id', userId.toString());
     await AsyncStorage.setItem('name', name);
@@ -1295,6 +1297,7 @@ class ChatScreen extends React.PureComponent {
     await AsyncStorage.setItem('creator_user_id', creator_user_id.toString());
     await AsyncStorage.setItem('is_public', is_public.toString());
     await AsyncStorage.setItem('language', language.toString());
+    await AsyncStorage.setItem('fancount', fan_count.toString());
     await AsyncStorage.setItem(
       'ai_personality',
       ai_personality
@@ -1323,6 +1326,7 @@ class ChatScreen extends React.PureComponent {
         creator_user_id: creator_user_id,
         is_public: is_public,
         language: language,
+        fan_count: fan_count,
       },
     };
     this.props.navigation.navigate('AIUserEdit', {data: data});

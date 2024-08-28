@@ -3,6 +3,7 @@ import {Text} from 'native-base';
 import {
   Alert,
   Dimensions,
+  Image,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -17,6 +18,7 @@ import RadioGroup from '../../commonUI/components/radioButton';
 import {connect} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Dropdown} from 'react-native-material-dropdown';
+import yellow_star from '../../assets/images/yellow_star.png';
 
 class AIUserEdit extends React.PureComponent {
   static navigationOptions = {
@@ -66,6 +68,7 @@ class AIUserEdit extends React.PureComponent {
       isValid: false,
       msgError: '',
       message: '',
+      fan_count: 0,
       otherData: null,
       coin_per_message: Global.saveData.coin_per_message,
     };
@@ -129,8 +132,15 @@ class AIUserEdit extends React.PureComponent {
   async initializeState() {
     const {data} = this.props.route.params || {};
     if (data) {
-      const {id, username, description, ai_personality, is_public, language} =
-        data.data;
+      const {
+        id,
+        username,
+        description,
+        ai_personality,
+        is_public,
+        language,
+        fan_count,
+      } = data.data;
       this.setState({
         id: id || '',
         username: username || '',
@@ -139,6 +149,7 @@ class AIUserEdit extends React.PureComponent {
         is_public: is_public || 0,
         is_public_ns: is_public || 0,
         language: language || 'English',
+        fan_count: fan_count,
       });
       const lanD = this.state.languageData;
       for (var i = 0; i < lanD.length; i++) {
@@ -157,6 +168,7 @@ class AIUserEdit extends React.PureComponent {
       const is_public = await AsyncStorage.getItem('is_public');
       const ai_personality = await AsyncStorage.getItem('ai_personality');
       const language = await AsyncStorage.getItem('language');
+      const fan_count = await AsyncStorage.getItem('fancount');
 
       this.setState({
         id: parseInt(id),
@@ -167,6 +179,7 @@ class AIUserEdit extends React.PureComponent {
         is_public_ns: parseInt(is_public),
         ai_personality: ai_personality,
         language: language,
+        fan_count: fan_count,
       });
       const lanD = this.state.languageData;
       for (var i = 0; i < lanD.length; i++) {
@@ -452,6 +465,20 @@ class AIUserEdit extends React.PureComponent {
               marginLeft: DEVICE_WIDTH * 0.1,
               marginTop: 15,
             }}>
+            {this.state.is_public === 1 && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 25,
+                }}>
+                <Image source={yellow_star} style={{width: 24, height: 24}} />
+                <Text>
+                  {` ${this.state.username} has ${this.state.fan_count} fans`}
+                </Text>
+              </View>
+            )}
+
             {/*<View style={{flexDirection: 'row', alignItems: 'center'}}>*/}
             {/*  <Text style={{color: '#808080', fontSize: 12}}>*/}
             {/*    {'AI Character Name'}*/}

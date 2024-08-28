@@ -37,6 +37,7 @@ import VoiceCallIncome from './components/Main/VoiceCallIncome';
 import ScreenGpay01 from './components/GPay/ScreenGpay01';
 import AIUser from './components/Main/AIUser';
 import AIUserEdit from './components/Main/AIUserEdit';
+import GenerateAIUserImage from './components/Main/GenerateAIUserImage';
 
 enableScreens(true);
 const Stack = createStackNavigator();
@@ -80,6 +81,10 @@ const Router = () => {
         <Stack.Screen name="EmailConfirm" component={EmailConfirm} />
         <Stack.Screen name="AIUser" component={AIUser} />
         <Stack.Screen name="AIUserEdit" component={AIUserEdit} />
+        <Stack.Screen
+          name="GenerateAIUserImage"
+          component={GenerateAIUserImage}
+        />
 
         <Stack.Screen name="CallIncome" component={CallIncome} />
         <Stack.Screen name="CallOutgo" component={CallOutgo} />
