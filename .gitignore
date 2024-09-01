@@ -72,3 +72,4 @@ android/app/release/output-metadata.json
 index.android.bundle.map
 android/app/release/app-release.aab
 empty.json
+android/app/release/output-metadata.json

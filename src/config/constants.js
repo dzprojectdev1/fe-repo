@@ -14,7 +14,7 @@ export const SESSION_TYPE = {
 };
 
 // export const SERVER_URL       = 'http://192.168.0.225:8080';
-export const PRODUCTION = true;
+export const PRODUCTION = false;
 
 export const SERVER_URL = PRODUCTION
   ? 'http://34.172.47.245:8080'

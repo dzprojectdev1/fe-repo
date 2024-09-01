@@ -1278,7 +1278,7 @@ class ChatScreen extends React.PureComponent {
         menu: false,
       },
       () => {
-        this.props.navigation.navigate('MyVideo', {data: data});
+        this.props.navigation.replace('MyVideo', {data: data});
       },
     );
   };
@@ -1332,7 +1332,7 @@ class ChatScreen extends React.PureComponent {
         fan_count: fan_count,
       },
     };
-    this.props.navigation.navigate('AIUserEdit', {data: data});
+    this.props.navigation.replace('AIUserEdit', {data: data});
   };
 
   resetError = (isToast = true, lastUserMessage = null) => {

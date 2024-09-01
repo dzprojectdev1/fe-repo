@@ -229,7 +229,7 @@ class IncomeDetail extends Component {
       },
     };
     Global.saveData.prevpage = 'IncomeDetail';
-    this.props.navigation.navigate('ChatDetail', {data: otherData});
+    this.props.navigation.replace('ChatDetail', {data: otherData});
   }
 
   onReject() {

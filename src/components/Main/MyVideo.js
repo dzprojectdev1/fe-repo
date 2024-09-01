@@ -58,12 +58,11 @@ class MyVideo extends Component {
 
   constructor(props) {
     super(props);
-    const {data} = props.route.params;
 
     this.state = {
-      ai_userId: data?.data?.id || 0,
-      creator_user_id: data?.data?.creator_user_id || 0,
-      username: data?.data?.username || '',
+      ai_userId: props.route.params?.data?.data?.id || 0,
+      creator_user_id: props.route.params?.data?.data?.creator_user_id || 0,
+      username: props.route.params?.data?.data?.username || '',
       datas: [],
       isLoading: true,
       noData: false,
@@ -886,7 +885,6 @@ class MyVideo extends Component {
           style={{
             marginTop: 40,
             alignItems: 'center',
-            justifyContent: 'center',
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}>
@@ -970,7 +968,7 @@ class MyVideo extends Component {
                 width: '100%',
                 fontSize: 12,
                 marginTop: 0,
-                marginLeft: 50,
+                marginLeft: this.state.ai_userId == 0 ? 100 : 50,
                 color: '#000',
               }}>
               {this.state.ai_userId != 0 ? this.state.username : 'PROFILE'}
