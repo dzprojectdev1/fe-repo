@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "=== Fixing all gradle files ==="
 
-# Fix all jcenter references
+# 1. Fix ALL jcenter() references across all packages
 find node_modules -name "*.gradle" | while read f; do
   if grep -q "jcenter()" "$f"; then
     echo "Fixing jcenter in $f"
@@ -9,22 +9,22 @@ find node_modules -name "*.gradle" | while read f; do
   fi
 done
 
-# Fix react-native-fast-image old gradle plugin
+# 2. Fix react-native-fast-image old gradle plugin 2.3.3
 perl -i -pe 's/com\.android\.tools\.build:gradle:2\.3\.3/com.android.tools.build:gradle:3.5.3/g' \
   node_modules/react-native-fast-image/android/build.gradle
 
-# Fix WheelPicker missing dependency
+# 3. Fix WheelPicker missing dependency
 perl -i -ne 'print unless /cn\.aigestudio\.wheelpicker/' \
   node_modules/react-native-wheel-picker/android/build.gradle
 
-# Fix exoplayer version in all video packages
+# 4. Fix exoplayer 2.9.3 -> 2.9.6 in BOTH video packages
 for f in \
-  node_modules/react-native-video/android-exoplayer/build.gradle \
-  node_modules/react-native-gifted-chat/node_modules/react-native-video/android-exoplayer/build.gradle; do
+  "node_modules/react-native-video/android-exoplayer/build.gradle" \
+  "node_modules/react-native-gifted-chat/node_modules/react-native-video/android-exoplayer/build.gradle"; do
   if [ -f "$f" ]; then
     echo "Fixing exoplayer in $f"
-    perl -i -pe 's/(exoplayer:)[0-9.]+/$1 . "2.9.6"/ge' "$f"
-    perl -i -pe 's/(extension-okhttp:)[0-9.]+/$1 . "2.9.6"/ge' "$f"
+    sed -i '' "s/exoplayer:exoplayer:2\.9\.3/exoplayer:exoplayer:2.9.6/g" "$f"
+    sed -i '' "s/exoplayer:extension-okhttp:2\.9\.3/exoplayer:extension-okhttp:2.9.6/g" "$f"
   fi
 done
 
