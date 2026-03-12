@@ -1,0 +1,15 @@
+workflows:
+  android-debug-build:
+    name: Android Debug Build
+    environment:
+      node: 12.22.12
+      java: 8
+    scripts:
+      - name: Install dependencies
+        script: npm install --legacy-peer-deps --ignore-scripts
+      - name: Build Android Debug APK
+        script: |
+          cd android
+          ./gradlew assembleDebug
+    artifacts:
+      - android/app/build/outputs/apk/debug/app-debug.apk
