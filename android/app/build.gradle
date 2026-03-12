@@ -137,7 +137,6 @@ android {
         }
     }
     defaultConfig {
-        missingDimensionStrategy 'react-native-camera', 'general'
     }
 }
 
@@ -152,7 +151,6 @@ dependencies {
     implementation project(':react-native-fcm')
     implementation project(':react-native-device-info')
     implementation project(':react-native-fs')
-    implementation project(':react-native-camera')
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-image-picker')
     implementation fileTree(dir: "libs", include: ["*.jar"])

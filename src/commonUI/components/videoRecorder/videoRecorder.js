@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types'
 import moment from 'moment';
-import Camera from 'react-native-camera';
+import Camera from '../../../../stubs/react-native-camera-stub';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import RecordingButton from './RecordingButton';
 import styles from './style';
