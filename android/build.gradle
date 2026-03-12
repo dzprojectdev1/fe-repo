@@ -11,7 +11,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://maven.google.com' }
     }
     dependencies {
         classpath('com.android.tools.build:gradle:3.5.3')
@@ -24,6 +23,7 @@ allprojects {
         mavenCentral()
         jcenter()
         maven { url 'https://maven.google.com' }
+        maven { url 'https://dl.google.com/dl/android/maven2/' }
         maven { url 'https://github.com/QuickBlox/quickblox-android-sdk/raw/master/releases/' }
         maven { url "$rootDir/../node_modules/react-native/android" }
     }
