@@ -20,15 +20,11 @@ workflows:
           if [ -f "$WHEEL_PICKER" ]; then
             sed -i '' '/cn.aigestudio.wheelpicker/d' $WHEEL_PICKER
           fi
-          # Find and fix all exoplayer references
-          echo "=== Searching for exoplayer references ==="
-          grep -r "exoplayer:2.9.3" node_modules --include="*.gradle" -l
-          find node_modules -name "*.gradle" | xargs grep -l "exoplayer" 2>/dev/null
-          # Fix all found files
-          find node_modules -name "*.gradle" -exec grep -l "exoplayer:2.9.3" {} \; | while read f; do
-            echo "Fixing $f"
-            sed -i '' 's/exoplayer:2.9.3/exoplayer:2.11.8/g' "$f"
-            sed -i '' 's/extension-okhttp:2.9.3/extension-okhttp:2.11.8/g' "$f"
+          # Fix react-native-video exoplayer to 2.9.6 which exists on Google maven
+          find node_modules -name "*.gradle" | xargs grep -l "exoplayer" 2>/dev/null | while read f; do
+            echo "Fixing exoplayer in $f"
+            sed -i '' 's/exoplayer:[0-9.]*/exoplayer:2.9.6/g' "$f"
+            sed -i '' 's/extension-okhttp:[0-9.]*/extension-okhttp:2.9.6/g' "$f"
           done
       - name: Build Android Debug APK
         script: |
