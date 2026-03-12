@@ -21,7 +21,7 @@ import {
 } from "react-native";
 import { Button } from 'react-native-elements';
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
-import Video from 'react-native-video';
+import Video from '../../../stubs/react-native-video-stub';
 
 import b_chat from '../../assets/images/chat.png';
 import b_notification from '../../assets/images/notification.png';

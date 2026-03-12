@@ -73,3 +73,7 @@ PYEOF
 done
 
 echo "=== All fixes applied ==="
+
+# 5. Remove react-native-video from android settings
+sed -i '' "/react-native-video/d" ../android/settings.gradle
+sed -i '' "/react-native-video/d" ../android/app/build.gradle

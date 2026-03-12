@@ -5,7 +5,7 @@ import {
   Content,
 } from "native-base";
 import { Dimensions, View, StyleSheet, TouchableOpacity, StatusBar, Image } from "react-native";
-import Video from 'react-native-video';
+import Video from '../../../stubs/react-native-video-stub';
 import Global from '../Global';
 
 import { SERVER_URL, GCS_BUCKET } from '../../config/constants';

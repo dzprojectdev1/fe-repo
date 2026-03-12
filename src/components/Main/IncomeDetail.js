@@ -19,7 +19,7 @@ import {
   Keyboard,
 } from "react-native";
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
-import Video from 'react-native-video';
+import Video from '../../../stubs/react-native-video-stub';
 
 import b_notification from '../../assets/images/notification.png';
 import b_name from '../../assets/images/name.png';

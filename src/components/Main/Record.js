@@ -5,7 +5,7 @@ import {
 } from "native-base"
 import { Image, Dimensions, View, StyleSheet, TouchableOpacity, StatusBar, Alert } from "react-native";
 import { RNCamera } from 'react-native-camera';
-import Video from 'react-native-video';
+import Video from '../../../stubs/react-native-video-stub';
 import heart from '../../assets/images/heart.png';
 import playing from '../../assets/images/playing.png';
 import recordImg from '../../assets/images/b_recording.png';

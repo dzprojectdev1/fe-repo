@@ -6,7 +6,7 @@ import {
 import { Dimensions, View, StyleSheet, TouchableOpacity, StatusBar, Image, TouchableHighlight, Text } from "react-native";
 import ImageSlider from 'react-native-image-slider';
 // import Slideshow from 'react-native-image-slider-show';
-import Video from 'react-native-video';
+import Video from '../../../stubs/react-native-video-stub';
 import video_player from '../../assets/images/video_player.png';
 import Global from '../Global';
 

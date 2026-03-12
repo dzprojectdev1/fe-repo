@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {Image, ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View, ViewPropTypes} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Video from 'react-native-video'; // eslint-disable-line
+import Video from '../../stubs/react-native-video-stub'; // eslint-disable-line
 
 import {addZero} from '../../../pages/nettmp'
 import {em} from '../../base';
