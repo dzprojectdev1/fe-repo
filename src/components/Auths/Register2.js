@@ -17,7 +17,7 @@ import {
   PermissionsAndroid,
   Linking
 } from "react-native";
-import QB from 'quickblox-react-native-sdk';
+import QB from '../../stubs/quickblox-stub';
 import DeviceInfo from 'react-native-device-info';
 import AnimateLoadingButton from 'react-native-animate-loading-button';
 import Geolocation from 'react-native-geolocation-service';

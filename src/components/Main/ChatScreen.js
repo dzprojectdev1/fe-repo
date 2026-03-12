@@ -20,7 +20,7 @@ import {
     Modal,
 } from 'react-native';
 
-import QB from 'quickblox-react-native-sdk';
+import QB from '../stubs/quickblox-stub';
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 import Dialog, { DialogFooter, DialogButton, DialogContent, SlideAnimation } from 'react-native-popup-dialog';
 import firebase from 'firebase';

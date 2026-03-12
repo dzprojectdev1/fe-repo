@@ -1,8 +1,6 @@
 rootProject.name = 'DazzledDate'
 include ':react-native-sound'
 project(':react-native-sound').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-sound/android')
-include ':quickblox-react-native-sdk'
-project(':quickblox-react-native-sdk').projectDir = new File(rootProject.projectDir, '../node_modules/quickblox-react-native-sdk/android')
 include ':react-native-wheel-picker'
 project(':react-native-wheel-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-wheel-picker/android')
 include ':react-native-fast-image'

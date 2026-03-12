@@ -23,7 +23,7 @@ import { changeReadFlag, updateUserData, updateFCMTocken, updateQuickBlox } from
 import DeviceInfo from 'react-native-device-info';
 import firstBg from '../assets/images/first_bg.jpg';
 import Global from './Global';
-import QB from 'quickblox-react-native-sdk';
+import QB from '../stubs/quickblox-stub';
 import { SERVER_URL } from '../config/constants';
 
 class FirstScreen extends Component {

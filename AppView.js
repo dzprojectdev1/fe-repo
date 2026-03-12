@@ -14,8 +14,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import QB from 'quickblox-react-native-sdk';
-import WebRTCView from 'quickblox-react-native-sdk/RTCView';
+import QB from './stubs/quickblox-stub';
+import WebRTCView from './stubs/quickblox-rtcview-stub';
 import nativeFirebase from 'react-native-firebase';
 import firebase from 'firebase';
 import Global from './src/components/Global';

@@ -11,8 +11,8 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import QB from 'quickblox-react-native-sdk';
-import WebRTCView from 'quickblox-react-native-sdk/RTCView';
+import QB from '../stubs/quickblox-stub';
+import WebRTCView from '../stubs/quickblox-rtcview-stub';
 import Sound from 'react-native-sound';
 import Global from '../Global';
 import {
