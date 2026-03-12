@@ -15,10 +15,16 @@ workflows:
             sed -i '' 's/com.android.tools.build:gradle:2.3.3/com.android.tools.build:gradle:3.5.3/g' $FAST_IMAGE
             sed -i '' 's/jcenter()/mavenCentral()\n        google()/g' $FAST_IMAGE
           fi
-          # Fix react-native-wheel-picker - remove WheelPicker dependency
+          # Fix react-native-wheel-picker
           WHEEL_PICKER="node_modules/react-native-wheel-picker/android/build.gradle"
           if [ -f "$WHEEL_PICKER" ]; then
             sed -i '' '/cn.aigestudio.wheelpicker/d' $WHEEL_PICKER
+          fi
+          # Fix react-native-video - update exoplayer version
+          RN_VIDEO="node_modules/react-native-video/android/build.gradle"
+          if [ -f "$RN_VIDEO" ]; then
+            sed -i '' 's/exoplayer:2.9.3/exoplayer:2.11.8/g' $RN_VIDEO
+            sed -i '' 's/extension-okhttp:2.9.3/extension-okhttp:2.11.8/g' $RN_VIDEO
           fi
       - name: Build Android Debug APK
         script: |
