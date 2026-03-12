@@ -143,7 +143,6 @@ android {
 dependencies {
     implementation project(':react-native-sound')
     implementation project(':react-native-wheel-picker')
-    implementation project(':react-native-fast-image')
     implementation project(':react-native-iap')
     implementation project(':react-native-firebase')
     implementation project(':react-native-geolocation-service')
