@@ -23,7 +23,7 @@ import AnimateLoadingButton from 'react-native-animate-loading-button';
 import Geolocation from 'react-native-geolocation-service';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import nativeFirebase from 'react-native-firebase';
+import nativeFirebase from '../../stubs/react-native-firebase-stub';
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 import { Dropdown } from 'react-native-material-dropdown';

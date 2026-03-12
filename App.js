@@ -13,7 +13,7 @@ import storeReducer from './Reducer';
 import DeviceInfo from 'react-native-device-info';
 import Geolocation from 'react-native-geolocation-service';
 import firebase from 'firebase';
-import nativeFirebase from 'react-native-firebase';
+import nativeFirebase from './stubs/react-native-firebase-stub';
 import AppView from './AppView';
 
 const store = createStore(storeReducer);

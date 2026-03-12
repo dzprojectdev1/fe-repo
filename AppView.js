@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import QB from './stubs/quickblox-stub';
 import WebRTCView from './stubs/quickblox-rtcview-stub';
-import nativeFirebase from 'react-native-firebase';
+import nativeFirebase from './stubs/react-native-firebase-stub';
 import firebase from 'firebase';
 import Global from './src/components/Global';
 import FlashMessage, { showMessage } from 'react-native-flash-message';

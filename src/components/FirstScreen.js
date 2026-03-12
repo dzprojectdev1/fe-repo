@@ -15,7 +15,7 @@ import {
   PermissionsAndroid,
   BackHandler
 } from "react-native";
-import nativeFirebase from 'react-native-firebase';
+import nativeFirebase from '../stubs/react-native-firebase-stub';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

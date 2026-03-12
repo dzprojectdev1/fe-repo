@@ -15,7 +15,7 @@ import {
   Alert,
   BackHandler
 } from "react-native";
-import nativeFirebase from 'react-native-firebase';
+import nativeFirebase from '../../stubs/react-native-firebase-stub';
 import store from 'react-native-simple-store';
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
