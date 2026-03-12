@@ -3,7 +3,7 @@ workflows:
     name: Android Debug Build
     environment:
       node: 12.22.12
-      java: 8
+      java: 11
     scripts:
       - name: Install dependencies
         script: npm install --legacy-peer-deps --ignore-scripts
