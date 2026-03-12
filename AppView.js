@@ -32,7 +32,7 @@ import {
   RECEIVED_VIDEO_TRACK, NOT_ANSWER,
   SESSION_TYPE
 } from './src/config/constants';
-import Sound from 'react-native-sound';
+import Sound from './stubs/react-native-sound-stub';
 import userIcon from './src/assets/images/hidden_man.png';
 import hiddenMan from './src/assets/images/hidden_man.png';
 import bg from './src/assets/images/back_1.jpeg';

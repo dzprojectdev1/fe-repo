@@ -19,7 +19,7 @@ import RNIap, {
   acknowledgePurchaseAndroid,
   purchaseErrorListener,
   purchaseUpdatedListener,
-} from 'react-native-iap';
+} from '../../stubs/react-native-iap-stub';
   
 const itemSkus = Platform.select({
   android: [

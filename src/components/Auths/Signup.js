@@ -14,7 +14,7 @@ import {
   StatusBar,
   Alert
 } from "react-native";
-import Picker from 'react-native-wheel-picker';
+import Picker from '../../stubs/react-native-wheel-picker-stub';
 import logo from '../../assets/images/logo.png';
 import slogo from '../../assets/images/second_bg.png';
 // import emailIcon from '../../assets/images/emailIcon.png';

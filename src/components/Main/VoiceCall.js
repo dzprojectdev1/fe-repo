@@ -13,7 +13,7 @@ import {
 import { connect } from 'react-redux';
 import QB from '../stubs/quickblox-stub';
 import WebRTCView from '../stubs/quickblox-rtcview-stub';
-import Sound from 'react-native-sound';
+import Sound from '../../../stubs/react-native-sound-stub';
 import Global from '../Global';
 import {
   CALL,

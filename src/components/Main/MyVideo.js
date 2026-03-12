@@ -23,7 +23,7 @@ import {
 } from "react-native";
 import { connect } from 'react-redux';
 import { Badge } from 'react-native-elements'
-import ImagePicker from 'react-native-image-picker';
+import ImagePicker from '../../../stubs/react-native-image-picker-stub';
 // import OnlyGImage from '../../assets/images/OnlyGImage.png';
 import b_browse from '../../assets/images/browse.png';
 import b_incoming from '../../assets/images/incoming.png';
