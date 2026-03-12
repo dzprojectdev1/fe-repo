@@ -7,25 +7,8 @@ workflows:
     scripts:
       - name: Install dependencies
         script: npm install --legacy-peer-deps --ignore-scripts
-      - name: Fix gradle files
-        script: |
-          # Fix react-native-fast-image
-          FAST_IMAGE="node_modules/react-native-fast-image/android/build.gradle"
-          if [ -f "$FAST_IMAGE" ]; then
-            sed -i '' 's/com.android.tools.build:gradle:2.3.3/com.android.tools.build:gradle:3.5.3/g' $FAST_IMAGE
-            sed -i '' 's/jcenter()/mavenCentral()\n        google()/g' $FAST_IMAGE
-          fi
-          # Fix react-native-wheel-picker
-          WHEEL_PICKER="node_modules/react-native-wheel-picker/android/build.gradle"
-          if [ -f "$WHEEL_PICKER" ]; then
-            sed -i '' '/cn.aigestudio.wheelpicker/d' $WHEEL_PICKER
-          fi
-          # Fix react-native-video exoplayer to 2.9.6 which exists on Google maven
-          find node_modules -name "*.gradle" | xargs grep -l "exoplayer" 2>/dev/null | while read f; do
-            echo "Fixing exoplayer in $f"
-            sed -i '' 's/exoplayer:[0-9.]*/exoplayer:2.9.6/g' "$f"
-            sed -i '' 's/extension-okhttp:[0-9.]*/extension-okhttp:2.9.6/g' "$f"
-          done
+      - name: Fix all gradle files
+        script: bash fix_gradle.sh
       - name: Build Android Debug APK
         script: |
           cd android
