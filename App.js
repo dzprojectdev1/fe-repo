@@ -11,7 +11,7 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import storeReducer from './Reducer';
 import DeviceInfo from 'react-native-device-info';
-import Geolocation from 'react-native-geolocation-service';
+import Geolocation from './stubs/react-native-geolocation-stub';
 import firebase from 'firebase';
 import nativeFirebase from './stubs/react-native-firebase-stub';
 import AppView from './AppView';

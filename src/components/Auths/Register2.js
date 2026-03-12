@@ -20,7 +20,7 @@ import {
 import QB from '../../stubs/quickblox-stub';
 import DeviceInfo from 'react-native-device-info';
 import AnimateLoadingButton from 'react-native-animate-loading-button';
-import Geolocation from 'react-native-geolocation-service';
+import Geolocation from '../../stubs/react-native-geolocation-stub';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import nativeFirebase from '../../stubs/react-native-firebase-stub';
