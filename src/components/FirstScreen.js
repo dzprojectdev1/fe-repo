@@ -20,7 +20,7 @@ import firebase from 'firebase';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { changeReadFlag, updateUserData, updateFCMTocken, updateQuickBlox } from '../../Action';
-import DeviceInfo from '../stubs/react-native-device-info-stub';
+import DeviceInfo from 'react-native-device-info';
 import firstBg from '../assets/images/first_bg.jpg';
 import Global from './Global';
 import QB from '../stubs/quickblox-stub';

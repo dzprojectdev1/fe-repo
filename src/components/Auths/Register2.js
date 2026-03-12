@@ -18,7 +18,7 @@ import {
   Linking
 } from "react-native";
 import QB from '../../stubs/quickblox-stub';
-import DeviceInfo from '../../stubs/react-native-device-info-stub';
+import DeviceInfo from 'react-native-device-info';
 import AnimateLoadingButton from 'react-native-animate-loading-button';
 import Geolocation from '../../stubs/react-native-geolocation-stub';
 import { connect } from 'react-redux';
