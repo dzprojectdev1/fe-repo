@@ -17,14 +17,25 @@ perl -i -pe 's/com\.android\.tools\.build:gradle:2\.3\.3/com.android.tools.build
 perl -i -ne 'print unless /cn\.aigestudio\.wheelpicker/' \
   node_modules/react-native-wheel-picker/android/build.gradle
 
-# 4. Fix exoplayer 2.9.3 -> 2.9.6 in BOTH video packages
+# 4. Add repositories block to react-native-video exoplayer files
 for f in \
   "node_modules/react-native-video/android-exoplayer/build.gradle" \
   "node_modules/react-native-gifted-chat/node_modules/react-native-video/android-exoplayer/build.gradle"; do
-  if [ -f "$f" ]; then
-    echo "Fixing exoplayer in $f"
-    sed -i '' "s/exoplayer:exoplayer:2\.9\.3/exoplayer:exoplayer:2.9.6/g" "$f"
-    sed -i '' "s/exoplayer:extension-okhttp:2\.9\.3/exoplayer:extension-okhttp:2.9.6/g" "$f"
+  if [ -f "$f" ] && ! grep -q "^repositories" "$f"; then
+    echo "Adding repositories block to $f"
+    python3 -c "
+content = open('$f').read()
+repos = '''
+repositories {
+    google()
+    mavenCentral()
+    jcenter()
+}
+'''
+content = content.replace('def safeExtGet', repos + 'def safeExtGet')
+open('$f', 'w').write(content)
+print('Fixed $f')
+"
   fi
 done
 
