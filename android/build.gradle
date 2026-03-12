@@ -22,6 +22,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        jcenter()
         maven { url 'https://maven.google.com' }
         maven { url 'https://github.com/QuickBlox/quickblox-android-sdk/raw/master/releases/' }
         maven { url "$rootDir/../node_modules/react-native/android" }
