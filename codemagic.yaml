@@ -4,9 +4,9 @@ workflows:
     max_build_duration: 120
     instance_type: mac_mini_m2
     environment:
-      ndk: r21d                  # This installs NDK r21d (compatible with old toolchains)
-      # Add other env if needed, e.g.:
-      # groups:
-      #   - your-group-name
+      java: "11"                 # Key: Forces JDK 11 (compatible with old AGP 3.x + Gradle 7.6)
+      ndk: r21d                  # Keep for toolchain fix later
+      # groups:                  # Uncomment/add if you have encrypted vars
+      #   - your-group
     scripts:
       - cd $CM_BUILD_DIR/android && ./gradlew assembleDebug --stacktrace
