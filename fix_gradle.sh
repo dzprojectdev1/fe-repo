@@ -14,7 +14,7 @@ perl -i -pe 's/com\.android\.tools\.build:gradle:2\.3\.3/com.android.tools.build
   node_modules/react-native-fast-image/android/build.gradle
 
 # Fix WheelPicker missing dependency
-perl -i -pe 's/.*cn\.aigestudio\.wheelpicker.*\n//g' \
+perl -i -ne 'print unless /cn\.aigestudio\.wheelpicker/' \
   node_modules/react-native-wheel-picker/android/build.gradle
 
 # Fix exoplayer version in all video packages
@@ -23,8 +23,8 @@ for f in \
   node_modules/react-native-gifted-chat/node_modules/react-native-video/android-exoplayer/build.gradle; do
   if [ -f "$f" ]; then
     echo "Fixing exoplayer in $f"
-    perl -i -pe 's/exoplayer:[0-9.]+/exoplayer:2.9.6/g' "$f"
-    perl -i -pe 's/extension-okhttp:[0-9.]+/extension-okhttp:2.9.6/g' "$f"
+    perl -i -pe 's/(exoplayer:)[0-9.]+/$1 . "2.9.6"/ge' "$f"
+    perl -i -pe 's/(extension-okhttp:)[0-9.]+/$1 . "2.9.6"/ge' "$f"
   fi
 done
 
