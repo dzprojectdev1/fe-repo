@@ -4,11 +4,16 @@ workflows:
     environment:
       node: 12.22.12
       java: 11
+    cache:
+      cache_paths: []
     scripts:
       - name: Install dependencies
         script: npm install --legacy-peer-deps --ignore-scripts
       - name: Fix all gradle files
-        script: bash fix_gradle.sh
+        script: |
+          echo "=== Running fix_gradle.sh ==="
+          bash fix_gradle.sh
+          echo "=== Fix script done ==="
       - name: Build Android Debug APK
         script: |
           cd android
