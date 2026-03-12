@@ -2,10 +2,11 @@ workflows:
   android-debug-build:
     name: Android Debug Build
     max_build_duration: 120
-    instance_type: mac_mini_m2   # matches your current build
+    instance_type: mac_mini_m2
     environment:
-      ndk: r21d                  # Key line: forces NDK r21 (has arm-linux-androideabi-4.9 toolchain)
-      groups:
-        - google-services        # if you have encrypted vars for google-services.json etc.
+      ndk: r21d                  # This installs NDK r21d (compatible with old toolchains)
+      # Add other env if needed, e.g.:
+      # groups:
+      #   - your-group-name
     scripts:
       - cd $CM_BUILD_DIR/android && ./gradlew assembleDebug --stacktrace
